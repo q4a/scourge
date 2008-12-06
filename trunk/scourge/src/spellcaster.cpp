@@ -598,10 +598,12 @@ void SpellCaster::openLocked() {
 }
 
 void SpellCaster::summonCreature( bool friendly ) {
-	if( !friendly ) {
-		battle->getSession()->getGameAdapter()->writeLogMessage( _( "Something goes horribly wrong! The summoned monster breaks free and attacks!" ), Constants::MSGTYPE_PLAYERMAGIC );
+	Creature *c = battle->getCreature()->summonCreature( friendly );
+	if( !c ) {
+		battle->getSession()->getGameAdapter()->writeLogMessage( _( "Something goes wrong! No one answers your call for help!" ), Constants::MSGTYPE_PLAYERMAGIC );
+	} else if( c && !friendly ) {
+		battle->getSession()->getGameAdapter()->writeLogMessage( _( "Something goes horribly wrong! The summoned monster breaks free and attacks!" ), Constants::MSGTYPE_PLAYERMAGIC );		
 	}
-	battle->getCreature()->summonCreature( friendly );
 }
 
 void SpellCaster::windAttack() {

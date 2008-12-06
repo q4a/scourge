@@ -1989,21 +1989,21 @@ void Creature::decideAction() {
   // Actions (from left to right):
   // AtkClosest, Cast, AreaCast, Heal, ACCast, AtkRandom, StartLoiter, StopMoving, GoOn
   float decisionMatrix[ AI_STATE_COUNT ][ AI_ACTION_COUNT ] = {
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f, // Hanging around, no enemies
-    0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, // Loitering, no enemies
-    0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Loitering, enemies near
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, 0.0f, // Loitering, end of path
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f, // Moving towards target
-    0.0f, 0.3f, 0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.4f, // Engaging target
-    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low HP
-    0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low HP
-    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, // Low MP
-    0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low MP
-    0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.75f, // No nice AC boost
-    0.0f, 0.1f, 0.5f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.0f, // Surrounded (min. 3 attackers)
-    0.0f, 0.4f, 0.25f, 0.0f, 0.2f, 0.15f, 0.0f, 0.0f, 0.0f, // Friendlies outnumbered by enemy
-    0.0f, 0.2f, 0.15f, 0.0f, 0.1f, 0.2f, 0.0f, 0.0f, 0.35f // Friendlies outnumbering enemy
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f }, // Hanging around, no enemies
+    { 0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f }, // Hanging around, enemies near
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f }, // Loitering, no enemies
+    { 0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f }, // Loitering, enemies near
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, 0.0f }, // Loitering, end of path
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f }, // Moving towards target
+    { 0.0f, 0.3f, 0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.4f }, // Engaging target
+    { 0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f }, // Low HP
+    { 0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f }, // Target has low HP
+    { 0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f }, // Low MP
+    { 0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f }, // Target has low MP
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.75f }, // No nice AC boost
+    { 0.0f, 0.1f, 0.5f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.0f }, // Surrounded (min. 3 attackers)
+    { 0.0f, 0.4f, 0.25f, 0.0f, 0.2f, 0.15f, 0.0f, 0.0f, 0.0f }, // Friendlies outnumbered by enemy
+    { 0.0f, 0.2f, 0.15f, 0.0f, 0.1f, 0.2f, 0.0f, 0.0f, 0.35f } // Friendlies outnumbering enemy
   };
 
   float decisionWeights[ AI_ACTION_COUNT ];
@@ -3801,7 +3801,10 @@ Creature *Creature::summonCreature( bool friendly ) {
 	} else {
 		Monster *monster = Monster::getRandomMonster( Util::pickOne( (int)( getLevel() * 0.5f ), (int)( getLevel() * 0.75f ) ) );
 		if( monster ) {
+			cerr << "*** summoning monster: " << monster->getType() << endl;
 			creature = doSummon( monster, toint( getX() ), toint( getY() ), 0, 0, friendly );
+		} else {
+			cerr << "*** no monster summoned." << endl;
 		}
 	}
 	return creature;
@@ -3814,6 +3817,24 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int ex, int ey, 
 	                                   monster->getScale(),
 	                                   monster );
 	Creature *creature = session->newCreature( monster, shape );
+	
+	// try to place on map
+	bool placed;
+	if( ex <= 0 ) {
+		cerr << "*** summon via findPlace: pos=" << cx << "," << cy << endl;
+		int x, y;
+		placed = creature->findPlace( cx, cy, &x, &y );
+		if( placed ) {
+			cerr << "\t*** final pos=" << x << "," << y << endl;
+		}
+	} else {
+		cerr << "*** summon via findPlaceBounded: region: " << cx << "," << cy << "-" << ex << "," << ey << endl;
+		placed = creature->findPlaceBounded( cx, cy, ex, ey );
+	}
+	if( !placed ) {
+		cerr << "*** warning: unable to place summoned creature." << endl;
+		return NULL;
+	}
 	
 	addSummoned( creature );
 	creature->setSummoner( this );
@@ -3828,16 +3849,8 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int ex, int ey, 
 	session->getSquirrel()->registerCreature( creature );
 	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
 		session->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
-	}
-
-	if( ex > 0 ) {
-		int x, y;
-		creature->findPlace( cx, cy, &x, &y );
-	} else {
-		creature->findPlaceBounded( cx, cy, ex, ey );
-		cerr << "*** warning: unable to place summoned creature." << endl;
-		return NULL;
-	}
+	}	
+	
 	creature->cancelTarget();
 	creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
 	

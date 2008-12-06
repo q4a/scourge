@@ -102,7 +102,7 @@ bool RenderedCreature::findPlaceBounded( int startx, int starty, int endx, int e
 }
 
 // use this for large areas
-void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
+bool RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
 	int fx = 0;
 	int fy = 0;
 	int sx = startx;
@@ -117,10 +117,12 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 			levelMap->setCreature( fx, fy, 0, this );
 			if ( finalX ) *finalX = fx;
 			if ( finalY ) *finalY = fy;
-		}
+			return true;
+		}		
 	} else {
 		cerr << "Warning: can't find starting place." << endl;
 	}
+	return false;
 }
 
 // Find a free starting location (for the recursion) to the left and above the given start.
