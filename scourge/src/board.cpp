@@ -1285,6 +1285,7 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 }
 
 void Mission::loadStorylineMission( MissionInfo *info ) {
+	cerr << "Loading storyline mission!" << endl;
 	for ( int i = 0; i < static_cast<int>( info->itemCount ); i++ ) {
 		char *p = ( char* )info->itemName[i];
 		for ( unsigned int t = 0; t < itemList.size(); t++ ) {
@@ -1305,6 +1306,7 @@ void Mission::loadStorylineMission( MissionInfo *info ) {
 			}
 		}
 	}
+	setSavedMapName( ( char* )info->mapName );
 	setCompleted( info->completed ? true : false );
 }
 
