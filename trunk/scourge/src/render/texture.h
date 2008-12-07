@@ -84,6 +84,8 @@ public:
 	static Texture const& none() {
 		return empty;
 	}
+	
+	static GLuint saveAreaUnder( int x, int y, int w, int h, GLuint *tex = NULL );
 
 private:
 	// all member data is in refcounted Actual

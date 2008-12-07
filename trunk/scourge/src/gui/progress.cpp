@@ -110,11 +110,21 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	//int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
 	int y = 0;
 	glTranslatef( x, y, 0 );
+	
+	glDisable( GL_TEXTURE_2D );
+	glColor4f( 0, 0, 0, 0 );
+	glBegin( GL_QUADS );
+	glVertex3f( -TEXTURE_BORDER + 20, 10, 0 );
+	glVertex3f( width + TEXTURE_BORDER - 20, 10, 0 );
+	glVertex3f( width + TEXTURE_BORDER - 20, 30, 0 );
+	glVertex3f( -TEXTURE_BORDER + 20, 30, 0 );
+	glEnd();
+	glEnable( GL_TEXTURE_2D );
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	glColor4f( 1, 1, 1, 0.8f );
+	glColor4f( 1, 1, 1, 1 );
 	Widget::drawBorderedTexture( texture,
 	                             -TEXTURE_BORDER,
 	                             0,
