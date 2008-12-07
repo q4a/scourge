@@ -188,29 +188,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	
 	Preferences *prefs = Session::instance->getPreferences();
 	
-	// Copy to a texture the original image
-	glLoadIdentity();
-	glEnable( GL_TEXTURE_2D );
-	GLuint background;
-	std::vector<unsigned char*> backgroundInMem( textureSizeW * textureSizeH * 4 );
-	glGenTextures( 1, &background );
-	glBindTexture( GL_TEXTURE_2D, background );
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &backgroundInMem[0] );
-	glBindTexture( GL_TEXTURE_2D, background );
-	glCopyTexSubImage2D( GL_TEXTURE_2D,
-	                     0,      // MIPMAP level
-	                     0,      // x texture offset
-	                     0,      // y texture offset
-	                     0,              // x window coordinates
-	                     Session::instance->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
-	                     textureSizeW,    // width
-	                     textureSizeH     // height
-	                   );
+	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
 
 	_filename = sample->_filename + " with added alpha";
 	_width = width; 
@@ -645,4 +623,34 @@ bool Texture::loadShot( const string& dirName ) {
 	return isSpecified();
 }
 
-
+GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
+	// Copy to a texture the original image
+	glLoadIdentity();
+	glEnable( GL_TEXTURE_2D );
+	GLuint background;
+	if( !tex || *tex == 0 ) {
+		glGenTextures( 1, &background );
+	} else {
+		background = *tex;
+	}
+	std::vector<unsigned char*> backgroundInMem( w * h * 4 );
+	glBindTexture( GL_TEXTURE_2D, background );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+	Preferences *prefs = Session::instance->getPreferences();
+	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &backgroundInMem[0] );
+	glBindTexture( GL_TEXTURE_2D, background );
+	glCopyTexSubImage2D( GL_TEXTURE_2D,
+	                     0,      // MIPMAP level
+	                     0,      // x texture offset
+	                     0,      // y texture offset
+	                     0,              // x window coordinates
+	                     Session::instance->getGameAdapter()->getScreenHeight() - h,   // y window coordinates
+	                     w,    // width
+	                     h     // height
+	                   );
+	return background;
+}
