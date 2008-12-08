@@ -94,6 +94,7 @@ private:
 
 	char interruptFunction[255];
 	Characters* characters;
+	bool exiting;
 
 	// private constructor: call startGame instead.
 	Session( GameAdapter *adapter );
@@ -122,6 +123,9 @@ public:
 	virtual ~Session();
 
 	void initialize();
+	
+	inline void setExiting( bool b ) { exiting = b; }
+	inline bool isExiting() { return exiting; }
 
 	virtual void start();
 	virtual void quit( int value );

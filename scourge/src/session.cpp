@@ -51,6 +51,7 @@ Session *Session::instance = NULL;
 Session::Session( GameAdapter *adapter )
 		: chapterImage()
 		, characters( NULL ) {
+	this->exiting = false;
 	this->adapter = adapter;
 	sound = NULL;
 	shapePal = NULL;
@@ -78,26 +79,28 @@ Session::Session( GameAdapter *adapter )
 }
 
 Session::~Session() {
-	SpecialSkill::unInitSkills();
-	Monster::unInitMonsters();
-	delete characters;
-	MagicSchool::unInitMagic();
-	Rpg::unInitRpg();
-	if ( squirrel ) delete squirrel;
-	deleteCreaturesAndItems();
-	delete party;
-	party = NULL; // adapter destruction may need it
-	delete sound;
-	if ( board ) delete board;
-	if ( cutscene ) delete cutscene;
-#ifdef HAVE_SDL_NET
-	delete server;
-	delete client;
-#endif
-	if ( map ) delete map;
-	delete shapePal;
-	shapePal = NULL; // adapter destruction may need it
-	delete adapter;
+	if( !isExiting() ) {
+		SpecialSkill::unInitSkills();
+		Monster::unInitMonsters();
+		delete characters;
+		MagicSchool::unInitMagic();
+		Rpg::unInitRpg();
+		if ( squirrel ) delete squirrel;
+		deleteCreaturesAndItems();
+		delete party;
+		party = NULL; // adapter destruction may need it
+		delete sound;
+		if ( board ) delete board;
+		if ( cutscene ) delete cutscene;
+	#ifdef HAVE_SDL_NET
+		delete server;
+		delete client;
+	#endif
+		if ( map ) delete map;
+		delete shapePal;
+		shapePal = NULL; // adapter destruction may need it
+		delete adapter;
+	}
 }
 
 void Session::initialize() {

@@ -137,7 +137,8 @@ void SDLHandler::setHandlers( SDLEventHandler *eventHandler,
 
 /* function to release/destroy our resources and restoring the old desktop */
 void SDLHandler::quit( int returnCode ) {
-
+	gameAdapter->getSession()->setExiting( true );
+	
 #ifdef HAVE_SDL_NET
 	// shutdown SDL_net
 	SDLNet_Quit();
