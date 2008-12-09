@@ -15,6 +15,7 @@ src/gui/widgetview.cpp
 src/gui/slider.cpp
 src/gui/draganddrop.cpp
 src/gui/progress.cpp
+src/gui/eventhandler.cpp
 src/gui/textfield.cpp
 src/gui/confirmdialog.cpp
 src/gui/button.cpp
@@ -221,6 +222,7 @@ src/gui/scrollinglist.h
 src/gui/textdialog.h
 src/gui/guitheme.h
 src/gui/progress.h
+src/gui/eventhandler.h
 src/gui/cardcontainer.h
 src/gui/window.h
 src/gui/confirmdialog.h
