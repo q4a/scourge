@@ -4246,6 +4246,8 @@ void Scourge::showLoadingScreen() {
   // artifacts when loading from ingame.
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
   glClearColor( 0, 0, 0, 0 );
+  
+  glDisable( GL_CULL_FACE );
 
   // After that is done, just draw the slide.
   mainMenu->drawView();

@@ -179,6 +179,8 @@ void MainMenu::drawView() {
 	lastMenuTick = SDL_GetTicks();
 
 	if ( !slideMode ) {
+		glDisable( GL_CULL_FACE );
+		
 		drawStars();
 
 		glDisable( GL_TEXTURE_2D );
@@ -610,7 +612,6 @@ void MainMenu::drawScourge() {
 /// Draws the mountains in the back.
 
 void MainMenu::drawBackdrop() {
-
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
