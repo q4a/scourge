@@ -27,7 +27,7 @@
  * This way it will only recompile the affected .cpp files.
  */
 
-#define SHOW_FPS true
+#define SHOW_FPS false
 
 // battle.cpp
 #define DEBUG_BATTLE false
@@ -36,7 +36,7 @@
 #define CALENDAR_DEBUG 0
 
 // creature.cpp
-#define GOD_MODE 1
+#define GOD_MODE 0
 #define MONSTER_IMORTALITY 0
 
 // partyeditor.cpp (if non-1, defaults are added)
@@ -48,7 +48,7 @@
 #define BATTLES_ENABLED 1
 
 // comment out to unset
-#define DEBUG_KEYS 1
+//#define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // comment out to unset
