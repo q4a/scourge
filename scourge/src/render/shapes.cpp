@@ -338,11 +338,11 @@ void Shapes::initialize() {
 	}
 
 	// load the lava stencils
-	loadStencil( "/cave/stencil-side.png", STENCIL_SIDE );
-	loadStencil( "/cave/stencil-u.png", STENCIL_U );
-	loadStencil( "/cave/stencil-all.png", STENCIL_ALL );
-	loadStencil( "/cave/stencil-turn.png", STENCIL_OUTSIDE_TURN );
-	loadStencil( "/cave/stencil-sides.png", STENCIL_SIDES );
+	loadStencil( "/cave/stencil-side.bmp", STENCIL_SIDE );
+	loadStencil( "/cave/stencil-u.bmp", STENCIL_U );
+	loadStencil( "/cave/stencil-all.bmp", STENCIL_ALL );
+	loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
+	loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
 }
 
@@ -659,10 +659,11 @@ bool inline isPowerOfTwo( const GLuint n ) {
 GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwidth, int *imgheight ) {
 	string fn = rootDir + filename;
 
-//  cerr << "loading lava data: " << fn << endl;
+  cerr << "loading lava data: " << fn << endl;
 
 	// Load the texture
-	SDL_Surface* textureImage = SDL_LoadBMP( fn.c_str() );
+	//SDL_Surface* textureImage = SDL_LoadBMP( fn.c_str() );
+	SDL_Surface* textureImage = IMG_Load( fn.c_str() );
 
 	// If Bitmap's Not Found Quit
 	if ( textureImage == NULL ) {
@@ -855,7 +856,8 @@ void Shapes::loadStencil( const string& filename, int index ) {
 
 	string fn = rootDir + filename;
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
-	stencil[ index ] = IMG_Load( fn.c_str() );
+	//stencil[ index ] = IMG_Load( fn.c_str() );
+	stencil[ index ] = SDL_LoadBMP( fn.c_str() );
 
 	if ( stencil[ index ] == NULL ) {
 		stencilImage[ index ] = NULL;
@@ -877,9 +879,11 @@ void Shapes::loadStencil( const string& filename, int index ) {
 		if ( i > 0 && i % width == 0 ) {
 			c += (  stencil[ index ]->pitch - ( width * stencil[ index ]->format->BytesPerPixel ) );
 		}
-		r = data[c++];
+		b = data[c++]; 	 
 		g = data[c++];
-		b = data[c++];
+		r = data[c++];
+//		g = data[c++];
+//		b = data[c++];
 
 		p[count++] = ( !( r || g || b ) ? 0 :
 		               ( r == 0xff && g == 0xff && b == 0xff ? 2 : 1 ) );

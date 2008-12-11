@@ -126,9 +126,12 @@ void GLCaveShape::draw() {
 	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
 	if ( !useShadow ) {
 		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_BACK );
+//		glEnable( GL_CULL_FACE );
+//		glCullFace( GL_BACK );
 	}
+	
+	// enabling face culling screws up caves
+	glDisable( GL_CULL_FACE );
 
 	switch ( mode ) {
 	case MODE_FLAT: drawFaces(); break;
@@ -848,9 +851,9 @@ void GLCaveShape::Common::createFloorTexture( Shapes *shapes, int stencilIndex )
 			GLubyte sb = stencil[ x + y * 256 ];
 
 			int p = ( ( 3 * x ) + ( y * 256 * 3 ) );
-			GLubyte b = ( floorThemeData.empty() ? ( GLubyte )0x80 : floorThemeData[ p + 0 ] );
+			GLubyte r = ( floorThemeData.empty() ? ( GLubyte )0xff : floorThemeData[ p + 0 ] );
 			GLubyte g = ( floorThemeData.empty() ? ( GLubyte )0x80 : floorThemeData[ p + 1 ] );
-			GLubyte r = ( floorThemeData.empty() ? ( GLubyte )0x80 : floorThemeData[ p + 2 ] );
+			GLubyte b = ( floorThemeData.empty() ? ( GLubyte )0xff : floorThemeData[ p + 2 ] );
 
 			if ( sb == 0 ) {
 				floorData[ stencilIndex ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 0;
@@ -873,11 +876,14 @@ void GLCaveShape::Common::createFloorTexture( Shapes *shapes, int stencilIndex )
 
 	glBindTexture( GL_TEXTURE_2D, floorTex[ stencilIndex ] );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+//	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+//	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );	
 	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	glTexImage2D( GL_TEXTURE_2D, 0, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
-	gluBuild2DMipmaps( GL_TEXTURE_2D, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
+//	glTexImage2D( GL_TEXTURE_2D, 0, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
+//	gluBuild2DMipmaps( GL_TEXTURE_2D, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
 }
 
 /// Stores a floor/lava border texture in the shapes array.

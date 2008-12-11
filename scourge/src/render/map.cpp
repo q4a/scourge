@@ -5230,6 +5230,7 @@ void Map::drawWaterLevel() {
 /// Draws the indoors floor as a single quad.
 
 void Map::drawFlatFloor() {
+	glDisable( GL_CULL_FACE );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 	float w = static_cast<float>( mapViewWidth ) * MUL;
 	float d = static_cast<float>( mapViewDepth ) * MUL;

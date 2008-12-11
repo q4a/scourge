@@ -327,7 +327,6 @@ bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		}
 		scourge->toggleOptionsWindow();
 		scourge->showMessageDialog( _( "Saved: some options require a restart to take effect." ) );
-		return true;
 	} else if ( widget == musicVolume ) {
 		scourge->getSession()->getSound()->setMusicVolume( musicVolume->getValue() );
 		uc->setMusicVolume( musicVolume->getValue() );
