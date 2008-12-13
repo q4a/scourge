@@ -48,6 +48,7 @@ RechargeDialog::RechargeDialog( Scourge *scourge ) {
 	infoButtonA = win->createButton( 115, 274, 187, 294, _( "Info" ) );
 
 	closeButton = win->createButton( w - xStart - 72, 274, w - xStart, 294, _( "Close" ) );
+	win->setEscapeHandler( closeButton );
 
 	coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
 	
