@@ -38,6 +38,7 @@ TextDialog::TextDialog( ScourgeGui *scourgeGui, char const* title ) {
 	                       mx + 30, TEXT_DIALOG_HEIGHT - 35,
 	                       scourgeGui->getHighlightTexture(), "Ok" );
 	win->addWidget( ( Widget* )okButton );
+	win->setEscapeHandler( okButton );
 
 	label = new ScrollingLabel( 8, 0,
 	                            TEXT_DIALOG_WIDTH - 18, TEXT_DIALOG_HEIGHT - 60,

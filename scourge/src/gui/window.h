@@ -97,6 +97,7 @@ private:
 	static Widget *mouseLockWidget;
 
 	std::vector<WindowListener*> listeners;
+	Widget *escapeHandler;
 
 public:
 
@@ -131,6 +132,8 @@ public:
 
 	~Window();
 	
+	inline void setEscapeHandler( Widget *widget ) { this->escapeHandler = widget; }
+	inline Widget *getEscapeHandler() { return this->escapeHandler; }
 	void registerEventHandler( EventHandler *eventHandler );
 	void unregisterEventHandler();
 	inline void setRawEventHandler( RawEventHandler *rawEventHandler ) {
