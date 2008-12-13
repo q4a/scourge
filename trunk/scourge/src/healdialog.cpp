@@ -48,6 +48,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
 	int y = win->getHeight() - h - 30;
 	applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Buy" ) );
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
+	win->setEscapeHandler( closeButton );
 
 	//this->spellIcons = ( GLuint* )malloc( MAX_BACKPACK_SIZE * sizeof( GLuint ) );
 	win->registerEventHandler( this );

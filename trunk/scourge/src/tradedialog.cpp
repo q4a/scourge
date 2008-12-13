@@ -56,6 +56,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
 
 	tradeButton = win->createButton( this->getWindow()->getWidth() / 2 - 45, 270, this->getWindow()->getWidth() / 2 + 45, 290, _( "Trade!" ) );
 	closeButton = win->createButton( 530, 295, 595, 315, _( "Close" ) );
+	win->setEscapeHandler( closeButton );
 
 	tradeInfo = win->createLabel( xStart, 260, _( "Available Coins:" ) );
 	tradeInfo->setSpecialColor();

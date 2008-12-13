@@ -91,6 +91,7 @@ ConversationGui::ConversationGui( Scourge *scourge ) {
 	y = sy + 10;
 	x = width - 82;
 	closeButton = win->createButton( x, y, x + 72, y + 20, _( "Close" ) );
+	win->setEscapeHandler( closeButton );
 
 	cards = new CardContainer( win );
 	x = 10;

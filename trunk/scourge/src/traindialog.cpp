@@ -55,6 +55,7 @@ TrainDialog::TrainDialog( Scourge *scourge ) {
 	int y = win->getHeight() - h - 30;
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 	applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Train!" ) );
+	win->setEscapeHandler( closeButton );
 
 	win->registerEventHandler( this );
 }
