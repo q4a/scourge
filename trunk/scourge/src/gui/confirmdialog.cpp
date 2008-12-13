@@ -40,6 +40,7 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {
 	win->addWidget( ( Widget* )cancelButton );
 	label = new Label( 20, 30, "" );
 	win->addWidget( ( Widget* )label );
+	win->setEscapeHandler( cancelButton );
 
 	mode = 0;
 	object = NULL;

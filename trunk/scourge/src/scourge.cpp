@@ -3416,6 +3416,7 @@ void Scourge::closeExitConfirmationDialog() {
 	currentStory = oldStory;
 	exitConfirmationDialog->setText( Constants::getMessage( Constants::EXIT_MISSION_LABEL ) );
 	exitConfirmationDialog->setVisible( false );
+	getParty()->toggleRound( false );
 }
 
 void Scourge::runSquirrelConsole( char *s ) {

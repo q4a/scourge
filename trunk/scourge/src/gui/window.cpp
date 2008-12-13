@@ -77,6 +77,7 @@ Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* 
 }
 
 void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, bool hasCloseButton, int type ) {
+	this->escapeHandler = NULL;
 	this->opening = false;
 	this->animation = DEFAULT_ANIMATION;
 	this->lastWidget = NULL;
@@ -255,8 +256,9 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 	}
 
 	// handle some special key strokes
+	Widget *w = NULL;
 	bool systemKeyPressed = false;
-	if ( event->type == SDL_KEYUP || event->type == SDL_KEYDOWN ) {
+	if ( event->type == SDL_KEYUP ) {
 		switch ( event->key.keysym.sym ) {
 		case SDLK_ESCAPE:
 			// select an open, non-locked window with a close button to close
@@ -269,41 +271,49 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 					}
 				}
 			}
-			systemKeyPressed = true; break;
+			if( currentWin && currentWin->getEscapeHandler() ) {
+				w = currentWin->getEscapeHandler();
+				setFocus( w );
+			} else {
+				systemKeyPressed = true;
+			}
+			break;
 		case SDLK_TAB:
 			systemKeyPressed = true; break;
 		default:
 			break;
 		}
 	}
-
+	
 	if ( !systemKeyPressed ) {
 		// handled by a component?
 		bool insideWidget = false;
-		Widget *w = NULL;
-		for ( int t = 0; t < widgetCount; t++ ) {
-			if ( this->widget[t]->isVisible() && this->widget[t]->isEnabled() ) {
-				if ( !insideWidget ) {
-					if ( insideWidget = this->widget[t]->isInside( x - getX(), y - getY() - gutter ) ) {
-						if ( ( event->type == SDL_MOUSEBUTTONUP ||
-						        event->type == SDL_MOUSEBUTTONDOWN ) && event->button.button == SDL_BUTTON_LEFT ) {
-							currentWin = this;
-							setFocus( this->widget[t] );
+		if( !w ) {
+			for ( int t = 0; t < widgetCount; t++ ) {
+				if ( this->widget[t]->isVisible() && this->widget[t]->isEnabled() ) {
+					if ( !insideWidget ) {
+						if ( insideWidget = this->widget[t]->isInside( x - getX(), y - getY() - gutter ) ) {
+							if ( ( event->type == SDL_MOUSEBUTTONUP ||
+							        event->type == SDL_MOUSEBUTTONDOWN ) && event->button.button == SDL_BUTTON_LEFT ) {
+								currentWin = this;
+								setFocus( this->widget[t] );
+							}
 						}
 					}
+					if ( this->widget[t]->handleEvent( this,
+					                                   event,
+					                                   x - getX(),
+					                                   y - getY() - gutter ) )
+						w = this->widget[t];
 				}
-				if ( this->widget[t]->handleEvent( this,
-				                                   event,
-				                                   x - getX(),
-				                                   y - getY() - gutter ) )
-					w = this->widget[t];
 			}
 		}
-
+		
 		// special handling
 		if ( message_button && w == message_button ) {
 			message_dialog->setVisible( false );
-		}
+		}			
+		
 		if ( w ) {
 			if ( w->hasSound() ) scourgeGui->playSound( Window::ACTION_SOUND, 127 );
 			return w;
@@ -333,7 +343,7 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 			return this;
 		}
 	}
-
+	
 	// see if the window wants it
 	if ( handleEvent( NULL, event, x, y ) ) {
 		return this;
@@ -1177,6 +1187,7 @@ void Window::showMessageDialog( ScourgeGui *scourgeGui,
 		                                               h - 10 - message_dialog->getGutter() - 5,
 		                                               buttonLabel );
 		message_dialog->setModal( true );
+		message_dialog->setEscapeHandler( message_button );
 	} else {
 		message_dialog->move( x, y );
 		message_dialog->resize( w, h );
