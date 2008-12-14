@@ -34,7 +34,7 @@ VBO::~VBO() {
 	// Delete VBOs
 	if( g_fVBOSupported ) {
 		unsigned int nBuffers[2] = { m_nVBOVertices, m_nVBOTexCoords };
-		glDeleteBuffersARB( 2, nBuffers );						// Free The Memory
+		glDeleteBuffersARB( 2, (const GLuint*)nBuffers );						// Free The Memory
 	}
 	// Delete Data
 	if( vertices )											// Deallocate Vertex Data
@@ -44,9 +44,9 @@ VBO::~VBO() {
 		delete [] texCoords;
 	texCoords = NULL;
 	if(m_nVBOTexCoords)									// Deallocate Vertex Buffer
-		glDeleteBuffersARB( 1, &m_nVBOTexCoords);
+		glDeleteBuffersARB( 1, (const GLuint*)&m_nVBOTexCoords);
 	if(m_nVBOVertices)
-		glDeleteBuffersARB( 1, &m_nVBOVertices);
+		glDeleteBuffersARB( 1, (const GLuint*)&m_nVBOVertices);
 }
 
 // Based Off Of Code Supplied At OpenGL.org
@@ -108,13 +108,13 @@ void VBO::initialize( void ) {
 
 void VBO::buildVBOs() {
 	// Generate And Bind The Vertex Buffer
-	glGenBuffersARB( 1, &m_nVBOVertices );							// Get A Valid Name
+	glGenBuffersARB( 1, &((const GLuint)m_nVBOVertices) );							// Get A Valid Name
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOVertices );			// Bind The Buffer
 	// Load The Data
 	glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexCount * 3 * sizeof( float ), vertices, GL_STATIC_DRAW_ARB );
 
 	// Generate And Bind The Texture Coordinate Buffer
-	glGenBuffersARB( 1, &m_nVBOTexCoords );							// Get A Valid Name
+	glGenBuffersARB( 1, &((const GLuint)m_nVBOTexCoords) );							// Get A Valid Name
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOTexCoords );		// Bind The Buffer
 	// Load The Data
 	glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexCount * 2 * sizeof( float ), texCoords, GL_STATIC_DRAW_ARB );

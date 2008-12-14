@@ -47,6 +47,18 @@
 		147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 147CFEF00C924F1700B725E9 /* pathmanager.h */; };
 		14B023280D01D07600C144E6 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B023270D01D07600C144E6 /* SDL_image.framework */; };
 		14B0237A0D01D0B700C144E6 /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 14B023270D01D07600C144E6 /* SDL_image.framework */; };
+		14E3652D0EF5ACCE00D6929C /* containerview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E3652B0EF5ACCD00D6929C /* containerview.cpp */; };
+		14E3652E0EF5ACCE00D6929C /* containerview.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E3652C0EF5ACCE00D6929C /* containerview.h */; };
+		14E365330EF5AD8400D6929C /* eventhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E365310EF5AD8400D6929C /* eventhandler.cpp */; };
+		14E365340EF5AD8400D6929C /* eventhandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E365320EF5AD8400D6929C /* eventhandler.h */; };
+		14E3653D0EF5ADB300D6929C /* cutscene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E365350EF5ADB300D6929C /* cutscene.cpp */; };
+		14E3653E0EF5ADB300D6929C /* cutscene.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E365360EF5ADB300D6929C /* cutscene.h */; };
+		14E3653F0EF5ADB300D6929C /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E365370EF5ADB300D6929C /* texture.cpp */; };
+		14E365400EF5ADB300D6929C /* texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E365380EF5ADB300D6929C /* texture.h */; };
+		14E365410EF5ADB300D6929C /* vbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E365390EF5ADB300D6929C /* vbo.cpp */; };
+		14E365420EF5ADB300D6929C /* vbo.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E3653A0EF5ADB300D6929C /* vbo.h */; };
+		14E365430EF5ADB300D6929C /* virtualshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E3653B0EF5ADB300D6929C /* virtualshape.cpp */; };
+		14E365440EF5ADB300D6929C /* virtualshape.h in Headers */ = {isa = PBXBuildFile; fileRef = 14E3653C0EF5ADB300D6929C /* virtualshape.h */; };
 		76081D620A558ADC00281DB9 /* constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D5E0A558ADC00281DB9 /* constants.cpp */; };
 		76081D630A558ADC00281DB9 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 76081D5F0A558ADC00281DB9 /* constants.h */; };
 		76081D700A55907900281DB9 /* mondrian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D6E0A55907900281DB9 /* mondrian.cpp */; };
@@ -446,6 +458,18 @@
 		147CFEEF0C924F1700B725E9 /* pathmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = pathmanager.cpp; path = ../../src/pathmanager.cpp; sourceTree = SOURCE_ROOT; };
 		147CFEF00C924F1700B725E9 /* pathmanager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pathmanager.h; path = ../../src/pathmanager.h; sourceTree = SOURCE_ROOT; };
 		14B023270D01D07600C144E6 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = ../Frameworks/SDL_image.framework; sourceTree = SOURCE_ROOT; };
+		14E3652B0EF5ACCD00D6929C /* containerview.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = containerview.cpp; path = ../../src/containerview.cpp; sourceTree = SOURCE_ROOT; };
+		14E3652C0EF5ACCE00D6929C /* containerview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = containerview.h; path = ../../src/containerview.h; sourceTree = SOURCE_ROOT; };
+		14E365310EF5AD8400D6929C /* eventhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = eventhandler.cpp; path = ../../src/gui/eventhandler.cpp; sourceTree = SOURCE_ROOT; };
+		14E365320EF5AD8400D6929C /* eventhandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = eventhandler.h; path = ../../src/gui/eventhandler.h; sourceTree = SOURCE_ROOT; };
+		14E365350EF5ADB300D6929C /* cutscene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = cutscene.cpp; path = ../../src/render/cutscene.cpp; sourceTree = SOURCE_ROOT; };
+		14E365360EF5ADB300D6929C /* cutscene.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cutscene.h; path = ../../src/render/cutscene.h; sourceTree = SOURCE_ROOT; };
+		14E365370EF5ADB300D6929C /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = texture.cpp; path = ../../src/render/texture.cpp; sourceTree = SOURCE_ROOT; };
+		14E365380EF5ADB300D6929C /* texture.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = texture.h; path = ../../src/render/texture.h; sourceTree = SOURCE_ROOT; };
+		14E365390EF5ADB300D6929C /* vbo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vbo.cpp; path = ../../src/render/vbo.cpp; sourceTree = SOURCE_ROOT; };
+		14E3653A0EF5ADB300D6929C /* vbo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vbo.h; path = ../../src/render/vbo.h; sourceTree = SOURCE_ROOT; };
+		14E3653B0EF5ADB300D6929C /* virtualshape.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = virtualshape.cpp; path = ../../src/render/virtualshape.cpp; sourceTree = SOURCE_ROOT; };
+		14E3653C0EF5ADB300D6929C /* virtualshape.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = virtualshape.h; path = ../../src/render/virtualshape.h; sourceTree = SOURCE_ROOT; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* scourge_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scourge_Prefix.pch; sourceTree = "<group>"; };
@@ -884,6 +908,8 @@
 		29B97314FDCFA39411CA2CEA /* scourge */ = {
 			isa = PBXGroup;
 			children = (
+				14E3652B0EF5ACCD00D6929C /* containerview.cpp */,
+				14E3652C0EF5ACCE00D6929C /* containerview.h */,
 				146D11B20D6011360035537D /* identifydialog.cpp */,
 				146D11B30D6011360035537D /* identifydialog.h */,
 				146D11B40D6011360035537D /* rechargedialog.cpp */,
@@ -1080,6 +1106,14 @@
 		761CF5FC08E2633E00DCC558 /* render */ = {
 			isa = PBXGroup;
 			children = (
+				14E365350EF5ADB300D6929C /* cutscene.cpp */,
+				14E365360EF5ADB300D6929C /* cutscene.h */,
+				14E365370EF5ADB300D6929C /* texture.cpp */,
+				14E365380EF5ADB300D6929C /* texture.h */,
+				14E365390EF5ADB300D6929C /* vbo.cpp */,
+				14E3653A0EF5ADB300D6929C /* vbo.h */,
+				14E3653B0EF5ADB300D6929C /* virtualshape.cpp */,
+				14E3653C0EF5ADB300D6929C /* virtualshape.h */,
 				763486EA0AFF97960005C950 /* animatedshape.cpp */,
 				763486EB0AFF97960005C950 /* animatedshape.h */,
 				763486EE0AFF97960005C950 /* md3shape.cpp */,
@@ -1167,6 +1201,8 @@
 		762AF824066D856300B92069 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				14E365310EF5AD8400D6929C /* eventhandler.cpp */,
+				14E365320EF5AD8400D6929C /* eventhandler.h */,
 				7657FF350A961A6600EEB96C /* textdialog.cpp */,
 				7657FF360A961A6600EEB96C /* textdialog.h */,
 				76B7AB040A344F1600531DE2 /* confirmdialog.cpp */,
@@ -1682,6 +1718,12 @@
 				146D11B90D6011360035537D /* identifydialog.h in Headers */,
 				146D11BB0D6011360035537D /* rechargedialog.h in Headers */,
 				146D11BD0D6011360035537D /* uncursedialog.h in Headers */,
+				14E3652E0EF5ACCE00D6929C /* containerview.h in Headers */,
+				14E365340EF5AD8400D6929C /* eventhandler.h in Headers */,
+				14E3653E0EF5ADB300D6929C /* cutscene.h in Headers */,
+				14E365400EF5ADB300D6929C /* texture.h in Headers */,
+				14E365420EF5ADB300D6929C /* vbo.h in Headers */,
+				14E365440EF5ADB300D6929C /* virtualshape.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1901,6 +1943,12 @@
 				146D11B80D6011360035537D /* identifydialog.cpp in Sources */,
 				146D11BA0D6011360035537D /* rechargedialog.cpp in Sources */,
 				146D11BC0D6011360035537D /* uncursedialog.cpp in Sources */,
+				14E3652D0EF5ACCE00D6929C /* containerview.cpp in Sources */,
+				14E365330EF5AD8400D6929C /* eventhandler.cpp in Sources */,
+				14E3653D0EF5ADB300D6929C /* cutscene.cpp in Sources */,
+				14E3653F0EF5ADB300D6929C /* texture.cpp in Sources */,
+				14E365410EF5ADB300D6929C /* vbo.cpp in Sources */,
+				14E365430EF5ADB300D6929C /* virtualshape.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
