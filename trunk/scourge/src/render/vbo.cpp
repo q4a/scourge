@@ -108,13 +108,13 @@ void VBO::initialize( void ) {
 
 void VBO::buildVBOs() {
 	// Generate And Bind The Vertex Buffer
-	glGenBuffersARB( 1, &((const GLuint)m_nVBOVertices) );							// Get A Valid Name
+	//glGenBuffersARB( 1, &((const GLuint)m_nVBOVertices) );							// Get A Valid Name
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOVertices );			// Bind The Buffer
 	// Load The Data
 	glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexCount * 3 * sizeof( float ), vertices, GL_STATIC_DRAW_ARB );
 
 	// Generate And Bind The Texture Coordinate Buffer
-	glGenBuffersARB( 1, &((const GLuint)m_nVBOTexCoords) );							// Get A Valid Name
+	//glGenBuffersARB( 1, &((const GLuint)m_nVBOTexCoords) );							// Get A Valid Name
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOTexCoords );		// Bind The Buffer
 	// Load The Data
 	glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexCount * 2 * sizeof( float ), texCoords, GL_STATIC_DRAW_ARB );
