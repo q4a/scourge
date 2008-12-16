@@ -1,4 +1,5 @@
 Summary: Rogue-like RPG
+Summary(de): Rogue-artiges Rollenspiel
 Name: scourge_data
 Version: 0.20
 Group: Amusements/Games
@@ -13,6 +14,9 @@ Buildarch:noarch
 
 %description
 S.C.O.U.R.G.E. is a rogue-like game in the fine tradition of NetHack and Moria It sports a graphical front-end, similar to glHack or the Falcon's eye. I tried to design the 3D UI as a best of both worlds from old to new: It lets you rotate the view, zoom in/out, view special effects, etc. On the other hand I've always liked the old-school isometric games like Exult or Woodward.
+
+%description -l de
+S.C.O.U.R.G.E. ist ein rogue-artiges Rollenspiel in der edlen Tradition von Nethack und Moria. Es verfügt über ein grafisches Frontend, ähnlich glHack oder Falcon's Eye. Ich habe versucht, in der 3D-Schnittstelle das Beste beider Welten, alt wie neu, zu vereinen: Es ist möglich, die Ansicht zu drehen, zu zoomen, Spezialeffekte zu betrachten usw. Andererseits habe ich stets althergebrachte isometrische Spiele wie Exult oder Woodward geschätzt.
 
 %prep
 cd /usr/src/redhat/BUILD
