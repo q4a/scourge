@@ -1,4 +1,5 @@
 Summary: Rogue-like RPG
+Summary(de): Rogue-artiges Rollenspiel
 Name: scourge
 Version: 0.20
 Group: Amusements/Games
@@ -11,6 +12,9 @@ BuildPrereq:SDL_net-devel >= 1.2, SDL-devel >= 1.2, SDL_ttf-devel >= 1.2, SDL_mi
 
 %description
 S.C.O.U.R.G.E. is a rogue-like game in the fine tradition of NetHack and Moria It sports a graphical front-end, similar to glHack or the Falcon's eye. I tried to design the 3D UI as a best of both worlds from old to new: It lets you rotate the view, zoom in/out, view special effects, etc. On the other hand I've always liked the old-school isometric games like Exult or Woodward.
+
+%description -l de
+S.C.O.U.R.G.E. ist ein rogue-artiges Rollenspiel in der edlen Tradition von Nethack und Moria. Es verfügt über ein grafisches Frontend, ähnlich glHack oder Falcon's Eye. Ich habe versucht, in der 3D-Schnittstelle das Beste beider Welten, alt wie neu, zu vereinen: Es ist möglich, die Ansicht zu drehen, zu zoomen, Spezialeffekte zu betrachten usw. Andererseits habe ich stets althergebrachte isometrische Spiele wie Exult oder Woodward geschätzt.
 
 %prep
 cd /usr/src/redhat/BUILD
@@ -41,6 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/scourge
 /usr/share/locale/de/LC_MESSAGES/scourge.mo
 /usr/share/locale/en/LC_MESSAGES/scourge.mo
+/usr/share/locale/es/LC_MESSAGES/scourge.mo
 /usr/share/locale/fr/LC_MESSAGES/scourge.mo
 /usr/share/locale/hu/LC_MESSAGES/scourge.mo
 /usr/share/locale/it/LC_MESSAGES/scourge.mo
@@ -49,4 +54,3 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/locale/pt_BR/LC_MESSAGES/scourge.mo
 /usr/share/locale/ru/LC_MESSAGES/scourge.mo
 /usr/share/locale/sv/LC_MESSAGES/scourge.mo
-
