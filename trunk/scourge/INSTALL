@@ -4,8 +4,9 @@ svn co https://scourge.svn.sourceforge.net/svnroot/scourge/trunk scourge
 # To configure it
 cd scourge/scourge
 autoreconf -i
+./configure
 
-# To enable multilanguage support
+# To update the language files
 ./translate.sh
 
 # To compile it normally
@@ -15,9 +16,11 @@ scons
 scons debug=true
 
 # Run
-./src/scourge -f
+./scourge
+
+# Run in windowed mode
+./scourge -f
 
 Thanks,
 --Gabor
 (cctorok@yahoo.com)
-
