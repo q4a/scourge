@@ -1,0 +1,42 @@
+Md3-Gladius:		June 6, 2001
+================================================================
+Model Name:		Gladius
+Installation Directory:	Quake III Arena/baseq3/models/players/gladius
+Model Author(s):	Stephan
+Skin Author(s):		Stephan
+Email Address:		stephan@eliance.co.za , stephanj@freemail.absa.co.za
+Model description:	The dude’s name is Gladius and he’s sure looking for a fight. 
+			This is my first Quake 3 Arena model and I was obviously inspired by 
+			the movie Gladiator
+
+Author(s) notes:	No shader files for this one yet. 
+
+			
+================================================================
+* Play Information *
+
+Skins:			default, gladius
+Bot support:		No
+New Sounds:		No
+CTF Skins:		No
+
+* Construction *
+Who did what:		I modelled,illustrated and mapped the texture, animated and exported Gladius.
+
+Tools(s) used:		3DS Max 3, Character Studio, Photoshop 5, Q3Tools
+
+* How to use this model *
+<INSTALLATION INFO>
+Unzip md3-gladius.pk3 into the following folder:
+Quake III Arena/baseq3/models/players/gladius
+
+Known hiccups:	If the model is replaced by the default “Sarge”, then use 
+		the following line in the popdown menu:
+		/sv_pure 0
+
+
+* Copyright / Permissions *
+QUAKE(R) and QUAKE III Arena(R) are registered trademarks of id Software, Inc.
+
+This model may be freely distributed in any form, UNALTERED.  Which means, you can't remove/change the readme file, other files, or add your own stuff to it and pass it along.
+Copyright of the model: Everything done by me (Stephan Joubert)

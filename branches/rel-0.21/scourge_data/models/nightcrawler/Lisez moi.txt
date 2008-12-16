@@ -1,0 +1,35 @@
+27 mars 1999
+================================================================
+Nom du modèle :                    : NightCrawler
+Répertoire d'installation :        : quake2/baseq2/players/NightCrawler
+Auteur, auteur de la peinture      : Jlbr
+Adresse électronique :             : jlbr@moncourrier.com
+ 
+Description du modèle   : 
+NightCrawler, aussi connu sous le nom de Kurt Wagner, est un membre des X-men.  Son pouvoir mutant consiste en la possibilité de se téléporter sur une distance allant jusqu'à 3 km (2 milles).  Son teint bleu et ses drôles de mains lui procurent une apparence effrayante, apparence qui n'est cependant pas le reflet de sa personnalité.  
+
+
+Autres informations     : 
+NightCrawler est mon troisième modèle.  J'ai créé le modèle au complet avec le logiciel TrueSpace4. Comme j'avais fait pour Dark Vador, j'ai utilisé la méthode d'inversion de polygones pour donner un effet spécial à la séquence de téléportation.  J'ai tenté d'imiter les modèles de HalfLife en donnant à mon modèle une bouche ouvrable, j'aime bien le résultat obtenu.  Pour les animations j'ai utilisé QME, tout en m'efforçant le plus possible de garder les pieds en place (comme le ferait un squelette CI).  Pour la peinture je me suis créé une base de muscle avec CorelDraw8, base que j'ai ensuite peinte avec le logiciel PhotoShop5.  J'ai ensuite utilisé CorelPhotoPaint8 pour transférer ma peinture dans la palette de couleurs de Quake2.  Pour le Vwep j'ai utilisé les modèles d'armes du PAK0.Pak de mon répertoire BaseQ2, que j'ai ensuite animé avec Qme. J'ai ensuite positionné la peinture à l'aide de NST. J'ai utilisé Q2Modeler pour régler le problème du "NULL skin found".
+
+
+
+Crédits additionnels : NightCrawler et X-men sont des propriétés Marvel Comics
+
+
+================================================================
+*Informations de jeu*
+Nouveaux sons        : Non
+Peinture CTF         : Oui
+VWEP Support         : Oui
+poly                    : Model 744
+Vert                    : Model 414
+Nombre de peintures     : 4
+Base                    : Nouveau modèle
+Éditeurs utilisés       : TrueSpace4, CorelDraw8, CorelPhotoPaint, QME, NST, Q2Modeler
+Pépins connus           : Lors des scènes de mort, le personnage se retrouve parfois au travers du plancher.  Parfois lorsque l'on joue avec un FOV changé, le dentier du model passe au travers des lèvres...
+
+Double-cliquez sur "NightCrawler.zip" et sélectionnez ensuite "C:\" . Le répertoire se crée automatiquement. 
+
+Copyright / Permissions *QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+Ce modèle n'a pas été créé dans un but lucratif, vous devez me demander la permission pour utiliser des parties de ce modèle dans des modèles futurs...

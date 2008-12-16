@@ -1,0 +1,50 @@
+4-Jan-2000
+================================================================
+Model Name              : Jive devil
+installation directory  : quake2/baseq2/players/jd
+Author                  : Model by Crash and Frankie
+			  Animation by Frankie
+			  Skin mapping by Frankie
+			  Tris skins by Crash (devren), Dines(picolo), mOO(angel) and Frankie(devil)
+			  Weapon skin by Dines
+			  Weapon mapping by Crash
+	
+Webpage                 : Http://www.section-9.co.uk
+
+Model description       : Its a devil, and he likes to jive. Well the jiving
+			  animation and skin didnt quite comeout but we liked the name.
+
+
+Other info              : Hmm
+
+Additional Credits to   : Id Software, people who made lightwave, photoshop
+			  Nst and q2mdler
+
+================================================================
+* Play Information *
+
+New Sounds              : NO>
+CTF Skins               : NO>
+VWEP Support            : NO>
+
+
+* Construction *
+Poly Count              : <758 polys>
+Vert Count              : <414 Verts>
+Skin Count              : <4 Skins>
+Base                    : <I think the arms originated from kau, if they did cheers>
+Editor used             : <Lightwave, nst, photoshop, qme, q2mdler, psp>
+Known Bugs              : <dunno>
+Build/Animation time    : <A month or 2, but not solid working>
+
+
+Put in quake2/baseq2/players/jd dir
+
+
+* Copyright / Permissions *
+
+QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+
+
+
+

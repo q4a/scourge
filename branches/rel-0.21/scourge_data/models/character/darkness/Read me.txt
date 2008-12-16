@@ -1,0 +1,63 @@
+January 4 1999
+================================================================
+Model Name              : Darkness
+installation directory  : quake2/baseq2/players/Darkness
+Author, Skin Author     : Jlbr
+Email Address           : jlbr43@hotmail.com
+Model description       : This is the Darkness model, arch-enemy and principal character of 
+                          "The Darkness" comic book.  Also known under the name ok Jackie 
+                          Estacado, young mafioso of 21 years old.  So, at this age he takes 
+                          possession of the Darkness power and, in the same time, learn that 
+                          if a women gets pregnant of him, he'll die ...Poor guy!
+
+Other info              : Darkness is the first model that I make, but not the last!, so go 
+                          easy on the critical :)  It's a bran new model, with a bran new, that
+                          I made with the software TrueSpace4.  I had hard time doing the hair,
+                          and the head has a lot of wasted polygons, next time I'll do better.  
+                          For doing the animations I also used TrueSpace4.  There are some 
+                          imperfections but I like the over all look.  I tried the best I could,
+                          with my little animations experience, to give a "soft" look to the 
+                          spikes that Darkness has on his back. I think that there's a little 
+                          problem with the Bounding Box, I think that it's a bit too big.  For 
+                          the skin I used the software CorelPhotoPaint8, and some pictures of 
+                          the French edition of the comic book The Darkness 1 to 3, pictures 
+                          that I scanned and pasted on the skin.  I think that the result is 
+                          pretty cool, since I wanted to keep the original look of the character.
+                          But I never saw any pictures of the back of Darkness, so I used a body
+                          builder picture and tried to manage with it.  Same thing for the gun, 
+                          I used a picture of a M16 with grenade launcher attached to it.  I 
+                          mapped the skin with NST.  By the way NPherno you're really the best!
+                          I confess that the skin isn't well mapped, the level of wasted skin is
+                          pretty high. For much detail I piled the arm together, so as the hair 
+                          etc.  I also cheated a bit by stretching some polygons less important 
+                          in the only goal to win used space on the skin.  I used Q2modeler to 
+                          solve the "NULL skin found" problem. I used Qdata to compile the model.
+
+Additional Credits to   : The comic book "The Darkness" and the Darkness caracter and Jackie Estacado
+                          is a Silvestri, Ennis, Wohl and TopCow productions creation.
+ 
+Thanks to               : ToyensMoper for the M16 image
+                          Kaarde, Elmuth and Gwar for their moral support
+                          René Le
+                          My family for enduring me when the, god dammed!, model wasn't working!
+
+================================================================
+* Play Information *
+New Sounds              : No
+CTF Skins               : NO
+VWEP Support            : NO, but next time!
+* Construction *
+Poly Count              : Model 624
+                          Weapon 120
+Vert Count              : Model 354
+                          Weapon 62
+Skin Count              : 3
+Base                    : New model
+Editor used             : TrueSpace4, CorelPhotoPaint, VistaScan, NST, Q2Modeler, PhotoED, Qdata
+known Bugs              : Some times some death scene makes the character pass a bit through the floor
+Build/Animation time    : about 6 weeks
+* How to use this model *
+Double click on the "Darkness.zip" and then select "C:\" the directory is self built.
+* Copyright / Permissions *QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+This model isn't built in a lucrative goal, you must ask me the permission before using any parts of 
+this model for another model...

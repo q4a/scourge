@@ -1,0 +1,47 @@
+G:_INTRO_;Feel at home in the $ancient library of $Gormoril, traveler!
+G:_INTRO_;Welcome to $Gormoril!
+
+G:_UNKNOWN_;Uh, I don't know anything about that...
+G:_UNKNOWN_;You should ask Sabien the Mage... perhaps he knows of what you speak...
+
+
+G:ancient,Gormoril;This underground library was founded thousands of years ago by\
+an order called the $Guardians of the Realm. Within it they tried to preserve all the\
+knowledge of their age. Many of the $books you see around you are priceless volumes...\
+Please try to be aware of this as you move around.
+G:Guardians,Realm;They were an ancient peace-keeping force. Sadly all of them were\
+destroyed in the final battle against the forces of darkness. $Sabien would know more\
+about them.
+G:library,books;Some of the books are magical and all of them rare. Throughout the ages, various\
+thinkers, scholars and seers called the library of $Gormoril their home. Our current master\
+$Sabien is a high level mage.
+G:Sabien,Sabien's;We don't actually know much about him. Mostly he spends is time in $research on\
+the fourth level. A word of caution, however: some of the library levels have been\
+infested with monsters as of late. We know not where they came from and Sabien doesn't\
+seem to mind them much. I'm sure that for heroes of your rank, they will be but a minor\
+irritation.
+G:research;Well, as you can imagine, there is much to learn, what with all these $books around.\
+$Sabien's main area of interest appears to be closely tied to a $locked door on the fourth\
+level.
+G:locked;Ask $Sabien what is behind this door... We only suspect and are not $allowed to tell...
+G:allowed;Remember traveler, this is an $ancient place... $Sabien's residence here is but\
+a drop in the vast river of time... All of us are watched over by divine guardians, but for\
+us in the $library their gaze comes from much closer...
+
+
+
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+#
+# examples:
+# N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE
+# N:209,202,Uzudil the Hand,4,sage
+# N:167,257,Melathor of Allovium,1,trainer,NATURE_MAGIC;CONFRONTATION_MAGIC
+# N:201,212,Illadil the Healer,2,healer,Divine Awareness
+
+N:295,314,Zorna the Healer,10,healer,Divine Awareness
+N:297,265,Kazna the Merchant,10,merchant,SWORD;AXE;BOW;MACE;POLE;ARMOR
+N:307,241,Mirna the Magics Trainer,10,trainer,Magician
+N:339,280,Zurna the Defense Trainer,10,trainer,Man-at-arms
+

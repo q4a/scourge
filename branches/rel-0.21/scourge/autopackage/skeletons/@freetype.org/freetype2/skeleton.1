@@ -1,0 +1,15 @@
+[Meta]
+RootName: @freetype.org/freetype2
+DisplayName: freetype2
+ShortName: freetype2
+Skeleton-Author: Gabor Torok <gabortorok@users.sourceforge.net>
+Skeleton-Version: 1
+
+[Notes]
+The interface version follows the software version in this library.
+
+[Test]
+testForLib libfreetype.so.6 && {
+	INTERFACE_VERSIONS="2.0"
+	SOFTWARE_VERSIONS="2.0"
+}

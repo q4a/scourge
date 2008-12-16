@@ -1,0 +1,10 @@
+tag_weapon,
+u_alphaTeeth,models/players/bug/alpha.png
+u_alphaTeeth2,models/players/bug/alpha.png
+u_head,models/players/bug/head-yellow.png
+u_antenna,models/players/bug/pivot-yellow.png
+u_backAntenna,models/players/bug/limb-yellow.png
+u_eyes,models/players/bug/eye.png
+tag_torso,
+tag_head
+

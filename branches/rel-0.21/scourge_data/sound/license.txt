@@ -1,0 +1,109 @@
+============================
+Music files:
+============================
+
+The music and sounds for S.C.O.U.R.G.E. are the property of their authors.  
+Any requests to reuse them in your own projects (whether commercial or not) should be directed to them. 
+
+You can contact them at these addresses:
+
+* Toofan Hosseinnezhad: <retrix at users.sourceforge.net>
+* Vincent Fiack: <vfiack at gmail.com>
+* Joel Ross: <joel.binarybrain at gmail.com>
+
+FileName		Music Title		Author
+---------		------------		-------
+menu.ogg		Menu pour Scourge	Vincent Fiack
+headquarter.ogg		Quartier Général	Vincent Fiack
+track01.ogg		Dark Times		Toofan Hosseinnezhad
+track02.ogg		Promenade Lugubre	Vincent Fiack
+track03.ogg		Dans les sous-sols	Vincent Fiack
+track04.ogg		L'excursion		Vincent Fiack
+track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
+track06.ogg		Sur un theme de ...	Vincent Fiack
+chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
+chapters/chapter2.ogg   Maw of the Grizzled...  Vincent Fiack
+
+The following music tracks were remixed by Dennis Murczak <dmurczak at versanet.de> from material uploaded to www.soundsnap.com by user "Dynamedion":
+
+fight01.ogg
+bossbattle.ogg
+finalbattle.ogg
+outro.ogg
+
+See <http://www.soundsnap.com/license> for the license.
+
+============================
+Sound files:
+============================
+
+* Toofan Hosseinnezhad 
+
+All character sounds (in models/character) and all sounds in sound/ except as noted below.
+
+* Vincent Fiack
+
+sound/equip/open-box.wav
+sound/equip/teleport.wav
+sound/equip/push-heavy-door.wav
+ui/roll.wav
+ui/press.wav
+equip/equip1.wav
+equip/cant_equip.wav
+
+voices for :
+models/character/darkness
+models/character/yohko
+
+* Claudio Canavese (CoD)
+
+sound/magic/harm.wav
+
+* Dennis Murczak (lordtoran)
+
+sound/ambient/city01.ogg
+sound/ambient/city02.ogg
+sound/ambient/city03.ogg
+sound/ambient/city04.ogg
+sound/ambient/city05.ogg
+sound/ambient/cityloop01.ogg
+sound/ambient/crickets.ogg
+sound/ambient/dripping01.wav
+sound/ambient/dripping02.wav
+sound/ambient/dripping03.wav
+sound/ambient/eagleowl.wav
+sound/ambient/frog.wav
+sound/ambient/grasshopper.wav
+sound/ambient/rumbling01.wav
+sound/ambient/rumbling02.wav
+sound/ambient/rumbling03.wav
+sound/ambient/rumbling04.wav
+sound/ambient/water01.ogg
+sound/ambient/water02.ogg
+sound/ambient/windgust01.wav
+sound/ambient/windgust02.wav
+sound/ambient/wolf.wav
+
+sound/footsteps/footsteps-indoors.wav
+sound/footsteps/footsteps-outdoors.wav
+
+sound/magic/aggressive.wav
+sound/magic/attacking.wav
+sound/magic/blasting.wav
+sound/magic/curse.wav
+sound/magic/empower.wav
+sound/magic/flaming.wav
+sound/magic/identify.wav
+sound/magic/neutralizepoison.wav
+sound/magic/opening.wav
+sound/magic/possessing.wav
+sound/magic/protecting.wav
+sound/magic/resurrect.wav
+sound/magic/stinging.wav
+sound/magic/windy.wav
+
+sound/weather/rain.wav
+sound/weather/thunder1.wav
+sound/weather/thunder2.wav
+sound/weather/thunder3.wav
+sound/weather/thunder4.wav

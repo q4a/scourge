@@ -1,0 +1,68 @@
+4 Janvier 1999
+================================================================
+Nom du Model            : Darkness
+Répertoire d'installation: quake2/baseq2/players/Darkness
+Auteur, Peinture Auteur : Jlbr
+Adresse Électronique    : jlbr43@hotmail.com
+Description du modèle    : Voici le modèle de Darkness, super-vilain et personnage principal de la
+                          bande dessinée "The Darkness".  Également connu sous le nom de 
+                          Jackie Estacado,  jeune mafioso de 21 ans.  C'est à cet âge qu'il prend 
+                          possession du pouvoir du Darkness et apprend par la même occasion qu'il 
+                          va mourir si une fille tombe enceinte de lui... Pauvre gars!
+
+Autres informations     : Darkness est mon tout premier modèle, et non le dernier!, donc allez-y 
+                          doucement avec les critiques :)  J'ai créé le modèle au complet, ainsi 
+                          que l'arme, avec le logiciel TrueSpace4.  J'ai eu quelques problèmes avec 
+                          les cheveux, et la tête contient un grand nombre de polygones gaspillés,
+                          la prochaine fois je ferai mieux.  Pour les animations j'ai également 
+                          utilisé TrueSpace4, il y a quelques imperfections mais j'aime le 
+                          résultat en général.  J'ai essayé du mieux que j'ai pu, avec mon peu 
+                          d'expérience, de donner un petit coté "mou" aux pics sortant du dos de 
+                          Darkness, mais quelques fois le résultat n'est pas celui voulu.  Je crois
+                          qu'il y a aussi un petit problème avec la "Bounding box", je crois 
+                          qu'elle est un peu grande.  Pour la peinture j'ai utilisé le logiciel 
+                          CorelPhotoPaint8, et j'ai utilisé des photos de l'édition française de 
+                          la revue The Darkness 1 à 3, que j'ai numérisé pour ensuite placer sur la peinture.   Je 
+                          trouve que le résultat est pas mal, en plus que je souhaitais garder 
+                          l'aspect authentique du personnage.  Par contre, je n'ai jamais vu aucune
+                          photo de Darkness de dos, jamais, alors j'ai utilisé une photo d'un 
+                          culturiste dont j'ai ajusté la couleur pour que ca paraisse le moins 
+                          possible.  Même chose pour le fusil, j'ai utilisé une photo d'un M16 
+                          avec Lance Grenade intégré.  J'ai ensuite positionné la peinture à 
+                          l'aide de NST.  En passant NPherno t'es le meilleur! J'avoue que la 
+                          peinture n'est pas super bien positionnée, le taux de gaspillage est 
+                          assez élevé, et pour donner plus de détail j'ai superposé les bras 
+                          ensemble ainsi que les cheveux, etc.  J'ai également un peu triché 
+                          car j'ai étiré quelques polygones peu importants dans le seul but de 
+                          gagner de l'espace utilisé sur la peinture.  J'ai utilisé Q2Modeler 
+                          pour régler le problème du "NULL skin found".  Pour compiler le model 
+                          j'ai utilisé Qdata.  
+
+Crédits additionnels    : La BD "The DArkness" ainsi que le personnage de Darkness et Jackie Estacado 
+                          sont des créations Silvertri, Ennis, Wohl et TopCow productions.
+                          
+Merci à                 : ToyensMoper pour l'image du M16
+                          Kaarde, Elmuth et Gwar pour leur support moral
+                          René Le 
+                          Ma famille pour m'avoir enduré lorsque, LE MAUDIT!, modèle ne marchait pas!
+
+================================================================
+*Informations de jeux*
+Nouveau sons            : Non
+Peinture CTF            : NON
+VWEP Support            : Non, mais prochaine fois!
+poly                    : Model 624
+                          Weapon 120
+Vert                    : Model 354
+                          Weapon 62
+Nombre de peintures     : 3
+Base                    : Nouveau model
+Éditeurs utilisés       : TrueSpace4, CorelPhotoPaint, VistaScan, NST, Q2Modeler, PhotoED, Qdata
+Pépins connus           : Lors des scènes de mort des fois le personnage se retrouve au travers du plancher.
+Temps de Construction/Animation     : 6 semaines
+
+Double-cliquez sur "Darkness.zip" et ensuite sélectionnez "C:\" le répertoire se crée automatiquement. 
+
+Copyright / Permissions *QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+Ce modèle n'as pas été créé dans un but lucratif, vous devez me demander la permission pour utiliser
+des parties de ce modèle dans des modèles futurs... 

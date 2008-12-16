@@ -1,0 +1,165 @@
+# General text is inherited from library.txt
+
+
+P:Sabien Gartu
+V:_INTRO_;Ah, there you are... I've been $waiting for you!
+V:_UNKNOWN_;Sadly, I know not of which you speak...
+V:_UNKNOWN_;I can't help you with that.
+V:Uzudil,SCOURGE;Yes, yes I know. Uzudil the Hand of S.c.o.u.r.g.e. Inc. sent me\
+the $map. I know why you are here...
+V:waiting;I have the $map that $Uzudil sent me. When you're $ready, I can tell you\
+all that I know regarding this matter.
+V:map;This map fragment definitely depicts a section of the $Abyss. I am well\
+familiar with its tortured landscape for shall I say... $personal reasons.
+V:personal,incident;I'd rather not talk about that at this time... the memories are still too\
+painful for me.
+V:Karzuul;A fiend he is. Karzuul is the Lord of Madness and rules the 512th layer of\
+the $Abyss. In battle he is a merciless hunter, as an enemy he ruins all you hold dear,\
+the corruptor of hope and a stain on the divine soul of the cosmos. Do not treat him lightly!\
+His connection to $Mycotharsius is surely not an accident... 
+V:research;My research varied over the years... I was a student of Minirmuir once,\
+attempting to attain perfect knowledge and thus transcend my mortal body to live in eternal\
+peace, at one with the void. However... things changed... after the... $incident I took up\
+a different path. I am currently seeking to restore to the world, that which was once known\
+but is now lost... the safe operation of a very powerful artifact. One that though complex and\
+dangerous is located very close nearby... in fact, it's right behind this locked $door.
+V:Guardians,Guardian,Guards,Guard,Realm;Their legend is one of sorrow... thousands of years ago, after the\
+defeat of an invasion of demons, a group of heroes banded together to form the order\
+that came to be called the Guardians of the Realm. Though mostly a peace-keeping force, they also\
+concerned themselves with the preservation of all knowledge of their age. This $library is one\
+of a few they built around the world to house the rare books in which the Guardians recorded\
+known history, astronomy and all other sciences and magic they learned. Their hope was to pass\
+on their vast body of knowledge and let future generations know how to deal with another war\
+should the $Abyss invade again. Sadly, before their work could be completed, in a final and\
+cataclysmic battle, the demons destroyed them all... There is talk of betrayal: a treachery\
+from within the ranks of the order is said to have caused their demise.
+V:ready;Well, let's start with what you already know. $Mycotharsius had me abducted\
+by those $dwarves but thanks to you, I am free again and able to resume my $research\
+in the $library.
+V:dwarves,Grizzled,Pony;The Order of the Grizzled Pony? Alas not much good can be\
+said of them. They maintain their meager existence as both poetic and rogue hacks,\
+selling their services to other low-lifes like $Mycotharsius.
+V:Mycotharsius;I hear he met his end again... this has happened before you know. He\
+died in combat once, but was resurrected by a demonic entity named $Karzuul. I think\
+the demon took pleasure in bestowing the curse of unlife on the mage, to teach him\
+a lesson in loyalty perhaps... At any rate, what is more interesting about Mycotharsius,\
+is his $boss.
+V:boss,Mothrazu,Mothrazu's;Now we're getting to the meat of our story! Mothrazu! Now there is something\
+awful...  On the surface, she appears to be just another evil $druid, bent on the destruction\
+of civilization. I'm sure you've heard the rumors: she wants to restore the world to what it was\
+before the rise of the races. Her image of a world covered in forest is a bit of a cliche, you see?\
+I don't buy it... there is something more here... especially, when you look at the evidence:\
+a $map of the $Abyss? No, I don't think what we're dealing with is just a lowly $druid bent on revenge.
+V:druid;To all outward appearances, she is a servant of the god of Nature. Even if she is evil,\
+this is possible. Amod-Rheinur is a neutral deity who doesn't concern herself with the means to achieve\
+her goals. However, I believe there is more to her story than what she'd let us believe: simple $revenge.
+V:revenge;I believe $Mothrazu wants to travel to the $Abyss for some reason. You may have\
+heard this in the ramblings of $Mycotharsius as well. (He let me know that much during my\
+time of captivity.) What she wants from the dimension of evil is not known to me yet.... \
+But, I think this is the reason why she had me captured. You see, this\
+$library here is an ancient building. And like most things that are very old, it holds its\
+own share of $secrets...
+V:library,Gormoril;This building was built ages ago by the $Guardians of the Realm. You may have\
+heard of this order of peace-keepers... At any rate, they created these underground wardens to\
+safely store all the information they uncovered during their time. The building had many masters\
+before me and it is likely it will have many more after I pass. The only thing constant here are\
+the priceless books and the $servants.
+V:servants;They are a bit weird, aren't they? It took me a while to get used to them. But at least\
+they get along with the $monsters.
+V:monsters;Yeah about that... they only appeared a couple of years ago... Not sure where they came\
+from either.
+V:secrets;It took me years of study to unravel this mystery and I can't say I fully understand it still.\
+However, I do believe it relates to $Mothrazu's $Abyssal travel plans... You see, several hundred years after\
+the construction of this $library, when the $Guards of Realm were destroyed and the building stood empty, an\
+order of evil monks took up residence here. They constructed a $planar gate, an unholy device that leads only\
+to one place: to the world below... the $Abyss!
+V:planar,gate,device;You may have heard of this device referred to as a red teleporter. Once $activated it can\
+be used as a bi-directional portal to the world of demons. I have been researching its history and use,\
+and I think this knowledge is what $Mothrazu seeks, and that is why she had me kidnapped.
+V:activation,activated,activate;As I said, my studies are not complete... From what I learned so far, it seems that even the\
+order of monks who created the $device realized how dangerous it can be and went to extra lengths to protect\
+against its accidental opening. This protection is in the form of a set of ancient wards that keep the $door\
+behind me sealed. 
+V:door,seal,sealed,lock,locked;Long have I labored to open the seal and enter the room behind this door. Research in many\
+tomes of magic led me believe that four $tokens are required to safely enter and activate the $planar gate. One\
+of these you've already found: the Dragon-scale armor of the $Guards of the Realm. $Uzudil sent me\
+this item along with the $map. The other $three are scattered in various locations. You must\
+retrieve these items in order to ensure that $Mothrazu doesn't find them first.
+V:token,tokens,three;I sent $Uzudil some notes on where I think these tokens are located.\
+He can help you with the travel arrangements. However, waste no time! If $Mothrazu should\
+get the tokens first and enter the $Abyss, who knows what evil she is planing to unleash!\
+Of course, then $worse things still may occur...
+V:worse;You see, once the $planar gate is $activated, travel is possible in both directions... Not\
+only can one enter the $Abyss, but our world will stand open to an invasion from there as well... Luckily\
+most demons are relatively weak in this dimension. Without some sort of anchor or connection to their unholy lairs,\
+they have no power in the material realm.
+V:Abyss,Abyssal;It's the plane of sorrow. The home of the bringers of darkness. Though it has many\
+names, they all mean the same thing: a boundless dimension without hope, mercy and grace.
+#
+# chapter 8, the text below replaces the intro text via squirrel
+#
+V:_chapter8_;She was here! I don't know by what foul magic, but $Mothrazu passed through\
+the $door without activiting it with tokens. I have tried to stop her, I... I... used\
+all my arcane art, yet she proved too $powerful for me. Hurry and try to $stop her! I see you brought\
+the tokens. With them the door will open!
+V:powerful;It took but a flick of her hand and I stood petrified as though rooted to the\
+spot. Tendrils of a fibrous material clouded my brain and kept me motionless... I am\
+sorry I cannot be more help. You must go $after her now... I am... afraid...
+V:stop,after;Hurry! She is inside this warded gate! She must not travel through the $planar device!\
+Yet she may already have done so... I still have not been able to find out what it is she seeks in\
+the $Abyss. If you do not find her beyond this $gate the only thing left is to travel to the Abyss\
+and hunt her down there.
+
+
+
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:296,220,Sabien Gartu,15,sage
+
+#pre-revelations
+#1. the party of lowly heroes runs out of work and joins the "Scourge, dungeon janitorial services company"
+#2. as part of their work, they rescue a wizard named Sabien who's been abducted by a group of terrorist dwarves, called the "order of the grizzled pony"
+#3. the dwarves were hired by an undead mage named "melathor" who's boss is mothrazu, a fay druid
+#4. after several missions, it's decided that the party seek out Sabien who seems indicated by the evidence to know something related to the rumors about "nature's vengeance" upon humanity
+#
+#revelations:
+#1. mothrazu selected sabien b/c he studies the abyss and has the last working red teleporter
+#2. she needs to travel to the abyss to get Karzul's gift ( the seed); Sabien doesn't know why she wants to travel to the abyss
+#3. she has been becoming more and more mad, falling out the favor of the god of nature (she's obsessed by divine retribution... destroy cities for their destruction of nature)
+#4. but sabien feels there is more to this (and there is: her amulet of shielding is cursed and through this artifact, Karzul is slowly gaining control of her. (This is how she learned of the seed.) He wants her to activate the teleporter so he can enter the world)
+#5. Karzul wants her to use the seed (it must be planted by a druid) so the demon-root will act as a conduit of power for him between the two planes (an axis mundi)
+#6. red teleporter to the abyss is behind the door (Sabien needs to research its use)
+#7. red teleporter needs four tokens ( like in poem, which Sabien recites; same as the one from Thuzgol)
+#8. one of the tokens is the dragon scale armor ( sabien got it from Uzudil) but the others are still missing (other quests)
+#9. mothrazu gets the last token before the players; when they return to the library, they find sabien near death and the door open, running to the teleporter they watch as mothrazu enters the abyss
+#10. they must go after her (sabien helps; he found another way, one w/o the fourth token) (abyss levels)
+#11. try to stop her from returning (fail again) and when they return, she has planted the seed and the demon-root begins to grow
+#12. at the final battle with mothrazu, she dies and the demon-root absorbs her powers and instantly becomes full-grown
+#13. to make matters worse, at this point Karzuul enters the material realm and begins its systematic destruction
+#14. while the root is alive, karzul is nearly invincible; a god-like being. The players must travel to the root's heart and destroy it from within
+#15. before the root's destruction, Karzul arrives (to protect his power-source): in the final giant battle, the demon is trapped in a special object (a pocket dimension) from where he curses the party forever
+#
+#Other stuff: 
+#1. the Guardians of the Realm? Maybe they help in the final battle... (unlock their spirit essence?)
+# or maybe the heroes become the new Guardians of the Realm at the end!
+
+
+
+
+#   N:x,y,name,level,type[,subtype]
+#
+# examples:
+# N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE;POLE
+# N:209,202,Uzudil the Hand,4,sage
+# N:167,257,Melathor of Allovium,1,trainer,NATURE_MAGIC;CONFRONTATION_MAGIC
+# N:201,212,Illadil the Healer,2,healer,Divine Awareness
+
+N:301,272,Kerra the Healer,12,healer,Life and Death
+N:318,273,Birna the Rogue Trainer,40,trainer,Cutpurse
+N:333,269,Morra the Magics Merchant,12,merchant,SCROLL
+N:340,315,Merka the Personal Trainer,40,trainer,Healer
+N:359,278,Kikka the Bone Healer,12,healer,History and Lore
+N:373,312,Samek the Merchant of War,12,merchant,SWORD;AXE;BOW;MACE;POLE;ARMOR
+

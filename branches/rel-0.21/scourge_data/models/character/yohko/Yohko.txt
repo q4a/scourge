@@ -1,0 +1,72 @@
+7-9-98
+
+================================================================
+
+Model Name              : Devil Hunter Yohko
+
+installation directory  : quake2/baseq2/players/yohko
+
+Author                  : Brian "EvilBastard" Collins
+
+Email Address           : brian@zono.com
+
+Website Address         : www.michaeljwolf.com/brian/quake.htm
+
+Model description       : 
+
+	Yohko is an anime character. Yeah, I know swords dont shoot bullets... use your imagination.
+
+Other info              : 
+	She is a little hefty on the polys, it's all that damn hair. I spent 90% of the time working on this model trying to get her skirt out of her legs. You can still see it intersecting on certain frames, but i got most of it.
+
+Please, Please, please someone send me a soundpak I couldn't find good Yohko sounds anywhere.
+
+
+
+Additional Credits to   : 
+	* Idsoftware 
+	* Q2modeler
+
+and my new favorite program SKIN VIEW!!!! 
+
+
+Thanks to               :
+
+	The usual...
+
+================================================================
+
+* Play Information *
+
+New Sounds              : NO
+
+CTF Skins               : YES
+
+VWEP Support            : No
+
+
+* Construction *
+
+Poly Count              : 772 tris.md2 / 28 weapon.md2
+
+Vert Count              : 411 tris.md2 / 23 weapon.md2
+
+Skin Count              : 1 DM, 2 CTF
+
+Base		        : Sydney
+
+Editor used             : 
+		Modeling - lightwave	
+		Animation- lightwave + puppetmaster
+		Skining  - Q2modeler, NST
+		Painting - Photoshop, NST
+		Viewing  - Skin View (cool program)
+		
+Known Bugs              : None that i know of.
+
+
+* Copyright / Permissions *
+QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+Feel free to edit my model as you see fit, just be sure to mention me
+in the readme file. This model is not to be distributed as part of any
+commercial product.

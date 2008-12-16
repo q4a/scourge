@@ -1,0 +1,63 @@
+3-13-99
+================================================================
+Model Name              : Gith Nore PilorCham
+installation directory  : quake2/baseq2/players/nore
+Author                  : Jon "shine" Jones <vertmanip@cander.net>
+Skin Author             : Chris "shatter" Holden <cholden@4drulers.com> 
+                          Carl "Slaine" Kidwell <melkior@usa.net>  
+Sounds                  : Dave Cormier <DrowseMan@hotmail.com>
+
+Model description       :  A monster from Stand: the Merge of Powers Quake 2 Total Conversion converted to a ppm. This is a Sehct imp bred to be a warrior. He wears oversized body armor and uses a gun axe in battle. The Sehct are fearless fighters that will attack anything regardless of the odds. This is how the name is chosen: 
+Sehct names are based upon title (for this example, I'll use earthly names/jobs):
+Last names are are family names, but the mother and father name carry and not 	just one. If your name were Bob, and your mother's last name was Johnson, and your father's last name was Smith, and you were a Soldier, your name would be: Soldier Bob SmithJohnson
+Once you marry, you drop your mother's last name, as it is symbolic of "leaving the womb" When married, your wife or husband doesn't take your name as we do here, they keep the same name, otherwise, the children's name wouldn't make sense. Our PPM that is a Soldier would be called: Gith Nore PilorCham
+	Job: Gith
+	Name: Nore
+	Fathers: Pilor
+	Mothers: Cham
+
+
+Addiotional URLs:
+
+Stand: tMoP: http://www.planetquake.com/stand/
+Jon Jones's page: http://members.xoom.com/3dextremes/
+Chris Holden's page: http://www.planetquake.com/shattered/
+Carl Kidwell's page: http://www.planetquake.com/skintutor/
+
+
+Other info              : The entire concept for the model was conceived by Chris Holden, to whom I owe much. The model was the first time I've used IK with Lightwave and it's turned out rather well, I'd say. The model had 14 IK nulls to control him with, in each of the following places:  Head, butt, left hand, right hand, left elbow, right elbow, left shoulder, right shoulder, left knee, right knee, left foot, right foot, left toe, right toe.  I revised the model over 50 times while modeling it and an additional 40 times while modifying it for maximum flexibility and functional joints. I had some problems with the shoulders and moving the arms around, hopefully, when I make another PPM, he won't have the difficult body armor this one does. Nonetheless, he'll have been a wonderful learning experience for me. :)
+
+Skin/etc info from Chris Holden: The mapping wasn't the easiest to setup, this is a strange model to begin with. Turned out fine, and I had no trouble skinning it past finding time. All the skins I made were done in Paint Shop Pro 5 with a mouse, BUT I got a nice wacom drawing tablet and had to as least make a new face, so  the Sahve skin's face is my first release of work done with a tablet, not bad eh?
+
+Additional Credits to   : Chris Holden for the skin and ideas, Carl Kidwell for some more skins, Dave Cornier for the sounds, Brian Yee for telling me what's cool. :)
+
+Thanks to               : Chris Holden for being a mentor, Brian Yee for giving me advice and telling me what's cool and what isn't, Carl Kidwell for doing the extra skins and being funny, Magarginal for being an AMAZING artist to give me things to look at (and Evil Ernie), EvilBastard for kicking ass and making Ratamahatta, Rogue13 for being a cool guy and tolerating my stupidity, Dave Cornier for doing sounds, NPherno for making NST, Chris Johnson for giving me some AWESOME tips on IK, id software for making Q2, Newtek for making Lightwave, Sepultura and Front 242 and Rammstein and Gravity Kills and Korn and Rob Zombie and System of a Down and Soulfly for making great music to listen to while I model and animate.
+================================================================
+* Play Information *
+
+New Sounds              : Yes.
+CTF Skins               : Yes.
+VWEP Support            : No.
+
+
+* Construction *
+Poly Count              : 597 for the imp, 126 for the gun axe.
+Vert Count              : 334 for the imp, 73 for the gun axe.
+Skin Count              : 3.
+Base                    : None, 100% original. Imagine that!
+Editor used             : Lightwave 3D 5.6, Paint Shop Pro 5.0, NPherno's Skin Tool
+Known Bugs              : *deep breath* The feet wiggle sometimes, the verts around the head move randomly when the head moves (didn't realize this until it was too late), the gun axe isn't perfectly aligned to the model at times (I'll get it right next time), some assorted anomalies in the model when I bend it (especially in the back area), and some possible polys facing the wrong way inside the armor. The arms sometimes stretch a bit too far to the point of, uh, looking funny. Ears also stretch badly (bad limited range) especially in the run frames. run frame doesn't have enough 'bob' to it (or so says Brian Yee) but I didn't have time\make time to fix it, so it's still in there.
+Build/Animation time    : Model took about 6 hours, animation took about 96 hours total over a period of three or four weeks, though the last 60% of the animations was completed in a single weekend.
+
+
+* How to use this model *
+
+Unzip to your Quake 2 directory with directories recursed. It'll put it in the proper baseq2/players/nore/ directory all by itself unless you decide to do it your own way.
+
+* Copyright / Permissions *
+
+QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+
+Don't reproduce the model without permission, don't use it in a TC without permission, and don't use it for anything other than playing Quake 2 and having fun. 
+
+
