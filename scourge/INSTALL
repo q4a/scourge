@@ -4,10 +4,8 @@ svn co https://scourge.svn.sourceforge.net/svnroot/scourge/trunk scourge
 # To configure it
 cd scourge/scourge
 autoreconf -i
-./configure
-
-# To update the language files
 ./translate.sh
+./configure
 
 # To compile it normally
 scons
