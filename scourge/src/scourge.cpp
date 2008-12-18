@@ -3634,7 +3634,7 @@ bool Scourge::saveScoreid( const string& dirName, char *p ) {
 		cerr << "Error creating scoreid file! path=" << path << endl;
 		return false;
 	}
-	fprintf( fp, "%s", p );
+	if ( p != NULL && p[0] ) fprintf( fp, "%s", p );
 	fclose( fp );
 	return true;
 }
