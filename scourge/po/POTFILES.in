@@ -162,7 +162,6 @@ src/render/modelwrapper.cpp
 src/render/virtualshape.cpp
 src/render/renderedprojectile.cpp
 src/render/frustum.cpp
-src/render/vbo.cpp
 src/render/shape.cpp
 src/render/projectilerenderer.cpp
 src/render/fog.cpp
@@ -358,7 +357,6 @@ src/render/maprenderhelper.h
 src/render/effect.h
 src/render/location.h
 src/render/mapadapter.h
-src/render/vbo.h
 src/render/texture.h
 src/render/modelwrapper.h
 src/render/renderedprojectile.h
@@ -387,7 +385,6 @@ src/render/renderlib.h
 src/board.h
 src/identifydialog.h
 src/quickhull.h
-src/board_interface.h
 src/rechargedialog.h
 src/cellular.h
 src/optionsmenu.h
