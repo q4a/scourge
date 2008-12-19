@@ -197,7 +197,7 @@ bool SavegameDialog::findFiles() {
 				maxFileSuffix = n;
 		}
 	}
-	files->setLines( filenames.begin(), filenames.end(), NULL, &screens[0] );
+	files->setLines( filenames.begin(), filenames.end(), NULL, screens.empty() ? NULL : &screens[0] );
 	savegamesChanged = false;
 	return( filenames.size() > 0 );
 }
