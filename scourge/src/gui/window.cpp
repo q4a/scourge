@@ -310,7 +310,7 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 		}
 		
 		// special handling
-		if ( message_button && w == message_button ) {
+		if ( message_button != NULL && w == message_button && message_dialog != NULL ) {
 			message_dialog->setVisible( false );
 		}			
 		
