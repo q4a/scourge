@@ -28,6 +28,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define OFFSET_X 1
 #define OFFSET_Y 0
 
@@ -73,8 +80,8 @@ bool ContainerGui::handleEvent( SDL_Event *event ) {
 
 bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
-		scourge->closeContainerGui( this );
 		win->setVisible( false );
+		scourge->closeContainerGui( this );
 	} else if ( widget == infoButton ) {
 		if( view->getSelectedItem() ) {
 			view->showInfo( view->getSelectedItem() );
