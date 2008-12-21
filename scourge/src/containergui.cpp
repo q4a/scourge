@@ -38,19 +38,10 @@ using namespace std;
 #define OFFSET_X 1
 #define OFFSET_Y 0
 
-ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
+ContainerGui::ContainerGui( Scourge *scourge, int x, int y ) {
 	this->scourge = scourge;
-	this->container = container;
 	
-	win = new Window( scourge->getSDLHandler(), 
-	                  x, y, 
-	                  105 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
-	                  40 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
-	                  container->getItemName(),
-                    scourge->getShapePalette()->getGuiTexture(), 
-                    true,
-                    Window::BASIC_WINDOW,
-                    scourge->getShapePalette()->getGuiTexture2() );
+	win = new Window( scourge->getSDLHandler(), x, y, 105, 40, "", scourge->getShapePalette()->getGuiTexture(), true, Window::BASIC_WINDOW, scourge->getShapePalette()->getGuiTexture2() );
 	openButton = new Button( 10, 5, 90, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
 	win->addWidget( ( Widget* )openButton );
 	infoButton = new Button( 10, 30, 90, 50, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
@@ -61,7 +52,7 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	closeButton = new Button( 10, win->getHeight() - 55, 90, win->getHeight() - 35, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
 	win->addWidget( ( Widget* )closeButton );
 
-	view = new ContainerView( scourge, container, win, 95, 5 );
+	view = new ContainerView( scourge, NULL, win, 95, 5 );
 	win->addWidget( (Canvas*)view );
 
 	win->registerEventHandler( this );
@@ -73,6 +64,15 @@ ContainerGui::~ContainerGui() {
 	delete win;
 }
 
+void ContainerGui::setContainer( Item *container ) {
+  this->container = container;
+  win->setTitle( container->getItemName() );
+  win->resize( 105 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+                40 + container->getRpgItem()->getContainerHeight() * GRID_SIZE );
+  closeButton->move( 10, win->getHeight() - 55 );
+  view->setItem( container );
+}
+
 bool ContainerGui::handleEvent( SDL_Event *event ) {
 	view->handleEvent( event );
 	return false;	
@@ -81,7 +81,7 @@ bool ContainerGui::handleEvent( SDL_Event *event ) {
 bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
-		scourge->closeContainerGui( this );
+//		scourge->closeContainerGui( this );
 	} else if ( widget == infoButton ) {
 		if( view->getSelectedItem() ) {
 			view->showInfo( view->getSelectedItem() );
