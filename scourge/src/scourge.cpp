@@ -1983,10 +1983,18 @@ void Scourge::moveCreature( Creature *creature ) {
 }
 
 ContainerGui *Scourge::openContainerGui( Item *container ) {
-  cerr << "opening container gui" << endl;
+//  cerr << "opening container gui" << endl;
+  
+  // already open?
+  for ( int i = 0; i < containerGuiCount; i++ ) {
+    if ( containerGui[i]->getWindow()->isVisible() && containerGui[i]->getContainer() == container ) {
+      containerGui[i]->getWindow()->toTop();
+      return containerGui[i];
+    }
+  }
   
   // try to find an unused window
-  ContainerGui *gui = NULL;
+  ContainerGui *gui = NULL;  
 	for ( int i = 0; i < containerGuiCount; i++ ) {
     if ( !containerGui[i]->getWindow()->isVisible() ) {
       gui = containerGui[i];
@@ -1996,24 +2004,24 @@ ContainerGui *Scourge::openContainerGui( Item *container ) {
   
   // open a new window
   if( !gui && containerGuiCount < MAX_CONTAINER_GUI ) {
-    getSession()->getSound()->playSound( Sound::OPEN_BOX, 127 );
     containerGui[containerGuiCount++] = new ContainerGui( this, 10 + containerGuiCount * 15, 10 + containerGuiCount * 15 );
     gui = containerGui[containerGuiCount - 1];
   }
   
   if( gui ) {
     gui->setContainer( container );
-    gui->getWindow()->setVisible( true );
+    getSession()->getSound()->playSound( Sound::OPEN_BOX, 127 );    
+    gui->getWindow()->setVisible( true );    
   }
   
-  // debug
-  cerr << "-----------------------------------" << endl;
-  cerr << "container gui, count=" << containerGuiCount << endl;
-  for( int i = 0; i < containerGuiCount; i++ ) {
-    if( containerGui[i]->getWindow()->isVisible() ) {
-      cerr << "\t" << containerGui[i]->getWindow()->getTitle() << " - " << containerGui[i]->getWindow()->getZ() << endl;
-    }
-  }
+//  // debug
+//  cerr << "-----------------------------------" << endl;
+//  cerr << "container gui, count=" << containerGuiCount << endl;
+//  for( int i = 0; i < containerGuiCount; i++ ) {
+//    if( containerGui[i]->getWindow()->isVisible() ) {
+//      cerr << "\t" << containerGui[i]->getWindow()->getTitle() << " - " << containerGui[i]->getWindow()->getZ() << endl;
+//    }
+//  }
   
   return gui;
 }
@@ -2021,23 +2029,6 @@ ContainerGui *Scourge::openContainerGui( Item *container ) {
 
 void Scourge::closeContainerGui( ContainerGui *gui ) {
   if( gui->getWindow()->isVisible() ) gui->getWindow()->setVisible( false );
-//  cerr << "closing container gui, count=" << containerGuiCount << endl;
-//	if ( containerGuiCount <= 0 ) return;
-//	for ( int i = 0; i < containerGuiCount; i++ ) {
-//		if ( containerGui[i] == gui ) {
-//			for ( int t = i; t < containerGuiCount - 1; t++ ) {
-//				containerGui[t] = containerGui[t + 1];
-//			}
-//			containerGuiCount--;
-//			delete gui;
-//			break;
-//		}
-//	}
-//  cerr << "====================================" << endl;
-//  cerr << "container gui, count=" << containerGuiCount << endl;
-//  for( int i = 0; i < containerGuiCount; i++ ) {
-//    cerr << "\t" << containerGui[i]->getWindow()->getTitle() << " - " << containerGui[i]->getWindow()->getZ() << endl;
-//  }                                                            
 }
 
 void Scourge::closeAllContainerGuis() {
@@ -2055,7 +2046,7 @@ void Scourge::refreshContainerGui( Item *container ) {
 void Scourge::removeClosedContainerGuis() {
 	if ( containerGuiCount > 0 ) {
 		for ( int i = 0; i < containerGuiCount; i++ ) {
-			if ( !containerGui[i]->getWindow()->isVisible() ) {
+			if ( containerGui[i]->getWindow()->isVisible() ) {
 				closeContainerGui( containerGui[i] );
 			}
 		}
