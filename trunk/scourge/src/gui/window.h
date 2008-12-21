@@ -131,6 +131,8 @@ public:
 	        bool hasCloseButton = true, int type = BASIC_WINDOW, const char *themeName = NULL );
 
 	~Window();
+  
+	virtual void resize( int w, int h );
 	
 	inline void setEscapeHandler( Widget *widget ) { this->escapeHandler = widget; }
 	inline Widget *getEscapeHandler() { return this->escapeHandler; }
@@ -164,6 +166,8 @@ public:
 	inline void setTitle( char const* s ) {
 		strncpy( title, ( s ? s : "" ), 255 ); title[254] = '\0';
 	}
+  
+  inline char *getTitle() { return title; }
 
 	inline bool isOpening() {
 		return ( opening );
