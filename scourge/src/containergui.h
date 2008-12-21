@@ -40,7 +40,7 @@ private:
 	Button *openButton, *infoButton, *getAllButton, *closeButton;
 
 public:
-	ContainerGui( Scourge *scourge, Item *container, int x, int y );
+	ContainerGui( Scourge *scourge, int x, int y );
 	~ContainerGui();
 
 	bool handleEvent( SDL_Event *event );
@@ -57,7 +57,9 @@ public:
 	}
 	void refresh();
 	inline Item *getSelectedItem();	
-	//void setSelectedItem( Item *item );	
+	//void setSelectedItem( Item *item );
+  
+  void setContainer( Item *container );
 };
 
 #endif

@@ -1240,3 +1240,9 @@ void Window::setMouseLock( Widget *widget ) {
 Window *Window::getTopWindow() {
 	return currentWin;
 }
+
+void Window::resize( int w, int h ) {
+  Widget::resize( w, h );
+  // make sure it's not off the screen
+  move( getX(), getY() );
+}

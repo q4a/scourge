@@ -35,7 +35,8 @@ using namespace std;
 #define OFFSET_Y 0
 
 ContainerView::ContainerView( Scourge *scourge, Item *container, Window *win, int x, int y ) : 
-	Canvas( x, y, x + container->getRpgItem()->getContainerWidth() * GRID_SIZE, y + container->getRpgItem()->getContainerHeight() * GRID_SIZE, this, this ) {
+	Canvas( x, y, x + ( container ? container->getRpgItem()->getContainerWidth() : 1 ) * GRID_SIZE, 
+    y + ( container ? container->getRpgItem()->getContainerHeight() : 1 ) * GRID_SIZE, this, this ) {
 	this->scourge = scourge;
 	this->container = container;
 	this->win = win;
@@ -55,6 +56,7 @@ void ContainerView::setItem( Item *item, Creature *creature ) {
 	this->creature = creature;
 	this->lastItem = NULL;
 	this->selectedItem = NULL;
+  resize( container->getRpgItem()->getContainerWidth() * GRID_SIZE, container->getRpgItem()->getContainerHeight() * GRID_SIZE );
 	showContents();
 }
 
