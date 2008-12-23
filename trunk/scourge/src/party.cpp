@@ -24,6 +24,13 @@
 #include "shapepalette.h"
 #include "sqbinding/sqbinding.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 Creature *Party::lastPlayer = NULL;
@@ -683,7 +690,8 @@ int Party::getAverageLevel() {
 
 void Party::hire( Creature *creature ) {
 	// Remove from the session list
-	assert( session->removeCreatureRef( creature, partySize ) );
+	bool success = session->removeCreatureRef( creature, partySize );
+	assert( success );
 
 	// add to party
 	party[ partySize++ ] = creature;
