@@ -26,6 +26,23 @@
 
 class WindInfo;
 
+/// A flat surface making up one side of a wall etc.
+
+class Surface {
+public:	
+	float vertices[4][3];
+	float matrix[9];
+	float s_dist, t_dist;
+};
+
+class LightEmitter {
+public:
+	LightEmitter() {}
+	virtual ~LightEmitter() {}
+	virtual float getRadius() = 0;	
+	virtual Color const& getColor() = 0;
+};
+
 /// Contains a static 3D shape.
 class Shape {
 
@@ -44,10 +61,12 @@ private:
 	bool occludedSides[6];
 	int textureCount, textureIndex;
 	bool roof;
+	bool ground;
 
 protected:
 	int width, height, depth;
 	float offsetX, offsetY, offsetZ;
+	std::set<Surface*> *lightFacingSurfaces;	
 
 public:
 	enum {
@@ -62,6 +81,12 @@ public:
 	Shape( int width, int depth, int height, char const* name, int descriptionGroup );
 	Shape( Shape *shape );
 	virtual ~Shape();
+	
+	virtual inline void getSurfaces( std::set<Surface*> *shape_surfaces, bool skip_top ) {}
+	virtual inline void setLightFacingSurfaces( std::set<Surface*> *lightFacingSurfaces ) { this->lightFacingSurfaces = lightFacingSurfaces; }
+	
+	inline void setGround( bool b ) { ground = b; }
+	inline bool isGround() { return ground; }
 
 	void setOccludedSides( bool *sides );
 	inline bool *getOccludedSides() {
@@ -139,6 +164,7 @@ public:
 		return descriptionGroup;
 	}
 
+	virtual LightEmitter *getLightEmitter() { return NULL; }
 	virtual void draw() = 0;
 	void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) {
 		draw();

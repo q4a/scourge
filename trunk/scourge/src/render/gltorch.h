@@ -21,14 +21,12 @@
 
 #include "glshape.h"
 
-class GLShape;
-
 /**
   *@author Gabor Torok
   */
 
 /// A torch 3D shape.
-class GLTorch : public GLShape  {
+class GLTorch : public GLShape, LightEmitter  {
 private:
 	Texture flameTex;
 
@@ -37,6 +35,8 @@ private:
 
 	Texture torchback;
 	int torch_dir;
+	
+	static Color lightColor;
 
 public:
 	GLTorch( Texture texture[], Texture flameTex,
@@ -46,6 +46,10 @@ public:
 			 Texture const& torchback = Texture::none(), int torch_dir = Constants::NORTH );
 
 	~GLTorch();
+	
+	virtual inline LightEmitter *getLightEmitter() { return this; }
+	virtual inline float getRadius() { return 6.0f; }	
+	virtual inline Color const& getColor() { return lightColor; }
 
 	void draw();
 

@@ -27,7 +27,7 @@
   */
 
 /// A teleporter 3D shape.
-class GLTeleporter : public GLShape  {
+class GLTeleporter : public GLShape, LightEmitter  {
 private:
 	static const int MAX_STARS = 20;
 	float star[MAX_STARS][2];
@@ -41,6 +41,8 @@ private:
 	Texture flameTex;
 
 	int teleporterType;
+	
+	static Color lightColor;
 
 public:
 
@@ -60,6 +62,10 @@ public:
 	              int teleporterType = BASIC_TELEPORTER );
 
 	~GLTeleporter();
+	
+	virtual inline LightEmitter *getLightEmitter() { return this; }
+	virtual inline float getRadius() { return 6.0f; }	
+	virtual inline Color const& getColor() { return lightColor; }	
 
 	void draw();
 
