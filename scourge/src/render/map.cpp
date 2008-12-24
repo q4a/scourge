@@ -35,6 +35,7 @@
 #include "../debug.h"
 #include "projectilerenderer.h"
 #include "../quickhull.h"
+//#include "../scourge.h"
 
 using namespace std;
 
@@ -215,7 +216,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	helper = NULL;
 
-	laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
+	laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
 
 	quakesEnabled = false;
 
@@ -239,6 +240,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	weather = WEATHER_CLEAR;
 
 	gridEnabled = true;
+	
+	lightTex = shapes->findTextureByName( "flame.png", true );
 
 	adapter->writeLogMessage( Constants::getMessage( Constants::WELCOME ), Constants::MSGTYPE_SYSTEM );
 	adapter->writeLogMessage( "----------------------------------", Constants::MSGTYPE_SYSTEM );
@@ -416,7 +419,7 @@ void Map::reset() {
 
 	if ( helper ) helper->reset();
 
-	laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
+	laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
 
 	quakesEnabled = false;
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -558,7 +561,7 @@ bool Map::checkLightMap( int chunkX, int chunkY ) {
 
 void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey ) {
 	if ( !forGround && !forWater ) {
-		laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
+		laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
 		creatureMap.clear();
 		creatureEffectMap.clear();
 		trapSet.clear();
@@ -824,7 +827,9 @@ void Map::drawGroundPosition( int posX, int posY,
 	if ( isHeightMapEnabled() ) {
 		shape->drawHeightMap( ground, posX, posY );
 	} else {
+		shape->setGround( true );
 		shape->draw();
+		shape->setGround( false );
 	}
 	glPopName();
 
@@ -940,6 +945,24 @@ void Map::setupPosition( int posX, int posY, int posZ,
 
 	GLuint name;
 	name = posX + ( MAP_WIDTH * ( posY ) ) + ( MAP_WIDTH * MAP_DEPTH * posZ );
+	
+	Location *pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+	if( pos && pos->shape && pos->shape->getLightEmitter() ) {
+		lights[lightCount].xpos = xpos2;
+		lights[lightCount].ypos = ypos2;
+		lights[lightCount].zpos = zpos2;
+		lights[lightCount].shape = shape;
+		lights[lightCount].item = item;
+		lights[lightCount].creature = creature;
+		lights[lightCount].effect = NULL;
+		lights[lightCount].name = name;
+		lights[lightCount].pos = pos;
+		lights[lightCount].inFront = false;
+		lights[lightCount].x = posX;
+		lights[lightCount].y = posY;
+		lights[lightCount].light = true;
+		lightCount++;		
+	}
 
 	// special effects
 	if ( ( effect || ( creature && creature->isEffectOn() ) ) && !shape->isRoof() ) {
@@ -951,10 +974,11 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		damage[damageCount].creature = creature;
 		damage[damageCount].effect = effect;
 		damage[damageCount].name = name;
-		damage[damageCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+		damage[damageCount].pos = pos;
 		damage[damageCount].inFront = false;
 		damage[damageCount].x = posX;
 		damage[damageCount].y = posY;
+		damage[damageCount].light = false;
 		if ( creature ) {
 			creatureEffectMap[creature] = &( damage[damageCount] );
 		}
@@ -973,10 +997,11 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		roof[roofCount].creature = creature;
 		roof[roofCount].effect = NULL;
 		roof[roofCount].name = name;
-		roof[roofCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+		roof[roofCount].pos = pos;
 		roof[roofCount].inFront = false;
 		roof[roofCount].x = posX;
 		roof[roofCount].y = posY;
+		roof[roofCount].light = false;
 		roofCount++;
 	} else if ( shape->isStencil() ) {
 		stencil[stencilCount].xpos = xpos2;
@@ -987,10 +1012,11 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		stencil[stencilCount].creature = creature;
 		stencil[stencilCount].effect = NULL;
 		stencil[stencilCount].name = name;
-		stencil[stencilCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+		stencil[stencilCount].pos = pos;
 		stencil[stencilCount].inFront = false;
 		stencil[stencilCount].x = posX;
 		stencil[stencilCount].y = posY;
+		stencil[stencilCount].light = false;
 		stencilCount++;
 	} else if ( !shape->isStencil() ) {
 		if ( shape->drawFirst() ) {
@@ -1002,10 +1028,11 @@ void Map::setupPosition( int posX, int posY, int posZ,
 			other[otherCount].creature = creature;
 			other[otherCount].effect = NULL;
 			other[otherCount].name = name;
-			other[otherCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+			other[otherCount].pos = pos;
 			other[otherCount].inFront = false;
 			other[otherCount].x = posX;
 			other[otherCount].y = posY;
+			other[otherCount].light = false;
 			if ( creature ) {
 				creatureMap[creature] = &( other[otherCount] );
 			}
@@ -1020,10 +1047,11 @@ void Map::setupPosition( int posX, int posY, int posZ,
 			later[laterCount].creature = creature;
 			later[laterCount].effect = NULL;
 			later[laterCount].name = name;
-			later[laterCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+			later[laterCount].pos = pos;
 			later[laterCount].inFront = false;
 			later[laterCount].x = posX;
 			later[laterCount].y = posY;
+			later[laterCount].light = false;
 			laterCount++;
 		}
 	}
@@ -1166,7 +1194,8 @@ void Map::draw() {
 }
 
 /// Renders the 3D view for indoor levels.
-
+#define LIGHTS_FLOOR 0
+#define LIGHTS_WALL 1
 void Map::drawIndoors() {
 	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
 		// stencil and draw the floor
@@ -1213,6 +1242,12 @@ void Map::drawIndoors() {
 		// draw the ground
 		setupShapes( true, false );
 	}
+	
+#ifdef LIGHTS_ENABLED	
+	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+		drawLightsFloor();
+	}
+#endif	
 
 	// draw lava flows
 	for ( int i = 0; i < otherCount; i++ ) {
@@ -1260,7 +1295,9 @@ void Map::drawIndoors() {
 		}
 
 		// draw walls behind the player
-		for ( int i = 0; i < stencilCount; i++ ) if ( !( stencil[i].inFront ) ) doDrawShape( &( stencil[i] ) );
+		for ( int i = 0; i < stencilCount; i++ ) {
+			if ( !( stencil[i].inFront ) ) doDrawShape( &( stencil[i] ) );
+		}
 
 		// draw walls in front of the player and water effects
 		glEnable( GL_BLEND );
@@ -1374,7 +1411,14 @@ void Map::drawIndoors() {
 	for ( int i = 0; i < damageCount; i++ ) {
 		doDrawShape( &damage[i], 1 );
 	}
-
+	
+	// lights
+#ifdef LIGHTS_ENABLED	
+	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+		drawLightsWalls();
+	}	
+#endif
+			
 	// draw the fog of war or shading
 #ifdef USE_LIGHTING
 #if DEBUG_MOUSE_POS == 0
@@ -1385,6 +1429,149 @@ void Map::drawIndoors() {
 	glDisable( GL_BLEND );
 	glDepthMask( GL_TRUE );
 }
+
+void Map::drawLightsFloor() {
+	// stencil and draw the floor
+	//glDisable(GL_DEPTH_TEST);
+	glColorMask( 0, 0, 0, 0 );
+	glClear( GL_STENCIL_BUFFER_BIT );
+	glEnable( GL_STENCIL_TEST );
+	glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+	glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+	
+	// draw the floors second
+	// cave floor and map editor bottom (so cursor shows)
+	if ( settings->isGridShowing() || floorTexWidth > 0 || isHeightMapEnabled() ) {
+		renderFloor();
+	} else {
+		setupShapes( true, false );
+	}
+	
+	// draw all the lights
+	glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	glDisable(GL_DEPTH_TEST);
+	glColorMask( 1, 1, 1, 1 );
+	glDepthMask( GL_FALSE );
+	glEnable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	//Scourge::setBlendFuncStatic();
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	for( int i = 0; i < lightCount; i++ ) {
+		doDrawShape( &lights[i] );
+	}
+	glEnable(GL_DEPTH_TEST);
+	//glColorMask(0,0,0,0);
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
+	
+	//glEnable(GL_DEPTH_TEST);
+	glDisable( GL_STENCIL_TEST );
+}
+
+void Map::drawLightsWalls() {
+	for( int t = 0; t < lightCount; t++ ) {
+		// stencil and draw the wall
+		//glDisable(GL_DEPTH_TEST);
+		glColorMask( 0, 0, 0, 0 );
+		glClear( GL_STENCIL_BUFFER_BIT );
+		glEnable( GL_STENCIL_TEST );
+		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+
+		// for each shape, stencil out the visible surfaces
+		for ( int i = 0; i < stencilCount; i++ ) {
+			if( isWallBetweenLocations( lights[t].pos, stencil[i].pos ) ) {
+				continue;
+			}
+			set<Surface*> surfaces;
+			stencil[i].shape->getSurfaces( &surfaces, true );
+			stencil[i].pos->lightFacingSurfaces.clear();
+			for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
+				Surface *surface = *e;
+				if( isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
+					stencil[i].pos->lightFacingSurfaces.insert( surface );
+				}
+			}
+			
+			if( stencil[i].pos->lightFacingSurfaces.empty() ) {
+				continue;
+			}
+			
+			// draw the visible surfaces
+			doDrawShape( &stencil[i] );			
+		}
+		
+		// minus the blocking surfaces
+		glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
+		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+		for ( int i = 0; i < stencilCount; i++ ) {
+			// if there are light facing surfaces, keep only the ones that don't face the light
+			if( !stencil[i].pos->lightFacingSurfaces.empty() ) {
+				set<Surface*> surfaces;
+				stencil[i].shape->getSurfaces( &surfaces, false );
+				stencil[i].pos->lightFacingSurfaces.clear();
+				for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
+					Surface *surface = *e;
+					if( !isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
+						stencil[i].pos->lightFacingSurfaces.insert( surface );
+					}
+				}
+			}
+			doDrawShape( &stencil[i] );
+		}
+		
+		// draw the current light
+		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
+		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		glDisable(GL_DEPTH_TEST);
+		glColorMask( 1, 1, 1, 1 );
+		glDepthMask( GL_FALSE );
+		glEnable( GL_TEXTURE_2D );
+		glEnable( GL_BLEND );
+		//Scourge::setBlendFuncStatic();
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		doDrawShape( &lights[t] );
+		glEnable(GL_DEPTH_TEST);
+		//glColorMask(0,0,0,0);
+		glDepthMask( GL_TRUE );
+		glDisable( GL_BLEND );
+		
+		//glEnable(GL_DEPTH_TEST);
+		glDisable( GL_STENCIL_TEST );
+	}
+	
+	// reset light info
+	for ( int i = 0; i < stencilCount; i++ ) {
+		stencil[i].pos->lightFacingSurfaces.clear();
+	}
+}
+
+bool Map::isFacingLight( Surface *surface, Location *p, Location *lightPos ) {
+	// is surface's normal pointing towards or away from lightPos?
+	float pos[3];
+	pos[0] = surface->matrix[6];
+	pos[1] = surface->matrix[7];
+	pos[2] = surface->matrix[8];
+	Util::normalize( pos );
+	
+	// plane's distance from the origin
+	float d = 0 - ( pos[0] * p->x + pos[1] * p->y + pos[2] * p->z );
+	
+	// the plane equation
+	float s = pos[0] * lightPos->x + pos[1] * lightPos->y + pos[2] * lightPos->z + d;
+	bool b = ( s > 0 ? true : false );
+	
+//	cerr << "isFacingLight: normal:" << pos[0] << "," << pos[1] << "," << pos[2] << " d=" << d << " s=" << s << " " << ( b ? "LIT" : "" ) << endl;
+	return b;
+}
+
+bool Map::isValidPosition( int x, int y, int z ) {
+	return x >= MAP_OFFSET && x <= MAP_WIDTH - MAP_OFFSET &&
+		y >= MAP_OFFSET && y <= MAP_DEPTH - MAP_OFFSET &&
+		z >= 0 && z < MAP_VIEW_HEIGHT;
+}
+
 
 /// Renders the 3D view for outdoor levels.
 
@@ -1863,7 +2050,34 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		if ( later && later->pos ) ( ( GLShape* )shape )->setLocked( isLocked( later->pos->x, later->pos->y, 0 ) );
 		else ( ( GLShape* )shape )->setLocked( false );
 	}
-	if ( effect && later ) {
+		
+	
+	// ==========================================================================
+	// lights
+	if( later && later->light ) {
+
+		glPushMatrix();
+		glRotatef( -zrot, 0.0f, 0.0f, 1.0f );
+		glRotatef( -yrot, 1.0f, 0.0f, 0.0f );
+		float r = later->shape->getLightEmitter()->getRadius() * MUL;
+		Color color = later->shape->getLightEmitter()->getColor();
+		lightTex.glBind();
+		glColor4f( color.r, color.g, color.b, color.a );
+		glBegin( GL_QUADS );
+		glTexCoord2f( 1.0f, 1.0f );
+		glVertex3f( -r, r, 0 );
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex3f( -r, -r, 0 );
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex3f( r, -r, 0 );
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex3f( r, r, 0 );		
+		glEnd();
+		glPopMatrix();
+		
+		// ==========================================================================
+		// effects
+	} else if ( effect && later ) {
 		if ( later->creature ) {
 			// translate hack for md2 models... see: md2shape::draw()
 			//glTranslatef( 0, -1 * MUL, 0 );
@@ -1874,6 +2088,9 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			later->effect->getEffect()->draw( later->effect->getEffectType(),
 			                                  later->effect->getDamageEffect() );
 		}
+		
+		// ==========================================================================
+		// creatures		
 	} else if ( later && later->creature && !useShadow ) {
 		// outline mission creatures
 		if ( adapter->isMissionCreature( later->creature ) ) {
@@ -1894,7 +2111,11 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		} else if ( later->creature->getStateMod( StateMod::possessed ) ) {
 			glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
-		}		
+		}
+		
+		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
+			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
+		}
 		shape->draw();
 
 		if ( later->creature->getStateMod( StateMod::invisible ) ) {
@@ -1902,6 +2123,8 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			//glDepthMask( GL_TRUE );
 		}
 
+		// ==========================================================================
+		// items
 	} else if ( later && later->item && !useShadow ) {
 
 		if ( later->item->isSpecial() ) {
@@ -1912,12 +2135,18 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			shape->outline( 0.8f, 0.8f, 0.3f );
 		}
 
-		if ( later && later->pos && later->pos->outlineColor && !useShadow )
+		if ( later && later->pos && later->pos->outlineColor && !useShadow ) {
 			shape->outline( later->pos->outlineColor );
+		}
+		
+		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
+			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
+		}
 		shape->draw();
 
 
-
+		// ==========================================================================
+		// shapes
 	} else {
 		if ( later ) {
 			bool sides[6];
@@ -1933,8 +2162,13 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 				shape->setTextureIndex( later->pos->texIndex );
 			}
 		}
+		
+		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
+			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
+		}		
 		shape->draw();
 	}
+	// ==========================================================================
 
 #if DEBUG_MOUSE_POS == 1
 	if ( shape && !useShadow && ( ( later && later->item ) || ( later && later->creature ) || shape->isInteractive() ) ) {
@@ -2035,8 +2269,10 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 	// slow on mac os X
 	// glPopAttrib();
 
-	if ( shape )
+	if ( shape ) {
+		shape->setLightFacingSurfaces( NULL );
 		( ( GLShape* )shape )->useShadow = false;
+	}	
 }
 
 /// Determines which sides of a shape are not visible for various reasons.
@@ -3120,6 +3356,17 @@ RenderedCreature *Map::removeCreature( Sint16 x, Sint16 y, Sint16 z ) {
 	return creature;
 }
 
+bool Map::isWallBetweenLocations( Location *pos1, Location *pos2 ) {
+	if( pos1 && pos1->shape && pos2 && pos2->shape ) {
+		Shape *shape = isWallBetween( pos1->x + pos1->shape->getWidth() / 2, pos1->y - pos1->shape->getDepth() / 2, pos1->z + pos1->shape->getHeight() / 2, 
+			                            pos2->x + pos2->shape->getWidth() / 2, pos2->y - pos2->shape->getDepth() / 2, pos2->z + pos2->shape->getHeight() / 2,
+			                            pos1->shape );
+		return( shape && !( shape == pos1->shape || shape == pos2->shape ) );
+	} else {
+		return false;
+	}
+}
+
 /// Is there a wall between the two given shapes?
 
 // FIXME: only uses x,y for now
@@ -3129,7 +3376,7 @@ bool Map::isWallBetweenShapes( int x1, int y1, int z1, Shape *shape1, int x2, in
 		for ( int y = y1; y < y1 + shape1->getDepth(); y++ ) {
 			for ( int xx = x2; xx < x2 + shape2->getWidth(); xx++ ) {
 				for ( int yy = y2; yy < y2 + shape2->getDepth(); yy++ ) {
-					Shape *shape = isWallBetween( x, y, z1, xx, yy, z2 );
+					Shape *shape = isWallBetween( x, y, z1, xx, yy, z2, shape1 );
 					if ( !shape || shape == shape2 )
 						return false;
 				}
@@ -3142,7 +3389,7 @@ bool Map::isWallBetweenShapes( int x1, int y1, int z1, Shape *shape1, int x2, in
 /// Is there a wall between the two given positions?
 
 // FIXME: only uses x,y for now
-Shape *Map::isWallBetween( int x1, int y1, int z1, int x2, int y2, int z2 ) {
+Shape *Map::isWallBetween( int x1, int y1, int z1, int x2, int y2, int z2, Shape *ignoreShape ) {
 
 	if ( x1 == x2 && y1 == y2 )
 		return isWall( x1, y1, z1 );
@@ -3176,7 +3423,7 @@ Shape *Map::isWallBetween( int x1, int y1, int z1, int x2, int y2, int z2 ) {
 	float y = y1;
 	for ( int i = 0; i < steps; i++ ) {
 		Shape *ss = isWall( static_cast<int>( x ), static_cast<int>( y ), z1 );
-		if ( ss ) {
+		if ( ss && ss != ignoreShape ) {
 			shape = ss;
 			break;
 		}

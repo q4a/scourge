@@ -22,10 +22,10 @@
 
 #include "render.h"
 #include "texture.h"
+#include "shape.h"
 
 class Effect;
 class RenderedItem;
-class Shape;
 class RenderedCreature;
 class Texture;
 
@@ -103,6 +103,7 @@ public:
 	float angleX, angleY, angleZ;
 	float moveX, moveY, moveZ;
 	int texIndex;
+	std::set<Surface*> lightFacingSurfaces;
 
 	Location() {
 		this->creature = NULL;

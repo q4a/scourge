@@ -132,6 +132,7 @@ struct DrawLater {
 	Location *pos;
 	bool inFront;
 	int x, y;
+	bool light;
 };
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
@@ -680,14 +681,17 @@ public:
 	void initMapView( bool ignoreRot = false );
 
 	void moveMap( int dir );
-
+	
+	bool isWallBetweenLocations( Location *pos1, Location *pos2 );
+	
 	bool isWallBetweenShapes( int x1, int y1, int z1,
 	                          Shape *shape1,
 	                          int x2, int y2, int z2,
 	                          Shape *shape2 );
 
 	Shape *isWallBetween( int x1, int y1, int z1,
-	                      int x2, int y2, int z2 );
+	                      int x2, int y2, int z2,
+	                      Shape *ignoreShape = NULL );
 
 	bool shapeFits( Shape *shape, int x, int y, int z );
 
@@ -895,6 +899,9 @@ public:
 	inline std::set<Location*> *getTeleporters() {
 		return &teleporters;
 	}
+	
+	bool isFacingLight( Surface *surface, Location *p, Location *lightPos );
+	bool isValidPosition( int x, int y, int z );
 
 protected:
 	void drawIndoors();
@@ -987,8 +994,9 @@ protected:
 
 	ChunkInfo chunks[100];
 	int chunkCount;
-	DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000];
-	int laterCount, stencilCount, otherCount, damageCount, roofCount;
+	DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
+	int laterCount, stencilCount, otherCount, damageCount, roofCount, lightCount;
+	Texture lightTex;
 	std::map<Uint32, EffectLocation*> currentEffectsMap;
 
 	void setupShapes( bool forGround, bool forWater, int *csx = NULL, int *cex = NULL, int *csy = NULL, int *cey = NULL );
@@ -1048,7 +1056,10 @@ protected:
 	void getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos );
 
 	bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
-
+	
+	void drawLightsFloor();
+	void drawLightsWalls();
+	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 

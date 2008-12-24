@@ -27,7 +27,7 @@
  * This way it will only recompile the affected .cpp files.
  */
 
-#define SHOW_FPS false
+#define SHOW_FPS true
 
 // battle.cpp
 #define DEBUG_BATTLE false
@@ -48,7 +48,7 @@
 #define BATTLES_ENABLED 1
 
 // comment out to unset
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // comment out to unset
@@ -82,6 +82,9 @@
 
 // use squirrel calls in combar (special abilities, etc.)
 #define SQUIRREL_ENABLED true
+
+// torchlight
+#define LIGHTS_ENABLED 1
 
 #endif
 

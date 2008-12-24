@@ -18,6 +18,8 @@
 #include "../common/constants.h"
 #include "glteleporter.h"
 
+Color GLTeleporter::lightColor( 0.7f, 0.7f, 1.0f, 0.5f );
+
 /**
   *@author Gabor Torok
   */

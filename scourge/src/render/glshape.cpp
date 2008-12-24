@@ -383,52 +383,55 @@ void GLShape::draw() {
 	int textureIndexFront = ( !isFloorShape && depth < width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::FRONT_SIDE );
 	int textureIndexSide = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
 
-	if ( sides[Shape::TOP_SIDE] ) {
+	if ( sides[Shape::TOP_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[TOP_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 		tex[textureIndexTop].glBind();
 		glCallList( displayListStart + 1 );
 	}
-	if ( sides[Shape::N_SIDE] ) {
-		if ( Constants::multitexture ) {
-			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-			glEnable( GL_TEXTURE_2D );
-			tex[textureIndexFront].glBind();
-			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
-		} else {
-			tex[textureIndexFront].glBind();
+	
+	if( !isGround() ) {
+		if ( sides[Shape::N_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[BOTTOM_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+			if ( Constants::multitexture ) {
+				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
+				glEnable( GL_TEXTURE_2D );
+				tex[textureIndexFront].glBind();
+				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
+				glEnable( GL_TEXTURE_2D );
+				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
+			} else {
+				tex[textureIndexFront].glBind();
+			}
+			glCallList( displayListStart + 2 + Shape::N_SIDE );
 		}
-		glCallList( displayListStart + 2 + Shape::N_SIDE );
-	}
-	if ( sides[Shape::S_SIDE] ) {
-		if ( Constants::multitexture ) {
-			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-			glEnable( GL_TEXTURE_2D );
-			tex[textureIndexFront].glBind();
-			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
-		} else {
-			tex[textureIndexFront].glBind();
+		if ( sides[Shape::S_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[FRONT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+			if ( Constants::multitexture ) {
+				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
+				glEnable( GL_TEXTURE_2D );
+				tex[textureIndexFront].glBind();
+				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
+				glEnable( GL_TEXTURE_2D );
+				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
+			} else {
+				tex[textureIndexFront].glBind();
+			}
+			glCallList( displayListStart + 2 + Shape::S_SIDE );
 		}
-		glCallList( displayListStart + 2 + Shape::S_SIDE );
-	}
-	if ( sides[Shape::E_SIDE] ) {
-		if ( Constants::multitexture ) {
-			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-			glEnable( GL_TEXTURE_2D );
+		if ( sides[Shape::E_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[RIGHT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+			if ( Constants::multitexture ) {
+				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
+				glEnable( GL_TEXTURE_2D );
+				tex[textureIndexSide].glBind();
+				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
+				glEnable( GL_TEXTURE_2D );
+				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num2 );
+			} else {
+				tex[textureIndexSide].glBind();
+			}
+			glCallList( displayListStart + 2 + Shape::E_SIDE );
+		}
+		if ( sides[Shape::W_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[LEFT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			tex[textureIndexSide].glBind();
-			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num2 );
-		} else {
-			tex[textureIndexSide].glBind();
+			glCallList( displayListStart + 2 + Shape::W_SIDE );
 		}
-		glCallList( displayListStart + 2 + Shape::E_SIDE );
-	}
-	if ( sides[Shape::W_SIDE] ) {
-		tex[textureIndexSide].glBind();
-		glCallList( displayListStart + 2 + Shape::W_SIDE );
 	}
 
 	if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
@@ -595,26 +598,24 @@ Surface *GLShape::new_surface( float vertices[4][3] ) {
 		for ( j = 0; j < 3; j++ )
 			surf->vertices[i][j] = vertices[i][j];
 	}
-	/*
+	
 	// x axis of matrix points in world space direction of the s texture axis
 	// top,right <- top,left = 3,0
-	// added div by 10.0f, otherwise light is a pinpoint. Why?
 	for(i = 0; i < 3; i++)
-	surf->matrix[0 + i] = (surf->vertices[1][i] - surf->vertices[2][i]) / 10.0f;
+	surf->matrix[0 + i] = surf->vertices[1][i] - surf->vertices[2][i];
 	surf->s_dist = sqrt(Util::dot_product(surf->matrix, surf->matrix));
 	Util::normalize(surf->matrix);
 
 	// y axis of matrix points in world space direction of the t texture axis
 	// bottom,left <- top,left = 3,0
-	// added div by 10.0f, otherwise light is a pinpoint. Why?
 	for(i = 0; i < 3; i++)
-	surf->matrix[3 + i] = (surf->vertices[3][i] - surf->vertices[2][i]) / 10.0f;
+	surf->matrix[3 + i] = surf->vertices[3][i] - surf->vertices[2][i];
 	surf->t_dist = sqrt(Util::dot_product(surf->matrix + 3, surf->matrix + 3));
 	Util::normalize(surf->matrix + 3);
 
 	// z axis of matrix is the surface's normal
 	Util::cross_product(surf->matrix, surf->matrix + 3, surf->matrix + 6);
-	*/
+	
 	return surf;
 }
 
@@ -670,6 +671,14 @@ void GLShape::initSurfaces() {
 	v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
 	delete surfaces[TOP_SURFACE];
 	surfaces[TOP_SURFACE] = new_surface( v );
+}
+
+void GLShape::getSurfaces( set<Surface*> *shape_surfaces, bool skip_top ) {
+	shape_surfaces->insert( surfaces[LEFT_SURFACE] );
+	shape_surfaces->insert( surfaces[BOTTOM_SURFACE] );
+	shape_surfaces->insert( surfaces[RIGHT_SURFACE] );
+	shape_surfaces->insert( surfaces[FRONT_SURFACE] );
+	if( !skip_top ) shape_surfaces->insert( surfaces[TOP_SURFACE] );
 }
 
 void GLShape::setOccurs( Occurs *o ) {

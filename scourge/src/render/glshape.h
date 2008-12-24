@@ -33,14 +33,6 @@ class Effect;
   *@author Gabor Torok
   */
 
-/// A flat surface making up one side of a wall etc.
-
-struct Surface {
-	float vertices[4][3];
-	// float matrix[9];
-	// float s_dist, t_dist;
-};
-
 /// Nearly every 3D object in the game is a GLShape.
 
 class GLShape : public Shape  {
@@ -93,6 +85,8 @@ public:
 		NORMAL_LIGHTING = 0,
 		OUTDOOR_LIGHTING
 	};
+	
+	virtual void getSurfaces( std::set<Surface*> *shape_surfaces, bool skip_top );
 
 	inline void setAlpha( float f ) {
 		this->alpha = f;
