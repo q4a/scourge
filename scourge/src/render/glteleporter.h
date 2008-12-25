@@ -43,6 +43,7 @@ private:
 	int teleporterType;
 	
 	static Color lightColor;
+	static float lightRadius;
 
 public:
 
@@ -64,7 +65,7 @@ public:
 	~GLTeleporter();
 	
 	virtual inline LightEmitter *getLightEmitter() { return this; }
-	virtual inline float getRadius() { return 6.0f; }	
+	virtual inline float getRadius() { return lightRadius; }	
 	virtual inline Color const& getColor() { return lightColor; }	
 
 	void draw();

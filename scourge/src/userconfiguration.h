@@ -74,6 +74,7 @@ private:
 	int w;
 	int h;
 	int shadows;
+	int lights;
 	bool alwaysShowPath;
 	bool tooltipEnabled;
 	int tooltipInterval;
@@ -162,6 +163,9 @@ public:
 	inline int getShadows()    {
 		return shadows;
 	}
+	inline int getLights()    {
+		return lights;
+	}	
 	inline bool getAnisoFilter() {
 		return aniso_filter;
 	}
@@ -268,6 +272,9 @@ public:
 	inline void setShadows( int t )     {
 		shadows = t;
 	}
+	inline void setLights( int t )     {
+		lights = t;
+	}	
 	inline void setAnisoFilter( bool t ) {
 		aniso_filter = t;
 	}

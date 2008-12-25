@@ -1244,7 +1244,7 @@ void Map::drawIndoors() {
 	}
 	
 #ifdef LIGHTS_ENABLED	
-	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() > LIGHTS_DISABLED ) {
 		drawLightsFloor();
 	}
 #endif	
@@ -1414,7 +1414,7 @@ void Map::drawIndoors() {
 	
 	// lights
 #ifdef LIGHTS_ENABLED	
-	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() > LIGHTS_FLOOR ) {
 		drawLightsWalls();
 	}	
 #endif
@@ -1519,6 +1519,11 @@ void Map::drawLightsWalls() {
 				}
 			}
 			doDrawShape( &stencil[i] );
+		}
+		if( preferences->getLights() > LIGHTS_WALLS ) {
+			for ( int i = 0; i < otherCount; i++ ) {
+				doDrawShape( &other[i] );
+			}
 		}
 		
 		// draw the current light

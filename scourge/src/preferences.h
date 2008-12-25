@@ -102,6 +102,16 @@ enum engine_action_up_int {
 	ENGINE_ACTION_UP_COUNT
 };
 
+enum lights_rendering {
+	LIGHTS_DISABLED = 0,
+	LIGHTS_FLOOR,
+	LIGHTS_WALLS,
+	LIGHTS_PRECISE,
+	
+	// must be last
+	LIGHTS_COUNT 
+};
+
 /// This object holds the game's set preferences.
 class Preferences {
 
@@ -181,6 +191,8 @@ public:
 	virtual void createConfigDir() = 0;
 
 	virtual bool isDebugTheme() = 0;
+	
+	virtual int getLights() = 0;
 };
 
 #endif
