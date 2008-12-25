@@ -104,14 +104,14 @@ GLCaveShape::~GLCaveShape() {
 /// Sets up the level texture theme.
 
 void GLCaveShape::initialize() {
-	assert( shapes->getCurrentTheme() &&
-	        shapes->getCurrentTheme()->isCave() );
+	WallTheme* currentTheme = shapes->getCurrentTheme();
+	assert( currentTheme != NULL && currentTheme->isCave() );
 	string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ];
-	wallTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+	wallTextureGroup = currentTheme->getTextureGroup( ref );
 	ref = WallTheme::themeRefName[ WallTheme::THEME_REF_CORNER ];
-	topTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+	topTextureGroup = currentTheme->getTextureGroup( ref );
 	ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
-	floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+	floorTextureGroup = currentTheme->getTextureGroup( ref );
 }
 
 /// Draws the layer specified by the private variable "mode".
