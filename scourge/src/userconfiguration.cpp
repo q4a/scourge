@@ -322,7 +322,7 @@ UserConfiguration::UserConfiguration()
 		, w( 800 )
 		, h( 600 )
 		, shadows( 0 )
-		, lights( LIGHTS_WALLS )
+		, lights( true )
 		, alwaysShowPath( true )
 		, tooltipEnabled( true )
 		, enableScreenshots( true )
@@ -574,7 +574,7 @@ void UserConfiguration::saveConfiguration() {
 	writeFile( configFile, textLine );
 	snprintf( textLine, TXT_SIZE, "set shadows %d  // 0 : no shadows, 2 : best shadows\n", shadows );
 	writeFile( configFile, textLine );
-	snprintf( textLine, TXT_SIZE, "set lights %d  // 0 : no lights, 1 : floor, 2 : walls, 3 : precise lights\n", lights );
+	snprintf( textLine, TXT_SIZE, "set lights %s\n", lights ? "true" : "false" );
 	writeFile( configFile, textLine );	
 	snprintf( textLine, TXT_SIZE, "set w %d\n", w );
 	writeFile( configFile, textLine );
@@ -694,7 +694,7 @@ void UserConfiguration::set( string s1, string s2, int lineNumber ) {
 	        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
 	        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
 	        s1 == "ovalcutoutshown" || s1 == "outlineinteractiveitems" ||
-	        s1 == "hideinventoriesonmove" ||
+	        s1 == "hideinventoriesonmove" || s1 == "lights" ||
 	        s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" ||
 	        s1 == "enablescreenshots" || s1 == "aniso_filter" ) {
 		if ( s2 == "true" ) {
@@ -760,13 +760,8 @@ void UserConfiguration::set( string s1, string s2, int lineNumber ) {
 			shadows = 2; // Default value
 		}
 	} else if ( s1 == "lights" ) {
-		lights = atoi( s2.c_str() );
-		if ( !( lights >= LIGHTS_DISABLED && lights < LIGHTS_COUNT ) ) {
-			cerr << "Warning : in file " << CONFIG_FILE //_NAME
-			<< " invalid lights mode at line " << lineNumber
-			<< ", valid modes 0, 1, 2, 3 . Ignoring line" << endl;
-			lights = LIGHTS_WALLS; // Default value
-		}
+		lights = paramValue;
+		cerr << "********************** lights=" << lights << endl;
 	} else if ( s1 == "stencilbuf" ) {
 		stencilbuf = paramValue;
 	} else if ( s1 == "multitexturing" ) {
@@ -1198,7 +1193,7 @@ void UserConfiguration::createDefaultConfigFile() {
 	configFile << "set multitexturing true" << endl;
 	configFile << "set hwaccel true" << endl;
 	configFile << "set shadows 2  // 0 : no shadows, 2 : best shadows" << endl;
-	configFile << "set lights 2  // 0 : no lights, 1 : floor, 2 : walls, 3 : precise" << endl;	
+	configFile << "set lights true" << endl;	
 	configFile << "set w 1024" << endl;
 	configFile << "set h 768" << endl;
 	configFile << "set bpp 32" << endl;
