@@ -322,6 +322,7 @@ UserConfiguration::UserConfiguration()
 		, w( 800 )
 		, h( 600 )
 		, shadows( 0 )
+		, lights( LIGHTS_WALLS )
 		, alwaysShowPath( true )
 		, tooltipEnabled( true )
 		, enableScreenshots( true )
@@ -573,6 +574,8 @@ void UserConfiguration::saveConfiguration() {
 	writeFile( configFile, textLine );
 	snprintf( textLine, TXT_SIZE, "set shadows %d  // 0 : no shadows, 2 : best shadows\n", shadows );
 	writeFile( configFile, textLine );
+	snprintf( textLine, TXT_SIZE, "set lights %d  // 0 : no lights, 1 : floor, 2 : walls, 3 : precise lights\n", lights );
+	writeFile( configFile, textLine );	
 	snprintf( textLine, TXT_SIZE, "set w %d\n", w );
 	writeFile( configFile, textLine );
 	snprintf( textLine, TXT_SIZE, "set h %d\n", h );
@@ -755,6 +758,14 @@ void UserConfiguration::set( string s1, string s2, int lineNumber ) {
 			<< " invalid shadow mode at line " << lineNumber
 			<< ", valid modes 0, 1, 2 . Ignoring line" << endl;
 			shadows = 2; // Default value
+		}
+	} else if ( s1 == "lights" ) {
+		lights = atoi( s2.c_str() );
+		if ( !( lights >= LIGHTS_DISABLED && lights < LIGHTS_COUNT ) ) {
+			cerr << "Warning : in file " << CONFIG_FILE //_NAME
+			<< " invalid lights mode at line " << lineNumber
+			<< ", valid modes 0, 1, 2, 3 . Ignoring line" << endl;
+			lights = LIGHTS_WALLS; // Default value
 		}
 	} else if ( s1 == "stencilbuf" ) {
 		stencilbuf = paramValue;
@@ -1187,6 +1198,7 @@ void UserConfiguration::createDefaultConfigFile() {
 	configFile << "set multitexturing true" << endl;
 	configFile << "set hwaccel true" << endl;
 	configFile << "set shadows 2  // 0 : no shadows, 2 : best shadows" << endl;
+	configFile << "set lights 2  // 0 : no lights, 1 : floor, 2 : walls, 3 : precise" << endl;	
 	configFile << "set w 1024" << endl;
 	configFile << "set h 768" << endl;
 	configFile << "set bpp 32" << endl;
