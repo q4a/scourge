@@ -1059,6 +1059,11 @@ protected:
 	
 	void drawLightsFloor();
 	void drawLightsWalls();
+	void drawObjectsAndCreatures();
+	void drawIndoorShadows();
+	void drawRoofsIndoor();
+	void drawFrontWallsAndWater();
+	void drawWaterIndoor();
 	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };

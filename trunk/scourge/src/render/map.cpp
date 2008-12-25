@@ -1198,57 +1198,18 @@ void Map::draw() {
 #define LIGHTS_WALL 1
 void Map::drawIndoors() {
 	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
-		// stencil and draw the floor
-		//glDisable(GL_DEPTH_TEST);
-		//glColorMask(0,0,0,0);
-		glEnable( GL_STENCIL_TEST );
-		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-
-		// cave floor and map editor bottom (so cursor shows)
-		if ( settings->isGridShowing() || floorTexWidth > 0 || isHeightMapEnabled() ) {
-			renderFloor();
-		} else {
-			setupShapes( true, false );
-		}
-
-		// shadows
-		if ( preferences->getShadows() >= Constants::OBJECT_SHADOWS &&
-		        helper->drawShadow() ) {
-			glStencilFunc( GL_EQUAL, 1, 0xffffffff );
-			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
-			glDisable( GL_TEXTURE_2D );
-			glDepthMask( GL_FALSE );
-			glEnable( GL_BLEND );
-			useShadow = true;
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			for ( int i = 0; i < otherCount; i++ ) {
-				doDrawShape( &other[i] );
-			}
-			if ( preferences->getShadows() == Constants::ALL_SHADOWS ) {
-				for ( int i = 0; i < stencilCount; i++ ) {
-					doDrawShape( &stencil[i] );
-				}
-			}
-			useShadow = false;
-			glDisable( GL_BLEND );
-			glEnable( GL_TEXTURE_2D );
-			glDepthMask( GL_TRUE );
-		}
-
-		//glEnable(GL_DEPTH_TEST);
-		glDisable( GL_STENCIL_TEST );
+		drawIndoorShadows();
 	} else {
 		// draw the ground
 		setupShapes( true, false );
 	}
 	
 #ifdef LIGHTS_ENABLED	
-	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() > LIGHTS_DISABLED ) {
+	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
 		drawLightsFloor();
 	}
-#endif	
-
+#endif
+	
 	// draw lava flows
 	for ( int i = 0; i < otherCount; i++ ) {
 		if ( other[i].shape->isFlatCaveshape() ) {
@@ -1256,31 +1217,13 @@ void Map::drawIndoors() {
 		}
 	}
 
-	// draw the creatures/objects/doors/etc.
+	// find the player
 	DrawLater *playerDrawLater = NULL;
 	for ( int i = 0; i < otherCount; i++ ) {
 		if ( other[i].shape->isFlatCaveshape() ) continue;
 		if ( settings->isPlayerEnabled() ) {
 			if ( other[i].creature && other[i].creature == adapter->getPlayer() )
 				playerDrawLater = &( other[i] );
-		}
-		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
-		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
-			colorAlreadySet = true;
-			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
-		}
-		doDrawShape( &other[i] );
-
-		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
-		// draw simple shadow in outdoors
-		if ( !helper->drawShadow() ) {
-			if ( other[i].creature ) {
-				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
-				drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
-			} else if ( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
-				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
-				drawGroundTex( outdoorShadowTree,  static_cast<float>( other[i].pos->x ) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>( other[i].pos->y ) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
-			}
 		}
 	}
 
@@ -1298,74 +1241,40 @@ void Map::drawIndoors() {
 		for ( int i = 0; i < stencilCount; i++ ) {
 			if ( !( stencil[i].inFront ) ) doDrawShape( &( stencil[i] ) );
 		}
+		
+		// lights on walls
+#ifdef LIGHTS_ENABLED	
+		if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
+			drawLightsWalls();
+		}	
+#endif
+		
+		// draw the creatures/objects/doors/etc.
+		drawObjectsAndCreatures();		
 
 		// draw walls in front of the player and water effects
-		glEnable( GL_BLEND );
-		glDepthMask( GL_FALSE );
-		if ( hasWater && preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
-
-			// stencil out the transparent walls (and draw them)
-			//glDisable(GL_DEPTH_TEST);
-			//glColorMask(0,0,0,0);
-			glClear( GL_STENCIL_BUFFER_BIT );
-			glEnable( GL_STENCIL_TEST );
-			glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-			glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-			// draw walls blended in front of the player
-			// 6,2 6,4 work well
-			// FIXME: blending walls have some artifacts that depth-sorting
-			// is supposed to get rid of but that didn't work for me.
-			//glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			for ( int i = 0; i < stencilCount; i++ ) {
-				if ( stencil[i].inFront ) {
-					glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
-					colorAlreadySet = true;
-					doDrawShape( &( stencil[i] ) );
-				}
-			}
-
-			// draw the water (except where the transp. walls are)
-			glStencilFunc( GL_NOTEQUAL, 1, 0xffffffff );
-			glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-			glDisable( GL_TEXTURE_2D );
-			glBlendFunc( GL_ONE, GL_SRC_COLOR );
-			setupShapes( false, true );
-			glEnable( GL_TEXTURE_2D );
-
-			glDisable( GL_STENCIL_TEST );
-		} else {
-			// draw transp. walls and water w/o stencil buffer
-			//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			for ( int i = 0; i < stencilCount; i++ ) {
-				if ( stencil[i].inFront ) {
-					glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
-					colorAlreadySet = true;
-					doDrawShape( &( stencil[i] ) );
-				}
-			}
-			if ( hasWater ) {
-				glDisable( GL_TEXTURE_2D );
-				glBlendFunc( GL_ONE, GL_SRC_COLOR );
-				setupShapes( false, true );
-				glEnable( GL_TEXTURE_2D );
-			}
-		}
-		glDepthMask( GL_TRUE );
+		drawFrontWallsAndWater();
 
 	} else {
 		// no player; just draw the damn walls
-		for ( int i = 0; i < stencilCount; i++ )
+		for ( int i = 0; i < stencilCount; i++ ) {
 			doDrawShape( &( stencil[i] ) );
+		}
+		
+		// lights on walls
+#ifdef LIGHTS_ENABLED	
+		if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
+			drawLightsWalls();
+		}	
+#endif		
+		
+		drawObjectsAndCreatures();
 
 		// draw water (has to come after walls to look good)
 		if ( hasWater ) {
 			glEnable( GL_BLEND );
 			glDepthMask( GL_FALSE );
-			glDisable( GL_TEXTURE_2D );
-			glBlendFunc( GL_ONE, GL_SRC_COLOR );
-			setupShapes( false, true );
+			drawWaterIndoor();
 			glDepthMask( GL_TRUE );
 		}
 	}
@@ -1375,7 +1284,32 @@ void Map::drawIndoors() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	// draw the roofs
+	// draw the roofs (is this needed indoors?!)
+	drawRoofsIndoor();
+	
+	glDepthMask( GL_FALSE );
+	for ( int i = 0; i < laterCount; i++ ) {
+		later[i].shape->setupBlending();
+		doDrawShape( &later[i] );
+		later[i].shape->endBlending();
+	}
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	for ( int i = 0; i < damageCount; i++ ) {
+		doDrawShape( &damage[i], 1 );
+	}	
+			
+	// draw the fog of war or shading
+#ifdef USE_LIGHTING
+#if DEBUG_MOUSE_POS == 0
+	if ( helper && !adapter->isInMovieMode() && !( isCurrentlyUnderRoof && !groundVisible ) ) helper->draw( getX(), getY(), MVW, MVD );
+#endif
+#endif
+
+	glDisable( GL_BLEND );
+	glDepthMask( GL_TRUE );
+}
+
+void Map::drawRoofsIndoor() {
 	Uint32 now = SDL_GetTicks();
 	if ( now - roofAlphaUpdate > 25 ) {
 		roofAlphaUpdate = now;
@@ -1398,36 +1332,130 @@ void Map::drawIndoors() {
 			( ( GLShape* )roof[i].shape )->setAlpha( roofAlpha );
 			doDrawShape( &roof[i] );
 		}
-	}
-
-	glDepthMask( GL_FALSE );
-
-	for ( int i = 0; i < laterCount; i++ ) {
-		later[i].shape->setupBlending();
-		doDrawShape( &later[i] );
-		later[i].shape->endBlending();
-	}
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	for ( int i = 0; i < damageCount; i++ ) {
-		doDrawShape( &damage[i], 1 );
-	}
-	
-	// lights
-#ifdef LIGHTS_ENABLED	
-	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() > LIGHTS_FLOOR ) {
-		drawLightsWalls();
 	}	
-#endif
-			
-	// draw the fog of war or shading
-#ifdef USE_LIGHTING
-#if DEBUG_MOUSE_POS == 0
-	if ( helper && !adapter->isInMovieMode() && !( isCurrentlyUnderRoof && !groundVisible ) ) helper->draw( getX(), getY(), MVW, MVD );
-#endif
-#endif
+}
 
-	glDisable( GL_BLEND );
+void Map::drawFrontWallsAndWater() {
+	glEnable( GL_BLEND );
+	glDepthMask( GL_FALSE );
+	if ( hasWater && preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+		// stencil out the transparent walls (and draw them)
+		//glDisable(GL_DEPTH_TEST);
+		//glColorMask(0,0,0,0);
+		glClear( GL_STENCIL_BUFFER_BIT );
+		glEnable( GL_STENCIL_TEST );
+		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+		// draw walls blended in front of the player
+		// 6,2 6,4 work well
+		// FIXME: blending walls have some artifacts that depth-sorting
+		// is supposed to get rid of but that didn't work for me.
+		//glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		for ( int i = 0; i < stencilCount; i++ ) {
+			if ( stencil[i].inFront ) {
+				glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+				colorAlreadySet = true;
+				doDrawShape( &( stencil[i] ) );
+			}
+		}
+
+		// draw the water (except where the transp. walls are)
+		glStencilFunc( GL_NOTEQUAL, 1, 0xffffffff );
+		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		drawWaterIndoor();
+
+		glDisable( GL_STENCIL_TEST );
+	} else {
+		// draw transp. walls and water w/o stencil buffer
+		//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		for ( int i = 0; i < stencilCount; i++ ) {
+			if ( stencil[i].inFront ) {
+				glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+				colorAlreadySet = true;
+				doDrawShape( &( stencil[i] ) );
+			}
+		}
+		if ( hasWater ) {
+			drawWaterIndoor();
+		}	
+	}
 	glDepthMask( GL_TRUE );
+}
+
+void Map::drawWaterIndoor() {
+	glDisable( GL_TEXTURE_2D );
+	glBlendFunc( GL_ONE, GL_SRC_COLOR );
+	setupShapes( false, true );
+	glEnable( GL_TEXTURE_2D );	
+}
+
+void Map::drawIndoorShadows() {
+	// stencil and draw the floor
+	//glDisable(GL_DEPTH_TEST);
+	//glColorMask(0,0,0,0);
+	glEnable( GL_STENCIL_TEST );
+	glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+	glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+
+	// cave floor and map editor bottom (so cursor shows)
+	if ( settings->isGridShowing() || floorTexWidth > 0 || isHeightMapEnabled() ) {
+		renderFloor();
+	} else {
+		setupShapes( true, false );
+	}
+
+	// shadows
+	if ( preferences->getShadows() >= Constants::OBJECT_SHADOWS &&
+	        helper->drawShadow() ) {
+		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+		glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+		glDisable( GL_TEXTURE_2D );
+		glDepthMask( GL_FALSE );
+		glEnable( GL_BLEND );
+		useShadow = true;
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		for ( int i = 0; i < otherCount; i++ ) {
+			doDrawShape( &other[i] );
+		}
+		if ( preferences->getShadows() == Constants::ALL_SHADOWS ) {
+			for ( int i = 0; i < stencilCount; i++ ) {
+				doDrawShape( &stencil[i] );
+			}
+		}
+		useShadow = false;
+		glDisable( GL_BLEND );
+		glEnable( GL_TEXTURE_2D );
+		glDepthMask( GL_TRUE );
+	}
+
+	//glEnable(GL_DEPTH_TEST);
+	glDisable( GL_STENCIL_TEST );	
+}
+
+void Map::drawObjectsAndCreatures() {
+	for ( int i = 0; i < otherCount; i++ ) {
+		if ( other[i].shape->isFlatCaveshape() ) continue;
+		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
+		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
+			colorAlreadySet = true;
+			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
+		}
+		doDrawShape( &other[i] );
+
+		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
+		// draw simple shadow in outdoors
+		if ( !helper->drawShadow() ) {
+			if ( other[i].creature ) {
+				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+				drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
+			} else if ( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
+				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+				drawGroundTex( outdoorShadowTree,  static_cast<float>( other[i].pos->x ) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>( other[i].pos->y ) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
+			}
+		}
+	}	
 }
 
 void Map::drawLightsFloor() {
@@ -1470,6 +1498,7 @@ void Map::drawLightsFloor() {
 }
 
 void Map::drawLightsWalls() {
+	glDepthMask( GL_FALSE );
 	for( int t = 0; t < lightCount; t++ ) {
 		// stencil and draw the wall
 		//glDisable(GL_DEPTH_TEST);
@@ -1520,11 +1549,6 @@ void Map::drawLightsWalls() {
 			}
 			doDrawShape( &stencil[i] );
 		}
-		if( preferences->getLights() > LIGHTS_WALLS ) {
-			for ( int i = 0; i < otherCount; i++ ) {
-				doDrawShape( &other[i] );
-			}
-		}
 		
 		// draw the current light
 		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
@@ -1550,6 +1574,7 @@ void Map::drawLightsWalls() {
 	for ( int i = 0; i < stencilCount; i++ ) {
 		stencil[i].pos->lightFacingSurfaces.clear();
 	}
+	glDepthMask( GL_TRUE );
 }
 
 bool Map::isFacingLight( Surface *surface, Location *p, Location *lightPos ) {
@@ -2041,7 +2066,6 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			if ( later && later->pos && isLocked( later->pos->x, later->pos->y, later->pos->z ) ) {
 				glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
 			} else {
-				//glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
 				glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 			}
 		}
