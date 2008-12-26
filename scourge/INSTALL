@@ -1,24 +1,45 @@
-# To check out the code and data into a scourge directory
+ # Make sure the required dependencies are installed:
+
+gettext, scons, automake, g++ or gcc-c++, some devel packages for SDL (-image, -mixer, -net, -sound, -ttf), as well as the devel packages for libgl-mesa, libglu-mesa, libstdc++, libxmu and freetype.
+
+ # To check out the code and data into a scourge directory (for building the development version):
+
 svn co https://scourge.svn.sourceforge.net/svnroot/scourge/trunk scourge
 
-# To configure it
+ # For building a release version, you have to download and extract the source and data packages instead.
+
+ # To configure it:
+
 cd scourge/scourge
 autoreconf -i
 ./translate.sh
 ./configure
 
-# To compile it normally
+ # To compile it normally:
+
 scons
 
-# To compile it with debug support
+ # To compile it with debug support:
+
 scons debug=true
 
-# Run
+ # Run:
+
 ./scourge
 
-# Run in windowed mode
+ # Run in windowed mode:
+
 ./scourge -f
+
+ # To install it system-wide, run as root:
+
+scons install
 
 Thanks,
 --Gabor
 (cctorok@yahoo.com)
+
+and
+
+- Dennis "lordtoran" Murczak
+  <dmurczak@versanet.de>

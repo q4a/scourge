@@ -1,0 +1,31 @@
+Scourge 0.21.1 (2008-12-25)
+
+ * Maintenance release: Fix crashes.
+
+Scourge 0.21 (2008-12-21)
+
+ * The storyline is complete; the game can now be finished and you can upload your final score.
+ * Substantial frame rate improvements in all areas of the game. Scourge should now be playable on low end systems, too.
+ * Monsters and NPCs actively fight each other.
+ * Full Spanish translation, in addition to German and Italian.
+ * New icons, textures, item models and music.
+ * More outdoor themes, and new house models for outdoors.
+ * New inventory-like container UI.
+ * New "Call for Help" spell (summons a monster).
+ * Loads of bugfixes and optimizations.
+
+Scourge 0.20 (2008-05-07)
+
+ * Internationalization support; full German translation.
+ * New themeable user interface.
+ * Outdoor levels with villages.
+ * More models and icons.
+ * Weather effects and ambient sound.
+ * Story additions.
+ * Support for uploading highscore on death.
+
+Scourge 0.19 (2007-10-02)
+
+Scourge 0.18 (2007-05-01)
+
+Scourge 0.17 (2007-01-14)
