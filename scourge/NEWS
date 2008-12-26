@@ -16,16 +16,34 @@ Scourge 0.21 (2008-12-21)
 
 Scourge 0.20 (2008-05-07)
 
- * Internationalization support; full German translation.
+ * Complete internationalization support; full German translation.
  * New themeable user interface.
  * Outdoor levels with villages.
  * More models and icons.
  * Weather effects and ambient sound.
  * Story additions.
- * Support for uploading highscore on death.
 
 Scourge 0.19 (2007-10-02)
 
+ * Outdoor areas (complete with swaying trees).
+ * Movement AI refactored and improved.
+ * Chapter 11 of the story can be played, where the player encounters creatures higher than level 20.
+ * Other bugfixes, features, art, music, and translations.
+
 Scourge 0.18 (2007-05-01)
 
+ * Gnu gettext internationalization support, including the Italian translation.
+ * UI improvements: Simpler inventory ui, scrollable message area, new fonts, new artwork.
+ * New, easier to understand configuration files.
+ * Many miscallenous bugfixes.
+
 Scourge 0.17 (2007-01-14)
+
+ * Full savegame system with screenshots, saved maps etc.
+ * High score saved to web after everyone in the party dies.
+ * New graphics and models.
+ * New sounds.
+ * new spells, professions and capabilities.
+ * Map can be moved with right-click and drag.
+ * Chapter 10 of the story complete.
+ * Many bugfixes, including the 'party mass starvation' fix.
