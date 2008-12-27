@@ -134,7 +134,7 @@ Item *ItemList::getItem( int index ) {
 	return( creature ? creature->getBackpackItem( index ) : container->getContainedItem( index ) );
 }
 
-bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool ItemList::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	bool ret = ScrollingList::handleEvent( parent, event, x, y );
 	if ( isInside( x, y ) && event->button.button == SDL_BUTTON_RIGHT ) {
 		scourge->getInfoGui()->

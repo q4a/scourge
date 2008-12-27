@@ -63,10 +63,10 @@ Widget::~Widget() {
 	glDeleteLists( displayList, 1 );
 }
 
-void Widget::draw( Widget *parent ) {
+void Widget::draw( Window* parent ) {
 	glTranslated( x, y, 0 );
 	if ( hasFocus() ) {
-		GuiTheme *theme = ( ( Window* )parent )->getTheme();
+		GuiTheme *theme = parent->getTheme();
 		if ( theme->getSelectedBorder() ) {
 			glColor4f( theme->getSelectedBorder()->color.r,
 			           theme->getSelectedBorder()->color.g,
@@ -100,12 +100,12 @@ void Widget::draw( Widget *parent ) {
 	//glCallList( displayList );
 }
 
-bool Widget::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool Widget::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	// do nothing by default
 	return false;
 }
 
-void Widget::removeEffects( Widget *parent ) {
+void Widget::removeEffects() {
 }
 
 bool Widget::isInside( int x, int y ) {
@@ -113,10 +113,10 @@ bool Widget::isInside( int x, int y ) {
 	        y >= getY() && y < getY() + h );
 }
 
-void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
+void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
                          bool toggle, bool selected, bool inverse,
                          bool glowing, bool inside ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+	GuiTheme *theme = parent->getTheme();
 
 	glPushMatrix();
 	glTranslatef( x, y, 0 );
@@ -408,9 +408,9 @@ void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
 	delete [] p;
 }
 
-void Widget::drawTooltip( Widget *parent ) {
-	int xpos = ( ( Window* )parent )->getScourgeGui()->getMouseX() -  parent->getX();
-	int ypos = ( ( Window* )parent )->getScourgeGui()->getMouseY() -  parent->getY() - ( ( Window* )parent )->getGutter();
+void Widget::drawTooltip( Window* parent ) {
+	int xpos = parent->getScourgeGui()->getMouseX() - parent->getX();
+	int ypos = parent->getScourgeGui()->getMouseY() - parent->getY() - parent->getGutter();
 	bool b = isInside( xpos, ypos );
 
 	if ( !( tooltipShowing && b ) ) {
@@ -425,7 +425,7 @@ void Widget::drawTooltip( Widget *parent ) {
 		}
 	}
 	if ( !tooltipShowing || !strlen( tooltip ) ) return;
-	( ( Window* )parent )->getScourgeGui()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip );
+	parent->getScourgeGui()->drawTooltip( xpos, ypos, 450, 0, 0, tooltip );
 }
 
 /**
@@ -528,11 +528,11 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 	glDisable( GL_BLEND );
 }
 
-int Widget::getTextWidth( Widget *parent, const char *s ) {
+int Widget::getTextWidth( Window* parent, const char* s ) {
 	string str = s;
 	int n;
 	if ( textWidthCache.find( str ) == textWidthCache.end() ) {
-		n = ( ( Window* )parent )->getScourgeGui()->textWidth( s );
+		n = parent->getScourgeGui()->textWidth( s );
 		textWidthCache[ str ] = n;
 	} else {
 		n = textWidthCache[ str ];

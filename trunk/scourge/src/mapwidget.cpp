@@ -43,7 +43,7 @@ MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, in
 MapWidget::~MapWidget() {
 }
 
-bool MapWidget::handleEvent( Widget* parent, SDL_Event *event, int x, int y ) {
+bool MapWidget::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	switch ( event->type ) {
 	case SDL_MOUSEMOTION:
 		if ( dragging ) {

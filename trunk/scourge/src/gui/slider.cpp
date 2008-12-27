@@ -51,8 +51,8 @@ Slider::~Slider() {
 	delete label;
 }
 
-void Slider::drawWidget( Widget *parent ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+void Slider::drawWidget( Window* parent ) {
+	GuiTheme *theme = parent->getTheme();
 
 	GLint t = SDL_GetTicks();
 	if ( lastTick == 0 || t - lastTick > 50 ) {
@@ -135,9 +135,9 @@ void Slider::drawWidget( Widget *parent ) {
 	glPopMatrix();
 }
 
-bool Slider::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool Slider::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = isInside( x, y );
-	if ( inside ) ( ( Window* )parent )->setLastWidget( this );
+	if ( inside ) parent->setLastWidget( this );
 	else dragging = false;
 	// handle it
 	switch ( event->type ) {
@@ -182,7 +182,7 @@ bool Slider::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 	return false;
 }
 
-void Slider::removeEffects( Widget *parent ) {
+void Slider::removeEffects() {
 	inside = false;
 }
 

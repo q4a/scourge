@@ -50,8 +50,8 @@ public:
 	inline WidgetView *getView() {
 		return view;
 	}
-	void drawWidget( Widget *parent );
-
+	virtual void drawWidget( Window* parent );
+	
 	inline void setGlowing( bool b ) {
 		glowing = b;
 	}
@@ -71,8 +71,8 @@ public:
 	Another way to think about it is that if true, the widget fires an "activated" event
 	to the outside world.
 	 */
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-	void removeEffects( Widget *parent );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	virtual void removeEffects();
 	inline void resize( int w, int h ) {
 		Widget::resize( w, h ); x2 = getX() + w; y2 = getY() + h;
 	}

@@ -43,9 +43,9 @@ Button::Button( int x1, int y1, int x2, int y2, Texture const& highlight, char c
 Button::~Button() {
 }
 
-void Button::drawWidget( Widget *parent ) {
+void Button::drawWidget( Window* parent ) {
 
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+	GuiTheme *theme = parent->getTheme();
 
 	drawButton( parent, 0, 0, x2 - x, y2 - y, toggle, selected, inverse, glowing, inside );
 
@@ -101,17 +101,17 @@ void Button::drawWidget( Widget *parent ) {
 		} else {
 			applyColor();
 		}
-		( ( Window* )parent )->getScourgeGui()->setFontType( fontType );
-		( ( Window* )parent )->getScourgeGui()->texPrint( 0, 0, label );
-		( ( Window* )parent )->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+		parent->getScourgeGui()->setFontType( fontType );
+		parent->getScourgeGui()->texPrint( 0, 0, label );
+		parent->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 		glPopMatrix();
 	}
 }
-
-bool Button::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+	
+bool Button::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inverse = false;
 	inside = isInside( x, y );
-	if ( inside ) ( ( Window* )parent )->setLastWidget( this );
+	if ( inside ) parent->setLastWidget( this );
 	// handle it
 	switch ( event->type ) {
 	case SDL_KEYUP:
@@ -139,7 +139,7 @@ bool Button::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 	return false;
 }
 
-void Button::removeEffects( Widget *parent ) {
+void Button::removeEffects() {
 	inside = false;
 }
 

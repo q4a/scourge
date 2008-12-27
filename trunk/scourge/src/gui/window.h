@@ -212,11 +212,11 @@ public:
 	void prevFocus();
 
 	// from Widget
-	void drawWidget( Widget *parent );
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
+	virtual void drawWidget( Window* );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
 	/// Called when no events are sent to this widget. (ie. the mouse is elsewhere.)
 	/// Window forwards it to its own widgets 
-	virtual void removeEffects( Widget* );
+	virtual void removeEffects();
 	bool isInside( int x, int y );
 
 	void move( int x, int y );

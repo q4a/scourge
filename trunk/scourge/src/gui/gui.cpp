@@ -88,12 +88,12 @@ Widget* ScourgeGui::delegateEvent( SDL_Event* event, int x, int y, Window** sele
 					break;
 				}
 			} else if ( window[i]->isInside( x, y ) ) {
-				if ( window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_NORMAL ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_ATTACK ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_RANGED ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_MOVE ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_TALK )
-					window[i]->getScourgeGui()->setCursorMode( Constants::CURSOR_NORMAL );
+				if ( getCursorMode() == Constants::CURSOR_ATTACK 
+				   || getCursorMode() == Constants::CURSOR_RANGED 
+				   || getCursorMode() == Constants::CURSOR_MOVE 
+				   || getCursorMode() == Constants::CURSOR_TALK ) {
+					setCursorMode( Constants::CURSOR_NORMAL );
+				}
 				if ( maxz < window[i]->getZ() ) {
 					win = window[i];
 					maxz = win->getZ();
@@ -113,7 +113,7 @@ Widget* ScourgeGui::delegateEvent( SDL_Event* event, int x, int y, Window** sele
 	// tell the other windows that the mouse is elsewhere
 	for ( int i = 0; i < windowCount; i++ ) {
 		if ( window[i] != win ) {
-			window[i]->removeEffects( NULL );
+			window[i]->removeEffects();
 		}
 	}
 	

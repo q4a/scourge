@@ -121,16 +121,16 @@ public:
 	//  inline int getSelectedLine() { return selectedLine; }
 	//  void setSelectedLine(int n);
 
-	void drawWidget( Widget *parent );
-
+	virtual void drawWidget( Window* parent );
+	
 	/**
 	Return true, if the event activated this widget. (For example, button push, etc.)
 	Another way to think about it is that if true, the widget fires an "activated" event
 	to the outside world.
 	 */
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-
-	void removeEffects( Widget *parent );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	
+	virtual void removeEffects();
 
 	// don't play sound when the value changes
 	virtual inline bool hasSound() {
@@ -145,7 +145,7 @@ public:
 	}
 
 private:
-	char *printLine( Widget *parent, int x, int y, char *s );
+	char *printLine( Window* parent, int x, int y, char *s );
 	int getWordPos( int x, int y );
 	//  void selectLine(int x, int y);
 	//  void drawIcon( int x, int y, GLuint icon );

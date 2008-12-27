@@ -63,8 +63,8 @@ public:
 		return vText.size();
 	}
 
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-	void drawWidget( Widget *parent );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	virtual void drawWidget( Window* parent );
 };
 
 #endif

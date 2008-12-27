@@ -38,7 +38,7 @@ MultipleLabel::~MultipleLabel() {
 	delete dynamicLabel;
 }
 
-void MultipleLabel::drawWidget( Widget *parent ) {
+void MultipleLabel::drawWidget( Window* parent ) {
 
 	// Draw rectangle
 	drawButton( parent, x2 - dynWidth, 0, x2, y2 - getY(), false, false, false, false, inside );
@@ -76,7 +76,7 @@ bool MultipleLabel::isInside( int x, int y ) {
 	return( x >= ( getX() + x2 - dynWidth ) && x < ( getX() + x2 ) && y >= getY() && y < y2 );
 }
 
-bool MultipleLabel::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool MultipleLabel::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = isInside( x, y );
 	// handle it
 	switch ( event->type ) {

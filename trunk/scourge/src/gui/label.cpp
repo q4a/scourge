@@ -33,10 +33,10 @@ Label::Label( int x, int y, char const* text, int lineWidth, int fontType, int l
 Label::~Label() {
 }
 
-void Label::drawWidget( Widget *parent ) {
+void Label::drawWidget( Window* parent ) {
 	if ( text ) {
-		( ( Window* )parent )->getScourgeGui()->setFontType( fontType );
-		GuiTheme *theme = ( ( Window* )parent )->getTheme();
+		parent->getScourgeGui()->setFontType( fontType );
+		GuiTheme *theme = parent->getTheme();
 		if ( !specialColor && theme->getWindowText() ) {
 			glColor4f( theme->getWindowText()->r, theme->getWindowText()->g, theme->getWindowText()->b, theme->getWindowText()->a );
 		} else {
@@ -44,15 +44,15 @@ void Label::drawWidget( Widget *parent ) {
 		}
 		if ( lines.empty() ) {
 			// draw a single-line label
-			( ( Window* )parent )->getScourgeGui()->texPrint( 0, 0, text );
+			parent->getScourgeGui()->texPrint( 0, 0, text );
 		} else {
 			int y = 0;
 			for ( int i = 0; i < static_cast<int>( lines.size() ); i++ ) {
-				( ( Window* )parent )->getScourgeGui()->texPrint( 0, y, lines[i].c_str() );
+				parent->getScourgeGui()->texPrint( 0, y, lines[i].c_str() );
 				y += lineHeight;
 			}
 		}
-		( ( Window* )parent )->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+		parent->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 	}
 }
 

@@ -98,9 +98,9 @@ public:
 	inline void setLabel( char const* s ) {
 		strncpy( label, ( s ? s : "" ), 255 ); label[254] = '\0';
 	}
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-	void removeEffects( Widget *parent );
-	void drawWidget( Widget *parent );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	virtual void removeEffects();
+	virtual void drawWidget( Window* parent );
 	virtual inline void move( int x, int y ) {
 		x2 += ( x - this->x );
 		y2 += ( y - this->y );
