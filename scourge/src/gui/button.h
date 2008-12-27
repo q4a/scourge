@@ -52,7 +52,7 @@ public:
 		BOTTOM
 	};
 
-	Button( int x1, int y1, int x2, int y2, Texture const& highlight, char *label = NULL, Texture const& texture = Texture::none() );
+	Button( int x1, int y1, int x2, int y2, Texture const& highlight, char const* label = NULL, Texture const& texture = Texture::none() );
 	~Button();
 
 	inline void setInside( bool b ) {
@@ -95,7 +95,7 @@ public:
 	inline char *getLabel() {
 		return label;
 	}
-	inline void setLabel( char *s ) {
+	inline void setLabel( char const* s ) {
 		strncpy( label, ( s ? s : "" ), 255 ); label[254] = '\0';
 	}
 	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );

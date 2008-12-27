@@ -2055,8 +2055,7 @@ void Scourge::removeClosedContainerGuis() {
 
 void Scourge::showMessageDialog( char const* message ) {
 	if ( party && party->getPartySize() ) party->toggleRound( true );
-	Window::showMessageDialog( getSDLHandler(),
-	                           getSDLHandler()->getScreen()->w / 2 - 200,
+	getSDLHandler()->showMessageDialog( getSDLHandler()->getScreen()->w / 2 - 200,
 	                           getSDLHandler()->getScreen()->h / 2 - 55,
 	                           400, 110, _( Constants::messages[Constants::SCOURGE_DIALOG][0] ),
 	                           getSession()->getShapePalette()->getGuiTexture(),

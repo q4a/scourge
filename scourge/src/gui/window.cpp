@@ -43,21 +43,12 @@ const char Window::DROP_FAILED[80] = "sound/equip/cant_equip.wav";
 
 //#define DEBUG_WINDOWS
 
-int Window::windowCount = 0;
-Window *Window::window[MAX_WINDOW];
-Window *Window::currentWin = NULL;
-Window *Window::mouseLockWindow = NULL;
-Widget *Window::mouseLockWidget = NULL;
 /**
   *@author Gabor Torok
   */
 
 #define CLOSE_BUTTON_SIZE 10
 
-Window *Window::message_dialog = NULL;
-Label *Window::message_label = NULL;
-Button *Window::message_button = NULL;
-bool Window::windowWasClosed = false;
 
 Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, bool hasCloseButton, int type, const char *themeName ) : Widget( x, y, w, h ) {
 	theme = GuiTheme::getThemeByName( themeName );
@@ -118,7 +109,7 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
 	// make windows stay on screen
 	this->move( x, y );
 	currentY = y;
-	addWindow( this );
+	scourgeGui->addWindow( this );
 }
 
 Window::~Window() {
@@ -129,12 +120,14 @@ Window::~Window() {
 		scourgeGui->unregisterEventHandler( widget[i] );
 		delete this->widget[i];
 	}
-	removeWindow( this );
+	scourgeGui->removeWindow( this );
+	
+	/* This is now property of scourgeGui
 	if (message_dialog != NULL) {
 		Window *tmp = message_dialog; // to avoid recursion of ~Window
 		message_dialog = NULL;
 		delete tmp;
-	}
+	}*/
 }
 
 // convenience method to register the same handler for all the window's widgets
@@ -152,103 +145,18 @@ void Window::unregisterEventHandler() {
 	if( closeButton ) scourgeGui->unregisterEventHandler( closeButton );
 }
 
-void Window::addWindow( Window *win ) {
-	if ( windowCount < MAX_WINDOW ) {
-		win->setZ( 50 + windowCount * 10 );
-		window[windowCount++] = win;
-	}
-}
 
-void Window::removeWindow( Window *win ) {
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i] == win ) {
-			for ( int t = i; t < windowCount - 1; t++ ) {
-				window[t] = window[t + 1];
-			}
-			windowCount--;
-			return;
-		}
-	}
-}
-
-void Window::drawVisibleWindows() {
-	//  glDisable(GL_CULL_FACE);
-	glDisable( GL_DEPTH_TEST );
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i]->isVisible() ) {
-			window[i]->drawWidget( NULL );
-		}
-	}
-	glEnable( GL_DEPTH_TEST );
-}
-
-Widget *Window::delegateEvent( SDL_Event *event, int x, int y, Window **selectedWindow ) {
-
-	if ( mouseLockWindow ) {
-		return mouseLockWindow->handleWindowEvent( event, x, y );
-	}
-
-	// find the topmost window
-	Window *win = NULL;
-	int maxz = 0;
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i]->isVisible() ) {
-			if ( window[i]->isModal() ) {
-				win = window[i];
-				break;
-			} else if ( event->type == SDL_KEYUP ||
-			            event->type == SDL_KEYDOWN ) {
-				if ( window[i] == currentWin ) {
-					win = window[i];
-					break;
-				}
-			} else if ( window[i]->isInside( x, y ) ) {
-				if ( window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_NORMAL ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_ATTACK ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_RANGED ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_MOVE ||
-				        window[i]->getScourgeGui()->getCursorMode() == Constants::CURSOR_TALK )
-					window[i]->getScourgeGui()->setCursorMode( Constants::CURSOR_NORMAL );
-				if ( maxz < window[i]->getZ() ) {
-					win = window[i];
-					maxz = win->getZ();
-				}
-			}
-		}
-	}
-	// find the active widget
-	Widget *widget = NULL;
-	if ( win ) {
-#ifdef DEBUG_WINDOWS
-		cerr << "handled by window: " << win->getZ() << endl;
-#endif		
-		widget = win->handleWindowEvent( event, x, y );
-	}
-
-	// tell the other windows that the mouse is elsewhere
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i] != win ) {
-			for ( int t = 0; t < window[i]->widgetCount; t++ ) {
-				window[i]->widget[t]->removeEffects( window[i] );
-			}
-		}
-	}
-	
-	if( selectedWindow ) {
-		*selectedWindow = win;
-	}
-	return widget;
-}
 
 Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 
+	/* duplicate, taken into account in delegateEvent()
 	if ( mouseLockWidget ) {
 		mouseLockWidget->
 		handleEvent( mouseLockWindow, event,
 		             x - getX(),
 		             y - getY() - gutter );
 		return mouseLockWidget;
-	}
+	}*/
 
 	if ( dragging ) {
 		handleEvent( NULL, event, x, y );
@@ -262,21 +170,8 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 		switch ( event->key.keysym.sym ) {
 		case SDLK_ESCAPE:
 			// select an open, non-locked window with a close button to close
-			if ( !currentWin || currentWin->isLocked() || !( currentWin->closeButton ) ) {
-				for ( int i = 0; i < windowCount; i++ ) {
-					if ( !window[i]->isLocked() && window[i]->closeButton && window[i]->isVisible() ) {
-						currentWin = window[i];
-						currentWin->toTop();
-						break;
-					}
-				}
-			}
-			if( currentWin && currentWin->getEscapeHandler() ) {
-				w = currentWin->getEscapeHandler();
-				setFocus( w );
-			} else {
-				systemKeyPressed = true;
-			}
+			w = scourgeGui->selectCurrentEscapeHandler();
+			systemKeyPressed = ( w == NULL );
 			break;
 		case SDLK_TAB:
 			systemKeyPressed = true; break;
@@ -292,12 +187,12 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 			for ( int t = 0; t < widgetCount; t++ ) {
 				if ( this->widget[t]->isVisible() && this->widget[t]->isEnabled() ) {
 					if ( !insideWidget ) {
-						if ( insideWidget = this->widget[t]->isInside( x - getX(), y - getY() - gutter ) ) {
-							if ( ( event->type == SDL_MOUSEBUTTONUP ||
-							        event->type == SDL_MOUSEBUTTONDOWN ) && event->button.button == SDL_BUTTON_LEFT ) {
-								currentWin = this;
-								setFocus( this->widget[t] );
-							}
+						insideWidget = this->widget[t]->isInside( x - getX(), y - getY() - gutter );
+						if ( insideWidget
+						   && ( event->type == SDL_MOUSEBUTTONUP || event->type == SDL_MOUSEBUTTONDOWN ) 
+						   && event->button.button == SDL_BUTTON_LEFT ) {
+							scourgeGui->currentWin = this;
+							setFocus( this->widget[t] );
 						}
 					}
 					if ( this->widget[t]->handleEvent( this,
@@ -310,8 +205,9 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 		}
 		
 		// special handling
-		if ( message_button != NULL && w == message_button && message_dialog != NULL ) {
-			message_dialog->setVisible( false );
+		// XXX: GUI: extract it from here
+		if ( scourgeGui->message_button != NULL && w == scourgeGui->message_button && scourgeGui->message_dialog != NULL ) {
+			scourgeGui->message_dialog->setVisible( false );
 		}			
 		
 		if ( w ) {
@@ -353,6 +249,12 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 	return( isModal() ? this : NULL );
 }
 
+void Window::removeEffects( Widget* ) {
+	for ( int t = 0; t < widgetCount; t++ ) {
+		widget[t]->removeEffects( this );
+	}
+}
+
 bool Window::isInside( int x, int y ) {
 	return( dragging || Widget::isInside( x, y ) );
 }
@@ -365,9 +267,9 @@ bool Window::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 		if ( event->key.keysym.sym == SDLK_TAB ) {
 			if ( SDL_GetModState() & KMOD_CTRL ) {
 				if ( SDL_GetModState() & KMOD_SHIFT ) {
-					prevWindowToTop( this );
+					scourgeGui->prevWindowToTop( this );
 				} else {
-					nextWindowToTop( this );
+					scourgeGui->nextWindowToTop( this );
 				}
 			} else if ( SDL_GetModState() & KMOD_SHIFT ) {
 				prevFocus();
@@ -375,12 +277,13 @@ bool Window::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 				nextFocus();
 			}
 			return true;
-		} else if ( event->key.keysym.sym == SDLK_ESCAPE && ( closeButton || message_button ) && !isLocked() ) {
+		// XXX: GUI: extract it from here
+		} else if ( event->key.keysym.sym == SDLK_ESCAPE && ( closeButton || scourgeGui->message_button ) && !isLocked() ) {
 			scourgeGui->blockEvent();
 			setVisible( false );
 			// raise the next unlocked window
-			currentWin = NULL;
-			nextWindowToTop( NULL, false );
+			scourgeGui->currentWin = NULL;
+			scourgeGui->nextWindowToTop( NULL, false );
 			return true;
 		} else {
 			return false;
@@ -589,7 +492,6 @@ void Window::drawWidget( Widget *parent ) {
 			glPushMatrix();
 			glLoadIdentity();
 
-
 			// if this is modified, also change handleWindowEvent
 			//glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
 			glTranslated( x, y + topY + gutter, z + 5 );
@@ -766,13 +668,13 @@ void Window::setWindowBorderColor() {
 
 void Window::drawLineBorder( int topY, int openHeight ) {
 	// add a border
-	if ( currentWin == this ) {
+	if ( scourgeGui->currentWin == this ) {
 		setTopWindowBorderColor();
 	} else {
 		setWindowBorderColor();
 	}
 
-	if ( this == currentWin || isLocked() || isModal() ) {
+	if ( this == scourgeGui->currentWin || isLocked() || isModal() ) {
 		glLineWidth( 3.0f );
 	} else if ( theme->getWindowBorder() ) {
 		glLineWidth( theme->getWindowBorder()->width );
@@ -946,7 +848,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 }
 
 
-Button *Window::createButton( int x1, int y1, int x2, int y2, char *label, bool toggle, Texture const& texture ) {
+Button *Window::createButton( int x1, int y1, int x2, int y2, char const* label, bool toggle, Texture const& texture ) {
 	if ( widgetCount < MAX_WIDGET ) {
 		Button * theButton;
 		theButton = new Button( x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label, texture );
@@ -1071,133 +973,15 @@ void Window::setVisible( bool b, bool animate ) {
 			listeners[i]->windowClosing();
 		}
 		y = currentY;
-		windowWasClosed = true;
-		if( currentWin == this ) currentWin = NULL;
-		nextWindowToTop( NULL, false );
+		scourgeGui->windowWasClosed = true;
+		if( scourgeGui->currentWin == this ) scourgeGui->currentWin = NULL;
+		scourgeGui->nextWindowToTop( NULL, false );
 
 		// Any windows open?
-		if ( !anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
+		if ( !scourgeGui->anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
 	}
 }
 
-bool Window::anyFloatingWindowsOpen() {
-	bool found = false;
-	for ( int i = 0; i < Window::windowCount; i++ ) {
-		if ( Window::window[i]->isVisible() &&
-		        !Window::window[i]->isLocked() ) {
-			found = true;
-			break;
-		}
-	}
-	return found;
-}
-
-void Window::toTop() {
-	toTop( this );
-}
-
-void Window::toTop( Window *win ) {
-	currentWin = win;
-	if ( win->isLocked() ) return;
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i] == win ) {
-			for ( int t = i; t < windowCount - 1; t++ ) {
-				window[t] = window[t + 1];
-				window[t]->setZ( window[t]->getZ() - 10 );
-			}
-			window[windowCount - 1] = win;
-			win->setZ( 50 + ( windowCount * 10 ) );
-			break;
-		}
-	}
-}
-
-void Window::toBottom() {
-	toBottom( this );
-}
-
-void Window::toBottom( Window *win ) {
-	if ( win->isLocked() ) return;
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i] == win ) {
-			for ( int t = i; t > 0; t-- ) {
-				window[t] = window[t - 1];
-				window[t]->setZ( window[t]->getZ() + 10 );
-			}
-			window[0] = win;
-			win->setZ( 50 );
-			break;
-		}
-	}
-}
-
-void Window::nextWindowToTop( Window *win, bool includeLocked ) {
-	int nextWindow = -1;
-	int nextZ;
-	
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i]->isVisible() && ( !win || window[i]->getZ() < win->getZ() ) && ( nextWindow == -1 || window[i]->getZ() > nextZ ) ) {
-			if ( !includeLocked && window[i]->isLocked() ) continue;
-			nextWindow = i;
-			nextZ = window[i]->getZ();
-		}
-	}
-	if ( nextWindow == -1 ) {
-		return;
-	}
-	currentWin = window[nextWindow];
-	currentWin->toTop();
-}
-
-void Window::prevWindowToTop( Window *win, bool includeLocked ) {
-	int prevWindow = -1;
-	int prevZ;
-
-	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i]->isVisible() && ( window[i]->getZ() > win->getZ() ) && ( prevWindow == -1 || window[i]->getZ() < prevZ ) ) {
-			if ( !includeLocked && window[i]->isLocked() ) continue;
-			prevWindow = i;
-			prevZ = window[i]->getZ();
-		}
-	}
-	if ( prevWindow == -1 ) return;
-	currentWin = window[prevWindow];
-	currentWin->toTop();
-}
-
-void Window::showMessageDialog( ScourgeGui *scourgeGui,
-                                int x, int y, int w, int h,
-                                char *title, Texture texture,
-                                char const* message,
-                                char *buttonLabel ) {
-	if ( message_dialog && message_dialog->isVisible() ) {
-		cerr << "*** Warning: Unable to display second message dialog: " << message << endl;
-		return;
-	}
-	if ( !message_dialog ) {
-		message_dialog = new Window( scourgeGui,
-		                             x, y, w, h,
-		                             title,
-		                             texture, false );
-		int textWidth = scourgeGui->textWidth( message );
-		message_label = message_dialog->createLabel( ( w - textWidth ) / 2, 30, message );
-		message_button = message_dialog->createButton( ( w / 2 ) - 50,
-		                                               h - 30 - message_dialog->getGutter() - 5,
-		                                               ( w / 2 ) + 50,
-		                                               h - 10 - message_dialog->getGutter() - 5,
-		                                               buttonLabel );
-		message_dialog->setModal( true );
-		message_dialog->setEscapeHandler( message_button );
-	} else {
-		message_dialog->move( x, y );
-		message_dialog->resize( w, h );
-		message_label->setText( message );
-		int textWidth = scourgeGui->textWidth( message );
-		message_label->move( ( w - textWidth ) / 2, 30 );
-		message_button->setLabel( buttonLabel );
-	}
-	message_dialog->setVisible( true );
-}
 
 // overridden so windows stay on screen and moving/rotating still works
 void Window::move( int x, int y ) {
@@ -1227,18 +1011,10 @@ void Window::setLastWidget( Widget *w ) {
 
 void Window::setMouseLock( Widget *widget ) {
 	if ( widget ) {
-		mouseLockWindow = this;
-		mouseLockWidget = widget;
-		getScourgeGui()->lockMouse( this );
+		getScourgeGui()->lockMouse( this, widget );
 	} else {
-		mouseLockWindow = NULL;
-		mouseLockWidget = NULL;
 		getScourgeGui()->unlockMouse();
 	}
-}
-
-Window *Window::getTopWindow() {
-	return currentWin;
 }
 
 void Window::resize( int w, int h ) {

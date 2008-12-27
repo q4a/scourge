@@ -32,8 +32,8 @@ class Scourge;
 /// A widget that displays a draggable world map with location marks.
 class MapWidget : public Canvas, WidgetView {
 private:
-	Scourge *scourge;
-	Widget *parent;
+	Scourge* scourge;
+	Window* parent; 
 	int markedX, markedY;
 	int selX, selY;
 	int oldSelX, oldSelY;
@@ -44,7 +44,7 @@ private:
 
 public:
 
-	MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, int y2, bool editable = true );
+	MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable = true );
 	~MapWidget();
 
 	inline void getSelection( int *x, int *y ) {

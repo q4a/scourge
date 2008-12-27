@@ -673,12 +673,12 @@ public:
 		return mainWin;
 	}
 
-	virtual void unlockMouse() {
+	/* unused: virtual void unlockMouse() {
 		getSDLHandler()->unlockMouse();
 	}
 	virtual void lockMouse( Widget *widget ) {
 		getSDLHandler()->lockMouse( widget );
-	}
+	}*/
 
 	Texture const& getHighlightTexture();
 	Texture const& getGuiTexture();

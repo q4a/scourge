@@ -150,11 +150,13 @@ public:
 		willBlockEvent = true;
 	}
 
-	inline void lockMouse( Widget *widget ) {
+	virtual void lockMouse(  Window* window, Widget* widget ) {
 		mouseLock = widget;
+		ScourgeGui::lockMouse( window, widget );
 	}
-	inline void unlockMouse() {
+	virtual void unlockMouse() {
 		willUnlockMouse = true;
+		ScourgeGui::unlockMouse();
 	}
 
 	void drawTooltip( float xpos2, float ypos2, float zpos2,

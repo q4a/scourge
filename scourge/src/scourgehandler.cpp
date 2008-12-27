@@ -306,8 +306,8 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == scourge->getReplayIntro() ) {
 		scourge->replayChapterIntro();
 		return false;
-	} else if ( widget == Window::message_button &&
-	            scourge->isInfoDialogShowing() ) {
+	} else if ( widget == scourge->getSDLHandler()->message_button 
+		      && scourge->isInfoDialogShowing() ) {
 		scourge->getParty()->toggleRound( false );
 		scourge->setInfoDialogShowing( false );
 		scourge->getSession()->getSquirrel()->startLevel( "mapStarting" );
@@ -701,8 +701,8 @@ bool ScourgeHandler::processEscapeKey() {
 		return false;
 	} else if ( scourge->getExitConfirmationDialog()->isVisible() ) {
 		scourge->closeExitConfirmationDialog();
-	} else if ( Window::anyFloatingWindowsOpen() ) {
-		Window *win = Window::getTopWindow();
+	} else if ( scourge->getSDLHandler()->anyFloatingWindowsOpen() ) {
+		Window *win = scourge->getSDLHandler()->getTopWindow();
 		if( win ) {
 			win->setVisible( false );
 		} else {
