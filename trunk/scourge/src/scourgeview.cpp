@@ -135,9 +135,9 @@ void ScourgeView::drawView() {
 	}
 
 	// HACK: A container window may have been closed by hitting the Esc. button.
-	if ( Window::windowWasClosed ) {
+	if ( scourge->getSDLHandler()->windowWasClosed ) {
 //		scourge->removeClosedContainerGuis();
-		Window::windowWasClosed = false;
+		scourge->getSDLHandler()->windowWasClosed = false;
 	}
 }
 

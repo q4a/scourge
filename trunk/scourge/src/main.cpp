@@ -120,7 +120,7 @@ void RedirectIOToConsole( void ) {
 	// SET_CRT_DEBUG_FIELD( _CRTDBG_CHECK_CRT_DF );
 
 	// Uncomment if you want to see leaks at application end (there are lots.)
-	SET_CRT_DEBUG_FIELD( _CRTDBG_LEAK_CHECK_DF );
+	// SET_CRT_DEBUG_FIELD( _CRTDBG_LEAK_CHECK_DF );
 #endif
 }
 
@@ -138,7 +138,6 @@ int main( int argc, char *argv[] ) {
 	userConfiguration.loadConfiguration();
 	userConfiguration.parseCommandLine( argc, argv );
 	RedirectIOToConsole();
-	char* str = new char[100]; strcpy(str,"leak #1 (no leaks before)"); // a test leak
 	return Session::runGame( createGameAdapter( &userConfiguration ), argc, argv );
 }
 

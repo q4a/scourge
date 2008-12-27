@@ -1,5 +1,5 @@
 /***************************************************************************
-                        gui.h  -  GUI interface class
+                        gui.h  -  ScourgeGui class.  
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -22,6 +22,9 @@
 #include "../configlang.h"
 
 class Widget;
+class Window;
+class Label;
+class Button;
 class Texture;
 class EventHandler;
 
@@ -33,8 +36,7 @@ class EventHandler;
  */
 class ScourgeGui {
 public:
-	ScourgeGui() {
-	}
+	ScourgeGui();
 
 	virtual ~ScourgeGui() {
 	}
@@ -42,7 +44,7 @@ public:
 	virtual void processEventsAndRepaint() = 0;
 	virtual void playSound( const std::string& file, int panning ) = 0;
 	virtual void texPrint( GLfloat x, GLfloat y, const char *fmt, ... ) = 0;
-	virtual int textWidth( const char *fmt, ... ) = 0;
+	virtual int textWidth( const char* fmt, ... ) = 0;
 	virtual int getScreenWidth() = 0;
 	virtual int getScreenHeight() = 0;
 	virtual void setCursorMode( int n, bool useTimer = false ) = 0;
@@ -54,17 +56,59 @@ public:
 	virtual Uint16 getMouseY() = 0;
 	virtual void drawTooltip( float xpos2, float ypos2, float zpos2,
 	                          float zrot, float yrot,
-	                          char *message,
+	                          char* message,
 	                          float r = 0, float g = 0.15f, float b = 0.05f, float zoom = 1.0f ) = 0;
 	virtual void setFontType( int fontType ) = 0;
 	virtual Texture const& loadSystemTexture( char *line ) = 0;
-	virtual void unlockMouse() = 0;
-	virtual void lockMouse( Widget *widget ) = 0;
+	// XXX: yo-yo. its because moving static stuff irrelevant for Window here 
+	virtual void unlockMouse() {
+		mouseLockWindow = NULL;
+		mouseLockWidget = NULL;
+	}
+	virtual void lockMouse( Window* window, Widget* widget ) {
+		mouseLockWindow = window;
+		mouseLockWidget = widget;
+	}
 	virtual void allWindowsClosed() = 0;
 	virtual void blockEvent() = 0;
-	virtual void registerEventHandler( Widget *w, EventHandler *eh ) = 0; 
-	virtual void unregisterEventHandler( Widget *w ) = 0;
-	virtual EventHandler *getEventHandler( Widget *w ) = 0;
+	virtual void registerEventHandler( Widget* w, EventHandler* eh ) = 0; 
+	virtual void unregisterEventHandler( Widget* w ) = 0;
+	virtual EventHandler *getEventHandler( Widget* w ) = 0;
+
+	static const int MAX_WINDOW = 1000;
+
+	// window management
+	Window* window[MAX_WINDOW];
+	int windowCount;
+
+	Window* message_dialog;
+	Label* message_label;
+	Window* currentWin;
+
+	Window* mouseLockWindow;
+	Widget* mouseLockWidget;
+	bool windowWasClosed;
+
+	void drawVisibleWindows();
+	void addWindow( Window *win );
+	void removeWindow( Window *win );
+	Widget* delegateEvent( SDL_Event* event, int x, int y, Window** selectedWindow );
+	Widget* selectCurrentEscapeHandler();
+	void toTop( Window* win );
+	void toBottom( Window* win );
+	void nextWindowToTop( Window* win, bool includeLocked = true );
+	void prevWindowToTop( Window* win, bool includeLocked = true );
+	bool anyFloatingWindowsOpen();
+	Window* getTopWindow() {return currentWin;}
+
+
+	// static message dialog
+	Button* message_button; // so you can check for it in other classes
+	void showMessageDialog( int x, int y, int w, int h,
+	                        char const* title, Texture texture,
+	                        char const* message,
+	                        char const* buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ) );
+
 };
 
 #endif

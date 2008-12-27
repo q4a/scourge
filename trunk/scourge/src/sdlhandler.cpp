@@ -555,7 +555,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			mouseButton = event.button.button;
 			mouseEvent = SDL_MOUSEMOTION;
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mouseX, mouseY, &win );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = delegateEvent( &event, mouseX, mouseY, &win );
 			if ( !widget && !win ) {
 				mouseIsMovingOverMap = true;
 				lastMouseMoveTime = now;
@@ -573,7 +573,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 				                  abs( lastMouseY - event.button.y ) < DOUBLE_CLICK_TOLERANCE );
 				lastLeftClick = now;
 				// don't process events during a fade
-				if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
+				if ( fadeoutTimer <= 0 && cursorVisible ) widget = delegateEvent( &event, mx, my, &win );
 			}
 			lastMouseX = event.button.x;
 			lastMouseY = event.button.y;
@@ -586,7 +586,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			mouseDragging = ( event.button.button == SDL_BUTTON_LEFT );
 			//if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = delegateEvent( &event, mx, my, &win );
 			//}
 			break;
 		case SDL_ACTIVEEVENT:
@@ -619,7 +619,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 		case SDL_KEYDOWN:
 			applyMouseOffset( mouseX, mouseY, &mx, &my );
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = delegateEvent( &event, mx, my, &win );
 			break;
 		case SDL_QUIT:
 			quit( 0 ); // handle quit requests
@@ -780,7 +780,7 @@ void SDLHandler::drawScreenInternal() {
 	screenView->drawView();
 
 	// redraw the gui
-	Window::drawVisibleWindows();
+	drawVisibleWindows();
 
 	screenView->drawAfter();
 

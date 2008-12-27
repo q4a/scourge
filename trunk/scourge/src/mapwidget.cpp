@@ -30,7 +30,7 @@ using namespace std;
 #define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
 #define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
 
-MapWidget::MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, int y2, bool editable ) : Canvas( x, y, x2, y2, this ) {
+MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable ) : Canvas( x, y, x2, y2, this ) {
 	this->scourge = scourge;
 	this->parent = parent;
 	this->editable = editable;
@@ -43,7 +43,7 @@ MapWidget::MapWidget( Scourge *scourge, Widget *parent, int x, int y, int x2, in
 MapWidget::~MapWidget() {
 }
 
-bool MapWidget::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool MapWidget::handleEvent( Widget* parent, SDL_Event *event, int x, int y ) {
 	switch ( event->type ) {
 	case SDL_MOUSEMOTION:
 		if ( dragging ) {
@@ -58,7 +58,7 @@ bool MapWidget::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 			markedX = selX + x - getX();
 			markedY = selY + y - getY();
 		}
-		( ( Window* )parent )->setMouseLock( NULL );
+		this->parent->setMouseLock( NULL );
 		return isInside( x, y );
 	case SDL_MOUSEBUTTONDOWN:
 		if ( event->button.button != SDL_BUTTON_LEFT ) return false;
@@ -68,7 +68,7 @@ bool MapWidget::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 			oldSelX = selX;
 			oldSelY = selY;
 			dragging = true;
-			( ( Window* )parent )->setMouseLock( this );
+			this->parent->setMouseLock( this );
 		}
 		break;
 	}

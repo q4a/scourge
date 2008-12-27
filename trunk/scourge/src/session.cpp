@@ -108,6 +108,7 @@ void Session::initialize() {
 	shapePal = new ShapePalette( this );
 	cutscene = new Cutscene( this );
 	adapter->setSession( this );
+	char* str = new char[100]; strcpy(str,"#1 no leaks before"); // a test leak
 	adapter->initVideo();
 	shapePal->preInitialize();
 	// init the fonts and ui
