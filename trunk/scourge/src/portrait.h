@@ -96,7 +96,8 @@ public:
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
-	void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 protected:
 	void drawBar( int x, int y, int value, int maxValue = 100, int r = 0, int g = 1, int b = 0, int a = 1, int mod = 0 );

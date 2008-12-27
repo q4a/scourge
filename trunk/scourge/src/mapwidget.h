@@ -52,7 +52,8 @@ public:
 	}
 	void setSelection( int x, int y );
 
-	virtual void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 	/**
 	  The widget received a dragged item

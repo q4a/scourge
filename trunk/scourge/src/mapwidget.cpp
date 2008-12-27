@@ -129,7 +129,7 @@ void MapWidget::calculateValues() {
 	*/
 }
 
-void MapWidget::drawWidgetContents( Widget *w ) {
+void MapWidget::drawWidgetContents( Canvas *w ) {
 	Canvas *canvas = this;
 
 

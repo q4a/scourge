@@ -2304,7 +2304,7 @@ void Scourge::receive( Widget *widget ) {
 	}
 }
 
-void Scourge::drawWidgetContents( Widget *w ) {
+void Scourge::drawWidgetContents( Canvas *w ) {
 	char tooltip[255];
 	for ( int i = 0; i < party->getPartySize(); i++ ) {
 		if ( playerInfo[i] == w ) {

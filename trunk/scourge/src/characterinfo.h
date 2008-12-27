@@ -55,8 +55,8 @@ public:
 		return win;
 	}
 
-	/** Draw the widget. */
-	virtual void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 private:
 	//unused: char *getAPRDescription( Creature *p, Item *item, char *buff );

@@ -76,7 +76,8 @@ public:
 	void wordClicked( std::string const& word );
 	void showingWord( char *word );
 
-	void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 };
 
 #endif

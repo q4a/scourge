@@ -92,7 +92,8 @@ public:
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 
-	void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 	inline Storable *getStorable() {
 		return storable;

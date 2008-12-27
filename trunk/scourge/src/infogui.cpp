@@ -335,7 +335,7 @@ bool InfoGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	return false;
 }
 
-void InfoGui::drawWidgetContents( Widget *w ) {
+void InfoGui::drawWidgetContents( Canvas *w ) {
 
 	if ( w == image && ( item || spell || skill ) ) {
 		glEnable( GL_BLEND );

@@ -133,7 +133,7 @@ ImageCanvas::ImageCanvas( int x, int y, int x2, int y2, GLuint image ) : Canvas(
 ImageCanvas::~ImageCanvas() {
 }
 
-void ImageCanvas::drawWidgetContents( Widget *w ) {
+void ImageCanvas::drawWidgetContents( Canvas *w ) {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
