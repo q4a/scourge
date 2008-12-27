@@ -265,7 +265,7 @@ void ConversationGui::showingWord( char *word ) {
 	list->setLines( words.begin(), words.end() );
 }
 
-void ConversationGui::drawWidgetContents( Widget *w ) {
+void ConversationGui::drawWidgetContents( Canvas *w ) {
 	if ( w == canvas ) {
 		creature->drawPortrait( canvas->getWidth(), canvas->getHeight() );
 	}

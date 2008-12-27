@@ -599,7 +599,8 @@ public:
 
 	void fightProjectileHitTurn( Projectile *proj, int x, int y );
 
-	void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 	void resetPartyUI();
 

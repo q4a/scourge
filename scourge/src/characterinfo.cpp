@@ -34,7 +34,7 @@ CharacterInfoUI::CharacterInfoUI( Scourge *scourge ) {
 CharacterInfoUI::~CharacterInfoUI() {
 }
 
-void CharacterInfoUI::drawWidgetContents( Widget *w ) {
+void CharacterInfoUI::drawWidgetContents( Canvas *w ) {
 	if ( !( win && creature ) ) return;
 
 	//GuiTheme *theme = win->getTheme();

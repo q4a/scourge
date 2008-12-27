@@ -350,7 +350,7 @@ void Equip::setCreature( Creature *creature ) {
 	this->creature = creature;
 }
 
-void Equip::drawWidgetContents( Widget *widget ) {
+void Equip::drawWidgetContents( Canvas *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	// glEnable( GL_ALPHA_TEST );
 	// glAlphaFunc( GL_NOTEQUAL, 0 );

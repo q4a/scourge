@@ -96,7 +96,8 @@ private:
 public:
 	ImageCanvas( int x, int y, int x2, int y2, GLuint image );
 	virtual ~ImageCanvas();
-	virtual void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 };
 
 #endif

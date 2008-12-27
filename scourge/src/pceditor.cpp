@@ -658,7 +658,7 @@ void PcEditor::rollApperance() {
 	modelIndex = Util::dice( maleCount <= femaleCount ? maleCount : femaleCount );
 }
 
-void PcEditor::drawWidgetContents( Widget *w ) {
+void PcEditor::drawWidgetContents( Canvas *w ) {
 	if ( w == portrait ) {
 		glPushMatrix();
 		glEnable( GL_TEXTURE_2D );

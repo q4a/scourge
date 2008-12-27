@@ -65,7 +65,7 @@ void ContainerView::convertMousePos( int x, int y, int *invX, int *invY ) {
 	*invY = ( y - OFFSET_Y ) / GRID_SIZE;
 }
 
-void ContainerView::drawWidgetContents( Widget *widget ) {
+void ContainerView::drawWidgetContents( Canvas *widget ) {
 	int w = container->getRpgItem()->getContainerWidth() * GRID_SIZE;
 	int h = container->getRpgItem()->getContainerHeight() * GRID_SIZE;
 	glEnable( GL_TEXTURE_2D );

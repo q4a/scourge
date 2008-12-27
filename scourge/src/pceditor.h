@@ -88,7 +88,8 @@ public:
 
 	bool handleEvent( Widget *widget, SDL_Event *event );
 
-	virtual void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 	inline Button *getOkButton() {
 		return okButton;

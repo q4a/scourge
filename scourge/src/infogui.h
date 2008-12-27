@@ -84,7 +84,8 @@ public:
 		return win;
 	}
 
-	void drawWidgetContents( Widget *w );
+	// WidgetView interface
+	virtual void drawWidgetContents( Canvas *w );
 
 protected:
 	void describe();
