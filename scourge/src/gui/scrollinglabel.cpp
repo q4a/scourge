@@ -95,16 +95,16 @@ void ScrollingLabel::appendText( const char *s ) {
 	value = scrollerY = 0;
 }
 
-void ScrollingLabel::drawWidget( Widget *parent ) {
+void ScrollingLabel::drawWidget( Window* parent ) {
 	wordPosCount = 0;
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+	GuiTheme *theme = parent->getTheme();
 
 	// draw the text
 	int textPos = -static_cast<int>( ( ( listHeight - getHeight() ) / 100.0f ) * static_cast<float>( value ) );
-	if ( !( ( Window* )parent )->isOpening() ) {
-		glScissor( ( ( Window* )parent )->getX() + x,
-		           ( ( Window* )parent )->getScourgeGui()->getScreenHeight() -
-		           ( ( ( Window* )parent )->getY() + ( ( Window* )parent )->getGutter() + y + getHeight() ),
+	if ( !parent->isOpening() ) {
+		glScissor( parent->getX() + x,
+		           parent->getScourgeGui()->getScreenHeight() -
+		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
 		glEnable( GL_SCISSOR_TEST );
 
@@ -199,8 +199,8 @@ void ScrollingLabel::drawWidget( Widget *parent ) {
 	glLineWidth( 1.0f );
 }
 
-char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+char *ScrollingLabel::printLine( Window* parent, int x, int y, char *s ) {
+	GuiTheme *theme = parent->getTheme();
 	int xp = x;
 
 //  char *tmp = strdup( s );
@@ -243,8 +243,8 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 			wordPos[ wordPosCount ].word[ c++ ] = 0;
 
 			// Is the mouse over this word?
-			int tx = ( ( Window* )parent )->getScourgeGui()->getMouseX() - getX() - parent->getX();
-			int ty = ( ( Window* )parent )->getScourgeGui()->getMouseY() - getY() - parent->getY() - ( ( Window* )parent )->getGutter();
+			int tx = parent->getScourgeGui()->getMouseX() - getX() - parent->getX();
+			int ty = parent->getScourgeGui()->getMouseY() - getY() - parent->getY() - parent->getGutter();
 			if ( interactive &&
 			        wordPos[ wordPosCount ].x <= tx &&
 			        wordPos[ wordPosCount ].x + wordPos[ wordPosCount ].w > tx &&
@@ -281,7 +281,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 			if ( tmp ) *wordEnd = tmp;
 			return p;
 		}
-		( ( Window* )parent )->getScourgeGui()->texPrint( xp, y, word );
+		parent->getScourgeGui()->texPrint( xp, y, word );
 
 		// move caret
 		xp += wordWidth;
@@ -305,7 +305,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
 	return NULL;
 }
 
-bool ScrollingLabel::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool ScrollingLabel::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = ( x >= getX() && x < getX() + scrollerWidth &&
 	           y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight );
 	switch ( event->type ) {
@@ -385,7 +385,7 @@ int ScrollingLabel::getWordPos( int x, int y ) {
 	return -1;
 }
 
-void ScrollingLabel::removeEffects( Widget *parent ) {
+void ScrollingLabel::removeEffects() {
 	inside = false;
 }
 

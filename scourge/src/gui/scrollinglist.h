@@ -115,8 +115,8 @@ public:
 		return selectedLine[ index ];
 	}
 
-	void drawWidget( Widget *parent );
-
+	virtual void drawWidget( Window* parent );
+	
 	inline int getEventType() {
 		return eventType;
 	}
@@ -126,9 +126,9 @@ public:
 	Another way to think about it is that if true, the widget fires an "activated" event
 	to the outside world.
 	*/
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-
-	void removeEffects( Widget *parent );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	
+	virtual void removeEffects();
 
 	// don't play sound when the value changes
 	virtual inline bool hasSound() {
@@ -146,7 +146,7 @@ public:
 
 private:
 	void selectLine( int x, int y, bool addToSelection = false, bool mouseDown = false );
-	void drawIcon( int x, int y, Texture icon, Widget *parent );
+	void drawIcon( int x, int y, Texture icon, Window* parent );
 	void moveSelectionUp();
 	void moveSelectionDown();
 
@@ -160,7 +160,7 @@ private:
 	* if linewrap is true it breaks the line so that no line is longer that getWidth()
 	* else it just prints it
 	*/
-	void printLine( Widget *parent, int x, int y, const std::string& s );
+	void printLine( Window* parent, int x, int y, const std::string& s );
 };
 
 #endif

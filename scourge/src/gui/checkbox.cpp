@@ -38,7 +38,7 @@ Checkbox::~Checkbox() {
 	delete checkButton;
 }
 
-void Checkbox::drawWidget( Widget *parent ) {
+void Checkbox::drawWidget( Window* parent ) {
 
 	// Draw texts
 	glPushMatrix();
@@ -75,7 +75,7 @@ void Checkbox::applyCheck() {
 
 
 
-bool Checkbox::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool Checkbox::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = isInside( x, y );
 	// handle it
 	switch ( event->type ) {

@@ -195,10 +195,7 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 							setFocus( this->widget[t] );
 						}
 					}
-					if ( this->widget[t]->handleEvent( this,
-					                                   event,
-					                                   x - getX(),
-					                                   y - getY() - gutter ) )
+					if ( this->widget[t]->handleEvent( this, event, x - getX(), y - getY() - gutter ) )
 						w = this->widget[t];
 				}
 			}
@@ -249,9 +246,9 @@ Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 	return( isModal() ? this : NULL );
 }
 
-void Window::removeEffects( Widget* ) {
+void Window::removeEffects() {
 	for ( int t = 0; t < widgetCount; t++ ) {
-		widget[t]->removeEffects( this );
+		widget[t]->removeEffects();
 	}
 }
 
@@ -259,7 +256,7 @@ bool Window::isInside( int x, int y ) {
 	return( dragging || Widget::isInside( x, y ) );
 }
 
-bool Window::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool Window::handleEvent( Window*, SDL_Event* event, int x, int y ) {
 	switch ( event->type ) {
 	case SDL_KEYDOWN:
 		return false;
@@ -376,7 +373,7 @@ void Window::removeWidget( Widget *widget ) {
 	}
 }
 
-void Window::drawWidget( Widget *parent ) {
+void Window::drawWidget( Window* ) {
 	GLint t = SDL_GetTicks();
 
 	GLint topY;

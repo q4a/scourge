@@ -58,7 +58,7 @@ public:
 		return text;
 	}
 	void setText( char const* s );
-	void drawWidget( Widget *parent );
+	virtual void drawWidget( Window* parent );
 	inline bool canGetFocus() {
 		return false;
 	}

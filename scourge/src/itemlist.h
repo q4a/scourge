@@ -106,7 +106,7 @@ public:
 	int getItemCount();
 	Item *getItem( int index );
 
-	virtual bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
 
 	inline Item *getSelectedItem( int index ) {
 		if ( index < 0 || index >= getSelectedLineCount() ) return NULL;

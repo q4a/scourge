@@ -41,17 +41,17 @@ Canvas::Canvas( int x, int y, int x2, int y2, WidgetView *view,
 Canvas::~Canvas() {
 }
 
-void Canvas::drawWidget( Widget *parent ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+void Canvas::drawWidget( Window* parent ) {
+	GuiTheme *theme = parent->getTheme();
 	if ( highlightOnMouseOver ) {
 		drawButton( parent, 0, 0, x2 - x, y2 - y,
 		            false, false, dragging, glowing, inside );
 	}
 
-	if ( view && !( ( Window* )parent )->isOpening() ) {
-		glScissor( ( ( Window* )parent )->getX() + x,
-		           ( ( Window* )parent )->getScourgeGui()->getScreenHeight() -
-		           ( ( ( Window* )parent )->getY() + ( ( Window* )parent )->getGutter() + y + getHeight() ),
+	if ( view && !parent->isOpening() ) {
+		glScissor( parent->getX() + x,
+		           parent->getScourgeGui()->getScreenHeight() -
+		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
 		glEnable( GL_SCISSOR_TEST );
 
@@ -87,7 +87,7 @@ void Canvas::drawWidget( Widget *parent ) {
 	}
 }
 
-bool Canvas::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool Canvas::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = ( x >= getX() && x < x2 && y >= getY() && y < y2 );
 	switch ( event->type ) {
 	case SDL_MOUSEMOTION:
@@ -122,7 +122,7 @@ void Canvas::cancelDrag() {
 	dragging = false;
 }
 
-void Canvas::removeEffects( Widget *parent ) {
+void Canvas::removeEffects() {
 	highlightBorders = false;
 }
 

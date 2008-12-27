@@ -112,8 +112,8 @@ void ScrollingList::setupHeight() {
 	}
 }
 
-void ScrollingList::drawWidget( Widget *parent ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+void ScrollingList::drawWidget( Window* parent ) {
+	GuiTheme *theme = parent->getTheme();
 
 	// draw the text
 	if ( debug ) {
@@ -125,10 +125,10 @@ void ScrollingList::drawWidget( Widget *parent ) {
 		cerr << "**********************************************" << endl;
 	}
 	int textPos = -static_cast<int>( ( ( listHeight - getHeight() ) / 100.0f ) * static_cast<float>( value ) );
-	if ( !( ( Window* )parent )->isOpening() ) {
-		glScissor( ( ( Window* )parent )->getX() + x,
-		           ( ( Window* )parent )->getScourgeGui()->getScreenHeight() -
-		           ( ( ( Window* )parent )->getY() + ( ( Window* )parent )->getGutter() + y + getHeight() ),
+	if ( !parent->isOpening() ) {
+		glScissor( parent->getX() + x,
+		           parent->getScourgeGui()->getScreenHeight() -
+		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
 		glEnable( GL_SCISSOR_TEST );
 
@@ -270,16 +270,16 @@ void ScrollingList::drawWidget( Widget *parent ) {
 	glLineWidth( 1.0f );
 }
 
-void ScrollingList::printLine( Widget *parent, int x, int y, const std::string& s ) {
+void ScrollingList::printLine( Window* parent, int x, int y, const std::string& s ) {
 	if ( !linewrap ) {
-		( ( Window* )parent )->getScourgeGui()->texPrint( x, y + LIST_TEXT_Y_OFFSET, s.c_str() );
+		parent->getScourgeGui()->texPrint( x, y + LIST_TEXT_Y_OFFSET, s.c_str() );
 		return;
 	}
 
 	int currentX = x, currentY = y;
 	vector<string> parts = Util::Tokenize<vector<string> >( s, " |" );
 	int space = getTextWidth( parent, " " );
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+	GuiTheme *theme = parent->getTheme();
 
 	for ( vector<string>::iterator i = parts.begin(); i != parts.end(); i++ ) {
 		int wordWidth = getTextWidth( parent, i->c_str() );
@@ -296,13 +296,13 @@ void ScrollingList::printLine( Widget *parent, int x, int y, const std::string& 
 		} else {
 			applyColor();
 		}
-		( ( Window* )parent )->getScourgeGui()->texPrint( currentX, currentY + LIST_TEXT_Y_OFFSET, i->c_str() );
+		parent->getScourgeGui()->texPrint( currentX, currentY + LIST_TEXT_Y_OFFSET, i->c_str() );
 
 		currentX += space + wordWidth;
 	}
 }
 
-void ScrollingList::drawIcon( int x, int y, Texture icon, Widget *parent ) {
+void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	float n = lineHeight - 3;
 
 	glEnable( GL_BLEND );
@@ -329,7 +329,7 @@ void ScrollingList::drawIcon( int x, int y, Texture icon, Widget *parent ) {
 	glDisable( GL_TEXTURE_2D );
 
 	if ( iconBorder ) {
-		GuiTheme *theme = ( ( Window* )parent )->getTheme();
+		GuiTheme *theme = parent->getTheme();
 		if ( theme->getButtonBorder() ) {
 			glColor4f( theme->getButtonBorder()->color.r,
 			           theme->getButtonBorder()->color.g,
@@ -388,7 +388,7 @@ void ScrollingList::selectLine( int x, int y, bool addToSelection, bool mouseDow
 	}
 }
 
-bool ScrollingList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool ScrollingList::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	eventType = EVENT_ACTION;
 	inside = ( x >= getX() && x < getX() + scrollerWidth &&
 	           y >= getY() + scrollerY && y < getY() + scrollerY + scrollerHeight );
@@ -425,7 +425,7 @@ bool ScrollingList::handleEvent( Widget *parent, SDL_Event *event, int x, int y 
 		tooltipLine = getLineAtPoint( x, y );
 		if ( tooltipLine > -1 &&
 		        !linewrap &&
-		        ( ( Window* )parent )->getScourgeGui()->textWidth( list[ tooltipLine ].c_str() ) > getWidth() - scrollerWidth ) {
+		        parent->getScourgeGui()->textWidth( list[ tooltipLine ].c_str() ) > getWidth() - scrollerWidth ) {
 			setTooltip( list[tooltipLine].c_str() );
 		} else {
 			setTooltip( "" );
@@ -502,7 +502,7 @@ bool ScrollingList::handleEvent( Widget *parent, SDL_Event *event, int x, int y 
 	return false;
 }
 
-void ScrollingList::removeEffects( Widget *parent ) {
+void ScrollingList::removeEffects() {
 	highlightBorders = false;
 	inside = false;
 }

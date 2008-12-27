@@ -39,7 +39,7 @@ TextField::~TextField() {
 	delete [] text;
 }
 
-bool TextField::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
+bool TextField::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	inside = hasFocus();
 	eventType = EVENT_KEYPRESS;
 	// handle it
@@ -49,14 +49,14 @@ bool TextField::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 			if ( event->key.keysym.sym == SDLK_RETURN ) {
 				eventType = EVENT_ACTION;
 			} else {
-				( ( Window* )parent )->getScourgeGui()->blockEvent();
+				parent->getScourgeGui()->blockEvent();
 			}
 			return true;
 		case SDL_KEYDOWN:
 			if ( event->key.keysym.sym == SDLK_RETURN ) {
 				eventType = EVENT_ACTION;
 			} else {
-				( ( Window* )parent )->getScourgeGui()->blockEvent();
+				parent->getScourgeGui()->blockEvent();
 				if ( ( event->key.keysym.sym == SDLK_BACKSPACE && pos > 0 ) ||
 				        ( event->key.keysym.sym == SDLK_DELETE && pos < maxPos ) ) {
 					for ( int i = ( event->key.keysym.sym == SDLK_BACKSPACE ? pos - 1 : pos ); i < maxPos - 1; i++ ) {
@@ -123,8 +123,8 @@ bool TextField::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 	return false;
 }
 
-void TextField::drawWidget( Widget *parent ) {
-	GuiTheme *theme = ( ( Window* )parent )->getTheme();
+void TextField::drawWidget( Window* parent ) {
+	GuiTheme *theme = parent->getTheme();
 
 	//glColor3f( 1, 1, 1 );
 	if ( theme->getInputBackground() ) {
@@ -160,9 +160,9 @@ void TextField::drawWidget( Widget *parent ) {
 		glTranslatef( OFFSET + i * AVG_CHAR_WIDTH, 0, 0 );
 		letter[0] = text[i];
 		letter[1] = '\0';
-		( ( Window* )parent )->getScourgeGui()->setFontType( Constants::SCOURGE_MONO_FONT );
-		( ( Window* )parent )->getScourgeGui()->texPrint( 0, 12, letter );
-		( ( Window* )parent )->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+		parent->getScourgeGui()->setFontType( Constants::SCOURGE_MONO_FONT );
+		parent->getScourgeGui()->texPrint( 0, 12, letter );
+		parent->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 		glPopMatrix();
 	}
 

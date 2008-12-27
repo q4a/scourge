@@ -71,7 +71,7 @@ public:
 		return this;
 	}
 
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
 
 protected:
 	void calculateValues();

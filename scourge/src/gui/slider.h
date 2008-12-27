@@ -44,10 +44,10 @@ public:
 
 	Slider( int x1, int y1, int x2, Texture highlight, int minValue = 0, int maxValue = 100, char *label = NULL );
 	~Slider();
-	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-	void removeEffects( Widget *parent );
-	void drawWidget( Widget *parent );
-
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	virtual void removeEffects();
+	virtual void drawWidget( Window* parent );
+	
 	inline int getValue() {
 		return static_cast<int>( static_cast<float>( pos * ( maxValue - minValue ) ) / static_cast<float>( getWidth() ) );
 	}

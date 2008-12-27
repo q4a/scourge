@@ -51,7 +51,7 @@ protected:
 public:
 	Widget( int x, int y, int w, int h );
 	virtual ~Widget();
-	virtual void draw( Widget *parent );
+	virtual void draw( Window* parent );
 
 	inline void invalidate() {
 		this->invalid = true;
@@ -94,7 +94,7 @@ public:
 		return enabled;
 	}
 
-	virtual void drawWidget( Widget *parent ) = 0;
+	virtual void drawWidget( Window* parent ) = 0;
 
 	virtual inline bool hasFocus() {
 		return focus;
@@ -189,12 +189,12 @@ public:
 	Another way to think about it is that if true, the widget fires an "activated" event
 	to the outside world.
 	 */
-	virtual bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
-
+	virtual bool handleEvent( Window* parent, SDL_Event* event, int x, int y );
+	
 	/**
 	 * Called when no events are sent to this widget. (ie. the mouse is elsewhere.)
 	 */
-	virtual void removeEffects( Widget *parent );
+	virtual void removeEffects();
 	virtual bool isInside( int x, int y );
 
 	inline void setDebug( bool d ) {
@@ -219,7 +219,7 @@ public:
 		return tooltip;
 	}
 
-	void drawTooltip( Widget *parent );
+	void drawTooltip( Window* parent );
 
 	static void drawBorderedTexture( Texture texture, int x, int y, int w, int h,
 	                                 int left, int right, int textureWidth,
@@ -231,11 +231,11 @@ protected:
 		return alpha;
 	}
 	std::map< std::string, int > textWidthCache;
-	virtual void drawButton( Widget *parent, int x, int y, int x2, int y2,
+	virtual void drawButton( Window* parent, int x, int y, int x2, int y2,
 	                         bool toggle, bool selected, bool inverse,
 	                         bool glowing, bool inside );
 	void breakText( char *text, int lineWidth, std::vector<std::string> *lines );
-	int getTextWidth( Widget *parent, const char *s );
+	int getTextWidth( Window* parent, const char* s );
 };
 
 #endif
