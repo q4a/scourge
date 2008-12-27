@@ -39,16 +39,17 @@ class EventHandler;
 /**
   How many measurements to take to average the fps.
 */
-#define MAX_TICK_COUNT 20
+//unused: #define MAX_TICK_COUNT 20
 
 /* screen width, height, and bit depth */
-#define SCREEN_WIDTH  640
-#define SCREEN_HEIGHT 480
-#define SCREEN_BPP     16
+// unused: #define SCREEN_WIDTH  640
+// unused: #define SCREEN_HEIGHT 480
+// unused: #define SCREEN_BPP     16
 
-/* Define our booleans */
+/* unused: our booleans 
 #define TRUE  1
 #define FALSE 0
+*/
 
 /// Interface to SDL.
 class SDLHandler : public ScourgeGui {
@@ -68,7 +69,8 @@ private:
 	float orthoDepthMin, orthoDepthMax;
 
 	// rotation for test draw view
-	GLfloat rtri, rquad;
+	// unused: GLfloat rtri, rquad;
+	// XXX: uninitialized members
 	int lastWidth, lastHeight;
 
 	SDLEventHandler *eventHandlers[10];
@@ -76,8 +78,8 @@ private:
 	int handlerCount;
 
 	// the last event fired by a widget
-	Widget *storedWidget;
-	SDL_Event *storedEvent;
+	//unused: Widget *storedWidget;
+	//unused: SDL_Event *storedEvent;
 
 	// truetype font
 	bool font_initialized;
@@ -85,7 +87,7 @@ private:
 
 	char *debugStr;
 
-	bool attackCursor;
+	//unused: bool attackCursor;
 
 	// only do stencil buffer ops if this is true
 	static bool stencilBufferUsed;
@@ -226,8 +228,8 @@ public:
 	void drawScreen();
 	bool processEvents( bool *isActive = NULL );
 	void processEventsAndRepaint();
-	void fireEvent( Widget *widget, SDL_Event *event );
-	bool firedEventWaiting();
+	//unused: void fireEvent( Widget *widget, SDL_Event *event );
+	//unused: bool firedEventWaiting();
 
 	inline void setFontType( int fontType ) {
 		this->fontType = fontType;
@@ -241,7 +243,7 @@ public:
 	FontMgr *getCurrentFontManager();
 	void initFonts();
 
-	GLvoid glPrint( const char *fmt, ... );
+	//unused: GLvoid glPrint( const char *fmt, ... );
 
 	static bool intersects( int x, int y, int w, int h,
 	                        int x2, int y2, int w2, int h2 );
@@ -294,8 +296,8 @@ public:
 	bool popHandlers();
 
 protected:	
-	int resizeWindow( int width, int height );
-	int initGL();
+	void resizeWindow( int width, int height );
+	void initGL();
 	void drawCursor();
 
 	void drawScreenInternal();
