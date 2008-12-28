@@ -306,7 +306,7 @@ private:
 	int weather;
 
 	std::set<Location*> gates, teleporters;
-	std::map<RenderedCreature*, DrawLater*> creatureMap, creatureEffectMap;
+	std::map<RenderedCreature*, DrawLater*> creatureMap, creatureEffectMap, creatureLightMap;
 
 public:
 	bool useFrustum;
@@ -1064,6 +1064,16 @@ protected:
 	void drawRoofsIndoor();
 	void drawFrontWallsAndWater();
 	void drawWaterIndoor();
+	
+	void setupShapeColor();
+	void setupBlendedWallColor();
+	void setupDropLocationColor();
+	void setupShadowColor();
+	void setupSecretDoorColor();
+	void setupLockedDoorColor();
+	void setupLightBlending();
+	void setupPlayerLightColor();
+	
 	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
