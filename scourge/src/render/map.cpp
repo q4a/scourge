@@ -241,7 +241,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	gridEnabled = true;
 	
-	lightTex = shapes->findTextureByName( "flame.png", true );
+	lightTex = shapes->findTextureByName( "light.png", true );
 
 	adapter->writeLogMessage( Constants::getMessage( Constants::WELCOME ), Constants::MSGTYPE_SYSTEM );
 	adapter->writeLogMessage( "----------------------------------", Constants::MSGTYPE_SYSTEM );
@@ -297,6 +297,7 @@ void Map::reset() {
 
 	creatureMap.clear();
 	creatureEffectMap.clear();
+	creatureLightMap.clear();
 
 	roofAlphaUpdate = 0;
 	roofAlpha = 1;
@@ -564,6 +565,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 		laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
 		creatureMap.clear();
 		creatureEffectMap.clear();
+		creatureLightMap.clear();
 		trapSet.clear();
 		mapChanged = false;
 	}
@@ -785,7 +787,7 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
-	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	setupShapeColor();
 	rug->texture.glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	if ( rug->isHorizontal ) {
@@ -823,7 +825,7 @@ void Map::drawGroundPosition( int posX, int posY,
 	glTranslatef( xpos2, ypos2, 0.0f );
 
 	glPushName( name );
-	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	setupShapeColor();
 	if ( isHeightMapEnabled() ) {
 		shape->drawHeightMap( ground, posX, posY );
 	} else {
@@ -834,6 +836,44 @@ void Map::drawGroundPosition( int posX, int posY,
 	glPopName();
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );
+}
+
+void Map::setupLightBlending() {
+	//Scourge::setBlendFuncStatic();
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+}
+
+void Map::setupPlayerLightColor() {
+	//glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );	
+	glColor4f( 0.5f, 0.45f, 0.2f, 0.5f );
+}
+
+void Map::setupShapeColor() {
+	if( helper == MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] ) {
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	} else {
+		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+	}	
+}
+
+void Map::setupBlendedWallColor() {
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+}
+
+void Map::setupDropLocationColor() {
+	glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
+}
+
+void Map::setupShadowColor() {
+	glColor4f( 0.04f, 0.0f, 0.07f, 0.3f );
+}
+
+void Map::setupSecretDoorColor() {
+	glColor4f( 0.3f, 0.7f, 0.3f, 1.0f );	
+}
+
+void Map::setupLockedDoorColor() {
+	glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
 }
 
 /// Draws a shape placed on an indoor water tile.
@@ -947,7 +987,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
 	name = posX + ( MAP_WIDTH * ( posY ) ) + ( MAP_WIDTH * MAP_DEPTH * posZ );
 	
 	Location *pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
-	if( pos && pos->shape && pos->shape->getLightEmitter() ) {
+	if( pos && ( ( pos->shape && pos->shape->getLightEmitter() ) || ( pos->creature == adapter->getPlayer() ) ) ) {
 		lights[lightCount].xpos = xpos2;
 		lights[lightCount].ypos = ypos2;
 		lights[lightCount].zpos = zpos2;
@@ -961,6 +1001,9 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		lights[lightCount].x = posX;
 		lights[lightCount].y = posY;
 		lights[lightCount].light = true;
+		if( creature ) {
+			creatureLightMap[creature] = &(lights[lightCount]);
+		}
 		lightCount++;		
 	}
 
@@ -1354,7 +1397,7 @@ void Map::drawFrontWallsAndWater() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < stencilCount; i++ ) {
 			if ( stencil[i].inFront ) {
-				glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+				setupBlendedWallColor();
 				colorAlreadySet = true;
 				doDrawShape( &( stencil[i] ) );
 			}
@@ -1372,7 +1415,7 @@ void Map::drawFrontWallsAndWater() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < stencilCount; i++ ) {
 			if ( stencil[i].inFront ) {
-				glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+				setupBlendedWallColor();
 				colorAlreadySet = true;
 				doDrawShape( &( stencil[i] ) );
 			}
@@ -1440,7 +1483,7 @@ void Map::drawObjectsAndCreatures() {
 		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
 		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
 			colorAlreadySet = true;
-			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
+			setupDropLocationColor();
 		}
 		doDrawShape( &other[i] );
 
@@ -1448,10 +1491,10 @@ void Map::drawObjectsAndCreatures() {
 		// draw simple shadow in outdoors
 		if ( !helper->drawShadow() ) {
 			if ( other[i].creature ) {
-				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+				setupShadowColor();
 				drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 			} else if ( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
-				glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+				setupShadowColor();
 				drawGroundTex( outdoorShadowTree,  static_cast<float>( other[i].pos->x ) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>( other[i].pos->y ) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 			}
 		}
@@ -1483,8 +1526,7 @@ void Map::drawLightsFloor() {
 	glDepthMask( GL_FALSE );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
-	//Scourge::setBlendFuncStatic();
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	setupLightBlending();
 	for( int i = 0; i < lightCount; i++ ) {
 		doDrawShape( &lights[i] );
 	}
@@ -1558,8 +1600,7 @@ void Map::drawLightsWalls() {
 		glDepthMask( GL_FALSE );
 		glEnable( GL_TEXTURE_2D );
 		glEnable( GL_BLEND );
-		//Scourge::setBlendFuncStatic();
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		setupLightBlending();
 		doDrawShape( &lights[t] );
 		glEnable(GL_DEPTH_TEST);
 		//glColorMask(0,0,0,0);
@@ -1614,17 +1655,17 @@ void Map::drawOutdoors() {
 		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
 		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
 			colorAlreadySet = true;
-			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
+			setupDropLocationColor();
 		}
 		doDrawShape( &other[i] );
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 		// draw simple shadow in outdoors
 		if ( other[i].creature ) {
-			glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+			setupShadowColor();
 			drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 		} else if ( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
-			glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
+			setupShadowColor();
 			drawGroundTex( outdoorShadowTree, static_cast<float>( other[i].pos->x ) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>( other[i].pos->y ) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 		}
 	}
@@ -2025,7 +2066,7 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
 		glMultMatrixf( shadowTransformMatrix );
 		// purple shadows
-		glColor4f( 0.04f, 0.0f, 0.07f, 0.6f );
+		setupShadowColor();
 	} else {
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, zpos2 + heightPos );
 
@@ -2055,7 +2096,7 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		// show detected secret doors
 		if ( later && later->pos ) {
 			if ( isSecretDoor( later->pos ) && ( isSecretDoorDetected( later->pos ) || settings->isGridShowing() ) ) {
-				glColor4f( 0.3f, 0.7f, 0.3f, 1.0f );
+				setupSecretDoorColor();
 				colorAlreadySet = true;
 			}
 		}
@@ -2064,9 +2105,9 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			colorAlreadySet = false;
 		} else {
 			if ( later && later->pos && isLocked( later->pos->x, later->pos->y, later->pos->z ) ) {
-				glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
+				setupLockedDoorColor();
 			} else {
-				glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+				setupShapeColor();
 			}
 		}
 	}
@@ -2088,10 +2129,17 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		glPushMatrix();
 		glRotatef( -zrot, 0.0f, 0.0f, 1.0f );
 		glRotatef( -yrot, 1.0f, 0.0f, 0.0f );
-		float r = later->shape->getLightEmitter()->getRadius() * MUL;
-		Color color = later->shape->getLightEmitter()->getColor();
 		lightTex.glBind();
-		glColor4f( color.r, color.g, color.b, color.a );
+		float r;
+		if( later->shape->getLightEmitter() ) {
+			r = later->shape->getLightEmitter()->getRadius() * MUL;
+			Color color = later->shape->getLightEmitter()->getColor();
+			glColor4f( color.r, color.g, color.b, color.a );
+		} else {
+			r = 8 * MUL;
+			setupPlayerLightColor();
+		}		
+		
 		glBegin( GL_QUADS );
 		glTexCoord2f( 1.0f, 1.0f );
 		glVertex3f( -r, r, 0 );
@@ -3294,6 +3342,16 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 					effect->zpos = zpos2;
 					effect->x = posX;
 					effect->y = posY;
+				}
+				
+				// also move the creature's light
+				DrawLater *light = creatureLightMap[creature];
+				if( light ) {
+					light->xpos = xpos2;
+					light->ypos = ypos2;
+					light->zpos = zpos2;
+					light->x = posX;
+					light->y = posY;
 				}
 			}
 		} else if ( helper && helper->isVisible( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) ) {
@@ -5022,7 +5080,8 @@ void Map::setSecretDoorDetected( int x, int y ) {
 
 void Map::renderFloor() {
 	glEnable( GL_TEXTURE_2D );
-	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	//glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	setupShapeColor();
 	if ( floorTex.isSpecified() ) floorTex.glBind();
 	glPushMatrix();
 	if ( isHeightMapEnabled() ) {

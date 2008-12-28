@@ -18,7 +18,7 @@
 #include "../common/constants.h"
 #include "gltorch.h"
 
-Color GLTorch::lightColor( 0.8f, 0.6f, 0.5f, 0.4f );
+Color GLTorch::lightColor( 0.8f, 0.6f, 0.2f, 0.7f );
 
 GLTorch::GLTorch( Texture texture[], Texture flameTex,
                   int width, int depth, int height,
