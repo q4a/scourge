@@ -81,6 +81,7 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->currentMode = 0;
 
 	canvas = new Canvas( x, y, x + w, y + h, this );
+	canvas->registrate( Widget::Draw, &Portrait::onDraw, this );
 	canvas->setDrawBorders( false );
 }
 
@@ -188,6 +189,10 @@ void Portrait::setCurrentWeaponTooltip() {
 }
 
 void Portrait::drawWidgetContents( Canvas *widget ) {
+	// does nothing, everything went to Portrait::onDraw()
+}
+
+bool Portrait::onDraw( Widget* widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -246,8 +251,9 @@ void Portrait::drawWidgetContents( Canvas *widget ) {
 	}
 
 	glDisable( GL_TEXTURE_2D );
-
+	return false;
 }
+
 
 void Portrait::showStats() {
 	// hp/mp

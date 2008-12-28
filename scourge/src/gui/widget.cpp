@@ -29,6 +29,9 @@ using namespace std;
   *@author Gabor Torok
   */
 
+GuiEvent Widget::Draw = "Widget::Draw Event"; // actually only fired by Canvas
+
+
 Widget::Widget( int x, int y, int w, int h ) {
 	move( x, y );
 	this->w = w;
@@ -61,6 +64,11 @@ Widget::Widget( int x, int y, int w, int h ) {
 
 Widget::~Widget() {
 	glDeleteLists( displayList, 1 );
+
+	for ( map<GuiEvent, Subscription*>::iterator i = listeners.begin(); i != listeners.end(); ++i ) {
+		delete i->second;
+	}
+	listeners.clear();
 }
 
 void Widget::draw( Window* parent ) {

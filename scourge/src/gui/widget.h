@@ -20,6 +20,7 @@
 #pragma once
 
 #include "gui.h"
+#include "guievent.h"
 
 /**
   *@author Gabor Torok
@@ -51,11 +52,40 @@ protected:
 public:
 	Widget( int x, int y, int w, int h );
 	virtual ~Widget();
-	virtual void draw( Window* parent );
+
+	// ***** Under construction STARTS ****
+	/// Example GUI Event  
+	static GuiEvent Draw;
+
+	/// map of GUI Event listeners
+	std::map< GuiEvent, Subscription* > listeners;
+
+	/// registrate callback of any real listener of GUI events
+	template < typename T > 
+	void registrate( GuiEvent e, bool(T::*handler)(Widget*), T* subscriber ) {
+		// limit that there are only one (last registered) listener 
+		if ( listeners.find( e ) != listeners.end() ) {
+			delete listeners.find( e )->second;
+		}
+		RealSubscription< T >* listener = new RealSubscription< T >( handler, subscriber );
+		listeners[e] = listener;
+	}
+
+	/// call registered event callback
+	bool fireEvent( GuiEvent e ) {
+		if ( listeners.find( e ) == listeners.end() ) return false;
+		return listeners[e]->fireIt( this );
+	}
+	// ***** Under construction ENDS ****
+
+	/// XXX: it is confusing that Widget has both draw(parent) and drawWidget(parent) member functions 
+	/// removed virtuality from draw()
+	void draw( Window* parent );
 
 	inline void invalidate() {
 		this->invalid = true;
 	}
+
 	inline bool isInvalid() {
 		return this->invalid;
 	}
