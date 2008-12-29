@@ -1292,6 +1292,15 @@ void Map::drawIndoors() {
 		}	
 #endif
 		
+		glColorMask( 1, 1, 1, 1 );
+		glEnable( GL_TEXTURE_2D );
+		glEnable( GL_DEPTH_TEST );
+		glDepthMask( GL_TRUE );
+		glDisable( GL_BLEND );
+		glDisable( GL_CULL_FACE );
+		glDisable( GL_STENCIL_TEST );
+		colorAlreadySet = false;
+		
 		// draw the creatures/objects/doors/etc.
 		drawObjectsAndCreatures();		
 
@@ -1379,6 +1388,7 @@ void Map::drawRoofsIndoor() {
 }
 
 void Map::drawFrontWallsAndWater() {
+	glEnable( GL_DEPTH_TEST );
 	glEnable( GL_BLEND );
 	glDepthMask( GL_FALSE );
 	if ( hasWater && preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
@@ -1552,7 +1562,7 @@ void Map::drawLightsWalls() {
 
 		// for each shape, stencil out the visible surfaces
 		for ( int i = 0; i < stencilCount; i++ ) {
-			if( isWallBetweenLocations( lights[t].pos, stencil[i].pos ) ) {
+			if( stencil[i].inFront || isWallBetweenLocations( lights[t].pos, stencil[i].pos ) ) {
 				continue;
 			}
 			set<Surface*> surfaces;
@@ -1577,34 +1587,21 @@ void Map::drawLightsWalls() {
 		glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 		for ( int i = 0; i < stencilCount; i++ ) {
-			// if there are light facing surfaces, keep only the ones that don't face the light
-			if( !stencil[i].pos->lightFacingSurfaces.empty() ) {
-				set<Surface*> surfaces;
-				stencil[i].shape->getSurfaces( &surfaces, false );
-				stencil[i].pos->lightFacingSurfaces.clear();
-				for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
-					Surface *surface = *e;
-					if( !isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
-						stencil[i].pos->lightFacingSurfaces.insert( surface );
-					}
-				}
+			if( stencil[i].pos->lightFacingSurfaces.empty() ) {
+				doDrawShape( &stencil[i] );
 			}
-			doDrawShape( &stencil[i] );
 		}
 		
 		// draw the current light
 		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-		glDisable(GL_DEPTH_TEST);
 		glColorMask( 1, 1, 1, 1 );
-		glDepthMask( GL_FALSE );
 		glEnable( GL_TEXTURE_2D );
+		glDisable( GL_DEPTH_TEST );		
 		glEnable( GL_BLEND );
 		setupLightBlending();
 		doDrawShape( &lights[t] );
-		glEnable(GL_DEPTH_TEST);
-		//glColorMask(0,0,0,0);
-		glDepthMask( GL_TRUE );
+		glEnable( GL_DEPTH_TEST );
 		glDisable( GL_BLEND );
 		
 		//glEnable(GL_DEPTH_TEST);
@@ -1616,6 +1613,7 @@ void Map::drawLightsWalls() {
 		stencil[i].pos->lightFacingSurfaces.clear();
 	}
 	glDepthMask( GL_TRUE );
+	glClear( GL_STENCIL_BUFFER_BIT );
 }
 
 bool Map::isFacingLight( Surface *surface, Location *p, Location *lightPos ) {
