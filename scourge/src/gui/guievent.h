@@ -24,31 +24,30 @@
 typedef char const* GuiEvent;
 
 /// base class for event listener info  
-class Subscription { 
+class Notifier { 
 public:
-	Subscription() {}
-	virtual ~Subscription() {}
-	virtual bool fireIt( Widget* w ) = 0;
+	Notifier() {}
+	virtual ~Notifier() {}
+	virtual bool notify( Widget* w ) = 0;
 };
 
 /// real listener info (can contain callback of any subscribers)
 template < typename T >
-class RealSubscription : public Subscription {
+class ObserverInfo : public Notifier {
 public:
 	typedef bool( T::*Callback )( Widget* );
-	RealSubscription( Callback callback, T* host )
-		: Subscription()
-		, _callback( callback )
-		, _host( host ) {
+	ObserverInfo( Callback update, T* observer )
+		: Notifier()
+		, _update( update )
+		, _observer( observer ) {
 	}
-	virtual ~RealSubscription() {}
-	virtual bool fireIt( Widget* w ) {
-		return (_host->*_callback)( w );
+	virtual ~ObserverInfo() {}
+	virtual bool notify( Widget* w ) {
+		return (_observer->*_update)( w );
 	}
 private:
-	//Callback _callback;
-	Callback _callback;
-	T* _host;
+	Callback _update;
+	T* _observer;
 };
 
 // ***** Under construction ENDS ****

@@ -36,6 +36,13 @@
 #include "gui/confirmdialog.h"
 #include "pcui.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 /**
   *@author Gabor Torok
   */
@@ -81,7 +88,7 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->currentMode = 0;
 
 	canvas = new Canvas( x, y, x + w, y + h, this );
-	canvas->registrate( Widget::Draw, &Portrait::onDraw, this );
+	canvas->attach( Widget::Draw, &Portrait::onDraw, this );
 	canvas->setDrawBorders( false );
 }
 
