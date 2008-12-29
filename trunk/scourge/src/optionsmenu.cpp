@@ -149,6 +149,9 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	y += SPACING + MINOR_SPACING;
 	lights = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use lighting" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
+	y += SPACING + MINOR_SPACING;
+	cards->createLabel( XPOS, y, _( "(Note: lighting requires the stencil buffer)" ), VIDEO, Constants::BLUE_COLOR );
+	y += SPACING + MINOR_SPACING;
 	changeTakeEffectLabel = cards->createLabel( XPOS, y, " ", VIDEO, Constants::BLUE_COLOR );
 
 	// audio
