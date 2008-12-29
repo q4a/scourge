@@ -21,6 +21,13 @@
 #include "guitheme.h"
 #include "../render/texture.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define TOOLTIP_DELAY 500
@@ -65,10 +72,10 @@ Widget::Widget( int x, int y, int w, int h ) {
 Widget::~Widget() {
 	glDeleteLists( displayList, 1 );
 
-	for ( map<GuiEvent, Subscription*>::iterator i = listeners.begin(); i != listeners.end(); ++i ) {
+	for ( ObserverMap::iterator i = observers.begin(); i != observers.end(); ++i ) {
 		delete i->second;
 	}
-	listeners.clear();
+	observers.clear();
 }
 
 void Widget::draw( Window* parent ) {

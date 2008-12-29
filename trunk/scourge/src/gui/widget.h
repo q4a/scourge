@@ -57,24 +57,27 @@ public:
 	/// Example GUI Event  
 	static GuiEvent Draw;
 
-	/// map of GUI Event listeners
-	std::map< GuiEvent, Subscription* > listeners;
+	/// map of GUI Event observers
+	typedef std::map<GuiEvent, Notifier*> ObserverMap;
+	ObserverMap observers;
 
 	/// registrate callback of any real listener of GUI events
 	template < typename T > 
-	void registrate( GuiEvent e, bool(T::*handler)(Widget*), T* subscriber ) {
-		// limit that there are only one (last registered) listener 
-		if ( listeners.find( e ) != listeners.end() ) {
-			delete listeners.find( e )->second;
+	void attach( GuiEvent e, bool(T::*update)(Widget*), T* observer ) {
+		// not implemented: multiple simultaneous observers of same event of same widget.
+		ObserverMap::iterator oldObserver = observers.find( e );
+		if ( oldObserver != observers.end() ) {
+			delete oldObserver->second;  
 		}
-		RealSubscription< T >* listener = new RealSubscription< T >( handler, subscriber );
-		listeners[e] = listener;
+
+		ObserverInfo<T>* info = new ObserverInfo<T>( update, observer );
+		observers[e] = info;
 	}
 
-	/// call registered event callback
-	bool fireEvent( GuiEvent e ) {
-		if ( listeners.find( e ) == listeners.end() ) return false;
-		return listeners[e]->fireIt( this );
+	/// call attached observer to notify about event
+	bool notify( GuiEvent e ) {
+		if ( observers.find( e ) == observers.end() ) return false; // not all events must be observed 
+		return observers[e]->notify( this );
 	}
 	// ***** Under construction ENDS ****
 

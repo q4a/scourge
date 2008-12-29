@@ -18,6 +18,13 @@
 #include "canvas.h"
 #include "window.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 /**
   *@author Gabor Torok
   */
@@ -57,7 +64,7 @@ void Canvas::drawWidget( Window* parent ) {
 
 		glPushMatrix();
 		view->drawWidgetContents( this );
-		fireEvent( Widget::Draw );
+		notify( Widget::Draw );
 		glPopMatrix();
 
 		glDisable( GL_SCISSOR_TEST );
