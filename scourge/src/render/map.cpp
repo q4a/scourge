@@ -1247,11 +1247,9 @@ void Map::drawIndoors() {
 		setupShapes( true, false );
 	}
 	
-#ifdef LIGHTS_ENABLED	
-	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
+	if ( preferences->isLightingEnabled() ) {
 		drawLightsFloor();
 	}
-#endif
 	
 	// draw lava flows
 	for ( int i = 0; i < otherCount; i++ ) {
@@ -1286,11 +1284,9 @@ void Map::drawIndoors() {
 		}
 		
 		// lights on walls
-#ifdef LIGHTS_ENABLED	
-		if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
+		if ( preferences->isLightingEnabled() ) {
 			drawLightsWalls();
 		}	
-#endif
 		
 		glColorMask( 1, 1, 1, 1 );
 		glEnable( GL_TEXTURE_2D );
@@ -1314,11 +1310,9 @@ void Map::drawIndoors() {
 		}
 		
 		// lights on walls
-#ifdef LIGHTS_ENABLED	
-		if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() && preferences->getLights() ) {
+		if ( preferences->isLightingEnabled() ) {
 			drawLightsWalls();
 		}	
-#endif		
 		
 		drawObjectsAndCreatures();
 

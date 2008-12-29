@@ -86,6 +86,7 @@ private:
 	Checkbox * multitexturingCheckbox;
 	Checkbox * anisofilterCheckbox;
 	MultipleLabel * shadowsML;
+	Checkbox * lights;
 
 	CardContainer *cards;
 	ScrollingList *controlBindingsList;

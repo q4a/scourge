@@ -183,6 +183,8 @@ public:
 	virtual bool isDebugTheme() = 0;
 	
 	virtual bool getLights() = 0;
+	
+	inline bool isLightingEnabled() { return getStencilbuf() && getStencilBufInitialized() && getLights(); }
 };
 
 #endif
