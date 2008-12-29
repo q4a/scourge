@@ -438,7 +438,7 @@ bool ScrollingList::handleEvent( Window* parent, SDL_Event* event, int x, int y 
 		eventType = ( dragging ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
 		dragging = false;
-		//((Window*)parent)->getScourgeGui()->unlockMouse();
+		//parent->getScourgeGui()->unlockMouse();
 		return isInside( x, y );
 	case SDL_MOUSEBUTTONDOWN:
 		if ( event->button.button ) {

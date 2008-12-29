@@ -152,7 +152,7 @@ void TextField::drawWidget( Window* parent ) {
 	} else {
 		applyColor();
 	}
-//  ((Window*)parent)->getSDLHandler()->texPrintMono(OFFSET, 12, getText());
+//  parent->getSDLHandler()->texPrintMono(OFFSET, 12, getText());
 
 	char letter[2];
 	for ( int i = 0; i < maxPos; i++ ) {
