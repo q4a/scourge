@@ -406,13 +406,8 @@ void Window::drawWidget( Window* ) {
 		opening = ( openHeight < h );
 	}
 
-
-
-
-
 	glPushMatrix();
 	glLoadIdentity( );
-
 
 	if ( type != INVISIBLE_WINDOW ) {
 		glEnable( GL_TEXTURE_2D );
