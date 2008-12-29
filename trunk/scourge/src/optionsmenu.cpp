@@ -147,6 +147,8 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	shadowsML -> addText( _( "All" ) );
 	cards->addWidget( shadowsML, VIDEO );
 	y += SPACING + MINOR_SPACING;
+	lights = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use lighting" ), VIDEO );
+	y += SPACING + MINOR_SPACING;
 	changeTakeEffectLabel = cards->createLabel( XPOS, y, " ", VIDEO, Constants::BLUE_COLOR );
 
 	// audio
@@ -227,6 +229,7 @@ void OptionsMenu::loadVideo() {
 	multitexturingCheckbox->setCheck( uc->getMultitexturing() );
 	hwaccelCheckbox->setCheck( uc->getHwaccel() );
 	anisofilterCheckbox->setCheck( uc->getAnisoFilter() );
+	lights->setCheck( uc->getLights() );
 }
 
 void OptionsMenu::setSelectedMode() {
@@ -320,6 +323,8 @@ bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		uc->setAnisoFilter( anisofilterCheckbox->isChecked() );
 	} else if ( widget == shadowsML ) {
 		uc->setShadows( shadowsML->getCurrentTextInd() );
+	} else if( widget == lights ) {
+		uc->setLights( lights->isChecked() );
 	} else if ( widget == saveButton ) {
 		uc->saveConfiguration();
 		if ( selectedMode == VIDEO ) {
