@@ -1544,7 +1544,8 @@ void Map::drawLightsFloor() {
 }
 
 void Map::drawLightsWalls() {
-	glDepthMask( GL_FALSE );
+	//glDepthMask( GL_FALSE );
+	glDepthMask( GL_TRUE );
 	for( int t = 0; t < lightCount; t++ ) {
 		// stencil and draw the wall
 		//glDisable(GL_DEPTH_TEST);
@@ -1564,7 +1565,7 @@ void Map::drawLightsWalls() {
 			stencil[i].pos->lightFacingSurfaces.clear();
 			for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
 				Surface *surface = *e;
-				if( isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
+				if( 16 > distance( stencil[i].pos, lights[t].pos ) && isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
 					stencil[i].pos->lightFacingSurfaces.insert( surface );
 				}
 			}
@@ -1579,9 +1580,20 @@ void Map::drawLightsWalls() {
 		
 		// minus the blocking surfaces
 		glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
-		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+		glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 		for ( int i = 0; i < stencilCount; i++ ) {
-			if( stencil[i].pos->lightFacingSurfaces.empty() ) {
+			if( !stencil[i].inFront && 16 > distance( stencil[i].pos, lights[t].pos ) ) {
+				if( !stencil[i].pos->lightFacingSurfaces.empty() ) {
+					set<Surface*> surfaces;
+					stencil[i].shape->getSurfaces( &surfaces, false );
+					stencil[i].pos->lightFacingSurfaces.clear();
+					for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
+						Surface *surface = *e;
+						if( !isFacingLight( surface, stencil[i].pos, lights[t].pos ) ) {
+							stencil[i].pos->lightFacingSurfaces.insert( surface );
+						}
+					}
+				}
 				doDrawShape( &stencil[i] );
 			}
 		}
@@ -1606,7 +1618,7 @@ void Map::drawLightsWalls() {
 	for ( int i = 0; i < stencilCount; i++ ) {
 		stencil[i].pos->lightFacingSurfaces.clear();
 	}
-	glDepthMask( GL_TRUE );
+	//glDepthMask( GL_TRUE );
 	glClear( GL_STENCIL_BUFFER_BIT );
 }
 
@@ -1624,6 +1636,8 @@ bool Map::isFacingLight( Surface *surface, Location *p, Location *lightPos ) {
 	// the plane equation
 	float s = pos[0] * lightPos->x + pos[1] * lightPos->y + pos[2] * lightPos->z + d;
 	bool b = ( s > 0 ? true : false );
+	
+	// todo: also check that the face is visible (ie. plug in the camera's position)
 	
 //	cerr << "isFacingLight: normal:" << pos[0] << "," << pos[1] << "," << pos[2] << " d=" << d << " s=" << s << " " << ( b ? "LIT" : "" ) << endl;
 	return b;
