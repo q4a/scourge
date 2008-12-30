@@ -1073,7 +1073,7 @@ protected:
 	void setupLockedDoorColor();
 	void setupLightBlending();
 	void setupPlayerLightColor();
-	inline float Map::distance( Location *pos1, Location *pos2 ) {
+	inline float distance( Location *pos1, Location *pos2 ) {
 		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 
 		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );
 	}
