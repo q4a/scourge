@@ -42,4 +42,6 @@ libScourgeGui_a_SOURCES = \
 	progress.cpp\
 	progress.h\
 	eventhandler.cpp\
-	eventhandler.h
+	eventhandler.h\
+	gui.cpp\
+	gui.h

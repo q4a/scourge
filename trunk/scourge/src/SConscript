@@ -39,7 +39,8 @@ gui = ['gui/button.cpp',\
 'gui/widget.cpp',\
 'gui/widgetview.cpp',\
 'gui/window.cpp',\
-'gui/eventhandler.cpp']
+'gui/eventhandler.cpp',\
+'gui/gui.cpp']
 
 io = ['io/file.cpp', 'io/zipfile.cpp']
 
