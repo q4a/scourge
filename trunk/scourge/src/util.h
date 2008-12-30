@@ -29,6 +29,7 @@
 #include <locale> //MSVC 8 needs it for toupper
 #endif
 #include "gui/guitheme.h"
+#include "../common/constants.h"
 
 class Map;
 class Location;

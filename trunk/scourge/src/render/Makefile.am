@@ -16,6 +16,10 @@ libScourgeRender_a_SOURCES = \
 	maprenderhelper.h\
 	map.cpp\
 	map.h\
+	indoor.cpp\
+	indoor.h\
+	outdoor.cpp\
+	outdoor.h\
 	mapadapter.cpp\
 	mapadapter.h\
 	frustum.cpp\

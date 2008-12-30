@@ -187,6 +187,10 @@ struct Rug {
 
 class Map {
 private:
+	friend class Indoor;
+	friend class Outdoor;
+	Indoor *indoor;
+	Outdoor *outdoor;
 	MapAdapter *adapter;
 	Preferences *preferences;
 	Shapes *shapes;
@@ -866,7 +870,7 @@ public:
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
 	void drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
-
+	
 	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
 
 	void debugGround( int sx, int sy, int ex, int ey );
@@ -904,10 +908,6 @@ public:
 	bool isValidPosition( int x, int y, int z );
 
 protected:
-	void drawIndoors();
-	void drawOutdoors();
-	void drawEffects();
-	void drawRoofs();
 	bool checkLightMap( int chunkX, int chunkY );
 	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
 	Texture getThemeTex( int ref );
@@ -1056,15 +1056,7 @@ protected:
 	void getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos );
 
 	bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
-	
-	void drawLightsFloor();
-	void drawLightsWalls();
-	void drawObjectsAndCreatures();
-	void drawIndoorShadows();
-	void drawRoofsIndoor();
-	void drawFrontWallsAndWater();
-	void drawWaterIndoor();
-	
+		
 	void setupShapeColor();
 	void setupBlendedWallColor();
 	void setupDropLocationColor();
