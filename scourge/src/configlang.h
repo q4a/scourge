@@ -21,6 +21,8 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <string>
+#include "../common/constants.h"
 
 class ConfigValue;
 class ConfigNode;
