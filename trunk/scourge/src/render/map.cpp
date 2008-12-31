@@ -31,7 +31,6 @@
 #include "mapadapter.h"
 #include "../io/zipfile.h"
 #include "../rpg/spell.h"
-#include "maprenderhelper.h"
 #include "../debug.h"
 #include "projectilerenderer.h"
 #include "../quickhull.h"
@@ -45,9 +44,8 @@ using namespace std;
 # define new DEBUG_NEW
 # undef THIS_FILE
   static char THIS_FILE[] = __FILE__;
-#endif 
-
-
+#endif
+  
 // set to 1 to enable bounding box and ground grid drawing
 #define DEBUG_MOUSE_POS 0
 
@@ -61,11 +59,6 @@ using namespace std;
 
 #define MVW 100
 #define MVD 100
-
-#define WATER_AMP 0.25f
-#define WATER_ANIM_SPEED 10.0f
-#define WATER_HEIGHT 1.2f
-#define WATER_STEP 0.07f
 
 //#define DEBUG_RENDER 1
 
@@ -97,19 +90,9 @@ Uint32 nextQuakeStartTime = 0;
 Uint32 lastQuakeTick = 0;
 bool quakeOnce = false;
 
-const float Map::shadowTransformMatrix[16] = {
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-// 0.5f, -0.5f, 0, 0,
-	0.75f, -0.25f, 0, 0,
-	0, 0, 0, 1
-};
-
 MapMemoryManager Map::mapMemoryManager;
 
 Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
-	indoor = new Indoor( this );
-	outdoor = new Outdoor( this );
 	roofAlphaUpdate = 0;
 	roofAlpha = 1;
 
@@ -244,8 +227,9 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	gridEnabled = true;
 	
-	lightTex = shapes->findTextureByName( "light.png", true );
-
+	indoor = new Indoor( this );
+	outdoor = new Outdoor( this );
+	
 	adapter->writeLogMessage( Constants::getMessage( Constants::WELCOME ), Constants::MSGTYPE_SYSTEM );
 	adapter->writeLogMessage( "----------------------------------", Constants::MSGTYPE_SYSTEM );
 }
@@ -676,9 +660,9 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 							ypos2 = static_cast<float>( ( chunkY - chunkStartY ) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY ) * MUL;
 
 							if ( forWater ) {
-								drawWaterPosition( posX, posY, xpos2, ypos2, shape );
+								getRender()->drawWaterPosition( posX, posY, xpos2, ypos2, shape );
 							} else {
-								drawGroundPosition( posX, posY, xpos2, ypos2, shape );
+								getRender()->drawGroundPosition( posX, posY, xpos2, ypos2, shape );
 							}
 						}
 					} else {
@@ -817,29 +801,6 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glPopMatrix();
 }
 
-/// Draws a shape sitting on the ground at the specified map coordinates.
-
-void Map::drawGroundPosition( int posX, int posY,
-                              float xpos2, float ypos2,
-                              Shape *shape ) {
-	GLuint name;
-	// encode this shape's map location in its name
-	name = posX + ( MAP_WIDTH * posY );
-	glTranslatef( xpos2, ypos2, 0.0f );
-
-	glPushName( name );
-	setupShapeColor();
-	if ( isHeightMapEnabled() ) {
-		shape->drawHeightMap( ground, posX, posY );
-	} else {
-		shape->setGround( true );
-		shape->draw();
-		shape->setGround( false );
-	}
-	glPopName();
-
-	glTranslatef( -xpos2, -ypos2, 0.0f );
-}
 
 void Map::setupLightBlending() {
 	//Scourge::setBlendFuncStatic();
@@ -878,104 +839,6 @@ void Map::setupSecretDoorColor() {
 void Map::setupLockedDoorColor() {
 	glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
 }
-
-/// Draws a shape placed on an indoor water tile.
-
-void Map::drawWaterPosition( int posX, int posY,
-                             float xpos2, float ypos2,
-                             Shape *shape ) {
-	GLuint name;
-	// encode this shape's map location in its name
-	name = posX + ( MAP_WIDTH * posY );
-	glTranslatef( xpos2, ypos2, 0.0f );
-
-	// draw water
-	Uint32 key = createPairKey( posX, posY );
-	if ( water.find( key ) != water.end() ) {
-		glDisable( GL_CULL_FACE );
-
-		float sx = ( static_cast<float>( MAP_UNIT ) / static_cast<float>( WATER_TILE_X ) ) * MUL;
-		float sy = ( static_cast<float>( MAP_UNIT ) / static_cast<float>( WATER_TILE_Y ) ) * MUL;
-
-		int xp = 0;
-		int yp = 0;
-		while ( true ) {
-			int stx = xp;
-			int sty = yp;
-			glBegin( GL_TRIANGLE_STRIP );
-			for ( int i = 0; i < 4; i++ ) {
-				int wx, wy;
-				if ( xp == WATER_TILE_X && yp == WATER_TILE_Y ) {
-					wx = ( posX + MAP_UNIT ) * WATER_TILE_X;
-					wy = ( posY + MAP_UNIT ) * WATER_TILE_Y;
-				} else if ( xp == WATER_TILE_X ) {
-					wx = ( posX + MAP_UNIT ) * WATER_TILE_X;
-					wy = posY * WATER_TILE_Y + yp;
-				} else if ( yp == WATER_TILE_Y ) {
-					wx = posX * WATER_TILE_X + xp;
-					wy = ( posY + MAP_UNIT ) * WATER_TILE_Y;
-				} else {
-					wx = posX * WATER_TILE_X + xp;
-					wy = posY * WATER_TILE_Y + yp;
-				}
-
-				int xx = wx % WATER_TILE_X;
-				int yy = wy % WATER_TILE_Y;
-				WaterTile *w = NULL;
-				Uint32 key = createPairKey( wx / WATER_TILE_X, wy / WATER_TILE_Y );
-				if ( water.find( key ) != water.end() ) {
-					w = water[key];
-
-					Uint32 time = SDL_GetTicks();
-					Uint32 elapsedTime = time - w->lastTime[xx][yy];
-					if ( elapsedTime >= ( Uint32 )( 1000.0f / WATER_ANIM_SPEED ) ) {
-
-						w->z[xx][yy] += w->step[xx][yy];
-						if ( w->z[xx][yy] > WATER_AMP ||
-						        w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
-
-						w->lastTime[xx][yy] = time;
-					}
-				}
-
-				float zz = ( w ? w->z[xx][yy] : 0.0f );
-				float sz = ( WATER_HEIGHT + zz ) * MUL;
-				glColor4f( 0.3f + ( zz / 30.0f ),
-				           0.25f + ( zz / 10.0f ),
-				           0.17f + ( zz / 15.0f ),
-				           0.5f );
-
-
-				glVertex3f( static_cast<float>( xp ) * sx, static_cast<float>( yp ) * sy, sz );
-
-				switch ( i ) {
-				case 0: xp++; break;
-				case 1: yp++; xp--; break;
-				case 2: xp++; break;
-				case 3: yp--; xp--; break;
-				}
-				if ( xp > WATER_TILE_X || yp > WATER_TILE_Y ) {
-					break;
-				}
-			}
-			glEnd();
-			xp = stx + 1;
-			yp = sty;
-			if ( xp >= WATER_TILE_X ) {
-				xp = 0;
-				yp++;
-				if ( yp >= WATER_TILE_Y ) break;
-			}
-		}
-
-
-		//glDepthMask( GL_TRUE );
-		//glDisable( GL_BLEND );
-	}
-
-	glTranslatef( -xpos2, -ypos2, 0.0f );
-}
-
 
 void Map::setupPosition( int posX, int posY, int posZ,
                          float xpos2, float ypos2, float zpos2,
@@ -1191,7 +1054,7 @@ void Map::preDraw() {
 /// Draws traps, and cleans up after drawing the main 3D view.
 
 void Map::postDraw() {
-	drawTraps();
+	getRender()->drawTraps();
 
 	glDisable( GL_SCISSOR_TEST );
 
@@ -1211,13 +1074,7 @@ void Map::postDraw() {
 /// Draws the complete 3D view.
 
 void Map::draw() {
-	if ( helper->isIndoors() ) {
-		indoor->draw();
-	} else {
-		outdoor->draw();
-	}
-
-	drawProjectiles();
+	getRender()->draw();
 
 	if ( adapter->isMouseIsMovingOverMap() ) {
 		// find the map coordinates (must be done after drawing is complete)
@@ -1235,7 +1092,7 @@ void Map::draw() {
 	}
 
 	if ( DEBUG_MOUSE_POS || ( settings->isGridShowing() && gridEnabled ) ) {
-		willDrawGrid();
+		getRender()->willDrawGrid();
 	}
 }
 
@@ -1246,187 +1103,6 @@ bool Map::isValidPosition( int x, int y, int z ) {
 }
 
 
-void Map::willDrawGrid() {
-
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_TEXTURE_2D );
-
-	glEnable( GL_BLEND );
-	glDepthMask( GL_FALSE );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-
-	// draw the starting position
-	float xpos2 = static_cast<float>( this->startx - getX() ) * MUL;
-	float ypos2 = static_cast<float>( this->starty - getY() - 1 ) * MUL;
-	float zpos2 = 0.0f * MUL;
-	float w = 2.0f * MUL;
-	float h = 4.0f * MUL;
-	if ( useFrustum && frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w * MUL ) ) {
-		for ( int i = 0; i < 2; i++ ) {
-			glPushMatrix();
-			glTranslatef( xpos2, ypos2, zpos2 );
-			if ( i == 0 ) {
-				glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
-				glBegin( GL_TRIANGLES );
-			} else {
-				glColor4f( 1.0f, 0.7f, 0.0f, 0.5f );
-				glBegin( GL_LINE_LOOP );
-			}
-
-			glVertex3f( 0.0f, 0.0f, 0.0f );
-			glVertex3f( -w, -w, h );
-			glVertex3f( w, -w, h );
-
-			glVertex3f( 0.0f, 0.0f, 0.0f );
-			glVertex3f( -w, w, h );
-			glVertex3f( w, w, h );
-
-			glVertex3f( 0.0f, 0.0f, 0.0f );
-			glVertex3f( -w, -w, h );
-			glVertex3f( -w, w, h );
-
-			glVertex3f( 0.0f, 0.0f, 0.0f );
-			glVertex3f( w, -w, h );
-			glVertex3f( w, w, h );
-
-
-			glVertex3f( 0.0f, 0.0f, h * 2 );
-			glVertex3f( -w, -w, h );
-			glVertex3f( w, -w, h );
-
-			glVertex3f( 0.0f, 0.0f, h * 2 );
-			glVertex3f( -w, w, h );
-			glVertex3f( w, w, h );
-
-			glVertex3f( 0.0f, 0.0f, h * 2 );
-			glVertex3f( -w, -w, h );
-			glVertex3f( -w, w, h );
-
-			glVertex3f( 0.0f, 0.0f, h * 2 );
-			glVertex3f( w, -w, h );
-			glVertex3f( w, w, h );
-
-			glEnd();
-			glPopMatrix();
-		}
-	}
-
-	glDisable( GL_DEPTH_TEST );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
-	float m = 0.5f * MUL;
-	int const TMPLEN = 100;
-	char tmp[TMPLEN];
-	for ( int i = 0; i < chunkCount; i++ ) {
-
-		float n = static_cast<float>( MAP_UNIT ) * MUL;
-
-		glPushMatrix();
-		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f * MUL ), 0 );
-
-		if ( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
-			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
-			glLineWidth( 1 );
-			snprintf( tmp, TMPLEN, "%d,%d", ( chunkX * MAP_UNIT + MAP_OFFSET ), ( chunkY * MAP_UNIT + MAP_OFFSET + 1 ) );
-			adapter->texPrint( 0, 0, tmp );
-			for ( int xx = 1; xx < MAP_UNIT; xx++ ) {
-				glBegin( GL_LINES );
-				glVertex3f( 0, xx * MUL, m );
-				glVertex3f( n, xx * MUL, m );
-				glEnd();
-				glBegin( GL_LINES );
-				glVertex3f( xx * MUL, 0, m );
-				glVertex3f( xx * MUL, n, m );
-				glEnd();
-			}
-		} else {
-			glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
-			glLineWidth( 1 );
-		}
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0.0f, 0.0f, m );
-		glVertex3f( n, 0.0f, m );
-		glVertex3f( n, n, m );
-		glVertex3f( 0.0f, n, m );
-		glEnd();
-		glPopMatrix();
-	}
-
-	glPushMatrix();
-
-	float xp = static_cast<float>( cursorFlatMapX - getX() ) * MUL;
-	float yp = ( static_cast<float>( cursorFlatMapY - getY() ) - 1.0f ) * MUL;
-	float cw = static_cast<float>( cursorWidth ) * MUL;
-	float cd = -static_cast<float>( cursorDepth ) * MUL;
-	m = ( cursorZ ? cursorZ : 0.5f ) * MUL;
-	float ch = static_cast<float>( cursorHeight + cursorZ ) * MUL;
-
-	float red = 1.0f;
-	float green = 0.9f;
-	float blue = 0.15f;
-	bool found = false;
-	if ( cursorFlatMapX < MAP_WIDTH && cursorFlatMapY < MAP_DEPTH ) {
-		for ( int xx = cursorFlatMapX; xx < cursorFlatMapX + cursorWidth; xx++ ) {
-			for ( int yy = cursorFlatMapY - 1; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
-				for ( int zz = 0; zz < cursorHeight; zz++ ) {
-					if ( pos[xx][yy + 1][zz] ) {
-						found = true;
-						break;
-					}
-				}
-			}
-		}
-	}
-	if ( found ) {
-		green = 0.15f;
-	}
-
-	// draw the cursor
-	glColor4f( red, green, blue, 0.25f );
-	glTranslatef( xp, yp, 0.0f );
-	glBegin( GL_QUADS );
-
-	glVertex3f( 0.0f, 0.0f, m );
-	glVertex3f( cw, 0.0f, m );
-	glVertex3f( cw, cd, m );
-	glVertex3f( 0.0f, cd, m );
-
-	glVertex3f( 0.0f, 0.0f, ch );
-	glVertex3f( cw, 0.0f, ch );
-	glVertex3f( cw, cd, ch );
-	glVertex3f( 0.0f, cd, ch );
-
-	glVertex3f( 0.0f, 0.0f, m );
-	glVertex3f( cw, 0.0f, m );
-	glVertex3f( cw, 0.0f, ch );
-	glVertex3f( 0.0f, 0.0f, ch );
-
-	glVertex3f( 0.0f, cd, m );
-	glVertex3f( cw, cd, m );
-	glVertex3f( cw, cd, ch );
-	glVertex3f( 0.0f, cd, ch );
-
-	glVertex3f( 0.0f, 0.0f, m );
-	glVertex3f( 0.0f, cd, m );
-	glVertex3f( 0.0f, cd, ch );
-	glVertex3f( 0.0f, 0.0f, ch );
-
-	glVertex3f( cw, 0.0f, m );
-	glVertex3f( cw, cd, m );
-	glVertex3f( cw, cd, ch );
-	glVertex3f( cw, 0.0f, ch );
-
-	glEnd();
-	glPopMatrix();
-
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
-
-	glDisable( GL_BLEND );
-	glDepthMask( GL_TRUE );
-	glEnable( GL_DEPTH_TEST );
-}
 
 /// Sorts the shapes in respect to the player's position.
 
@@ -1503,425 +1179,8 @@ bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, map
 	return b;
 }
 
-/// Draws the projectiles.
-
-void Map::drawProjectiles() {
-	for ( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin();
-	        i != RenderedProjectile::getProjectileMap()->end(); ++i ) {
-		//RenderedCreature *creature = i->first;
-		vector<RenderedProjectile*> *p = i->second;
-		for ( vector<RenderedProjectile*>::iterator e = p->begin(); e != p->end(); ++e ) {
-			RenderedProjectile *proj = *e;
-
-			// calculate the path
-			vector<CVector3> path;
-			for ( int i = 0; i < proj->getStepCount(); i++ ) {
-				CVector3 v;
-				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - static_cast<float>( getX() ) ) * MUL );
-				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - static_cast<float>( getY() ) - 1.0f ) * MUL );
-				v.z = ( proj->getZ( i ) + proj->getRenderer()->getOffsetZ() ) * MUL;
-				path.push_back( v );
-			}
-			proj->getRenderer()->drawPath( this, proj, &path );
-		}
-	}
-}
-
-/// Draws a shape stored in a DrawLater object.
-
-void Map::doDrawShape( DrawLater *later, int effect ) {
-	doDrawShape( later->xpos, later->ypos, later->zpos, later->shape, effect, later );
-}
-
-void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int effect, DrawLater *later ) {
-
-	// fog test for creatures
-	if ( helper && later && later->creature && later->pos && !adapter->isInMovieMode() && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
-		return;
-	}
-
-	if ( shape ) ( ( GLShape* )shape )->useShadow = useShadow;
-
-	// slow on mac os X:
-	// glPushAttrib(GL_ENABLE_BIT);
-
-	glPushMatrix();
-
-	float heightPos = 0.0f;
-	if ( later && later->pos ) {
-		GLShape *s = ( GLShape* )later->pos->shape;
-		if ( s->isVirtual() ) {
-			s = ( ( VirtualShape* )s )->getRef();
-		}
-
-		if ( !s->getIgnoreHeightMap() ) {
-			heightPos = later->pos->heightPos * MUL;
-		}
-	} else if ( later && later->effect ) {
-		heightPos = later->effect->heightPos;
-	}
-
-	float xdiff = 0;
-	float ydiff = 0;
-	if ( later && later->creature ) {
-		xdiff = ( later->creature->getX() - static_cast<float>( toint( later->creature->getX() ) ) );
-		ydiff = ( later->creature->getY() - static_cast<float>( toint( later->creature->getY() ) ) );
-	}
-
-	if ( useShadow ) {
-		// put shadow above the floor a little
-		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
-		glMultMatrixf( shadowTransformMatrix );
-		// purple shadows
-		setupShadowColor();
-	} else {
-		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, zpos2 + heightPos );
-
-		if ( later && later->pos ) {
-			glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ );
-			glRotatef( later->pos->angleX, 1.0f, 0.0f, 0.0f );
-			glRotatef( later->pos->angleY, 0.0f, 1.0f, 0.0f );
-			glRotatef( later->pos->angleZ, 0.0f, 0.0f, 1.0f );
-		}
-
-		if ( later && later->creature ) {
-			glTranslatef( later->creature->getOffsetX(), later->creature->getOffsetY(), later->creature->getOffsetZ() );
-		}
-
-#ifdef DEBUG_SECRET_DOORS
-		if ( later && later->pos ) {
-			int xp = later->pos->x;
-			int yp = later->pos->y;
-			int index = xp + MAP_WIDTH * yp;
-			if ( secretDoors.find( index ) != secretDoors.end() ) {
-				glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
-				colorAlreadySet = true;
-			}
-		}
-#endif
-
-		// show detected secret doors
-		if ( later && later->pos ) {
-			if ( isSecretDoor( later->pos ) && ( isSecretDoorDetected( later->pos ) || settings->isGridShowing() ) ) {
-				setupSecretDoorColor();
-				colorAlreadySet = true;
-			}
-		}
-
-		if ( colorAlreadySet   ) {
-			colorAlreadySet = false;
-		} else {
-			if ( later && later->pos && isLocked( later->pos->x, later->pos->y, later->pos->z ) ) {
-				setupLockedDoorColor();
-			} else {
-				setupShapeColor();
-			}
-		}
-	}
-
-	glDisable( GL_CULL_FACE );
-
-	if ( shape ) {
-		( ( GLShape* )shape )->setCameraRot( xrot, yrot, zrot );
-		( ( GLShape* )shape )->setCameraPos( xpos, ypos, zpos, xpos2, ypos2, zpos2 );
-		if ( later && later->pos ) ( ( GLShape* )shape )->setLocked( isLocked( later->pos->x, later->pos->y, 0 ) );
-		else ( ( GLShape* )shape )->setLocked( false );
-	}
-		
-	
-	// ==========================================================================
-	// lights
-	if( later && later->light ) {
-
-		glPushMatrix();
-		glRotatef( -zrot, 0.0f, 0.0f, 1.0f );
-		glRotatef( -yrot, 1.0f, 0.0f, 0.0f );
-		lightTex.glBind();
-		float r;
-		if( later->shape->getLightEmitter() ) {
-			r = later->shape->getLightEmitter()->getRadius() * MUL;
-			Color color = later->shape->getLightEmitter()->getColor();
-			glColor4f( color.r, color.g, color.b, color.a );
-		} else {
-			r = 8 * MUL;
-			setupPlayerLightColor();
-		}		
-		
-		glBegin( GL_QUADS );
-		glTexCoord2f( 1.0f, 1.0f );
-		glVertex3f( -r, r, 0 );
-		glTexCoord2f( 1.0f, 0.0f );
-		glVertex3f( -r, -r, 0 );
-		glTexCoord2f( 0.0f, 0.0f );
-		glVertex3f( r, -r, 0 );
-		glTexCoord2f( 0.0f, 1.0f );
-		glVertex3f( r, r, 0 );		
-		glEnd();
-		glPopMatrix();
-		
-		// ==========================================================================
-		// effects
-	} else if ( effect && later ) {
-		if ( later->creature ) {
-			// translate hack for md2 models... see: md2shape::draw()
-			//glTranslatef( 0, -1 * MUL, 0 );
-			later->creature->getEffect()->draw( later->creature->getEffectType(),
-			                                    later->creature->getDamageEffect() );
-			//glTranslatef( 0, 1 * MUL, 0 );
-		} else if ( later->effect ) {
-			later->effect->getEffect()->draw( later->effect->getEffectType(),
-			                                  later->effect->getDamageEffect() );
-		}
-		
-		// ==========================================================================
-		// creatures		
-	} else if ( later && later->creature && !useShadow ) {
-		// outline mission creatures
-		if ( adapter->isMissionCreature( later->creature ) ) {
-			//if( session->getCurrentMission() &&
-			//session->getCurrentMission()->isMissionCreature( later->creature ) ) {
-			shape->outline( 0.15f, 0.15f, 0.4f );
-		} else if ( later->creature->isBoss() ) {
-			shape->outline( 0.4f, 0.15f, 0.4f );
-		} else if ( later && later->pos &&
-		            later->pos->outlineColor ) {
-			shape->outline( later->pos->outlineColor );
-		}
-		
-		if ( later->creature->getStateMod( StateMod::invisible ) ) {
-			glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
-			glEnable( GL_BLEND );
-			//glDepthMask( GL_FALSE );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		} else if ( later->creature->getStateMod( StateMod::possessed ) ) {
-			glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
-		}
-		
-		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
-			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
-		}
-		shape->draw();
-
-		if ( later->creature->getStateMod( StateMod::invisible ) ) {
-			glDisable( GL_BLEND );
-			//glDepthMask( GL_TRUE );
-		}
-
-		// ==========================================================================
-		// items
-	} else if ( later && later->item && !useShadow ) {
-
-		if ( later->item->isSpecial() ) {
-			shape->outline( Constants::SPECIAL_ITEM_COLOR );
-		} else if ( later->item->isMagicItem() ) {
-			shape->outline( Constants::MAGIC_ITEM_COLOR[ later->item->getMagicLevel() ] );
-		} else if ( later->item->getContainsMagicItem() ) {
-			shape->outline( 0.8f, 0.8f, 0.3f );
-		}
-
-		if ( later && later->pos && later->pos->outlineColor && !useShadow ) {
-			shape->outline( later->pos->outlineColor );
-		}
-		
-		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
-			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
-		}
-		shape->draw();
 
 
-		// ==========================================================================
-		// shapes
-	} else {
-		if ( later ) {
-			bool sides[6];
-			findOccludedSides( later, sides );
-			shape->setOccludedSides( sides );
-		}
-		if ( later && later->pos ) {
-			if ( later->pos->outlineColor && !useShadow ) {
-				shape->outline( later->pos->outlineColor );
-			}
-			if ( shape->getTextureCount() > 3 ) {
-				// select which alternate texture to use
-				shape->setTextureIndex( later->pos->texIndex );
-			}
-		}
-		
-		if( later && later->pos && !later->pos->lightFacingSurfaces.empty() ) {
-			shape->setLightFacingSurfaces( &later->pos->lightFacingSurfaces );
-		}		
-		shape->draw();
-	}
-	// ==========================================================================
-
-#if DEBUG_MOUSE_POS == 1
-	if ( shape && !useShadow && ( ( later && later->item ) || ( later && later->creature ) || shape->isInteractive() ) ) {
-		glDisable( GL_DEPTH_TEST );
-		glDepthMask( GL_FALSE );
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_TEXTURE_2D );
-		glColor4f( 1, 1, 1, 1 );
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, 0, 0 );
-		glEnd();
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0, 0, shape->getHeight() * MUL );
-		glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, 0, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( 0, shape->getDepth() * MUL, 0 );
-		glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( shape->getWidth() * MUL, 0, 0 );
-		glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
-		glEnd();
-		glDepthMask( GL_TRUE );
-		glEnable( GL_DEPTH_TEST );
-	}
-#endif
-
-	// in the map editor outline virtual shapes
-	if ( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
-
-		if ( heightPos > 1 ) {
-			cerr << "heightPos=" << heightPos << " for virtual shape " << shape->getName() << endl;
-		}
-		if ( later && later->pos && later->pos->z > 0 ) {
-			cerr << "z=" << later->pos->z << " for virtual shape " << shape->getName() << endl;
-		}
-
-		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
-
-		float z = ( shape->getHeight() + 0.25f ) * MUL;
-		float lowZ = 0.25f * MUL;
-
-		float wm = shape->getWidth() * MUL;
-		float dm = shape->getDepth() * MUL;
-
-		glPushMatrix();
-		glTranslatef( 0.0f, 20.0f, z );
-		adapter->texPrint( 0, 0, "virtual" );
-		glPopMatrix();
-
-		glDisable( GL_TEXTURE_2D );
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, dm, z );
-		glVertex3f( wm, dm, z );
-		glVertex3f( wm, 0.0f, z );
-
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, 0.0f, lowZ );
-		glVertex3f( wm, 0.0f, lowZ );
-		glVertex3f( wm, 0.0f, z );
-
-		glVertex3f( 0.0f, dm, z );
-		glVertex3f( 0.0f, dm, lowZ );
-		glVertex3f( wm, dm, lowZ );
-		glVertex3f( wm, dm, z );
-
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, 0.0f, lowZ );
-		glVertex3f( 0.0f, dm, lowZ );
-		glVertex3f( 0.0f, dm, z );
-
-		glVertex3f( wm, 0.0f, z );
-		glVertex3f( wm, 0.0f, lowZ );
-		glVertex3f( wm, dm, lowZ );
-		glVertex3f( wm, dm, z );
-
-		glEnd();
-		glEnable( GL_TEXTURE_2D );
-	}
-
-	glPopMatrix();
-
-	// slow on mac os X
-	// glPopAttrib();
-
-	if ( shape ) {
-		shape->setLightFacingSurfaces( NULL );
-		( ( GLShape* )shape )->useShadow = false;
-	}	
-}
-
-/// Determines which sides of a shape are not visible for various reasons.
-
-void Map::findOccludedSides( DrawLater *later, bool *sides ) {
-	if ( colorAlreadySet || !later || !later->pos || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
-		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] =
-		                                                     sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
-		return;
-	}
-
-	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] =
-	                              sides[Shape::S_SIDE] = sides[Shape::E_SIDE] =
-	                                                       sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
-
-	int x, y;
-	Location *pos;
-	for ( x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
-		y = later->y - later->pos->shape->getDepth();
-		pos = getLocation( x, y, later->pos->z );
-		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-			sides[Shape::N_SIDE] = true;
-		}
-
-		y = later->y + 1;
-		pos = getLocation( x, y, later->pos->z );
-		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-			sides[Shape::S_SIDE] = true;
-		}
-
-		if ( sides[Shape::N_SIDE] && sides[Shape::S_SIDE] ) {
-			break;
-		}
-	}
-
-
-	for ( y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
-		x = later->x - 1;
-		pos = getLocation( x, y, later->pos->z );
-		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-			sides[Shape::W_SIDE] = true;
-		}
-
-		x = later->x + later->pos->shape->getWidth();
-		pos = getLocation( x, y, later->pos->z );
-		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-			sides[Shape::E_SIDE] = true;
-		}
-
-		if ( sides[Shape::W_SIDE] && sides[Shape::E_SIDE] ) {
-			break;
-		}
-	}
-
-
-	for ( x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
-		for ( y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
-			pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
-			if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-				sides[Shape::TOP_SIDE] = true;
-				break;
-			}
-		}
-	}
-}
 
 /// Is the x,y,z location currently on the screen?
 
@@ -5358,51 +4617,6 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 	else return &( trapList[ trapIndex ] );
 }
 
-/// Draws the traps.
-
-void Map::drawTraps() {
-	for ( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
-		Trap *trap = getTrapLoc( static_cast<int>( *i ) );
-
-		if ( trap->discovered || settings->isGridShowing() || DEBUG_TRAPS ) {
-
-			glEnable( GL_BLEND );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glDisable( GL_CULL_FACE );
-			glDisable( GL_TEXTURE_2D );
-
-			// get the color
-			// FIXME: colors should be ref-d from scourgeview.cpp colors
-			if ( !trap->enabled ) {
-				//ret = disabledTrapColor;
-				glColor4f( 0.5, 0.5, 0.5, 0.5f );
-			} else if ( trap->discovered ) {
-				if ( trap == getTrapLoc( getSelectedTrapIndex() ) ) {
-					//ret = outlineColor;
-					glColor4f( 0.3f, 0.3f, 0.5f, 0.5f );
-				} else {
-					// ret = enabledTrapColor;
-					glColor4f( 1.0f, 1.0f, 0.0f, 0.5f );
-				}
-			} else {
-				// ret = debugTrapColor;
-				glColor4f( 0.0f, 1.0f, 1.0f, 0.5f );
-			}
-
-			glLineWidth( 3 );
-			//glBegin( GL_POLYGON );
-			glBegin( GL_LINE_LOOP );
-			for ( unsigned int i = 0; i < trap->hull.size(); i++ ) {
-				CVector2 *p = trap->hull[ i ];
-				glVertex3f( ( p->x - getX() ) * MUL, ( p->y - getY() ) * MUL, 0.5f * MUL );
-			}
-			glEnd();
-			glLineWidth( 1 );
-			glEnable( GL_TEXTURE_2D );
-			//glDisable( GL_BLEND );
-		}
-	}
-}
 
 /// Is it safe to put the shape on this map tile?
 

@@ -24,6 +24,7 @@
 #include <set>
 #include <sstream>
 #include "location.h"
+#include "maprenderhelper.h"
 
 class CFrustum;
 class RenderedProjectile;
@@ -40,6 +41,7 @@ class Location;
 class Effect;
 class DisplayInfo;
 class MapRenderHelper;
+class MapRender;
 
 enum {
 	GROUND_LAYER = 0,
@@ -179,6 +181,19 @@ struct Rug {
 #define WATER_TILE_X 8
 #define WATER_TILE_Y 8
 
+#define WATER_AMP 0.25f
+#define WATER_ANIM_SPEED 10.0f
+#define WATER_HEIGHT 1.2f
+#define WATER_STEP 0.07f
+
+
+/// An indoor water tile.
+struct WaterTile {
+	float z[WATER_TILE_X][WATER_TILE_Y];
+	float step[WATER_TILE_X][WATER_TILE_Y];
+	Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
+};
+
 /**
  *@author Gabor Torok
  */
@@ -187,10 +202,10 @@ struct Rug {
 
 class Map {
 private:
+	friend class MapRender;
 	friend class Indoor;
 	friend class Outdoor;
-	Indoor *indoor;
-	Outdoor *outdoor;
+	MapRender *indoor, *outdoor;
 	MapAdapter *adapter;
 	Preferences *preferences;
 	Shapes *shapes;
@@ -211,13 +226,6 @@ private:
 	Rug rugPos[MAP_CHUNKS_X][MAP_CHUNKS_Y];
 	Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
 
-	/// An indoor water tile.
-	struct WaterTile {
-		float z[WATER_TILE_X][WATER_TILE_Y];
-		float step[WATER_TILE_X][WATER_TILE_Y];
-		Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
-	};
-
 	std::map<Uint32, WaterTile*> water;
 	bool debugGridFlag;
 	bool drawGridFlag;
@@ -237,8 +245,6 @@ private:
 	static const int SHADE_SIZE = 20;
 
 	bool useShadow;
-	// squish on z and shear x,y
-	static const float shadowTransformMatrix[16];
 
 	bool colorAlreadySet;
 	Location *selectedDropTarget;
@@ -732,10 +738,6 @@ public:
 	int getCreaturesInArea( int x, int y, int radius, RenderedCreature *targets[] );
 
 	bool isOnScreen( Uint16 mapx, Uint16 mapy, Uint16 mapz );
-	void doDrawShape( DrawLater *later, int effect = 0 );
-	void doDrawShape( float xpos2, float ypos2, float zpos2,
-	                  Shape *shape, int effect = 0, DrawLater *later = NULL );
-	void findOccludedSides( DrawLater *later, bool *sides );
 
 	bool isDoor( int x, int y );
 	bool isDoor( Shape *shape );
@@ -906,6 +908,7 @@ public:
 	
 	bool isFacingLight( Surface *surface, Location *p, Location *lightPos );
 	bool isValidPosition( int x, int y, int z );
+	inline MapRender *getRender() { return helper->isIndoors() ? indoor : outdoor; }
 
 protected:
 	bool checkLightMap( int chunkX, int chunkY );
@@ -916,7 +919,6 @@ protected:
 	bool isLakebedTexture( int x, int y );
 	bool isAllHigh( int x, int y, int w, int h );
 	void clearTraps();
-	void drawTraps();
 
 	void createGroundMap();
 	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
@@ -925,8 +927,6 @@ protected:
 	void drawFlatFloor();
 	bool drawHeightMapFloor();
 	void drawWaterLevel();
-
-	void willDrawGrid();
 
 	void setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	                       Shape *shape,
@@ -996,7 +996,6 @@ protected:
 	int chunkCount;
 	DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
 	int laterCount, stencilCount, otherCount, damageCount, roofCount, lightCount;
-	Texture lightTex;
 	std::map<Uint32, EffectLocation*> currentEffectsMap;
 
 	void setupShapes( bool forGround, bool forWater, int *csx = NULL, int *cex = NULL, int *csy = NULL, int *cey = NULL );
@@ -1006,19 +1005,11 @@ protected:
 	                    EffectLocation *effect, bool itemPos = false );
 	void setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY );
 	void drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk );
-	void drawGroundPosition( int posX, int posY,
-	                         float xpos2, float ypos2,
-	                         Shape *shape );
-	void drawWaterPosition( int posX, int posY,
-	                        float xpos2, float ypos2,
-	                        Shape *shape );
 	Shape *isWall( int x, int y, int z );
 
 	void configureLightMap();
 	void traceLight( int chunkX, int chunkY, int lightMap[MAP_CHUNKS_X][MAP_CHUNKS_Y], bool onlyLockedDoors );
 	bool isLocationBlocked( int x, int y, int z, bool onlyLockedDoors );
-
-	void drawProjectiles();
 
 	void drawCube( float x, float y, float z, float r );
 
