@@ -22,6 +22,7 @@
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
 #include "rendereditem.h"
+#include "glshape.h"
 
 
 using namespace std;
@@ -34,7 +35,7 @@ using namespace std;
 #endif 
 
 /// Renders the 3D view for indoor levels.
-void Indoor::draw() {
+void Indoor::drawMap() {
 	if ( map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
 		drawIndoorShadows();
 	} else {
@@ -49,7 +50,7 @@ void Indoor::draw() {
 	// draw lava flows
 	for ( int i = 0; i < map->otherCount; i++ ) {
 		if ( map->other[i].shape->isFlatCaveshape() ) {
-			map->doDrawShape( &map->other[i] );
+			doDrawShape( &map->other[i] );
 		}
 	}
 
@@ -75,7 +76,7 @@ void Indoor::draw() {
 
 		// draw walls behind the player
 		for ( int i = 0; i < map->stencilCount; i++ ) {
-			if ( !( map->stencil[i].inFront ) ) map->doDrawShape( &( map->stencil[i] ) );
+			if ( !( map->stencil[i].inFront ) ) doDrawShape( &( map->stencil[i] ) );
 		}
 		
 		// lights on walls
@@ -92,7 +93,7 @@ void Indoor::draw() {
 	} else {
 		// no player; just draw the damn walls
 		for ( int i = 0; i < map->stencilCount; i++ ) {
-			map->doDrawShape( &( map->stencil[i] ) );
+			doDrawShape( &( map->stencil[i] ) );
 		}
 		
 		// lights on walls
@@ -122,12 +123,12 @@ void Indoor::draw() {
 	glDepthMask( GL_FALSE );
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		map->later[i].shape->setupBlending();
-		map->doDrawShape( &map->later[i] );
+		doDrawShape( &map->later[i] );
 		map->later[i].shape->endBlending();
 	}
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	for ( int i = 0; i < map->damageCount; i++ ) {
-		map->doDrawShape( &map->damage[i], 1 );
+		doDrawShape( &map->damage[i], 1 );
 	}	
 			
 	// draw the fog of war or shading
@@ -162,7 +163,7 @@ void Indoor::drawRoofsIndoor() {
 //	if ( roofAlpha > 0 ) {
 //		for ( int i = 0; i < roofCount; i++ ) {
 //			( ( GLShape* )roof[i].shape )->setAlpha( roofAlpha );
-//			map->doDrawShape( &roof[i] );
+//			doDrawShape( &roof[i] );
 //		}
 //	}	
 }
@@ -189,7 +190,7 @@ void Indoor::drawFrontWallsAndWater() {
 			if ( map->stencil[i].inFront ) {
 				map->setupBlendedWallColor();
 				map->colorAlreadySet = true;
-				map->doDrawShape( &( map->stencil[i] ) );
+				doDrawShape( &( map->stencil[i] ) );
 			}
 		}
 
@@ -207,7 +208,7 @@ void Indoor::drawFrontWallsAndWater() {
 			if ( map->stencil[i].inFront ) {
 				map->setupBlendedWallColor();
 				map->colorAlreadySet = true;
-				map->doDrawShape( &( map->stencil[i] ) );
+				doDrawShape( &( map->stencil[i] ) );
 			}
 		}
 		if ( map->hasWater ) {
@@ -249,11 +250,11 @@ void Indoor::drawIndoorShadows() {
 		map->useShadow = true;
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->otherCount; i++ ) {
-			map->doDrawShape( &map->other[i] );
+			doDrawShape( &map->other[i] );
 		}
 		if ( map->preferences->getShadows() == Constants::ALL_SHADOWS ) {
 			for ( int i = 0; i < map->stencilCount; i++ ) {
-				map->doDrawShape( &map->stencil[i] );
+				doDrawShape( &map->stencil[i] );
 			}
 		}
 		map->useShadow = false;
@@ -274,7 +275,7 @@ void Indoor::drawObjectsAndCreatures() {
 			map->colorAlreadySet = true;
 			map->setupDropLocationColor();
 		}
-		map->doDrawShape( &map->other[i] );
+		doDrawShape( &map->other[i] );
 	}	
 }
 
@@ -305,7 +306,7 @@ void Indoor::drawLightsFloor() {
 	glEnable( GL_BLEND );
 	map->setupLightBlending();
 	for( int i = 0; i < map->lightCount; i++ ) {
-		map->doDrawShape( &map->lights[i] );
+		doDrawShape( &map->lights[i] );
 	}
 	glEnable(GL_DEPTH_TEST);
 	//glColorMask(0,0,0,0);
@@ -348,7 +349,7 @@ void Indoor::drawLightsWalls() {
 			}
 			
 			// draw the visible surfaces
-			map->doDrawShape( &map->stencil[i] );			
+			doDrawShape( &map->stencil[i] );			
 		}
 		
 		// minus the blocking surfaces
@@ -367,7 +368,7 @@ void Indoor::drawLightsWalls() {
 						}
 					}
 				}
-				map->doDrawShape( &map->stencil[i] );
+				doDrawShape( &map->stencil[i] );
 			}
 		}
 		
@@ -379,7 +380,7 @@ void Indoor::drawLightsWalls() {
 		glDisable( GL_DEPTH_TEST );		
 		glEnable( GL_BLEND );
 		map->setupLightBlending();
-		map->doDrawShape( &map->lights[t] );
+		doDrawShape( &map->lights[t] );
 		glEnable( GL_DEPTH_TEST );
 		glDisable( GL_BLEND );
 		
@@ -414,4 +415,117 @@ bool Indoor::isFacingLight( Surface *surface, Location *p, Location *lightPos ) 
 	
 //	cerr << "isFacingLight: normal:" << pos[0] << "," << pos[1] << "," << pos[2] << " d=" << d << " s=" << s << " " << ( b ? "LIT" : "" ) << endl;
 	return b;
+}
+
+/// Draws a shape placed on an indoor water tile.
+
+void Indoor::drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape ) {
+	GLuint name;
+	// encode this shape's map location in its name
+	name = posX + ( MAP_WIDTH * posY );
+	glTranslatef( xpos2, ypos2, 0.0f );
+
+	// draw water
+	Uint32 key = map->createPairKey( posX, posY );
+	if ( map->water.find( key ) != map->water.end() ) {
+		glDisable( GL_CULL_FACE );
+
+		float sx = ( static_cast<float>( MAP_UNIT ) / static_cast<float>( WATER_TILE_X ) ) * MUL;
+		float sy = ( static_cast<float>( MAP_UNIT ) / static_cast<float>( WATER_TILE_Y ) ) * MUL;
+
+		int xp = 0;
+		int yp = 0;
+		while ( true ) {
+			int stx = xp;
+			int sty = yp;
+			glBegin( GL_TRIANGLE_STRIP );
+			for ( int i = 0; i < 4; i++ ) {
+				int wx, wy;
+				if ( xp == WATER_TILE_X && yp == WATER_TILE_Y ) {
+					wx = ( posX + MAP_UNIT ) * WATER_TILE_X;
+					wy = ( posY + MAP_UNIT ) * WATER_TILE_Y;
+				} else if ( xp == WATER_TILE_X ) {
+					wx = ( posX + MAP_UNIT ) * WATER_TILE_X;
+					wy = posY * WATER_TILE_Y + yp;
+				} else if ( yp == WATER_TILE_Y ) {
+					wx = posX * WATER_TILE_X + xp;
+					wy = ( posY + MAP_UNIT ) * WATER_TILE_Y;
+				} else {
+					wx = posX * WATER_TILE_X + xp;
+					wy = posY * WATER_TILE_Y + yp;
+				}
+
+				int xx = wx % WATER_TILE_X;
+				int yy = wy % WATER_TILE_Y;
+				WaterTile *w = NULL;
+				Uint32 key = map->createPairKey( wx / WATER_TILE_X, wy / WATER_TILE_Y );
+				if ( map->water.find( key ) != map->water.end() ) {
+					w = map->water[key];
+
+					Uint32 time = SDL_GetTicks();
+					Uint32 elapsedTime = time - w->lastTime[xx][yy];
+					if ( elapsedTime >= ( Uint32 )( 1000.0f / WATER_ANIM_SPEED ) ) {
+
+						w->z[xx][yy] += w->step[xx][yy];
+						if ( w->z[xx][yy] > WATER_AMP ||
+						        w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
+
+						w->lastTime[xx][yy] = time;
+					}
+				}
+
+				float zz = ( w ? w->z[xx][yy] : 0.0f );
+				float sz = ( WATER_HEIGHT + zz ) * MUL;
+				glColor4f( 0.3f + ( zz / 30.0f ),
+				           0.25f + ( zz / 10.0f ),
+				           0.17f + ( zz / 15.0f ),
+				           0.5f );
+
+
+				glVertex3f( static_cast<float>( xp ) * sx, static_cast<float>( yp ) * sy, sz );
+
+				switch ( i ) {
+				case 0: xp++; break;
+				case 1: yp++; xp--; break;
+				case 2: xp++; break;
+				case 3: yp--; xp--; break;
+				}
+				if ( xp > WATER_TILE_X || yp > WATER_TILE_Y ) {
+					break;
+				}
+			}
+			glEnd();
+			xp = stx + 1;
+			yp = sty;
+			if ( xp >= WATER_TILE_X ) {
+				xp = 0;
+				yp++;
+				if ( yp >= WATER_TILE_Y ) break;
+			}
+		}
+
+
+		//glDepthMask( GL_TRUE );
+		//glDisable( GL_BLEND );
+	}
+
+	glTranslatef( -xpos2, -ypos2, 0.0f );
+}
+
+/// Draws a shape sitting on the ground at the specified map coordinates.
+
+void Indoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape ) {
+	GLuint name;
+	// encode this shape's map location in its name
+	name = posX + ( MAP_WIDTH * posY );
+	glTranslatef( xpos2, ypos2, 0.0f );
+
+	glPushName( name );
+	map->setupShapeColor();
+	shape->setGround( true );
+	shape->draw();
+	shape->setGround( false );
+	glPopName();
+
+	glTranslatef( -xpos2, -ypos2, 0.0f );
 }

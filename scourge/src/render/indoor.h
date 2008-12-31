@@ -23,16 +23,21 @@ class Map;
 class Surface;
 class Location;
 #include "render.h"
+#include "maprender.h"
 
-class Indoor {
+class Indoor : public MapRender {
 private:
-	Map *map;
 
 public:
-	Indoor( Map *map ) { this->map = map; }
+	Indoor( Map *map ) : MapRender( map ) {}
 	virtual ~Indoor() {}
-	void draw();
 
+protected:
+	virtual void drawMap();
+	
+	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
+	virtual void drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
+	
 private:		
 	void drawRoofsIndoor();
 	void drawFrontWallsAndWater();

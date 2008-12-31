@@ -36,7 +36,7 @@ using namespace std;
 
 /// Renders the 3D view for outdoor levels.
 
-void Outdoor::draw() {
+void Outdoor::drawMap() {
 	// draw the ground
 	map->renderFloor();
 
@@ -47,7 +47,7 @@ void Outdoor::draw() {
 			map->colorAlreadySet = true;
 			map->setupDropLocationColor();
 		}
-		map->doDrawShape( &map->other[i] );
+		doDrawShape( &map->other[i] );
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 		// draw simple shadow in outdoors
@@ -60,7 +60,7 @@ void Outdoor::draw() {
 		}
 	}
 
-	for ( int i = 0; i < map->stencilCount; i++ ) map->doDrawShape( &( map->stencil[i] ) );
+	for ( int i = 0; i < map->stencilCount; i++ ) doDrawShape( &( map->stencil[i] ) );
 
 	// draw the effects
 	glEnable( GL_TEXTURE_2D );
@@ -71,12 +71,10 @@ void Outdoor::draw() {
 	drawEffects();
 
 	// draw the fog of war or shading
-#ifdef USE_LIGHTING
 #if DEBUG_MOUSE_POS == 0
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
-		map->helper->draw( getX(), getY(), MVW, MVD );
+		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
 	}
-#endif
 #endif
 
 	glDisable( GL_BLEND );
@@ -88,12 +86,12 @@ void Outdoor::draw() {
 void Outdoor::drawEffects() {
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		map->later[i].shape->setupBlending();
-		map->doDrawShape( &map->later[i] );
+		doDrawShape( &map->later[i] );
 		map->later[i].shape->endBlending();
 	}
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	for ( int i = 0; i < map->damageCount; i++ ) {
-		map->doDrawShape( &map->damage[i], 1 );
+		doDrawShape( &map->damage[i], 1 );
 	}
 }
 
@@ -123,8 +121,24 @@ void Outdoor::drawRoofs() {
 //  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->roofCount; i++ ) {
 			( ( GLShape* )map->roof[i].shape )->setAlpha( map->roofAlpha );
-			map->doDrawShape( &map->roof[i] );
+			doDrawShape( &map->roof[i] );
 		}
 //    glDisable( GL_BLEND );
 	}
+}
+
+/// Draws a shape sitting on the ground at the specified map coordinates.
+
+void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape ) {
+	GLuint name;
+	// encode this shape's map location in its name
+	name = posX + ( MAP_WIDTH * posY );
+	glTranslatef( xpos2, ypos2, 0.0f );
+
+	glPushName( name );
+	map->setupShapeColor();
+	shape->drawHeightMap( map->ground, posX, posY );
+	glPopName();
+
+	glTranslatef( -xpos2, -ypos2, 0.0f );
 }
