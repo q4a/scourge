@@ -61,7 +61,7 @@ private:
 	bool occludedSides[6];
 	int textureCount, textureIndex;
 	bool roof;
-	bool ground;
+	bool iAmGround;
 
 protected:
 	int width, height, depth;
@@ -85,8 +85,8 @@ public:
 	virtual inline void getSurfaces( std::set<Surface*> *shape_surfaces, bool skip_top ) {}
 	virtual inline void setLightFacingSurfaces( std::set<Surface*> *lightFacingSurfaces ) { this->lightFacingSurfaces = lightFacingSurfaces; }
 	
-	inline void setGround( bool b ) { ground = b; }
-	inline bool isGround() { return ground; }
+	inline void setGround( bool b ) { iAmGround = b; }
+	inline bool isGround() { return iAmGround; }
 
 	void setOccludedSides( bool *sides );
 	inline bool *getOccludedSides() {

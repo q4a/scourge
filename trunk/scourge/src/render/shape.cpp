@@ -18,7 +18,8 @@
 #include "../common/constants.h"
 #include "shape.h"
 
-Shape::Shape( int width, int depth, int height, char const* name, int descriptionGroup ) {
+Shape::Shape( int width, int depth, int height, char const* name, int descriptionGroup )
+		: iAmGround( false ) {
 	this->width = width;
 	this->depth = depth;
 	this->height = height;
@@ -40,7 +41,8 @@ Shape::Shape( int width, int depth, int height, char const* name, int descriptio
 	lightFacingSurfaces = NULL;
 }
 
-Shape::Shape( Shape *shape ) {
+Shape::Shape( Shape *shape )
+		: iAmGround( false ) {
 	this->width = shape->getWidth();
 	this->depth = shape->getDepth();
 	this->height = shape->getHeight();
