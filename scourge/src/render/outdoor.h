@@ -28,6 +28,7 @@ class Location;
 struct DrawLater;
 class Shape;
 struct Rug;
+class CVectorTex;
 
 class Outdoor : public MapRender {
 private:
@@ -37,6 +38,8 @@ public:
 	virtual ~Outdoor() {}
 	
 	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
+	virtual void initOutdoorsGroundTexture();
+	virtual void createGroundMap();
 	
 protected:
 	virtual void drawMap();
@@ -56,6 +59,14 @@ private:
 	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );	
 	bool drawHeightMapFloor();
 	void drawWaterLevel();
+	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
+	Texture getThemeTex( int ref );
+	void addHighVariation( int ref, int z );
+	bool isRockTexture( int x, int y );
+	bool isLakebedTexture( int x, int y );
+	bool Outdoor::isAllHigh( int x, int y, int w, int h );
+	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
+
 };
 
 #endif /*OUTDOOR_H_*/

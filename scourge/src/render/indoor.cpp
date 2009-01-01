@@ -17,6 +17,7 @@
 
 #include "indoor.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "mapadapter.h"
 #include "maprenderhelper.h"
 #include "renderedprojectile.h"

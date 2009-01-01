@@ -17,6 +17,7 @@
 
 #include "../common/constants.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "effect.h"
 #include "frustum.h"
 #include "location.h"
@@ -483,52 +484,6 @@ void Map::removeCurrentEffects() {
 			++i;
 		}
 	}
-
-
-
-	/*
-	int chunkOffsetX = 0;
-	int chunkStartX = (getX() - MAP_OFFSET) / MAP_UNIT;
-	int mod = (getX() - MAP_OFFSET) % MAP_UNIT;
-	if(mod) {
-	  chunkOffsetX = -mod;
-	}
-	int chunkEndX = mapViewWidth / MAP_UNIT + chunkStartX;
-
-	int chunkOffsetY = 0;
-	int chunkStartY = (getY() - MAP_OFFSET) / MAP_UNIT;
-	mod = (getY() - MAP_OFFSET) % MAP_UNIT;
-	if(mod) {
-	  chunkOffsetY = -mod;
-	}
-	int chunkEndY = mapViewDepth / MAP_UNIT + chunkStartY;
-
-	int posX, posY;
-	for(int chunkX = chunkStartX; chunkX < chunkEndX; chunkX++) {
-	  if(chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT) continue;
-	  for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
-	    if(chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT) continue;
-	    for(int yp = 0; yp < MAP_UNIT; yp++) {
-	      for(int xp = 0; xp < MAP_UNIT; xp++) {
-
-	//           In scourge, shape coordinates are given by their
-	//           left-bottom corner. So the +1 for posY moves the
-	//           position 1 unit down the Y axis, which is the
-	//           unit square's bottom left corner.
-	        posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
-	        posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
-
-	        for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-	          if( effect[posX][posY][zp] && !effect[posX][posY][zp]->isEffectOn() ) {
-	            removeEffect( posX, posY, zp );
-	            mapChanged = true;
-	          }
-	        }
-	      }
-	    }
-	  }
-	}
-	*/
 }
 
 bool Map::checkLightMap( int chunkX, int chunkY ) {
@@ -880,7 +835,7 @@ float Map::getZoomPercent() {
 
 void Map::preDraw() {
 	if ( refreshGroundPos ) {
-		createGroundMap();
+		getRender()->createGroundMap();
 		refreshGroundPos = false;
 	}
 
@@ -2428,56 +2383,6 @@ bool Map::isLocationBlocked( int x, int y, int z, bool onlyLockedDoors ) {
 	return true;
 }
 
-/// It draws... a cube. Unused.
-
-void Map::drawCube( float x, float y, float z, float r ) {
-	glBegin( GL_QUADS );
-	// front
-//  glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f( -r + x, -r + y, r + z );
-	glVertex3f( r + x, -r + y, r + z );
-	glVertex3f( r + x, r + y, r + z );
-	glVertex3f( -r + x, r + y, r + z );
-
-	// back
-//  glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f( r + x, -r + y, -r + z );
-	glVertex3f( -r + x, -r + y, -r + z );
-	glVertex3f( -r + x, r + y, -r + z );
-	glVertex3f( r + x, r + y, -r + z );
-
-	// top
-//  glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f( -r + x, r + y, r + z );
-	glVertex3f( r + x, r + y, r + z );
-	glVertex3f( r + x, r + y, -r + z );
-	glVertex3f( -r + x, r + y, -r + z );
-
-	// bottom
-//  glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f( -r + x, -r + y, -r + z );
-	glVertex3f( r + x, -r + y, -r + z );
-	glVertex3f( r + x, -r + y, r + z );
-	glVertex3f( -r + x, -r + y, r + z );
-
-	// left
-//  glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f( -r + x, -r + y, -r + z );
-	glVertex3f( -r + x, -r + y, r + z );
-	glVertex3f( -r + x, r + y, r + z );
-	glVertex3f( -r + x, r + y, -r + z );
-
-	// right
-//  glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f( r + x, -r + y, r + z );
-	glVertex3f( r + x, -r + y, -r + z );
-	glVertex3f( r + x, r + y, -r + z );
-	glVertex3f( r + x, r + y, r + z );
-
-	glEnd();
-
-}
-
 /// Finds creatures in a specified area and adds them to a targets array.
 
 /// Find the creatures in this area and add them to the targets array.
@@ -2796,88 +2701,6 @@ void Map::handleEvent( SDL_Event *event ) {
 	}
 }
 
-
-
-GameMapSettings::GameMapSettings() {
-}
-
-GameMapSettings::~GameMapSettings() {
-}
-
-/// Does it have a "light map" (stores which parts of the level are visible)?
-
-bool GameMapSettings::isLightMapEnabled() {
-	return true;
-}
-
-bool GameMapSettings::isGridShowing() {
-	return false;
-}
-
-bool GameMapSettings::isPlayerEnabled() {
-	return true;
-}
-
-bool GameMapSettings::isItemPosEnabled() {
-	return true;
-}
-
-/// How far can the camera zoom in?
-
-float GameMapSettings::getMinZoomIn() {
-	return 0.85f;
-}
-
-/// How far can the camera zoom out?
-
-float GameMapSettings::getMaxZoomOut() {
-	return 2.8f;
-}
-
-/// How "high" can the camera be (degrees)?
-
-float GameMapSettings::getMaxYRot() {
-	return 55.0f;
-}
-
-
-
-
-
-EditorMapSettings::EditorMapSettings() {
-}
-
-EditorMapSettings::~EditorMapSettings() {
-}
-
-bool EditorMapSettings::isLightMapEnabled() {
-	return false;
-}
-
-bool EditorMapSettings::isGridShowing() {
-	return true;
-}
-
-bool EditorMapSettings::isPlayerEnabled() {
-	return false;
-}
-
-bool EditorMapSettings::isItemPosEnabled() {
-	return false;
-}
-
-float EditorMapSettings::getMinZoomIn() {
-	return 0.05f;
-}
-
-float EditorMapSettings::getMaxZoomOut() {
-	return 2.8f;
-}
-
-float EditorMapSettings::getMaxYRot() {
-	return 90.0f;
-}
-
 #define NEG_GROUND_HEIGHT 0x00100000
 void Map::saveMap( const string& name, string& result, bool absolutePath, int referenceType ) {
 
@@ -3184,7 +3007,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	}
 
 	if ( heightMapEnabled ) {
-		initOutdoorsGroundTexture();
+		outdoor->initOutdoorsGroundTexture();
 	}
 
 	setHasWater( info->hasWater == 1 ? true : false );
@@ -3744,288 +3567,6 @@ void Map::setSecretDoorDetected( int x, int y ) {
 	if ( secretDoors.find( index ) != secretDoors.end() ) {
 		secretDoors[ index ] = true;
 	}
-}
-
-
-/// Sets up the outdoor ground heightfield including texturing and lighting.
-
-void Map::createGroundMap() {
-	float w, d, h;
-	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
-		for ( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
-			w = static_cast<float>( xx * OUTDOORS_STEP ) * MUL;
-			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) * MUL;
-			h = ( ground[ xx ][ yy ] ) * MUL;
-
-			groundPos[ xx ][ yy ].x = w;
-			groundPos[ xx ][ yy ].y = d;
-			groundPos[ xx ][ yy ].z = h;
-			//groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_WIDTH);
-			//groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_DEPTH);
-
-			groundPos[ xx ][ yy ].u = ( ( xx % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>( OUTDOOR_FLOOR_TEX_SIZE ) ) + ( xx / OUTDOOR_FLOOR_TEX_SIZE );
-			groundPos[ xx ][ yy ].v = ( ( yy % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>( OUTDOOR_FLOOR_TEX_SIZE ) ) + ( yy / OUTDOOR_FLOOR_TEX_SIZE );
-
-			groundPos[ xx ][ yy ].tex = groundTex[ xx ][ yy ];
-
-			// height-based light
-			if ( ground[ xx ][ yy ] >= 10 ) {
-				// ground (rock)
-				float n = ( h / ( 13.0f * MUL ) );
-				groundPos[ xx ][ yy ].r = n * 0.5f;
-				groundPos[ xx ][ yy ].g = n * 0.6f;
-				groundPos[ xx ][ yy ].b = n * 1.0f;
-				groundPos[ xx ][ yy ].a = 1;
-			} else if ( ground[ xx ][ yy ] <= -10 ) {
-				// water
-				float n = ( -h / ( 13.0f * MUL ) );
-				groundPos[ xx ][ yy ].r = n * 0.05f;
-				groundPos[ xx ][ yy ].g = n * 0.4f;
-				groundPos[ xx ][ yy ].b = n * 1;
-				groundPos[ xx ][ yy ].a = 1;
-			} else {
-				float n = ( h / ( 6.0f * MUL ) ) * 0.65f + 0.35f;
-				if ( Util::dice( 6 ) ) {
-					//groundPos[ xx ][ yy ].r = n * 0.55f;
-					groundPos[ xx ][ yy ].r = n;
-					groundPos[ xx ][ yy ].g = n;
-					//groundPos[ xx ][ yy ].b = n * 0.45f;
-					groundPos[ xx ][ yy ].b = n;
-					groundPos[ xx ][ yy ].a = 1;
-				} else {
-					groundPos[ xx ][ yy ].r = n;
-					groundPos[ xx ][ yy ].g = n;
-					//groundPos[ xx ][ yy ].b = n * 0.25f;
-					groundPos[ xx ][ yy ].b = n;
-					groundPos[ xx ][ yy ].a = 1;
-				}
-			}
-			//n++;
-		}
-	}
-
-
-	// add light
-	CVectorTex *p[3];
-	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
-		for ( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
-			p[0] = &( groundPos[ xx ][ yy ] );
-			p[1] = &( groundPos[ xx + 1 ][ yy ] );
-			p[2] = &( groundPos[ xx ][ yy + 1 ] );
-			addLight( p[0], p[1], p[2] );
-			addLight( p[1], p[0], p[2] );
-			addLight( p[2], p[0], p[1] );
-		}
-	}
-}
-
-/// Adds a light source.
-
-void Map::addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b ) {
-	float v[3], u[3], normal[3];
-
-	v[0] = pt->x - a->x;
-	v[1] = pt->y - a->y;
-	v[2] = pt->z - a->z;
-	Util::normalize( v );
-
-	u[0] = pt->x - b->x;
-	u[1] = pt->y - b->y;
-	u[2] = pt->z - b->z;
-	Util::normalize( u );
-
-	Util::cross_product( u, v, normal );
-	float light = Util::getLight( normal );
-	pt->r *= light;
-	pt->g *= light;
-	pt->b *= light;
-}
-
-
-
-/// Initializes the outdoor ground textures. Takes height into account.
-
-void Map::initOutdoorsGroundTexture() {
-	// set ground texture
-
-	map<int, int> texturesUsed;
-
-	int ex = MAP_TILES_X;
-	int ey = MAP_TILES_Y;
-	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
-	int refs[MAP_WIDTH][MAP_DEPTH];
-	for ( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for ( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			bool high = isRockTexture( x, y );
-			bool low = isLakebedTexture( x, y );
-			// if it's both high and low, make rock texture. Otherwise mountain sides will be drawn with lakebed texture.
-			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK :
-			        ( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED :
-			          WallTheme::OUTDOOR_THEME_REF_GRASS );
-			Texture tex = getThemeTex( r );
-			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
-				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					refs[x + xx][y + yy] = r;
-					setGroundTex( x + xx, y + yy, tex );
-				}
-			}
-		}
-	}
-
-	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			if ( refs[x][y] != WallTheme::OUTDOOR_THEME_REF_GRASS ) {
-				bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-				bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-				bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-				bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-				if ( !( w && e && s && n ) ) {
-					applyGrassEdges( x, y, w, e, s, n );
-				}
-			}
-		}
-	}
-
-	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW, GROUND_LAYER );
-	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW_BIG, GROUND_LAYER );
-
-}
-
-/// Sets up a smoothly blended grass edge.
-
-/// It takes a couple of parameters: The x,y map position and four parameters
-/// that specify in which direction(s) to apply the blending.
-
-void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
-	int angle = 0;
-	int sx = x;
-	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
-	int ref = -1;
-	if ( !w && !s && !e ) {
-		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !s && !n ) {
-		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !n && !w ) {
-		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !w && !n && !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-
-	} else if ( !w && !e ) {
-		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
-	} else if ( !n && !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
-
-	} else if ( !w && !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !e && !s ) {
-		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !e && !n ) {
-		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !w && !n ) {
-		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-
-	} else if ( !e ) {
-		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-	} else if ( !w ) {
-		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-	} else if ( !n ) {
-		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-	} else if ( !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-	}
-
-	if ( ref > -1 ) {
-		setOutdoorTexture( sx * OUTDOORS_STEP, sy * OUTDOORS_STEP, 0, 0, ref, angle, false, false, GROUND_LAYER );
-	}
-}
-
-/// Returns a random variation of the outdoor texture specified by ref.
-
-Texture Map::getThemeTex( int ref ) {
-	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	Texture* textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
-	return textureGroup[ Util::dice( faceCount ) ];
-}
-
-/// Adds semi-random height variation to an outdoor map.
-
-/// Higher parts of the map are randomly selected, their height value
-/// set to z and textured with the referenced theme specific texture.
-
-void Map::addHighVariation( int ref, int z ) {
-	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
-	int outdoor_w = width / OUTDOORS_STEP;
-	int outdoor_h = height / OUTDOORS_STEP;
-	int ex = MAP_TILES_X;
-	int ey = MAP_TILES_Y;
-	for ( int x = 0; x < ex; x += outdoor_w ) {
-		for ( int y = 0; y < ey; y += outdoor_h ) {
-			if ( isAllHigh( x, y, outdoor_w, outdoor_h ) && !Util::dice( 10 ) &&
-			        !hasOutdoorTexture( x, y, width, height ) ) {
-				setOutdoorTexture( x * OUTDOORS_STEP, ( y + outdoor_h + 1 ) * OUTDOORS_STEP,
-				                   0, 0, ref, Util::dice( 4 ) * 90.0f, false, false, z );
-			}
-		}
-	}
-}
-
-/// Should a rock texture be applied to this map position due to its height?
-
-bool Map::isRockTexture( int x, int y ) {
-	bool high = false;
-	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
-		for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
-			if ( ground[ x + xx ][ y + yy ] > 10 ) {
-				high = true;
-				break;
-			}
-		}
-	}
-	return high;
-}
-
-
-bool Map::isLakebedTexture( int x, int y ) {
-	bool low = false;
-	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
-		for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
-			if ( ground[ x + xx ][ y + yy ] < -10 ) {
-				low = true;
-				break;
-			}
-		}
-	}
-	return low;
-}
-
-/// Are all map tiles in the specified area high above "sea level"?
-
-bool Map::isAllHigh( int x, int y, int w, int h ) {
-	bool high = true;
-	for ( int xx = 0; xx < w + 1; xx++ ) {
-		for ( int yy = 0; yy < h + 1; yy++ ) {
-			if ( ground[ x + xx ][ y + yy ] < 10 ) {
-				high = false;
-				break;
-			}
-		}
-	}
-	return high;
 }
 
 /// Adds a trap of size w,h at x,y.

@@ -20,6 +20,7 @@
 #include "fog.h"
 #include "shape.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "shapes.h"
 #include "mapadapter.h"
 
