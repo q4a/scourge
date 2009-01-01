@@ -2226,19 +2226,21 @@ void Scourge::createPartyUI() {
 	int yy = quickButtonWidth + 2;
 	for ( int i = 0; i < 4; i++ ) {
 		playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, yy,
-		                            offsetX + playerButtonWidth * ( i + 1 ) - 25, yy + playerInfoHeight,
-		                            this, this );
+		                            offsetX + playerButtonWidth * ( i + 1 ) - 25, yy + playerInfoHeight, this );
+		playerInfo[i]->attach( Widget::Draw, &Scourge::onDrawPlayerInfo, this );
 		cards->addWidget( playerInfo[i], 0 );
 		if ( i == 0 ) {
 			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * ( i + 1 ) - 25, yy,
 			                            offsetX + playerButtonWidth * ( i + 1 ), yy + playerInfoHeight - 25,
-			                            this, NULL, true );
+			                            NULL, true );
+			playerHpMp[i]->attach( Widget::Draw, &Scourge::onDrawPlayerHpMp, this );
 			cards->addWidget( playerHpMp[i], 0 );
 		} else {
 			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * ( i + 1 ) - 25, yy,
 			                            offsetX + playerButtonWidth * ( i + 1 ),
 			                            yy + playerInfoHeight - 50,
-			                            this, NULL, true );
+			                            NULL, true );
+			playerHpMp[i]->attach( Widget::Draw, &Scourge::onDrawPlayerHpMp, this );
 			cards->addWidget( playerHpMp[i], 0 );
 			dismissButton[i] = cards->createButton( offsetX + playerButtonWidth * ( i + 1 ) - 25,
 			                                        yy + playerInfoHeight - 50,
@@ -2254,7 +2256,8 @@ void Scourge::createPartyUI() {
 		                              yy + playerInfoHeight - 25,
 		                              offsetX + playerButtonWidth * ( i + 1 ),
 		                              yy + playerInfoHeight,
-		                              this, NULL, true );
+		                              NULL, true );
+		playerWeapon[i]->attach( Widget::Draw, &Scourge::onDrawPlayerWeapon, this );
 		cards->addWidget( playerWeapon[i], 0 );
 	}
 
@@ -2274,8 +2277,9 @@ void Scourge::createPartyUI() {
 	for ( int i = 0; i < 12; i++ ) {
 		int xx = backpackButtonWidth + offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
 		quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, quickButtonWidth,
-		                            this, NULL, true );
+		                            NULL, true );
 		quickSpell[i]->setTooltip( _( "Click to assign a spell, capability or magic item." ) );
+		quickSpell[i]->attach( Widget::Draw, &Scourge::onDrawQuickSpell, this );
 		cards->addWidget( quickSpell[i], 0 );
 	}
 
@@ -2303,13 +2307,25 @@ void Scourge::receive( Widget *widget ) {
 	}
 }
 
-void Scourge::drawWidgetContents( Canvas *w ) {
-	char tooltip[255];
+bool Scourge::onDrawPlayerInfo( Widget* w ) {
 	for ( int i = 0; i < party->getPartySize(); i++ ) {
 		if ( playerInfo[i] == w ) {
 			drawPortrait( w, party->getParty( i ) );
-			return;
-		} else if ( playerHpMp[i] == w ) {
+			return true;
+		}
+	}
+	for ( int i = party->getPartySize(); i < MAX_PARTY_SIZE; i++ ) {
+		if ( playerInfo[i] == w ) {
+			drawPortrait( w );
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Scourge::onDrawPlayerHpMp( Widget* w ) {
+	for ( int i = 0; i < party->getPartySize(); i++ ) {
+		if ( playerHpMp[i] == w ) {
 			Creature *p = party->getParty( i );
 			char msg[80];
 			snprintf( msg, 80, "%s:%d(%d) %s:%d(%d)",
@@ -2326,8 +2342,15 @@ void Scourge::drawWidgetContents( Canvas *w ) {
 			               NULL,
 			               //mainWin->getTheme(),
 			               Util::VERTICAL_LAYOUT );
-			return;
-		} else if ( playerWeapon[i] == w ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Scourge::onDrawPlayerWeapon( Widget* w ) {
+	for ( int i = 0; i < party->getPartySize(); i++ ) {
+		if ( playerWeapon[i] == w ) {
 			// draw the current weapon
 			if ( party->getParty( i )->getPreferredWeapon() == -1 ) {
 				w->setTooltip( _( "Current Weapon: Bare Hands" ) );
@@ -2342,15 +2365,14 @@ void Scourge::drawWidgetContents( Canvas *w ) {
 					drawItemIcon( item );
 				}
 			}
-			return;
+			return true;
 		}
 	}
-	for ( int i = party->getPartySize(); i < MAX_PARTY_SIZE; i++ ) {
-		if ( playerInfo[i] == w ) {
-			drawPortrait( w );
-			return;
-		}
-	}
+	return false;
+}
+
+bool Scourge::onDrawQuickSpell( Widget* w ) {
+	char tooltip[255];
 	for ( int t = 0; t < 12; t++ ) {
 		if ( quickSpell[t] == w ) {
 			quickSpell[t]->setGlowing( pcui->getStorable() != NULL ? true : false );
@@ -2393,14 +2415,12 @@ void Scourge::drawWidgetContents( Canvas *w ) {
 						glDisable( GL_BLEND );
 						glDisable( GL_TEXTURE_2D );
 					}
-					return;
+					return true;
 				}
 			}
 		}
 	}
-
-	//cerr << "Warning: Unknown widget in Party::drawWidget." << endl;
-	return;
+	return false;
 }
 
 void Scourge::drawItemIcon( Item *item, int n ) {

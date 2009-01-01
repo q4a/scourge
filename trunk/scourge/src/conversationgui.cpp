@@ -67,7 +67,8 @@ ConversationGui::ConversationGui( Scourge *scourge ) {
 	label = win->createLabel( 10, 15, _( "Talking to " ) );
 
 	int sy = 130;
-	canvas = new Canvas( width - 130, 5, width - 10, sy - 10, this );
+	canvas = new Canvas( width - 130, 5, width - 10, sy - 10 );
+	canvas->attach( Widget::Draw, &ConversationGui::onDraw, this );
 	win->addWidget( canvas );
 
 	answer = new ScrollingLabel( 10, 25, width - 150, 215, "" );
@@ -265,10 +266,10 @@ void ConversationGui::showingWord( char *word ) {
 	list->setLines( words.begin(), words.end() );
 }
 
-void ConversationGui::drawWidgetContents( Canvas *w ) {
-	if ( w == canvas ) {
-		creature->drawPortrait( canvas->getWidth(), canvas->getHeight() );
-	}
+bool ConversationGui::onDraw( Widget* w ) {
+	if ( w != canvas ) return false;
+	creature->drawPortrait( canvas->getWidth(), canvas->getHeight() );
+	return true;
 }
 
 void ConversationGui::hide() {

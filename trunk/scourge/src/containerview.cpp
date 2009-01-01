@@ -45,6 +45,7 @@ ContainerView::ContainerView( Scourge *scourge, Item *container, Window *win, in
 	this->lastItem = NULL;
 	this->selectedItem = NULL;
 	this->creature = NULL;
+	attach( Widget::Draw, &ContainerView::onDraw, this );
 	showContents();
 }
 
@@ -65,7 +66,7 @@ void ContainerView::convertMousePos( int x, int y, int *invX, int *invY ) {
 	*invY = ( y - OFFSET_Y ) / GRID_SIZE;
 }
 
-void ContainerView::drawWidgetContents( Canvas *widget ) {
+bool ContainerView::onDraw( Widget* ) {
 	int w = container->getRpgItem()->getContainerWidth() * GRID_SIZE;
 	int h = container->getRpgItem()->getContainerHeight() * GRID_SIZE;
 	glEnable( GL_TEXTURE_2D );
@@ -175,6 +176,7 @@ void ContainerView::drawWidgetContents( Canvas *widget ) {
 
 	glPopMatrix();
 	glDisable( GL_TEXTURE_2D );	
+	return true;
 }
 
 void ContainerView::showContents() {

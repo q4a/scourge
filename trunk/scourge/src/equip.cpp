@@ -70,7 +70,8 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->specialSkill = NULL;
 	this->storable = NULL;
 
-	canvas = new Canvas( x, y, x + w, y + h, this, this );
+	canvas = new Canvas( x, y, x + w, y + h, this );
+	canvas->attach( Widget::Draw, &Equip::onDraw, this );
 	canvas->setDrawBorders( false );
 }
 
@@ -350,7 +351,7 @@ void Equip::setCreature( Creature *creature ) {
 	this->creature = creature;
 }
 
-void Equip::drawWidgetContents( Canvas *widget ) {
+bool Equip::onDraw( Widget* ) {
 	glEnable( GL_TEXTURE_2D );
 	// glEnable( GL_ALPHA_TEST );
 	// glAlphaFunc( GL_NOTEQUAL, 0 );
@@ -383,6 +384,7 @@ void Equip::drawWidgetContents( Canvas *widget ) {
 			drawCapabilities();
 		}
 	}
+	return true;
 }
 
 /// Draws the paperdoll with the equipped items.

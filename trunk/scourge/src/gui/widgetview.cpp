@@ -22,9 +22,10 @@
   *@author Gabor Torok
   */
 
+/* unused and out of sync with changes
 WidgetView::WidgetView() {
 }
 
 WidgetView::~WidgetView() {
 }
-
+*/

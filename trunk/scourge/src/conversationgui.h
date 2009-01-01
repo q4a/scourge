@@ -37,7 +37,7 @@ class CardContainer;
 
 /// The conversation window.
 
-class ConversationGui : public WordClickedHandler, WidgetView, EventHandler {
+class ConversationGui : public WordClickedHandler, EventHandler {
 
 private:
 	Scourge *scourge;
@@ -76,8 +76,8 @@ public:
 	void wordClicked( std::string const& word );
 	void showingWord( char *word );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
+	bool onDraw( Widget* w );
 };
 
 #endif

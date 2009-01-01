@@ -26,6 +26,7 @@
   *@author Gabor Torok
   */
 
+/* unused and out of sync with changes
 /// This class lets you draw a widget onto Canvas.
 class Canvas;
 class WidgetView {
@@ -33,8 +34,8 @@ public:
 	WidgetView();
 	virtual ~WidgetView();
 
-	/** Draw the widget. */
+	/// Draw the widget. 
 	virtual void drawWidgetContents( Canvas *w ) = 0;
-};
+};*/
 
 #endif

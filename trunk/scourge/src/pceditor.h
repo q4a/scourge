@@ -38,7 +38,7 @@ class CharacterInfoUI;
 class Character;
 
 /// The window that lets you edit a character's skills before recruiting him/her.
-class PcEditor : public WidgetView, EventHandler {
+class PcEditor : public EventHandler {
 private:
 	Window *win;
 	Scourge *scourge;
@@ -88,8 +88,9 @@ public:
 
 	bool handleEvent( Widget *widget, SDL_Event *event );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handlers for portrait and model
+	bool onDrawPortrait( Widget* w );
+	bool onDrawModel( Widget* w );
 
 	inline Button *getOkButton() {
 		return okButton;
