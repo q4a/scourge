@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include <map>
 #include <vector>
 #include "maprender.h"
-#include "../common/constants.h"
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
 #include "maprenderhelper.h"
