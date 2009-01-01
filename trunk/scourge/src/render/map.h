@@ -43,6 +43,7 @@ class DisplayInfo;
 class MapRenderHelper;
 class MapRender;
 class MapSettings;
+class MapMemoryManager;
 
 enum {
 	GROUND_LAYER = 0,
@@ -89,32 +90,6 @@ struct DrawLater {
 #define POS_CACHE_DEPTH    5
 #define POS_CACHE_HEIGHT   10
 #define MAX_POS_CACHE (POS_CACHE_WIDTH * POS_CACHE_DEPTH * POS_CACHE_HEIGHT)
-
-class Map;
-
-/// Utilities for cleaning up on level maps, and managing memory use.
-
-class MapMemoryManager {
-private:
-	std::vector<Location*> unused;
-	std::vector<EffectLocation*> unusedEffect;
-	int maxSize;
-	int accessCount;
-	int usedCount, usedEffectCount;
-public:
-	/**
-	    Maxsize of 0 means unlimited size cache.
-	*/
-	MapMemoryManager( int maxSize = 0 );
-	~MapMemoryManager();
-	Location *newLocation();
-	void deleteLocation( Location *pos );
-	EffectLocation *newEffectLocation( Map *map, Preferences *preferences, Shapes *shapes, int width, int height );
-	void deleteEffectLocation( EffectLocation *pos );
-private:
-	void printStatus();
-};
-
 
 /// A nice, fluffy rug.
 
