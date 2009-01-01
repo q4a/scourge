@@ -17,6 +17,7 @@
 
 #include "outdoor.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "mapadapter.h"
 #include "maprenderhelper.h"
 #include "renderedprojectile.h"
@@ -363,4 +364,282 @@ void Outdoor::drawWaterLevel() {
 	glVertex3f( w, d, -0.3f );
 	glEnd();
 	//glDisable( GL_BLEND );
+}
+
+/// Initializes the outdoor ground textures. Takes height into account.
+
+void Outdoor::initOutdoorsGroundTexture() {
+	// set ground texture
+
+	std::map<int, int> texturesUsed;
+
+	int ex = MAP_TILES_X;
+	int ey = MAP_TILES_Y;
+	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
+	int refs[MAP_WIDTH][MAP_DEPTH];
+	for ( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for ( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			bool high = isRockTexture( x, y );
+			bool low = isLakebedTexture( x, y );
+			// if it's both high and low, make rock texture. Otherwise mountain sides will be drawn with lakebed texture.
+			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK :
+			        ( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED :
+			          WallTheme::OUTDOOR_THEME_REF_GRASS );
+			Texture tex = getThemeTex( r );
+			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
+				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+					refs[x + xx][y + yy] = r;
+					map->setGroundTex( x + xx, y + yy, tex );
+				}
+			}
+		}
+	}
+
+	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			if ( refs[x][y] != WallTheme::OUTDOOR_THEME_REF_GRASS ) {
+				bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+				bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+				bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+				bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+				if ( !( w && e && s && n ) ) {
+					applyGrassEdges( x, y, w, e, s, n );
+				}
+			}
+		}
+	}
+
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW, GROUND_LAYER );
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW_BIG, GROUND_LAYER );
+
+}
+
+/// Sets up a smoothly blended grass edge.
+
+/// It takes a couple of parameters: The x,y map position and four parameters
+/// that specify in which direction(s) to apply the blending.
+
+void Outdoor::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
+	int angle = 0;
+	int sx = x;
+	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
+	int ref = -1;
+	if ( !w && !s && !e ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if ( !e && !s && !n ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if ( !e && !n && !w ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if ( !w && !n && !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+
+	} else if ( !w && !e ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+	} else if ( !n && !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+
+	} else if ( !w && !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if ( !e && !s ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if ( !e && !n ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if ( !w && !n ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+
+	} else if ( !e ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if ( !w ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if ( !n ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if ( !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	}
+
+	if ( ref > -1 ) {
+		map->setOutdoorTexture( sx * OUTDOORS_STEP, sy * OUTDOORS_STEP, 0, 0, ref, angle, false, false, GROUND_LAYER );
+	}
+}
+
+/// Returns a random variation of the outdoor texture specified by ref.
+
+Texture Outdoor::getThemeTex( int ref ) {
+	int faceCount = map->getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
+	Texture* textureGroup = map->getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
+	return textureGroup[ Util::dice( faceCount ) ];
+}
+
+/// Adds semi-random height variation to an outdoor map.
+
+/// Higher parts of the map are randomly selected, their height value
+/// set to z and textured with the referenced theme specific texture.
+
+void Outdoor::addHighVariation( int ref, int z ) {
+	int width = map->getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
+	int height = map->getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
+	int outdoor_w = width / OUTDOORS_STEP;
+	int outdoor_h = height / OUTDOORS_STEP;
+	int ex = MAP_TILES_X;
+	int ey = MAP_TILES_Y;
+	for ( int x = 0; x < ex; x += outdoor_w ) {
+		for ( int y = 0; y < ey; y += outdoor_h ) {
+			if ( isAllHigh( x, y, outdoor_w, outdoor_h ) && !Util::dice( 10 ) && !map->hasOutdoorTexture( x, y, width, height ) ) {
+				map->setOutdoorTexture( x * OUTDOORS_STEP, ( y + outdoor_h + 1 ) * OUTDOORS_STEP,
+				                        0, 0, ref, Util::dice( 4 ) * 90.0f, false, false, z );
+			}
+		}
+	}
+}
+
+/// Should a rock texture be applied to this map position due to its height?
+
+bool Outdoor::isRockTexture( int x, int y ) {
+	bool high = false;
+	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
+		for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
+			if ( map->ground[ x + xx ][ y + yy ] > 10 ) {
+				high = true;
+				break;
+			}
+		}
+	}
+	return high;
+}
+
+
+bool Outdoor::isLakebedTexture( int x, int y ) {
+	bool low = false;
+	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
+		for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
+			if ( map->ground[ x + xx ][ y + yy ] < -10 ) {
+				low = true;
+				break;
+			}
+		}
+	}
+	return low;
+}
+
+/// Are all map tiles in the specified area high above "sea level"?
+
+bool Outdoor::isAllHigh( int x, int y, int w, int h ) {
+	bool high = true;
+	for ( int xx = 0; xx < w + 1; xx++ ) {
+		for ( int yy = 0; yy < h + 1; yy++ ) {
+			if ( map->ground[ x + xx ][ y + yy ] < 10 ) {
+				high = false;
+				break;
+			}
+		}
+	}
+	return high;
+}
+
+/// Sets up the outdoor ground heightfield including texturing and lighting.
+
+void Outdoor::createGroundMap() {
+	float w, d, h;
+	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
+		for ( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
+			w = static_cast<float>( xx * OUTDOORS_STEP ) * MUL;
+			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) * MUL;
+			h = ( map->ground[ xx ][ yy ] ) * MUL;
+
+			map->groundPos[ xx ][ yy ].x = w;
+			map->groundPos[ xx ][ yy ].y = d;
+			map->groundPos[ xx ][ yy ].z = h;
+			//groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_WIDTH);
+			//groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_DEPTH);
+
+			map->groundPos[ xx ][ yy ].u = ( ( xx % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>( OUTDOOR_FLOOR_TEX_SIZE ) ) + ( xx / OUTDOOR_FLOOR_TEX_SIZE );
+			map->groundPos[ xx ][ yy ].v = ( ( yy % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>( OUTDOOR_FLOOR_TEX_SIZE ) ) + ( yy / OUTDOOR_FLOOR_TEX_SIZE );
+
+			map->groundPos[ xx ][ yy ].tex = map->groundTex[ xx ][ yy ];
+
+			// height-based light
+			if ( map->ground[ xx ][ yy ] >= 10 ) {
+				// ground (rock)
+				float n = ( h / ( 13.0f * MUL ) );
+				map->groundPos[ xx ][ yy ].r = n * 0.5f;
+				map->groundPos[ xx ][ yy ].g = n * 0.6f;
+				map->groundPos[ xx ][ yy ].b = n * 1.0f;
+				map->groundPos[ xx ][ yy ].a = 1;
+			} else if ( map->ground[ xx ][ yy ] <= -10 ) {
+				// water
+				float n = ( -h / ( 13.0f * MUL ) );
+				map->groundPos[ xx ][ yy ].r = n * 0.05f;
+				map->groundPos[ xx ][ yy ].g = n * 0.4f;
+				map->groundPos[ xx ][ yy ].b = n * 1;
+				map->groundPos[ xx ][ yy ].a = 1;
+			} else {
+				float n = ( h / ( 6.0f * MUL ) ) * 0.65f + 0.35f;
+				if ( Util::dice( 6 ) ) {
+					//groundPos[ xx ][ yy ].r = n * 0.55f;
+					map->groundPos[ xx ][ yy ].r = n;
+					map->groundPos[ xx ][ yy ].g = n;
+					//groundPos[ xx ][ yy ].b = n * 0.45f;
+					map->groundPos[ xx ][ yy ].b = n;
+					map->groundPos[ xx ][ yy ].a = 1;
+				} else {
+					map->groundPos[ xx ][ yy ].r = n;
+					map->groundPos[ xx ][ yy ].g = n;
+					//groundPos[ xx ][ yy ].b = n * 0.25f;
+					map->groundPos[ xx ][ yy ].b = n;
+					map->groundPos[ xx ][ yy ].a = 1;
+				}
+			}
+			//n++;
+		}
+	}
+
+
+	// add light
+	CVectorTex *p[3];
+	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
+		for ( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
+			p[0] = &( map->groundPos[ xx ][ yy ] );
+			p[1] = &( map->groundPos[ xx + 1 ][ yy ] );
+			p[2] = &( map->groundPos[ xx ][ yy + 1 ] );
+			addLight( p[0], p[1], p[2] );
+			addLight( p[1], p[0], p[2] );
+			addLight( p[2], p[0], p[1] );
+		}
+	}
+}
+
+/// Adds a light source.
+
+void Outdoor::addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b ) {
+	float v[3], u[3], normal[3];
+
+	v[0] = pt->x - a->x;
+	v[1] = pt->y - a->y;
+	v[2] = pt->z - a->z;
+	Util::normalize( v );
+
+	u[0] = pt->x - b->x;
+	u[1] = pt->y - b->y;
+	u[2] = pt->z - b->z;
+	Util::normalize( u );
+
+	Util::cross_product( u, v, normal );
+	float light = Util::getLight( normal );
+	pt->r *= light;
+	pt->g *= light;
+	pt->b *= light;
 }

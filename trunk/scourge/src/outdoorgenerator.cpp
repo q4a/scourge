@@ -20,6 +20,7 @@
 #include "shapepalette.h"
 #include "scourge.h"
 #include "board.h"
+#include "render/maprender.h"
 #include "render/maprenderhelper.h"
 #include "render/glshape.h"
 #include "render/virtualshape.h"
@@ -180,7 +181,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 
-	map->initOutdoorsGroundTexture();
+	map->getRender()->initOutdoorsGroundTexture();
 
 	// create a set of rooms for outdoor items
 	doorCount = 0;

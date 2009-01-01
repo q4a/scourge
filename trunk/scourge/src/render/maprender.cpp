@@ -28,6 +28,7 @@
 #include "location.h"
 #include "projectilerenderer.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "mapadapter.h"
 #include "effect.h"
 #include "location.h"
@@ -942,4 +943,19 @@ void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
 		}
 	}
 	glEnable( GL_TEXTURE_2D );
+}
+
+void MapRender::createGroundMap() {
+	float w, d, h;
+	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
+		for ( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
+			map->groundPos[ xx ][ yy ].x = static_cast<float>( xx * OUTDOORS_STEP ) * MUL;
+			map->groundPos[ xx ][ yy ].y = static_cast<float>( yy * OUTDOORS_STEP - 1 ) * MUL;
+			map->groundPos[ xx ][ yy ].z = 0;
+			map->groundPos[ xx ][ yy ].u = map->groundPos[ xx ][ yy ].v = 0;
+			map->groundPos[ xx ][ yy ].tex = map->groundTex[ xx ][ yy ];
+			map->groundPos[ xx ][ yy ].r = map->groundPos[ xx ][ yy ].g = 
+				map->groundPos[ xx ][ yy ].b = map->groundPos[ xx ][ yy ].a = 1;
+		}
+	}
 }

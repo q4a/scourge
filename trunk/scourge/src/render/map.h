@@ -42,6 +42,7 @@ class Effect;
 class DisplayInfo;
 class MapRenderHelper;
 class MapRender;
+class MapSettings;
 
 enum {
 	GROUND_LAYER = 0,
@@ -67,60 +68,6 @@ public:
 	Texture tex;
 };
 
-
-/// General map settings.
-
-class MapSettings {
-
-public:
-	MapSettings() {
-	}
-
-	virtual ~MapSettings() {
-	}
-
-	virtual bool isLightMapEnabled() = 0;
-	virtual bool isGridShowing() = 0;
-	virtual bool isPlayerEnabled() = 0;
-	virtual bool isItemPosEnabled() = 0;
-	virtual float getMinZoomIn() = 0;
-	virtual float getMaxZoomOut() = 0;
-	virtual float getMaxYRot() = 0;
-};
-
-/// General map settings (ingame).
-
-class GameMapSettings : public MapSettings {
-
-public:
-	GameMapSettings();
-	virtual ~GameMapSettings();
-
-	bool isLightMapEnabled();
-	bool isGridShowing();
-	bool isPlayerEnabled();
-	bool isItemPosEnabled();
-	float getMinZoomIn();
-	float getMaxZoomOut();
-	float getMaxYRot();
-};
-
-/// General map settings for the map editor.
-
-class EditorMapSettings : public MapSettings {
-
-public:
-	EditorMapSettings();
-	virtual ~EditorMapSettings();
-
-	bool isLightMapEnabled();
-	bool isGridShowing();
-	bool isPlayerEnabled();
-	bool isItemPosEnabled();
-	float getMinZoomIn();
-	float getMaxZoomOut();
-	float getMaxYRot();
-};
 
 /// Stores the state and contents of a level map location for later drawing.
 
@@ -864,8 +811,6 @@ public:
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
 
-	void initOutdoorsGroundTexture();
-
 	// Traps
 	int addTrap( int x, int y, int w, int h );
 	void removeTrap( int trap );
@@ -899,16 +844,7 @@ public:
 
 protected:
 	bool checkLightMap( int chunkX, int chunkY );
-	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
-	Texture getThemeTex( int ref );
-	void addHighVariation( int ref, int z );
-	bool isRockTexture( int x, int y );
-	bool isLakebedTexture( int x, int y );
-	bool isAllHigh( int x, int y, int w, int h );
 	void clearTraps();
-
-	void createGroundMap();
-	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
 
 	void setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	                       Shape *shape,
@@ -991,8 +927,6 @@ protected:
 	void configureLightMap();
 	void traceLight( int chunkX, int chunkY, int lightMap[MAP_CHUNKS_X][MAP_CHUNKS_Y], bool onlyLockedDoors );
 	bool isLocationBlocked( int x, int y, int z, bool onlyLockedDoors );
-
-	void drawCube( float x, float y, float z, float r );
 
 	void removeEffect( Sint16 x, Sint16 y, Sint16 z );
 	void removeAllEffects();
