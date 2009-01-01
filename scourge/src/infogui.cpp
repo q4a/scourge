@@ -91,7 +91,8 @@ InfoGui::InfoGui( Scourge *scourge ) {
 	win->addWidget( ( Widget* )transcribeButton );
 
 	int n = GRID_SIZE * 2;
-	image = new Canvas( width - n - 10, 5, width - 10, 15 + 128, this );
+	image = new Canvas( width - n - 10, 5, width - 10, 15 + 128 );
+	image->attach( Widget::Draw, &InfoGui::onDrawImage, this );
 	win->addWidget( image );
 
 	// win->createLabel( 10, 10, _( "Name:" ), Constants::RED_COLOR );
@@ -335,8 +336,7 @@ bool InfoGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	return false;
 }
 
-void InfoGui::drawWidgetContents( Canvas *w ) {
-
+bool InfoGui::onDrawImage( Widget* w ) {
 	if ( w == image && ( item || spell || skill ) ) {
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -374,7 +374,9 @@ void InfoGui::drawWidgetContents( Canvas *w ) {
 
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );
+		return true;
 	}
+	return false;
 }
 
 void InfoGui::describeRequirements( char *description, int influenceTypeCount ) {

@@ -122,7 +122,7 @@ struct MovingDoor {
 
   @author Gabor Torok
 */
-class Scourge : public SDLOpenGLAdapter, WidgetView, DragAndDropHandler, StatusReport {
+class Scourge : public SDLOpenGLAdapter, DragAndDropHandler, StatusReport {
 public:
 	enum {
 		TOP_GUI_WIDTH = 400,
@@ -599,8 +599,11 @@ public:
 
 	void fightProjectileHitTurn( Projectile *proj, int x, int y );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handlers for playerInfo, playerHpMp, playerWeapon and quickSpell
+	bool onDrawPlayerInfo( Widget* w );
+	bool onDrawPlayerHpMp( Widget* w );
+	bool onDrawPlayerWeapon( Widget* w );
+	bool onDrawQuickSpell( Widget* w );
 
 	void resetPartyUI();
 

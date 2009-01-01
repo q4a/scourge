@@ -34,8 +34,8 @@ CharacterInfoUI::CharacterInfoUI( Scourge *scourge ) {
 CharacterInfoUI::~CharacterInfoUI() {
 }
 
-void CharacterInfoUI::drawWidgetContents( Canvas *w ) {
-	if ( !( win && creature ) ) return;
+bool CharacterInfoUI::onDrawDetails( Widget* w ) {
+	if ( !( win && creature ) ) return false;
 
 	//GuiTheme *theme = win->getTheme();
 	Creature *p = creature;
@@ -58,6 +58,7 @@ void CharacterInfoUI::drawWidgetContents( Canvas *w ) {
 	glColor4f( 1, 0.35f, 0, 1 );
 	scourge->getSDLHandler()->texPrint( 160, y + 75, _( "Unarmed Defense:" ) );
 	scourge->describeDefense( p, 160, y + 90 );
+	return true;
 }
 
 void CharacterInfoUI::setCreature( Window *win,

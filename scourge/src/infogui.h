@@ -38,7 +38,7 @@ class Spell;
 class SpecialSkill;
 
 /// The window that appears when you right click on items, spells etc.
-class InfoGui : public WidgetView, EventHandler {
+class InfoGui : public EventHandler {
 
 private:
 	Scourge *scourge;
@@ -84,8 +84,8 @@ public:
 		return win;
 	}
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
+	bool onDrawImage( Widget* w );
 
 protected:
 	void describe();

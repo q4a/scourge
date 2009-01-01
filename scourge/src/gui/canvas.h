@@ -31,7 +31,7 @@
 /// A simple canvas widget (we can draw stuff on it etc.).
 class Canvas : public Widget {
 private:
-	WidgetView *view;
+	// WidgetView *view;
 	int x2, y2;
 	DragAndDropHandler *dragAndDropHandler;
 	int dragX, dragY;
@@ -43,13 +43,13 @@ private:
 	bool drawBorders;
 
 public:
-	Canvas( int x, int y, int x2, int y2, WidgetView *view,
+	Canvas( int x, int y, int x2, int y2, /* WidgetView *view,*/
 	        DragAndDropHandler *dragAndDropHandler = NULL,
 	        bool highlightOnMouseOver = false );
 	virtual ~Canvas();
-	inline WidgetView *getView() {
+	/*inline WidgetView *getView() {
 		return view;
-	}
+	}*/
 	virtual void drawWidget( Window* parent );
 	
 	inline void setGlowing( bool b ) {
@@ -88,6 +88,7 @@ public:
 	void cancelDrag();
 };
 
+/* unused and out of sync with changes
 /// A widget displaying an image.
 class ImageCanvas : public Canvas, WidgetView {
 private:
@@ -97,8 +98,8 @@ public:
 	ImageCanvas( int x, int y, int x2, int y2, GLuint image );
 	virtual ~ImageCanvas();
 	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	virtual void drawWidgetContents( Canvas *w ) {}
 };
-
+*/
 #endif
 

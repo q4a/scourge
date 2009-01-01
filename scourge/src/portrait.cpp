@@ -87,7 +87,7 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->currentSkill = NULL;
 	this->currentMode = 0;
 
-	canvas = new Canvas( x, y, x + w, y + h, this );
+	canvas = new Canvas( x, y, x + w, y + h );
 	canvas->attach( Widget::Draw, &Portrait::onDraw, this );
 	canvas->setDrawBorders( false );
 }
@@ -193,10 +193,6 @@ void Portrait::setCurrentWeaponTooltip() {
 		          _( "Click to change" ) );
 		canvas->setTooltip( tmp );
 	}
-}
-
-void Portrait::drawWidgetContents( Canvas *widget ) {
-	// does nothing, everything went to Portrait::onDraw()
 }
 
 bool Portrait::onDraw( Widget* widget ) {

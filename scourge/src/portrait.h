@@ -56,7 +56,7 @@ public:
 };
 
 /// Widget that displays a char's portrait, stats and equipped weapon.
-class Portrait : public WidgetView {
+class Portrait {
 private:
 	PcUi *pcUi;
 	Creature *creature;
@@ -96,8 +96,7 @@ public:
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
 	bool onDraw( Widget* widget ); 
 
 protected:

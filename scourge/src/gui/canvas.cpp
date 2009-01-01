@@ -29,11 +29,10 @@ static char THIS_FILE[] = __FILE__;
   *@author Gabor Torok
   */
 
-Canvas::Canvas( int x, int y, int x2, int y2, WidgetView *view,
+Canvas::Canvas( int x, int y, int x2, int y2, 
                 DragAndDropHandler *dragAndDropHandler,
                 bool highlightOnMouseOver ) :
 		Widget( x, y, x2 - x, y2 - y ) {
-	this->view = view;
 	this->dragAndDropHandler = dragAndDropHandler;
 	this->x2 = x2;
 	this->y2 = y2;
@@ -55,7 +54,7 @@ void Canvas::drawWidget( Window* parent ) {
 		            false, false, dragging, glowing, inside );
 	}
 
-	if ( view && !parent->isOpening() ) {
+	if ( !parent->isOpening() ) {
 		glScissor( parent->getX() + x,
 		           parent->getScourgeGui()->getScreenHeight() -
 		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
@@ -63,8 +62,7 @@ void Canvas::drawWidget( Window* parent ) {
 		glEnable( GL_SCISSOR_TEST );
 
 		glPushMatrix();
-		view->drawWidgetContents( this );
-		notify( Widget::Draw );
+		notify( Widget::Draw ); 
 		glPopMatrix();
 
 		glDisable( GL_SCISSOR_TEST );
@@ -134,6 +132,7 @@ void Canvas::removeEffects() {
 	highlightBorders = false;
 }
 
+/* unused and out of sync with changes
 ImageCanvas::ImageCanvas( int x, int y, int x2, int y2, GLuint image ) : Canvas( x, y, x2, y2, this, NULL, false ) {
 	this->image = image;
 }
@@ -165,3 +164,4 @@ void ImageCanvas::drawWidgetContents( Canvas *w ) {
 	glDisable( GL_TEXTURE_2D );
 	glDisable( GL_BLEND );
 }
+*/

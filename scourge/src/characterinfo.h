@@ -37,7 +37,7 @@ class Item;
 class Scourge;
 
 /// A widget that shows basic character info.
-class CharacterInfoUI : public WidgetView {
+class CharacterInfoUI {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -55,8 +55,8 @@ public:
 		return win;
 	}
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
+	bool onDrawDetails( Widget* w );
 
 private:
 	//unused: char *getAPRDescription( Creature *p, Item *item, char *buff );

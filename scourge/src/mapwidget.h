@@ -30,7 +30,7 @@ class Scourge;
 //class Canvas;
 
 /// A widget that displays a draggable world map with location marks.
-class MapWidget : public Canvas, WidgetView {
+class MapWidget : public Canvas {
 private:
 	Scourge* scourge;
 	Window* parent; 
@@ -52,8 +52,8 @@ public:
 	}
 	void setSelection( int x, int y );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
+	bool  onDraw( Widget* );
 
 	/**
 	  The widget received a dragged item

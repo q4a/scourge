@@ -33,7 +33,7 @@ class Item;
 class Creature;
 
 /// The "container contents" window (for open chests etc.)
-class ContainerView : public Canvas, DragAndDropHandler, WidgetView {
+class ContainerView : public Canvas, DragAndDropHandler {
 
 private:
 	Scourge *scourge;
@@ -69,9 +69,9 @@ public:
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 	
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
-	
+	/// Widget::Draw handler
+	bool  onDraw( Widget* );
+
 	void showInfo( Item *item );
 	
 	void setItem( Item *item, Creature *creature=NULL );

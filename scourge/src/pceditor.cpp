@@ -569,8 +569,8 @@ void PcEditor::createUI() {
 	int detailsHeight = 145;
 	detailsInfo = new CharacterInfoUI( scourge );
 	detailsCanvas = new Canvas( secondColStart, 200,
-	                            secondColStart + secondColWidth, 200 + detailsHeight,
-	                            detailsInfo );
+	                            secondColStart + secondColWidth, 200 + detailsHeight );
+	detailsCanvas->attach( Widget::Draw, &CharacterInfoUI::onDrawDetails, detailsInfo );
 	cards->addWidget( detailsCanvas, STAT_TAB );
 
 
@@ -623,7 +623,8 @@ void PcEditor::createUI() {
 	int yy = 110;
 	int imageWidth = PORTRAIT_SIZE;
 	portrait = new Canvas( secondColStart, yy,
-	                       secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
+	                       secondColStart + imageWidth, yy + PORTRAIT_SIZE );
+	portrait->attach( Widget::Draw, &PcEditor::onDrawPortrait, this );
 	cards->addWidget( portrait, IMAGE_TAB );
 
 	rollApperance();
@@ -639,7 +640,8 @@ void PcEditor::createUI() {
 	//int modelWidth = w - 10 - modelStart;
 	int modelWidth = PORTRAIT_SIZE;
 	model = new Canvas( modelStart, yy,
-	                    modelStart + modelWidth, yy + MODEL_SIZE, this );
+	                    modelStart + modelWidth, yy + MODEL_SIZE );
+	model->attach( Widget::Draw, &PcEditor::onDrawModel, this );
 	cards->addWidget( model, IMAGE_TAB );
 	prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
 	                                 modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight,
@@ -658,7 +660,7 @@ void PcEditor::rollApperance() {
 	modelIndex = Util::dice( maleCount <= femaleCount ? maleCount : femaleCount );
 }
 
-void PcEditor::drawWidgetContents( Canvas *w ) {
+bool PcEditor::onDrawPortrait( Widget* w ) {
 	if ( w == portrait ) {
 		glPushMatrix();
 		glEnable( GL_TEXTURE_2D );
@@ -678,7 +680,13 @@ void PcEditor::drawWidgetContents( Canvas *w ) {
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glPopMatrix();
-	} else if ( w == model ) {
+		return true;
+	}  
+	return false;
+}
+
+bool PcEditor::onDrawModel( Widget* w ) {
+	if ( w == model ) {
 		// draw model
 		CharacterModelInfo *cmi = scourge->getShapePalette()->
 		                          getCharacterModelInfo( getSex(), modelIndex );
@@ -728,6 +736,8 @@ void PcEditor::drawWidgetContents( Canvas *w ) {
 		glDisable( GL_DEPTH_TEST );
 		glDisable( GL_BLEND );
 		glPopMatrix();
+		return true;
 	}
+	return false;
 }
 

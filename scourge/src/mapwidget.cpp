@@ -30,13 +30,15 @@ using namespace std;
 #define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
 #define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
 
-MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable ) : Canvas( x, y, x2, y2, this ) {
+MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable ) 
+		: Canvas( x, y, x2, y2 ) {
 	this->scourge = scourge;
 	this->parent = parent;
 	this->editable = editable;
 	markedX = markedY = oldSelX = oldSelY = selX = selY = 0;
 	oldx = oldy = 0;
 	dragging = false;
+	attach( Widget::Draw, &MapWidget::onDraw, this );
 	calculateValues();
 }
 
@@ -129,7 +131,7 @@ void MapWidget::calculateValues() {
 	*/
 }
 
-void MapWidget::drawWidgetContents( Canvas *w ) {
+bool  MapWidget::onDraw( Widget* ) {
 	Canvas *canvas = this;
 
 
@@ -207,5 +209,6 @@ void MapWidget::drawWidgetContents( Canvas *w ) {
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glPopMatrix();
+	return true;
 }
 

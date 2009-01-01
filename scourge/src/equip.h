@@ -46,7 +46,7 @@ class Button;
 class Storable;
 
 /// The widget showing equipped gear, available spells and special abilities.
-class Equip : public DragAndDropHandler, WidgetView {
+class Equip : public DragAndDropHandler {
 private:
 	Creature *creature;
 	Texture backgroundTexture;
@@ -92,8 +92,8 @@ public:
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 
-	// WidgetView interface
-	virtual void drawWidgetContents( Canvas *w );
+	/// Widget::Draw handler
+	bool onDraw( Widget* );
 
 	inline Storable *getStorable() {
 		return storable;
