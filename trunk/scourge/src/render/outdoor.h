@@ -19,11 +19,15 @@
 #define OUTDOOR_H_
 #pragma once
 
+#include "render.h"
+#include "maprender.h"
+
 class Map;
 class Surface;
 class Location;
-#include "render.h"
-#include "maprender.h"
+struct DrawLater;
+class Shape;
+struct Rug;
 
 class Outdoor : public MapRender {
 private:
@@ -35,13 +39,23 @@ public:
 	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
 	
 protected:
-	virtual void drawMap();	
+	virtual void drawMap();
+	virtual void doRenderFloor();
+	
+	virtual inline void setupShapeColor() {
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	}	
 
 	/// Draws creature effects and damage counters.
 	void drawEffects();
 	
 	/// Draws the roofs on outdoor levels, including the fading.
 	void drawRoofs();
+	
+private:
+	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );	
+	bool drawHeightMapFloor();
+	void drawWaterLevel();
 };
 
 #endif /*OUTDOOR_H_*/

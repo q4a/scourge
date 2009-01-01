@@ -25,8 +25,9 @@
 class Map;
 class Surface;
 class Location;
-class DrawLater;
+struct DrawLater;
 class Shape;
+struct Rug;
 
 class MapRender {
 private:
@@ -43,6 +44,7 @@ public:
 	
 	void willDrawGrid();
 	void drawTraps();
+	void drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk );
 	
 	virtual inline void drawGroundPosition( int posX, int posY,
 	                                        float xpos2, float ypos2,
@@ -51,15 +53,52 @@ public:
 	                                       float xpos2, float ypos2,
 	                                       Shape *shape ) {}
 
+	virtual inline void setupLightBlending() {
+		//Scourge::setBlendFuncStatic();
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	}
+
+	virtual inline void setupPlayerLightColor() {
+		//glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );	
+		glColor4f( 0.5f, 0.45f, 0.2f, 0.5f );
+	}
+
+	virtual inline void setupShapeColor() {
+		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+	}
+
+	virtual inline void setupBlendedWallColor() {
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+	}
+
+	virtual inline void setupDropLocationColor() {
+		glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
+	}
+
+	virtual inline void setupShadowColor() {
+		glColor4f( 0.04f, 0.0f, 0.07f, 0.3f );
+	}
+
+	virtual inline void setupSecretDoorColor() {
+		glColor4f( 0.3f, 0.7f, 0.3f, 1.0f );	
+	}
+
+	virtual inline void setupLockedDoorColor() {
+		glColor4f( 1.0f, 0.3f, 0.3f, 1.0f );
+	}
 	
+	void drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
 	
 protected:
+	void renderFloor();
+	virtual void doRenderFloor() = 0;
 	void doDrawShape( DrawLater *later, int effect = 0 );
 	void doDrawShape( float xpos2, float ypos2, float zpos2,
 	                  Shape *shape, int effect = 0, DrawLater *later = NULL );
 	void findOccludedSides( DrawLater *later, bool *sides );
 	virtual void drawMap() = 0;
-	void drawProjectiles();	
+	void drawProjectiles();
+	void debugGround( int sx, int sy, int ex, int ey );
 };
 
 #endif /*MAPRENDER_H_*/

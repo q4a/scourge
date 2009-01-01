@@ -261,11 +261,6 @@ private:
 
 	static int dir_index[];
 
-	/// Unused.
-	void drawGrid( SDL_Surface *surface );
-	/// Unused.
-	void debugGrid( SDL_Surface *surface );
-
 	int mapViewWidth, mapViewDepth;
 	enum { DEBUG_SIZE = 200 };
 	char mapDebugStr[ DEBUG_SIZE ];
@@ -597,9 +592,6 @@ public:
 	void preDraw();
 	void postDraw();
 
-	/// Unused.
-	void drawBorder();
-
 	/// The map top left x coordinate
 	inline int getX() {
 		return x;
@@ -871,11 +863,6 @@ public:
 
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
-	void drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
-	
-	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
-
-	void debugGround( int sx, int sy, int ex, int ey );
 
 	void initOutdoorsGroundTexture();
 
@@ -922,11 +909,6 @@ protected:
 
 	void createGroundMap();
 	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
-
-	void renderFloor();
-	void drawFlatFloor();
-	bool drawHeightMapFloor();
-	void drawWaterLevel();
 
 	void setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	                       Shape *shape,
@@ -1004,7 +986,6 @@ protected:
 	                    Shape *shape, RenderedItem *item, RenderedCreature *creature,
 	                    EffectLocation *effect, bool itemPos = false );
 	void setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY );
-	void drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk );
 	Shape *isWall( int x, int y, int z );
 
 	void configureLightMap();
@@ -1034,9 +1015,6 @@ protected:
 	                            bool *lightEdge );
 	bool checkUnderRoof();
 
-	/// Unused.
-	void drawWater();
-
 	void removeCurrentEffects();
 
 	void sortShapes( DrawLater *playerDrawLater,
@@ -1048,14 +1026,6 @@ protected:
 
 	bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
 		
-	void setupShapeColor();
-	void setupBlendedWallColor();
-	void setupDropLocationColor();
-	void setupShadowColor();
-	void setupSecretDoorColor();
-	void setupLockedDoorColor();
-	void setupLightBlending();
-	void setupPlayerLightColor();
 	inline float distance( Location *pos1, Location *pos2 ) {
 		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 
 		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );

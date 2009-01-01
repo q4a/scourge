@@ -25,6 +25,7 @@
 
 //#include "../rpg/rpglib.h"
 #include "map.h"
+#include "maprender.h"
 #include "mapadapter.h"
 #include "effect.h"
 #include "location.h"

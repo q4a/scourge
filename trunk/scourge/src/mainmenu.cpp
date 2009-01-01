@@ -49,7 +49,7 @@ using namespace std;
 #define LOGO_SPRITE_DELTA 1.0f
 //#define PI 3.14159f
 
-#define WATER_HEIGHT 130
+#define WATER_HEIGHT_MAIN_MENU 130
 
 #define MENU_ITEM_WIDTH 256
 #define MENU_ITEM_HEIGHT 32
@@ -111,7 +111,7 @@ MainMenu::MainMenu( Scourge *scourge ) {
 	starCount = 200;
 	for ( int i = 0; i < starCount; i++ ) {
 		star[i].x = Util::dice( scourge->getSDLHandler()->getScreen()->w );
-		star[i].y = Util::pickOne( top, top + 599 - WATER_HEIGHT - 160 );
+		star[i].y = Util::pickOne( top, top + 599 - WATER_HEIGHT_MAIN_MENU - 160 );
 	}
 	// The new style gui
 	int w = 250;
@@ -624,7 +624,7 @@ void MainMenu::drawBackdrop() {
 	//Draw the backdrop image
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 0, top + ( 600 - WATER_HEIGHT - h ), 0 );
+	glTranslatef( 0, top + ( 600 - WATER_HEIGHT_MAIN_MENU - h ), 0 );
 	glColor4f( 1, 1, 1, 1 );
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
@@ -710,7 +710,7 @@ void MainMenu::drawWater() {
 	// draw the water
 	glPushMatrix();
 	w = scourge->getSDLHandler()->getScreen()->w;
-	h = WATER_HEIGHT;
+	h = WATER_HEIGHT_MAIN_MENU;
 	glLoadIdentity();
 	glTranslatef( 0, top + ( 600 - h ), 0 );
 	glDisable( GL_TEXTURE_2D );

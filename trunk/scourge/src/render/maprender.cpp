@@ -115,7 +115,7 @@ void MapRender::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
 		glMultMatrixf( shadowTransformMatrix );
 		// purple shadows
-		map->setupShadowColor();
+		setupShadowColor();
 	} else {
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, zpos2 + heightPos );
 
@@ -145,7 +145,7 @@ void MapRender::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape
 		// show detected secret doors
 		if ( later && later->pos ) {
 			if ( map->isSecretDoor( later->pos ) && ( map->isSecretDoorDetected( later->pos ) || map->settings->isGridShowing() ) ) {
-				map->setupSecretDoorColor();
+				setupSecretDoorColor();
 				map->colorAlreadySet = true;
 			}
 		}
@@ -154,9 +154,9 @@ void MapRender::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape
 			map->colorAlreadySet = false;
 		} else {
 			if ( later && later->pos && map->isLocked( later->pos->x, later->pos->y, later->pos->z ) ) {
-				map->setupLockedDoorColor();
+				setupLockedDoorColor();
 			} else {
-				map->setupShapeColor();
+				setupShapeColor();
 			}
 		}
 	}
@@ -186,7 +186,7 @@ void MapRender::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape
 			glColor4f( color.r, color.g, color.b, color.a );
 		} else {
 			r = 8 * MUL;
-			map->setupPlayerLightColor();
+			setupPlayerLightColor();
 		}		
 		
 		glBegin( GL_QUADS );
@@ -400,6 +400,26 @@ void MapRender::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape
 		( ( GLShape* )shape )->useShadow = false;
 	}	
 }
+
+/// Draws the floor/ground of the map.
+
+void MapRender::renderFloor() {
+	glEnable( GL_TEXTURE_2D );
+	//glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+	setupShapeColor();
+	if ( map->floorTex.isSpecified() ) map->floorTex.glBind();
+	glPushMatrix();
+	
+	doRenderFloor();
+	
+	glPopMatrix();
+
+	// show floor in map editor
+	if ( map->settings->isGridShowing() ) {
+		map->setupShapes( true, false );
+	}
+}
+
 
 /// Determines which sides of a shape are not visible for various reasons.
 
@@ -718,3 +738,208 @@ void MapRender::drawTraps() {
 	}
 }
 
+/// Draws the rugs in Scourge HQ.
+
+void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
+	glPushMatrix();
+	glTranslatef( xpos2, ypos2, 0.255f * MUL );
+	glRotatef( rug->angle, 0.0f, 0.0f, 1.0f );
+	float f = MAP_UNIT * MUL;
+	float offset = 2.5f * MUL;
+
+	float sx, sy, ex, ey;
+	// starting section
+	if ( rug->isHorizontal ) {
+		sx = offset;
+		sy = offset * 2;
+		ex = f - offset;
+		ey = f - offset * 2;
+	} else {
+		sy = offset;
+		sx = offset * 2;
+		ey = f - offset;
+		ex = f - offset * 2;
+	}
+
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	setupShapeColor();
+	rug->texture.glBind();
+	glBegin( GL_TRIANGLE_STRIP );
+	if ( rug->isHorizontal ) {
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex2f( sx, sy );
+		glTexCoord2f( 1.0f, 1.0f );
+		glVertex2f( ex, sy );
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex2f( sx, ey );
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex2f( ex, ey );
+	} else {
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex2f( sx, sy );
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex2f( ex, sy );
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex2f( sx, ey );
+		glTexCoord2f( 1.0f, 1.0f );
+		glVertex2f( ex, ey );
+	}
+	glEnd();
+	glDisable( GL_TEXTURE_2D );
+	glPopMatrix();
+}
+
+/// Draws a ground texture on outdoor maps. Uses map coordinates.
+
+/// Draw a texture on top of the ground map. This is useful for drawing shadows or
+/// selection circles on top of un-even terrain.
+
+#define GROUND_TEX_Z_OFFSET 0.26f
+
+void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
+
+	//glEnable( GL_DEPTH_TEST );
+	glDepthMask( GL_FALSE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	tex.glBind();
+
+	//glColor4f( 1, 0, 0, 1 );
+	//glDepthMask( GL_FALSE );
+	//glDisable( GL_DEPTH_TEST );
+
+	// which ground pos?
+	float sx = ( tx / static_cast<float>( OUTDOORS_STEP ) );
+	float sy = ( ( ty - th - 1 ) / static_cast<float>( OUTDOORS_STEP ) );
+	float ex = ( ( tx + tw ) / static_cast<float>( OUTDOORS_STEP ) );
+	float ey = ( ( ty - 1 ) / static_cast<float>( OUTDOORS_STEP ) );
+#ifdef DEBUG_RENDER
+	cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
+#endif
+
+	// offset to our texture inside the ground pos
+	float offSX = tx - ( sx * OUTDOORS_STEP );
+	float offSY = ( ty - th - 1 ) - ( sy * OUTDOORS_STEP );
+	float offEX = offSX + tw;
+	float offEY = offSY + th;
+
+#ifdef DEBUG_RENDER
+	cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) << " player size=" << tw << endl;
+	cerr << "tex=" << ( sx * OUTDOORS_STEP ) << "," << ( sy * OUTDOORS_STEP ) << " player=" << map->adapter->getPlayer()->getX() << "," << map->adapter->getPlayer()->getY() << endl;
+	cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+#endif
+
+	// converted to texture coordinates ( 0-1 )
+	offSX = -offSX / ( ( ex - sx ) * OUTDOORS_STEP );
+	offSY = -offSY / ( ( ey - sy ) * OUTDOORS_STEP );
+	offEX = 1 - ( offEX / ( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
+	offEY = 1 - ( offEY / ( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
+#ifdef DEBUG_RENDER
+	cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+#endif
+
+	// don't repeat the texture
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+
+	glMatrixMode( GL_TEXTURE );
+	glPushMatrix();
+	glLoadIdentity();
+
+	glTranslatef( 0.5f, 0.5f, 0.0f );
+	glRotatef( angle, 0.0f, 0.0f, 1.0f );
+	glTranslatef( -0.5f, -0.5f, 0.0f );
+
+	glTranslatef( offSX, offSY, 0.0f );
+	glMatrixMode( GL_MODELVIEW );
+
+
+	float gx, gy;
+	for ( int xx = static_cast<int>( sx ); xx <= static_cast<int>( ex ); xx++ ) {
+		for ( int yy = static_cast<int>( sy ); yy <= static_cast<int>( ey ); yy++ ) {
+
+			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / ( ex - sx );
+			float texEx = ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / ( ex - sx );
+			float texSy = ( ( yy - sy ) * ( offEY - offSY ) ) / ( ey - sy );
+			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / ( ey - sy );
+
+			//glBegin( GL_LINE_LOOP );
+			glBegin( GL_TRIANGLE_STRIP );
+
+			glTexCoord2f( texSx, texSy );
+			//glColor4f( 1, 0, 0, 1 );
+			gx = map->groundPos[ xx ][ yy ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx ][ yy ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			glTexCoord2f( texEx, texSy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = map->groundPos[ xx + 1 ][ yy ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx + 1 ][ yy ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			glTexCoord2f( texSx, texEy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = map->groundPos[ xx ][ yy + 1 ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx ][ yy + 1 ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			glTexCoord2f( texEx, texEy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = map->groundPos[ xx + 1 ][ yy + 1 ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx + 1 ][ yy + 1 ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			glEnd();
+		}
+	}
+
+	glMatrixMode( GL_TEXTURE );
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
+
+
+	// switch back to repeating the texture
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+	//glDisable( GL_DEPTH_TEST );
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
+
+#ifdef DEBUG_HEIGHT_MAP
+	debugGround( sx, sy, ex, ey );
+#endif
+}
+
+void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
+	glDisable( GL_TEXTURE_2D );
+	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
+	float gx, gy;
+	for ( int xx = sx; xx <= ex; xx++ ) {
+		for ( int yy = sy; yy <= ey; yy++ ) {
+			glBegin( GL_LINE_LOOP );
+			gx = map->groundPos[ xx ][ yy + 1 ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx ][ yy + 1 ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			gx = map->groundPos[ xx ][ yy ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx ][ yy ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			gx = map->groundPos[ xx + 1 ][ yy ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx + 1 ][ yy ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			gx = map->groundPos[ xx + 1 ][ yy + 1 ].x - map->getX() * MUL;
+			gy = map->groundPos[ xx + 1 ][ yy + 1 ].y - map->getY() * MUL;
+			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
+
+			glEnd();
+		}
+	}
+	glEnable( GL_TEXTURE_2D );
+}

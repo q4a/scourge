@@ -848,7 +848,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			ypos2 = ( static_cast<float>( i->y - scourge->getMap()->getY() ) * MUL );
 			zpos2 = scourge->getMap()->getGroundHeight( i->x / OUTDOORS_STEP, i->y / OUTDOORS_STEP ) * MUL;
 
-			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
+			scourge->getMap()->getRender()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
 			                                  i->x + creature->getShape()->getWidth() / 2,
 			                                  i->y - creature->getShape()->getWidth() / 2 - 1, 0.4f, 0.4f );
 
@@ -869,7 +869,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		// draw target
 		glColor4f( 1.0f, 0.75f, 0.0f, 0.5f );
 
-		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getSelX() - targetWidth / 2,
+		scourge->getMap()->getRender()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getSelX() - targetWidth / 2,
 		                                  creature->getSelY() + targetWidth / 2, creature->getShape()->getWidth() + targetWidth,
 		                                  creature->getShape()->getDepth() + targetWidth );
 
@@ -904,7 +904,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		//double tw = (static_cast<double>(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) * MUL;
 		glColor4f( 1.0f, 0.15f, 0.0f, 0.5f );
 
-		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+		scourge->getMap()->getRender()->drawGroundTex( scourge->getShapePalette()->getSelection(),
 		                                  creature->getTargetCreature()->getX(),
 		                                  creature->getTargetCreature()->getY() + creature->getTargetCreature()->getShape()->getDepth() / 2.0f - 1,
 		                                  creature->getTargetCreature()->getShape()->getWidth(),
@@ -933,7 +933,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	}
 
 	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || !creature->isPartyMember() || wanderingHero ) ) {
-		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+		scourge->getMap()->getRender()->drawGroundTex( scourge->getShapePalette()->getSelection(),
 		                                  creature->getX(), creature->getY() + creature->getShape()->getDepth() / 2.0f - 1,
 		                                  creature->getShape()->getWidth(), creature->getShape()->getDepth() );
 	}
@@ -1023,7 +1023,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 					float nn = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f );
 
 					glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
-					scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getAreaTexture(),
+					scourge->getMap()->getRender()->drawGroundTex( scourge->getShapePalette()->getAreaTexture(),
 					                                  creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
 					                                  creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
 					                                  nn, nn, areaRot );

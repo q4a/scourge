@@ -19,11 +19,15 @@
 #define INDOOR_H
 #pragma once
 
+#include "render.h"
+#include "maprender.h"
+
 class Map;
 class Surface;
 class Location;
-#include "render.h"
-#include "maprender.h"
+struct DrawLater;
+class Shape;
+struct Rug;
 
 class Indoor : public MapRender {
 private:
@@ -34,6 +38,7 @@ public:
 
 protected:
 	virtual void drawMap();
+	virtual void doRenderFloor();
 	
 	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
 	virtual void drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
@@ -47,7 +52,7 @@ private:
 	void drawLightsFloor();
 	void drawLightsWalls();
 	bool isFacingLight( Surface *surface, Location *p, Location *lightPos );
-	
+	void drawFlatFloor();	
 	
 	
 	DECLARE_NOISY_OPENGL_SUPPORT();
