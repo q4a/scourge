@@ -188,7 +188,7 @@ void Indoor::drawFrontWallsAndWater() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
-				map->setupBlendedWallColor();
+				setupBlendedWallColor();
 				map->colorAlreadySet = true;
 				doDrawShape( &( map->stencil[i] ) );
 			}
@@ -206,7 +206,7 @@ void Indoor::drawFrontWallsAndWater() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
-				map->setupBlendedWallColor();
+				setupBlendedWallColor();
 				map->colorAlreadySet = true;
 				doDrawShape( &( map->stencil[i] ) );
 			}
@@ -235,7 +235,7 @@ void Indoor::drawIndoorShadows() {
 
 	// cave floor and map editor bottom (so cursor shows)
 	if ( map->settings->isGridShowing() || map->floorTexWidth > 0 || map->isHeightMapEnabled() ) {
-		map->renderFloor();
+		renderFloor();
 	} else {
 		map->setupShapes( true, false );
 	}
@@ -273,7 +273,7 @@ void Indoor::drawObjectsAndCreatures() {
 		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].creature ) ||
 		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].item ) ) ) {
 			map->colorAlreadySet = true;
-			map->setupDropLocationColor();
+			setupDropLocationColor();
 		}
 		doDrawShape( &map->other[i] );
 	}	
@@ -291,7 +291,7 @@ void Indoor::drawLightsFloor() {
 	// draw the floors second
 	// cave floor and map editor bottom (so cursor shows)
 	if ( map->settings->isGridShowing() || map->floorTexWidth > 0 || map->isHeightMapEnabled() ) {
-		map->renderFloor();
+		renderFloor();
 	} else {
 		map->setupShapes( true, false );
 	}
@@ -304,7 +304,7 @@ void Indoor::drawLightsFloor() {
 	glDepthMask( GL_FALSE );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
-	map->setupLightBlending();
+	setupLightBlending();
 	for( int i = 0; i < map->lightCount; i++ ) {
 		doDrawShape( &map->lights[i] );
 	}
@@ -379,7 +379,7 @@ void Indoor::drawLightsWalls() {
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_DEPTH_TEST );		
 		glEnable( GL_BLEND );
-		map->setupLightBlending();
+		setupLightBlending();
 		doDrawShape( &map->lights[t] );
 		glEnable( GL_DEPTH_TEST );
 		glDisable( GL_BLEND );
@@ -521,11 +521,40 @@ void Indoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, S
 	glTranslatef( xpos2, ypos2, 0.0f );
 
 	glPushName( name );
-	map->setupShapeColor();
+	setupShapeColor();
 	shape->setGround( true );
 	shape->draw();
 	shape->setGround( false );
 	glPopName();
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );
+}
+
+void Indoor::doRenderFloor() {
+	if ( map->settings->isGridShowing() ) {
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
+	}
+	drawFlatFloor();
+}
+
+/// Draws the indoors floor as a single quad.
+
+void Indoor::drawFlatFloor() {
+	glDisable( GL_CULL_FACE );
+	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
+	float w = static_cast<float>( map->mapViewWidth ) * MUL;
+	float d = static_cast<float>( map->mapViewDepth ) * MUL;
+	//glTranslatef( xpos2, ypos2, 0.0f);
+// glNormal3f( 0.0f, 0.0f, 1.0f );
+	glBegin( GL_TRIANGLE_STRIP );
+	glTexCoord2f( map->getX() / MUL * ratio, map->getY() / MUL * ratio );
+	glVertex3f( 0.0f, 0.0f, 0.0f );
+	glTexCoord2f( ( map->getX() + map->mapViewWidth ) / MUL * ratio, map->getY() / MUL * ratio );
+	glVertex3f( w, 0.0f, 0.0f );
+	glTexCoord2f( map->getX() / MUL * ratio, ( map->getY() + map->mapViewDepth ) / MUL * ratio );
+	glVertex3f( 0.0f, d, 0.0f );
+	glTexCoord2f( ( map->getX() + map->mapViewWidth ) / MUL * ratio, ( map->getY() + map->mapViewDepth ) / MUL * ratio );
+	glVertex3f( w, d, 0.0f );
+	glEnd();
 }
