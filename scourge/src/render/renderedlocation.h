@@ -62,8 +62,12 @@ public:
 	void draw();
 	
 protected:
-	void doDrawEffect();
 	void findOccludedSides( bool *sides );
+	void resetAfterDraw();
+	bool isCreatureInFog();
+	void setupTransforms();
+	void setupColor();
+	float getHeightPos();
 	void drawLight();
 	void drawCreature();
 	void drawItem();
