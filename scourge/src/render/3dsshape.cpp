@@ -550,10 +550,6 @@ void C3DSShape::setupBlending() {
 void C3DSShape::endBlending() {
 }
 
-bool C3DSShape::drawFirst() {
-	return true;
-}
-
-bool C3DSShape::drawLater() {
+bool C3DSShape::isBlended() {
 	return false;
 }

@@ -20,7 +20,6 @@
 #pragma once
 
 #include "render.h"
-#include "texture.h"
 
 class Map;
 class Surface;
@@ -28,10 +27,9 @@ class Location;
 struct DrawLater;
 class Shape;
 struct Rug;
+class RenderedLocation;
 
 class MapRender {
-private:
-	Texture lightTex;
 	
 protected:
 	Map *map;	
@@ -94,10 +92,6 @@ public:
 protected:
 	void renderFloor();
 	virtual void doRenderFloor() = 0;
-	void doDrawShape( DrawLater *later, int effect = 0 );
-	void doDrawShape( float xpos2, float ypos2, float zpos2,
-	                  Shape *shape, int effect = 0, DrawLater *later = NULL );
-	void findOccludedSides( DrawLater *later, bool *sides );
 	virtual void drawMap() = 0;
 	void drawProjectiles();
 	void debugGround( int sx, int sy, int ex, int ey );

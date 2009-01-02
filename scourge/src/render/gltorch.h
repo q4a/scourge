@@ -53,11 +53,8 @@ public:
 
 	void draw();
 
-	inline bool drawFirst() {
-		return false;
-	}
 	// if true, the next two functions are called
-	inline bool drawLater() {
+	inline bool isBlended() {
 		return true;
 	}
 	inline void setupBlending() {

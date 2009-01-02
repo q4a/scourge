@@ -36,6 +36,8 @@ libScourgeRender_a_SOURCES = \
 	projectilerenderer.h\
 	location.cpp\
 	location.h\
+	renderedlocation.cpp\
+	renderedlocation.h\
 	effect.cpp\
 	effect.h\
 	shape.cpp\

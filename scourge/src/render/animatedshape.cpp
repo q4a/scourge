@@ -73,11 +73,8 @@ void AnimatedShape::setupBlending() {
 void AnimatedShape::endBlending() {
 }
 
-bool AnimatedShape::drawFirst() {
-	return true;
-}
 // if true, the next two functions are called
-bool AnimatedShape::drawLater() {
+bool AnimatedShape::isBlended() {
 	return false;
 }
 

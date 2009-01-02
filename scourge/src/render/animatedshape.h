@@ -66,9 +66,8 @@ public:
 	virtual void outline( float r, float g, float b ) = 0;
 
 	void setDir( int dir );
-	bool drawFirst();
 	// if true, the next two functions are called
-	bool drawLater();
+	bool isBlended();
 	void setupBlending();
 	void endBlending();
 

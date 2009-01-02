@@ -50,17 +50,17 @@ void Indoor::drawMap() {
 	
 	// draw lava flows
 	for ( int i = 0; i < map->otherCount; i++ ) {
-		if ( map->other[i].shape->isFlatCaveshape() ) {
-			doDrawShape( &map->other[i] );
+		if ( map->other[i].pos->shape->isFlatCaveshape() ) {
+			map->other[i].draw();
 		}
 	}
 
 	// find the player
-	DrawLater *playerDrawLater = NULL;
+	RenderedLocation *playerDrawLater = NULL;
 	for ( int i = 0; i < map->otherCount; i++ ) {
-		if ( map->other[i].shape->isFlatCaveshape() ) continue;
+		if ( map->other[i].pos->shape->isFlatCaveshape() ) continue;
 		if ( map->settings->isPlayerEnabled() ) {
-			if ( map->other[i].creature && map->other[i].creature == map->adapter->getPlayer() )
+			if ( map->other[i].pos->creature && map->other[i].pos->creature == map->adapter->getPlayer() )
 				playerDrawLater = &( map->other[i] );
 		}
 	}
@@ -77,7 +77,7 @@ void Indoor::drawMap() {
 
 		// draw walls behind the player
 		for ( int i = 0; i < map->stencilCount; i++ ) {
-			if ( !( map->stencil[i].inFront ) ) doDrawShape( &( map->stencil[i] ) );
+			if ( !( map->stencil[i].inFront ) ) map->stencil[i].draw();
 		}
 		
 		// lights on walls
@@ -94,7 +94,7 @@ void Indoor::drawMap() {
 	} else {
 		// no player; just draw the damn walls
 		for ( int i = 0; i < map->stencilCount; i++ ) {
-			doDrawShape( &( map->stencil[i] ) );
+			map->stencil[i].draw();
 		}
 		
 		// lights on walls
@@ -118,18 +118,15 @@ void Indoor::drawMap() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	// draw the roofs (is this needed indoors?!)
-	drawRoofsIndoor();
-	
 	glDepthMask( GL_FALSE );
 	for ( int i = 0; i < map->laterCount; i++ ) {
-		map->later[i].shape->setupBlending();
-		doDrawShape( &map->later[i] );
-		map->later[i].shape->endBlending();
+		map->later[i].pos->shape->setupBlending();
+		map->later[i].draw();
+		map->later[i].pos->shape->endBlending();
 	}
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	for ( int i = 0; i < map->damageCount; i++ ) {
-		doDrawShape( &map->damage[i], 1 );
+		map->damage[i].draw();
 	}	
 			
 	// draw the fog of war or shading
@@ -141,32 +138,6 @@ void Indoor::drawMap() {
 
 	glDisable( GL_BLEND );
 	glDepthMask( GL_TRUE );
-}
-
-void Indoor::drawRoofsIndoor() {
-//	Uint32 now = SDL_GetTicks();
-//	if ( now - roofAlphaUpdate > 25 ) {
-//		roofAlphaUpdate = now;
-//		if ( isCurrentlyUnderRoof ) {
-//			if ( roofAlpha > 0 ) {
-//				roofAlpha -= 0.05f;
-//			} else {
-//				roofAlpha = 0;
-//			}
-//		} else {
-//			if ( roofAlpha < 1 ) {
-//				roofAlpha += 0.05f;
-//			} else {
-//				roofAlpha = 1;
-//			}
-//		}
-//	}
-//	if ( roofAlpha > 0 ) {
-//		for ( int i = 0; i < roofCount; i++ ) {
-//			( ( GLShape* )roof[i].shape )->setAlpha( roofAlpha );
-//			doDrawShape( &roof[i] );
-//		}
-//	}	
 }
 
 void Indoor::drawFrontWallsAndWater() {
@@ -190,8 +161,8 @@ void Indoor::drawFrontWallsAndWater() {
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
 				setupBlendedWallColor();
-				map->colorAlreadySet = true;
-				doDrawShape( &( map->stencil[i] ) );
+				RenderedLocation::colorAlreadySet = true;
+				map->stencil[i].draw();
 			}
 		}
 
@@ -208,8 +179,8 @@ void Indoor::drawFrontWallsAndWater() {
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
 				setupBlendedWallColor();
-				map->colorAlreadySet = true;
-				doDrawShape( &( map->stencil[i] ) );
+				RenderedLocation::colorAlreadySet = true;
+				map->stencil[i].draw();
 			}
 		}
 		if ( map->hasWater ) {
@@ -248,17 +219,17 @@ void Indoor::drawIndoorShadows() {
 		glDisable( GL_TEXTURE_2D );
 		glDepthMask( GL_FALSE );
 		glEnable( GL_BLEND );
-		map->useShadow = true;
+		RenderedLocation::useShadow = true;
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->otherCount; i++ ) {
-			doDrawShape( &map->other[i] );
+			map->other[i].draw();
 		}
 		if ( map->preferences->getShadows() == Constants::ALL_SHADOWS ) {
 			for ( int i = 0; i < map->stencilCount; i++ ) {
-				doDrawShape( &map->stencil[i] );
+				map->stencil[i].draw();
 			}
 		}
-		map->useShadow = false;
+		RenderedLocation::useShadow = false;
 		glDisable( GL_BLEND );
 		glEnable( GL_TEXTURE_2D );
 		glDepthMask( GL_TRUE );
@@ -270,13 +241,13 @@ void Indoor::drawIndoorShadows() {
 
 void Indoor::drawObjectsAndCreatures() {
 	for ( int i = 0; i < map->otherCount; i++ ) {
-		if ( map->other[i].shape->isFlatCaveshape() ) continue;
-		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].creature ) ||
-		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].item ) ) ) {
-			map->colorAlreadySet = true;
+		if ( map->other[i].pos->shape->isFlatCaveshape() ) continue;
+		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
+		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
+			RenderedLocation::colorAlreadySet = true;
 			setupDropLocationColor();
 		}
-		doDrawShape( &map->other[i] );
+		map->other[i].draw();
 	}	
 }
 
@@ -307,7 +278,7 @@ void Indoor::drawLightsFloor() {
 	glEnable( GL_BLEND );
 	setupLightBlending();
 	for( int i = 0; i < map->lightCount; i++ ) {
-		doDrawShape( &map->lights[i] );
+		map->lights[i].draw();
 	}
 	glEnable(GL_DEPTH_TEST);
 	//glColorMask(0,0,0,0);
@@ -336,7 +307,7 @@ void Indoor::drawLightsWalls() {
 				continue;
 			}
 			set<Surface*> surfaces;
-			map->stencil[i].shape->getSurfaces( &surfaces, true );
+			map->stencil[i].pos->shape->getSurfaces( &surfaces, true );
 			map->stencil[i].pos->lightFacingSurfaces.clear();
 			for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
 				Surface *surface = *e;
@@ -350,7 +321,7 @@ void Indoor::drawLightsWalls() {
 			}
 			
 			// draw the visible surfaces
-			doDrawShape( &map->stencil[i] );			
+			map->stencil[i].draw();			
 		}
 		
 		// minus the blocking surfaces
@@ -360,7 +331,7 @@ void Indoor::drawLightsWalls() {
 			if( !map->stencil[i].inFront && 16 > distance( map->stencil[i].pos, map->lights[t].pos ) ) {
 				if( !map->stencil[i].pos->lightFacingSurfaces.empty() ) {
 					set<Surface*> surfaces;
-					map->stencil[i].shape->getSurfaces( &surfaces, false );
+					map->stencil[i].pos->shape->getSurfaces( &surfaces, false );
 					map->stencil[i].pos->lightFacingSurfaces.clear();
 					for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
 						Surface *surface = *e;
@@ -369,7 +340,7 @@ void Indoor::drawLightsWalls() {
 						}
 					}
 				}
-				doDrawShape( &map->stencil[i] );
+				map->stencil[i].draw();
 			}
 		}
 		
@@ -381,7 +352,7 @@ void Indoor::drawLightsWalls() {
 		glDisable( GL_DEPTH_TEST );		
 		glEnable( GL_BLEND );
 		setupLightBlending();
-		doDrawShape( &map->lights[t] );
+		map->lights[t].draw();
 		glEnable( GL_DEPTH_TEST );
 		glDisable( GL_BLEND );
 		
