@@ -102,194 +102,131 @@ void RenderedLocation::set( Map *map,
   this->effectMode = effectMode;
 }
 
-void RenderedLocation::doDrawEffect() {
-	// fog test for creatures
-	if ( map->getHelper() && pos && pos->creature && 
-			!map->getAdapter()->isInMovieMode() && 
-			!map->getHelper()->isVisible( pos->x, pos->y, pos->creature->getShape() ) ) {
-		return;
-	}
-
-
-	glPushMatrix();
-	
-	float xdiff = 0;
-	float ydiff = 0;
-	float heightPos = 0.0f;
-	if ( pos ) {
-		GLShape *s = ( GLShape* )pos->shape;
-		if ( s->isVirtual() ) {
-			s = ( ( VirtualShape* )s )->getRef();
-		}
-
-		if ( !s->getIgnoreHeightMap() ) {
-			heightPos = pos->heightPos * MUL;
-		}
-		
-		if ( pos->creature ) {
-			xdiff = ( pos->creature->getX() - static_cast<float>( toint( pos->creature->getX() ) ) );
-			ydiff = ( pos->creature->getY() - static_cast<float>( toint( pos->creature->getY() ) ) );
-		}		
-	} else if ( effect ) {
-		heightPos = effect->heightPos;
-	}
-
-	glTranslatef( xpos + xdiff * MUL, ypos + ydiff * MUL, zpos + heightPos );
-
-	if ( pos ) {
-		glTranslatef( pos->moveX, pos->moveY, pos->moveZ );
-		glRotatef( pos->angleX, 1.0f, 0.0f, 0.0f );
-		glRotatef( pos->angleY, 0.0f, 1.0f, 0.0f );
-		glRotatef( pos->angleZ, 0.0f, 0.0f, 1.0f );
-	}
-
-	if ( pos && pos->creature ) {
-		glTranslatef( pos->creature->getOffsetX(), pos->creature->getOffsetY(), pos->creature->getOffsetZ() );
-	}
-
-	if ( colorAlreadySet ) {
-		colorAlreadySet = false;
-	} else {
-		map->getRender()->setupShapeColor();
-	}
-
-	glDisable( GL_CULL_FACE );
-
-	if( pos ) {
-		( ( GLShape* )pos->shape )->setCameraRot( map->getXRot(), map->getYRot(), map->getZRot() );
-		( ( GLShape* )pos->shape )->setCameraPos( map->getXPos(), map->getYPos(), map->getZPos(), xpos, ypos, zpos );
-	}
-	
-	// ==========================================================================
-	// effects
-	drawEffect();
-	
-	glPopMatrix();
-}
-
 void RenderedLocation::draw() {
-	if( effectMode ) {
-		doDrawEffect();
-		return;
-	}	
+	if ( isCreatureInFog() ) return;
 	
-	// fog test for creatures
-	if ( map->getHelper() && pos->creature && 
-			!map->getAdapter()->isInMovieMode() && 
-			!map->getHelper()->isVisible( pos->x, pos->y, pos->creature->getShape() ) ) {
-		return;
-	}
-
-	( ( GLShape* )pos->shape )->useShadow = useShadow;
-
-	// slow on mac os X:
-	// glPushAttrib(GL_ENABLE_BIT);
-
 	glPushMatrix();
+	setupTransforms();
+	setupColor();
 
-	float heightPos = 0.0f;
-	GLShape *s = ( GLShape* )pos->shape;
-	if ( s->isVirtual() ) {
-		s = ( ( VirtualShape* )s )->getRef();
-	}
-
-	if ( !s->getIgnoreHeightMap() ) {
-		heightPos = pos->heightPos * MUL;
-	}
-
-	float xdiff = 0;
-	float ydiff = 0;
-	if ( pos->creature ) {
-		xdiff = ( pos->creature->getX() - static_cast<float>( toint( pos->creature->getX() ) ) );
-		ydiff = ( pos->creature->getY() - static_cast<float>( toint( pos->creature->getY() ) ) );
-	}
-
-	if ( useShadow ) {
-		// put shadow above the floor a little
-		glTranslatef( xpos + xdiff * MUL, ypos + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
-		glMultMatrixf( shadowTransformMatrix );
-		// purple shadows
-		map->getRender()->setupShadowColor();
-	} else {
-		glTranslatef( xpos + xdiff * MUL, ypos + ydiff * MUL, zpos + heightPos );
-
-		glTranslatef( pos->moveX, pos->moveY, pos->moveZ );
-		glRotatef( pos->angleX, 1.0f, 0.0f, 0.0f );
-		glRotatef( pos->angleY, 0.0f, 1.0f, 0.0f );
-		glRotatef( pos->angleZ, 0.0f, 0.0f, 1.0f );
-
-		if ( pos->creature ) {
-			glTranslatef( pos->creature->getOffsetX(), pos->creature->getOffsetY(), pos->creature->getOffsetZ() );
-		}
-
-		// show detected secret doors
-		if ( pos ) {
-			if ( map->isSecretDoor( pos ) && ( map->isSecretDoorDetected( pos ) || map->getSettings()->isGridShowing() ) ) {
-				map->getRender()->setupSecretDoorColor();
-				colorAlreadySet = true;
-			}
-		}
-
-		if ( colorAlreadySet ) {
-			colorAlreadySet = false;
-		} else {
-			if ( pos && map->isLocked( pos->x, pos->y, pos->z ) ) {
-				map->getRender()->setupLockedDoorColor();
-			} else {
-				map->getRender()->setupShapeColor();
-			}
-		}
-	}
-
-	glDisable( GL_CULL_FACE );
-
-	( ( GLShape* )pos->shape )->setCameraRot( map->getXRot(), map->getYRot(), map->getZRot() );
-	( ( GLShape* )pos->shape )->setCameraPos( map->getXPos(), map->getYPos(), map->getZPos(), xpos, ypos, zpos );
-	( ( GLShape* )pos->shape )->setLocked( map->isLocked( pos->x, pos->y, 0 ) );		
-	
-	// ==========================================================================
-	// lights
 	if( light ) {
 		drawLight();
-		
-		// ==========================================================================
-		// effects
+	} else if( effectMode ) {
+		drawEffect();
 	} else if ( pos->creature && !useShadow ) {
 		drawCreature();
-		// ==========================================================================
-		// items
 	} else if ( pos->item && !useShadow ) {
-
 		drawItem();
-
-		// ==========================================================================
-		// shapes
 	} else {
 		drawShape();
 	}
-	// ==========================================================================
 
 #if DEBUG_MOUSE_POS == 1
 	drawMousePosition();
 #endif
 
 	outlineVirtuals();
-	
 	glPopMatrix();
+	resetAfterDraw();
+}
 
-	// slow on mac os X
-	// glPopAttrib();
-
-	if ( pos->shape ) {
+void RenderedLocation::resetAfterDraw() {
+	if ( pos && pos->shape ) {
 		pos->shape->setLightFacingSurfaces( NULL );
 		( ( GLShape* )pos->shape )->useShadow = false;
+	}
+	colorAlreadySet = false;
+}
+
+// fog test for creatures
+bool RenderedLocation::isCreatureInFog() {
+	return map->getHelper() && pos && pos->creature &&
+		!map->getAdapter()->isInMovieMode() &&
+		!map->getHelper()->isVisible( pos->x, pos->y, pos->creature->getShape() );
+}
+
+void RenderedLocation::setupTransforms() {
+	if( pos ) ( ( GLShape* )pos->shape )->useShadow = useShadow;
+	
+	float xdiff = 0;
+	float ydiff = 0;
+	if ( pos && pos->creature ) {
+		pos->creature->getPositionFraction( &xdiff, &ydiff );
+	}
+
+	float heightPos = getHeightPos();
+	if ( useShadow ) {
+		// put shadow above the floor a little
+		glTranslatef( xpos + xdiff * MUL, ypos + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
+		glMultMatrixf( shadowTransformMatrix );
+	} else {
+		glTranslatef( xpos + xdiff * MUL, ypos + ydiff * MUL, zpos + heightPos );
+
+		if( pos ) {
+			glTranslatef( pos->moveX, pos->moveY, pos->moveZ );
+			glRotatef( pos->angleX, 1.0f, 0.0f, 0.0f );
+			glRotatef( pos->angleY, 0.0f, 1.0f, 0.0f );
+			glRotatef( pos->angleZ, 0.0f, 0.0f, 1.0f );
+	
+			if ( pos->creature ) {
+				glTranslatef( pos->creature->getOffsetX(), pos->creature->getOffsetY(), pos->creature->getOffsetZ() );
+			}
+		}	
+	}
+	
+	if( pos ) {
+		( ( GLShape* )pos->shape )->setCameraRot( map->getXRot(), map->getYRot(), map->getZRot() );
+		( ( GLShape* )pos->shape )->setCameraPos( map->getXPos(), map->getYPos(), map->getZPos(), xpos, ypos, zpos );
+		( ( GLShape* )pos->shape )->setLocked( map->isLocked( pos->x, pos->y, 0 ) );
+	}
+	
+	glDisable( GL_CULL_FACE );
+}
+
+void RenderedLocation::setupColor() {
+	if ( useShadow ) {
+		// purple shadows
+		map->getRender()->setupShadowColor();
+	} else {
+
+		if( pos ) {	
+			// show detected secret doors
+			if ( map->isSecretDoor( pos ) && ( map->isSecretDoorDetected( pos ) || map->getSettings()->isGridShowing() ) ) {
+				map->getRender()->setupSecretDoorColor();
+				colorAlreadySet = true;
+			} else if( map->isLocked( pos->x, pos->y, pos->z ) ) {
+				map->getRender()->setupLockedDoorColor();
+				colorAlreadySet = true;
+			}
+		}	
+
+		if ( !colorAlreadySet ) {
+			map->getRender()->setupShapeColor();
+		}
 	}	
+}
+
+float RenderedLocation::getHeightPos() {
+	float heightPos = 0.0f;
+	if( pos ) {
+		GLShape *s = ( GLShape* )pos->shape;
+		if ( s->isVirtual() ) {
+			s = ( ( VirtualShape* )s )->getRef();
+		}
+	
+		if ( !s->getIgnoreHeightMap() ) {
+			heightPos = pos->heightPos * MUL;
+		}
+	} else {
+		heightPos = effect->heightPos;
+	}
+	return heightPos;
 }
 
 /// Determines which sides of a shape are not visible for various reasons.
 
 void RenderedLocation::findOccludedSides( bool *sides ) {
-	if ( colorAlreadySet || !this->pos || !this->pos->shape || !this->pos->shape->isStencil() || ( this->pos->shape && map->isDoor( this->pos->shape ) ) ) {
+	if ( !this->pos || !this->pos->shape || !this->pos->shape->isStencil() || map->isDoor( this->pos->shape ) ) {
 		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] =
 			sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
 		return;
@@ -500,7 +437,7 @@ void RenderedLocation::drawMousePosition() {
 
 void RenderedLocation::outlineVirtuals() {
 	// in the map editor outline virtual shapes
-	if ( pos->shape->isVirtual() && map->getSettings()->isGridShowing() && map->isGridEnabled() ) {
+	if ( pos && pos->shape->isVirtual() && map->getSettings()->isGridShowing() && map->isGridEnabled() ) {
 
 		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
 

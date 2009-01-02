@@ -150,6 +150,11 @@ public:
 
 	virtual bool findPlace( int x, int y, int *finalX = NULL, int *finalY = NULL );
 	virtual bool findPlaceBounded( int sx, int sy, int ex, int ey );
+	
+	inline void getPositionFraction( float *xp, float *yp ) {
+		*xp = ( getX() - static_cast<float>( toint( getX() ) ) );
+		*yp = ( getY() - static_cast<float>( toint( getY() ) ) );
+	}
 
 protected:
 	bool doFindStart( int *startx, int *starty );
