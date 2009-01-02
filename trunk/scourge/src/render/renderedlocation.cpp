@@ -102,7 +102,7 @@ void RenderedLocation::set( Map *map,
   this->effectMode = effectMode;
 }
 
-void RenderedLocation::drawEffect() {
+void RenderedLocation::doDrawEffect() {
 	// fog test for creatures
 	if ( map->getHelper() && pos && pos->creature && 
 			!map->getAdapter()->isInMovieMode() && 
@@ -162,23 +162,14 @@ void RenderedLocation::drawEffect() {
 	
 	// ==========================================================================
 	// effects
-	if ( pos && pos->creature ) {
-		// translate hack for md2 models... see: md2shape::draw()
-		//glTranslatef( 0, -1 * MUL, 0 );
-		pos->creature->getEffect()->draw( pos->creature->getEffectType(),
-		                                    pos->creature->getDamageEffect() );
-		//glTranslatef( 0, 1 * MUL, 0 );
-	} else if ( effect ) {
-		effect->getEffect()->draw( effect->getEffectType(),
-		                                  effect->getDamageEffect() );
-	}
+	drawEffect();
 	
 	glPopMatrix();
 }
 
 void RenderedLocation::draw() {
 	if( effectMode ) {
-		drawEffect();
+		doDrawEffect();
 		return;
 	}	
 	
@@ -259,201 +250,31 @@ void RenderedLocation::draw() {
 	// ==========================================================================
 	// lights
 	if( light ) {
-
-		glPushMatrix();
-		glRotatef( -map->getZRot(), 0.0f, 0.0f, 1.0f );
-		glRotatef( -map->getYRot(), 1.0f, 0.0f, 0.0f );
-		lightTex.glBind();
-		float r;
-		if( pos->shape->getLightEmitter() ) {
-			r = pos->shape->getLightEmitter()->getRadius() * MUL;
-			Color color = pos->shape->getLightEmitter()->getColor();
-			glColor4f( color.r, color.g, color.b, color.a );
-		} else {
-			r = 8 * MUL;
-			map->getRender()->setupPlayerLightColor();
-		}		
-		
-		glBegin( GL_QUADS );
-		glTexCoord2f( 1.0f, 1.0f );
-		glVertex3f( -r, r, 0 );
-		glTexCoord2f( 1.0f, 0.0f );
-		glVertex3f( -r, -r, 0 );
-		glTexCoord2f( 0.0f, 0.0f );
-		glVertex3f( r, -r, 0 );
-		glTexCoord2f( 0.0f, 1.0f );
-		glVertex3f( r, r, 0 );		
-		glEnd();
-		glPopMatrix();
+		drawLight();
 		
 		// ==========================================================================
 		// effects
 	} else if ( pos->creature && !useShadow ) {
-		// outline mission creatures
-		if ( map->getAdapter()->isMissionCreature( pos->creature ) ) {
-			pos->shape->outline( 0.15f, 0.15f, 0.4f );
-		} else if ( pos->creature->isBoss() ) {
-			pos->shape->outline( 0.4f, 0.15f, 0.4f );
-		} else if ( pos->outlineColor ) {
-			pos->shape->outline( pos->outlineColor );
-		}
-		
-		if ( pos->creature->getStateMod( StateMod::invisible ) ) {
-			glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
-			glEnable( GL_BLEND );
-			//glDepthMask( GL_FALSE );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		} else if ( pos->creature->getStateMod( StateMod::possessed ) ) {
-			glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
-		}
-		
-		if( !pos->lightFacingSurfaces.empty() ) {
-			pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
-		}
-		pos->shape->draw();
-
-		if ( pos->creature->getStateMod( StateMod::invisible ) ) {
-			glDisable( GL_BLEND );
-			//glDepthMask( GL_TRUE );
-		}
-
+		drawCreature();
 		// ==========================================================================
 		// items
 	} else if ( pos->item && !useShadow ) {
 
-		if ( pos->item->isSpecial() ) {
-			pos->shape->outline( Constants::SPECIAL_ITEM_COLOR );
-		} else if ( pos->item->isMagicItem() ) {
-			pos->shape->outline( Constants::MAGIC_ITEM_COLOR[ pos->item->getMagicLevel() ] );
-		} else if ( pos->item->getContainsMagicItem() ) {
-			pos->shape->outline( 0.8f, 0.8f, 0.3f );
-		}
-
-		if ( pos->outlineColor ) {
-			pos->shape->outline( pos->outlineColor );
-		}
-		
-		if( !pos->lightFacingSurfaces.empty() ) {
-			pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
-		}
-		pos->shape->draw();
-
+		drawItem();
 
 		// ==========================================================================
 		// shapes
 	} else {
-		bool sides[6];
-		findOccludedSides( sides );
-		pos->shape->setOccludedSides( sides );
-		if ( pos->outlineColor && !useShadow ) {
-			pos->shape->outline( pos->outlineColor );
-		}
-		if ( pos->shape->getTextureCount() > 3 ) {
-			// select which alternate texture to use
-			pos->shape->setTextureIndex( pos->texIndex );
-		}
-		
-		if( !pos->lightFacingSurfaces.empty() ) {
-			pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
-		}		
-		pos->shape->draw();
+		drawShape();
 	}
 	// ==========================================================================
 
 #if DEBUG_MOUSE_POS == 1
-	if ( shape && !useShadow && ( ( later && item ) || ( later && creature ) || shape->isInteractive() ) ) {
-		glDisable( GL_DEPTH_TEST );
-		glDepthMask( GL_FALSE );
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_TEXTURE_2D );
-		glColor4f( 1, 1, 1, 1 );
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, 0, 0 );
-		glEnd();
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0, 0, shape->getHeight() * MUL );
-		glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, 0, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( 0, shape->getDepth() * MUL, 0 );
-		glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
-		glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
-		glEnd();
-		glBegin( GL_LINES );
-		glVertex3f( shape->getWidth() * MUL, 0, 0 );
-		glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
-		glEnd();
-		glDepthMask( GL_TRUE );
-		glEnable( GL_DEPTH_TEST );
-	}
+	drawMousePosition();
 #endif
 
-	// in the map editor outline virtual shapes
-	if ( pos->shape->isVirtual() && map->getSettings()->isGridShowing() && map->isGridEnabled() ) {
-
-		if ( heightPos > 1 ) {
-			cerr << "heightPos=" << heightPos << " for virtual shape " << pos->shape->getName() << endl;
-		}
-		if ( pos && pos->z > 0 ) {
-			cerr << "z=" << pos->z << " for virtual shape " << pos->shape->getName() << endl;
-		}
-
-		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
-
-		float z = ( pos->shape->getHeight() + 0.25f ) * MUL;
-		float lowZ = 0.25f * MUL;
-
-		float wm = pos->shape->getWidth() * MUL;
-		float dm = pos->shape->getDepth() * MUL;
-
-		glPushMatrix();
-		glTranslatef( 0.0f, 20.0f, z );
-		map->getAdapter()->texPrint( 0, 0, "virtual" );
-		glPopMatrix();
-
-		glDisable( GL_TEXTURE_2D );
-		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, dm, z );
-		glVertex3f( wm, dm, z );
-		glVertex3f( wm, 0.0f, z );
-
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, 0.0f, lowZ );
-		glVertex3f( wm, 0.0f, lowZ );
-		glVertex3f( wm, 0.0f, z );
-
-		glVertex3f( 0.0f, dm, z );
-		glVertex3f( 0.0f, dm, lowZ );
-		glVertex3f( wm, dm, lowZ );
-		glVertex3f( wm, dm, z );
-
-		glVertex3f( 0.0f, 0.0f, z );
-		glVertex3f( 0.0f, 0.0f, lowZ );
-		glVertex3f( 0.0f, dm, lowZ );
-		glVertex3f( 0.0f, dm, z );
-
-		glVertex3f( wm, 0.0f, z );
-		glVertex3f( wm, 0.0f, lowZ );
-		glVertex3f( wm, dm, lowZ );
-		glVertex3f( wm, dm, z );
-
-		glEnd();
-		glEnable( GL_TEXTURE_2D );
-	}
-
+	outlineVirtuals();
+	
 	glPopMatrix();
 
 	// slow on mac os X
@@ -526,5 +347,202 @@ void RenderedLocation::findOccludedSides( bool *sides ) {
 				break;
 			}
 		}
+	}	
+}
+
+void RenderedLocation::drawLight() {
+	glPushMatrix();
+	glRotatef( -map->getZRot(), 0.0f, 0.0f, 1.0f );
+	glRotatef( -map->getYRot(), 1.0f, 0.0f, 0.0f );
+	lightTex.glBind();
+	float r;
+	if( pos->shape->getLightEmitter() ) {
+		r = pos->shape->getLightEmitter()->getRadius() * MUL;
+		Color color = pos->shape->getLightEmitter()->getColor();
+		glColor4f( color.r, color.g, color.b, color.a );
+	} else {
+		r = 8 * MUL;
+		map->getRender()->setupPlayerLightColor();
+	}		
+	
+	glBegin( GL_QUADS );
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex3f( -r, r, 0 );
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3f( -r, -r, 0 );
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3f( r, -r, 0 );
+	glTexCoord2f( 0.0f, 1.0f );
+	glVertex3f( r, r, 0 );		
+	glEnd();
+	glPopMatrix();
+}
+
+void RenderedLocation::drawCreature() {
+	// outline mission creatures
+	if ( map->getAdapter()->isMissionCreature( pos->creature ) ) {
+		pos->shape->outline( 0.15f, 0.15f, 0.4f );
+	} else if ( pos->creature->isBoss() ) {
+		pos->shape->outline( 0.4f, 0.15f, 0.4f );
+	} else if ( pos->outlineColor ) {
+		pos->shape->outline( pos->outlineColor );
+	}
+	
+	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
+		glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
+		glEnable( GL_BLEND );
+		//glDepthMask( GL_FALSE );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	} else if ( pos->creature->getStateMod( StateMod::possessed ) ) {
+		glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
+	}
+	
+	if( !pos->lightFacingSurfaces.empty() ) {
+		pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
+	}
+	pos->shape->draw();
+
+	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
+		glDisable( GL_BLEND );
+		//glDepthMask( GL_TRUE );
+	}
+}
+
+void RenderedLocation::drawItem() {
+	if ( pos->item->isSpecial() ) {
+		pos->shape->outline( Constants::SPECIAL_ITEM_COLOR );
+	} else if ( pos->item->isMagicItem() ) {
+		pos->shape->outline( Constants::MAGIC_ITEM_COLOR[ pos->item->getMagicLevel() ] );
+	} else if ( pos->item->getContainsMagicItem() ) {
+		pos->shape->outline( 0.8f, 0.8f, 0.3f );
+	}
+
+	if ( pos->outlineColor ) {
+		pos->shape->outline( pos->outlineColor );
+	}
+	
+	if( !pos->lightFacingSurfaces.empty() ) {
+		pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
+	}
+	pos->shape->draw();
+}
+
+void RenderedLocation::drawEffect() {
+	if ( pos && pos->creature ) {
+		// translate hack for md2 models... see: md2shape::draw()
+		//glTranslatef( 0, -1 * MUL, 0 );
+		pos->creature->getEffect()->draw( pos->creature->getEffectType(),
+		                                    pos->creature->getDamageEffect() );
+		//glTranslatef( 0, 1 * MUL, 0 );
+	} else if ( effect ) {
+		effect->getEffect()->draw( effect->getEffectType(),
+		                                  effect->getDamageEffect() );
+	}
+}
+
+void RenderedLocation::drawShape() {
+	bool sides[6];
+	findOccludedSides( sides );
+	pos->shape->setOccludedSides( sides );
+	if ( pos->outlineColor && !useShadow ) {
+		pos->shape->outline( pos->outlineColor );
+	}
+	if ( pos->shape->getTextureCount() > 3 ) {
+		// select which alternate texture to use
+		pos->shape->setTextureIndex( pos->texIndex );
+	}
+	
+	if( !pos->lightFacingSurfaces.empty() ) {
+		pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
+	}		
+	pos->shape->draw();
+}
+
+void RenderedLocation::drawMousePosition() {
+	if ( pos && pos->shape && !useShadow && ( ( pos->item ) || ( pos->creature ) || pos->shape->isInteractive() ) ) {
+		glDisable( GL_DEPTH_TEST );
+		glDepthMask( GL_FALSE );
+		glDisable( GL_CULL_FACE );
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 1, 1, 1, 1 );
+		glBegin( GL_LINE_LOOP );
+		glVertex3f( 0, 0, 0 );
+		glVertex3f( 0, pos->shape->getDepth() * MUL, 0 );
+		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, 0 );
+		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
+		glEnd();
+		glBegin( GL_LINE_LOOP );
+		glVertex3f( 0, 0, pos->shape->getHeight() * MUL );
+		glVertex3f( 0, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
+		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
+		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
+		glEnd();
+		glBegin( GL_LINES );
+		glVertex3f( 0, 0, 0 );
+		glVertex3f( 0, 0, pos->shape->getHeight() * MUL );
+		glEnd();
+		glBegin( GL_LINES );
+		glVertex3f( 0, pos->shape->getDepth() * MUL, 0 );
+		glVertex3f( 0, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
+		glEnd();
+		glBegin( GL_LINES );
+		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, 0 );
+		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
+		glEnd();
+		glBegin( GL_LINES );
+		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
+		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
+		glEnd();
+		glDepthMask( GL_TRUE );
+		glEnable( GL_DEPTH_TEST );
+	}
+}
+
+void RenderedLocation::outlineVirtuals() {
+	// in the map editor outline virtual shapes
+	if ( pos->shape->isVirtual() && map->getSettings()->isGridShowing() && map->isGridEnabled() ) {
+
+		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
+
+		float z = ( pos->shape->getHeight() + 0.25f ) * MUL;
+		float lowZ = 0.25f * MUL;
+
+		float wm = pos->shape->getWidth() * MUL;
+		float dm = pos->shape->getDepth() * MUL;
+
+		glPushMatrix();
+		glTranslatef( 0.0f, 20.0f, z );
+		map->getAdapter()->texPrint( 0, 0, "virtual" );
+		glPopMatrix();
+
+		glDisable( GL_TEXTURE_2D );
+		glBegin( GL_LINE_LOOP );
+		glVertex3f( 0.0f, 0.0f, z );
+		glVertex3f( 0.0f, dm, z );
+		glVertex3f( wm, dm, z );
+		glVertex3f( wm, 0.0f, z );
+
+		glVertex3f( 0.0f, 0.0f, z );
+		glVertex3f( 0.0f, 0.0f, lowZ );
+		glVertex3f( wm, 0.0f, lowZ );
+		glVertex3f( wm, 0.0f, z );
+
+		glVertex3f( 0.0f, dm, z );
+		glVertex3f( 0.0f, dm, lowZ );
+		glVertex3f( wm, dm, lowZ );
+		glVertex3f( wm, dm, z );
+
+		glVertex3f( 0.0f, 0.0f, z );
+		glVertex3f( 0.0f, 0.0f, lowZ );
+		glVertex3f( 0.0f, dm, lowZ );
+		glVertex3f( 0.0f, dm, z );
+
+		glVertex3f( wm, 0.0f, z );
+		glVertex3f( wm, 0.0f, lowZ );
+		glVertex3f( wm, dm, lowZ );
+		glVertex3f( wm, dm, z );
+
+		glEnd();
+		glEnable( GL_TEXTURE_2D );
 	}	
 }

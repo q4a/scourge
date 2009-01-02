@@ -62,8 +62,15 @@ public:
 	void draw();
 	
 protected:
+	void doDrawEffect();
+	void findOccludedSides( bool *sides );
+	void drawLight();
+	void drawCreature();
+	void drawItem();
+	void drawShape();
 	void drawEffect();
-	void RenderedLocation::findOccludedSides( bool *sides );
+	void drawMousePosition();
+	void outlineVirtuals();
 };
 
 #endif /*RENDEREDLOCATION_H_*/
