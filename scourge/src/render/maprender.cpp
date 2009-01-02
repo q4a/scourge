@@ -56,9 +56,14 @@ MapRender::MapRender( Map *map ) {
 MapRender::~MapRender() {
 }
 
+/// Draws the complete 3D view.
 void MapRender::draw() {
 	drawMap();
 	drawProjectiles();
+	if ( DEBUG_MOUSE_POS || ( map->settings->isGridShowing() && map->gridEnabled ) ) {
+		willDrawGrid();
+	}
+	drawTraps();	
 }
 
 /// Draws the floor/ground of the map.

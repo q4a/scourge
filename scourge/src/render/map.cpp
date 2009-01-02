@@ -756,6 +756,12 @@ float Map::getZoomPercent() {
 	return ( zoom - settings->getMinZoomIn() ) / ( settings->getMaxZoomOut() - settings->getMinZoomIn() );
 }
 
+void Map::draw() {
+	preDraw();
+	getRender()->draw();
+	postDraw();
+}
+
 /// Initialization before doing the actual drawing.
 
 void Map::preDraw() {
@@ -810,56 +816,14 @@ void Map::preDraw() {
 	if ( !currentEffectsMap.empty() ) removeCurrentEffects();
 	// populate the shape arrays
 	if ( mapChanged ) {
-		//if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
 		int csx, cex, csy, cey;
 		setupShapes( false, false, &csx, &cex, &csy, &cey );
-#ifdef SHOW_FPS
-//     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
-//     if( settings->isPlayerEnabled() ) {
-//       snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f",
-//       cursorFlatMapX, cursorFlatMapY + 1,
-//       ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
-//       ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
-//       (useFrustum ? "*" : ""),
-//       chunkCount, ((cex - csx)*(cey - csy)),
-//       csx, cex, csy, cey, shapeCount, selectedTrapIndex,
-//       zoom, xrot, yrot, zrot );
-//       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
-//     } else {
-//       snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d",
-//               static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
-//               csx, cex, csy, cey, shapeCount);
-//     }
-//     adapter->setDebugStr(mapDebugStr);
-#endif
 	}
 }
 
 /// Draws traps, and cleans up after drawing the main 3D view.
 
 void Map::postDraw() {
-	getRender()->drawTraps();
-
-	glDisable( GL_SCISSOR_TEST );
-
-	// cancel mouse-based map movement (middle button)
-	if ( mouseRot ) {
-		setXRot( 0 );
-		setYRot( 0 );
-		setZRot( 0 );
-	}
-	if ( mouseZoom ) {
-		mouseZoom = false;
-		setZoomIn( false );
-		setZoomOut( false );
-	}
-}
-
-/// Draws the complete 3D view.
-
-void Map::draw() {
-	getRender()->draw();
-
 	if ( adapter->isMouseIsMovingOverMap() ) {
 		// find the map coordinates (must be done after drawing is complete)
 		Location *pos = NULL;
@@ -873,10 +837,20 @@ void Map::draw() {
 			cursorMapY = pos->y;
 			cursorMapZ = pos->z;
 		}
-	}
+	}	
 
-	if ( DEBUG_MOUSE_POS || ( settings->isGridShowing() && gridEnabled ) ) {
-		getRender()->willDrawGrid();
+	glDisable( GL_SCISSOR_TEST );
+
+	// cancel mouse-based map movement (middle button)
+	if ( mouseRot ) {
+		setXRot( 0 );
+		setYRot( 0 );
+		setZRot( 0 );
+	}
+	if ( mouseZoom ) {
+		mouseZoom = false;
+		setZoomIn( false );
+		setZoomOut( false );
 	}
 }
 
@@ -1111,36 +1085,40 @@ void Map::initMapView( bool ignoreRot ) {
 	glTranslatef( startx, starty, startz );
 
 	if ( quakesEnabled ) {
-		Uint32 now = SDL_GetTicks();
-
-		// is it time to quake again?
-		if ( now >= nextQuakeStartTime ) {
-			nextQuakeStartTime =
-			  now +
-			  QUAKE_DELAY +
-			  Util::dice( QUAKE_DELAY / 2 );
-			// start a quake unless this is the very first time
-			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
-			if ( quakeStartTime == now ) adapter->writeLogMessage( _( "A tremor shakes the earth..." ) );
-		}
-
-		// is it quaking now?
-		if ( now - quakeStartTime < QUAKE_DURATION ) {
-			if ( now - lastQuakeTick >= QUAKE_TICK_FREQ ) {
-				quakeOffsX = Util::roll( 0.0f, 3.0f * MUL );
-				quakeOffsY = Util::roll( 0.0f, 3.0f * MUL );
-				lastQuakeTick = now;
-			}
-		} else {
-			if ( quakeOnce ) {
-				quakeOnce = false;
-				quakesEnabled = false;
-			}
-			quakeOffsX = quakeOffsY = 0;
-		}
-
-		glTranslatef( quakeOffsX, quakeOffsY, 0 );
+		quake();
 	}
+}
+
+void Map::doQuake() {
+	Uint32 now = SDL_GetTicks();
+
+	// is it time to quake again?
+	if ( now >= nextQuakeStartTime ) {
+		nextQuakeStartTime =
+		  now +
+		  QUAKE_DELAY +
+		  Util::dice( QUAKE_DELAY / 2 );
+		// start a quake unless this is the very first time
+		quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
+		if ( quakeStartTime == now ) adapter->writeLogMessage( _( "A tremor shakes the earth..." ) );
+	}
+
+	// is it quaking now?
+	if ( now - quakeStartTime < QUAKE_DURATION ) {
+		if ( now - lastQuakeTick >= QUAKE_TICK_FREQ ) {
+			quakeOffsX = Util::roll( 0.0f, 3.0f * MUL );
+			quakeOffsY = Util::roll( 0.0f, 3.0f * MUL );
+			lastQuakeTick = now;
+		}
+	} else {
+		if ( quakeOnce ) {
+			quakeOnce = false;
+			quakesEnabled = false;
+		}
+		quakeOffsX = quakeOffsY = 0;
+	}
+
+	glTranslatef( quakeOffsX, quakeOffsY, 0 );
 }
 
 /// Trigger a quake (the screen shivers for a while).

@@ -923,6 +923,8 @@ protected:
 		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );
 	}
 	
+	void doQuake();
+	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 

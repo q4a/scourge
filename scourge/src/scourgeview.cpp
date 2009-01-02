@@ -107,10 +107,8 @@ void ScourgeView::drawView() {
 		scourge->getSession()->getCutscene()->updateCameraPosition();
 	}
 
-	scourge->getMap()->preDraw();
 	scourge->getMap()->draw();
-	scourge->getMap()->postDraw();
-
+	
 	drawMapInfos();
 
 	drawWeather();
