@@ -128,7 +128,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	x = y = 0;
 	mapx = mapy = 0.0f;
 	floorOnly = false;
-	useShadow = false;
 	//alwaysCenter = true;
 
 	debugX = debugY = debugZ = -1;
@@ -194,7 +193,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	}
 
 	lightMapChanged = true;
-	colorAlreadySet = false;
 	selectedDropTarget = NULL;
 
 	helper = NULL;
@@ -337,7 +335,6 @@ void Map::reset() {
 	x = y = 0;
 	mapx = mapy = 0.0f;
 	floorOnly = false;
-	useShadow = false;
 	//alwaysCenter = true;
 	debugX = debugY = debugZ = -1;
 	mapChanged = true;
@@ -399,7 +396,6 @@ void Map::reset() {
 		}
 	}
 	lightMapChanged = true;
-	colorAlreadySet = false;
 	selectedDropTarget = NULL;
 
 	if ( helper ) helper->reset();
@@ -544,7 +540,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 					for ( int xp = 0; xp < MAP_UNIT; xp += CAVE_CHUNK_SIZE ) {
 						xpos2 = static_cast<float>( ( chunkX - chunkStartX ) * MAP_UNIT + xp + chunkOffsetX ) * MUL;
 						ypos2 = static_cast<float>( ( chunkY - chunkStartY ) * MAP_UNIT - CAVE_CHUNK_SIZE + yp + chunkOffsetY ) * MUL;
-						setupPosition( 0, CAVE_CHUNK_SIZE, 0, xpos2, ypos2, 0, pos[0][CAVE_CHUNK_SIZE][0]->shape, NULL, NULL, NULL );
+						setupPosition( 0, CAVE_CHUNK_SIZE, 0, xpos2, ypos2, 0, pos[0][CAVE_CHUNK_SIZE][0], NULL );
 					}
 				}
 			}
@@ -626,7 +622,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 							xpos2 = static_cast<float>( ( chunkX - chunkStartX ) * MAP_UNIT + xp + chunkOffsetX ) * MUL;
 							ypos2 = static_cast<float>( ( chunkY - chunkStartY ) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY ) * MUL;
 
-							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
+							setupPosition( posX, posY, 0, xpos2, ypos2, 0, itemPos[posX][posY], NULL );
 						}
 
 						checkUnderRoof();
@@ -638,7 +634,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 								zpos2 = static_cast<float>( zp ) * MUL;
 
 								setupPosition( posX, posY, zp - effect[posX][posY][zp]->z, xpos2, ypos2, zpos2,
-								               effect[posX][posY][zp]->effect->getShape(), NULL, NULL, effect[posX][posY][zp] );
+								               NULL, effect[posX][posY][zp] );
 							}
 
 							Location *location = pos[posX][posY][zp];
@@ -694,7 +690,7 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 		}
 
 		//if( !useFrustum || frustum->ShapeInFrustum( xpos2, ypos2, zpos2, shape ) ) {
-		setupPosition( posX, posY, posZ, xpos2, ypos2, zpos2, location->shape, location->item, location->creature, NULL );
+		setupPosition( posX, posY, posZ, xpos2, ypos2, zpos2, location, NULL );
 		//}
 	}
 
@@ -702,9 +698,8 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 
 void Map::setupPosition( int posX, int posY, int posZ,
                          float xpos2, float ypos2, float zpos2,
-                         Shape *shape, RenderedItem *item, RenderedCreature *creature,
-                         EffectLocation *effect,
-                         bool itemPos ) {
+                         Location *pos,
+                         EffectLocation *effect ) {
 
 	// This really doesn't make a difference unfortunately.
 	//if(!isOnScreen(posX, posY, posZ)) return;
@@ -712,117 +707,46 @@ void Map::setupPosition( int posX, int posY, int posZ,
 	GLuint name;
 	name = posX + ( MAP_WIDTH * ( posY ) ) + ( MAP_WIDTH * MAP_DEPTH * posZ );
 	
-	Location *pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+	// lights
 	if( pos && ( ( pos->shape && pos->shape->getLightEmitter() ) || ( pos->creature == adapter->getPlayer() ) ) ) {
-		lights[lightCount].xpos = xpos2;
-		lights[lightCount].ypos = ypos2;
-		lights[lightCount].zpos = zpos2;
-		lights[lightCount].shape = shape;
-		lights[lightCount].item = item;
-		lights[lightCount].creature = creature;
-		lights[lightCount].effect = NULL;
-		lights[lightCount].name = name;
-		lights[lightCount].pos = pos;
-		lights[lightCount].inFront = false;
-		lights[lightCount].x = posX;
-		lights[lightCount].y = posY;
-		lights[lightCount].light = true;
-		if( creature ) {
-			creatureLightMap[creature] = &(lights[lightCount]);
+		lights[lightCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, true, false );
+		if( pos->creature ) {
+			creatureLightMap[pos->creature] = &(lights[lightCount]);
 		}
 		lightCount++;		
 	}
 
 	// special effects
-	if ( ( effect || ( creature && creature->isEffectOn() ) ) && !shape->isRoof() ) {
-		damage[damageCount].xpos = xpos2;
-		damage[damageCount].ypos = ypos2;
-		damage[damageCount].zpos = zpos2;
-		damage[damageCount].shape = shape;
-		damage[damageCount].item = item;
-		damage[damageCount].creature = creature;
-		damage[damageCount].effect = effect;
-		damage[damageCount].name = name;
-		damage[damageCount].pos = pos;
-		damage[damageCount].inFront = false;
-		damage[damageCount].x = posX;
-		damage[damageCount].y = posY;
-		damage[damageCount].light = false;
-		if ( creature ) {
-			creatureEffectMap[creature] = &( damage[damageCount] );
+	if ( effect || ( pos && pos->creature && pos->creature->isEffectOn() && !pos->shape->isRoof() ) ) {
+		damage[damageCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, true );
+		if ( pos && pos->creature ) {
+			creatureEffectMap[pos->creature] = &( damage[damageCount] );
 		}
 		damageCount++;
 
 		// don't draw shape if it's an area effect
-		if ( !creature ) return;
+		if ( !( pos && pos->creature ) ) return;
 	}
 
-	if ( shape->isRoof() ) {
-		roof[roofCount].xpos = xpos2;
-		roof[roofCount].ypos = ypos2;
-		roof[roofCount].zpos = zpos2;
-		roof[roofCount].shape = shape;
-		roof[roofCount].item = item;
-		roof[roofCount].creature = creature;
-		roof[roofCount].effect = NULL;
-		roof[roofCount].name = name;
-		roof[roofCount].pos = pos;
-		roof[roofCount].inFront = false;
-		roof[roofCount].x = posX;
-		roof[roofCount].y = posY;
-		roof[roofCount].light = false;
+	// roofs
+	if ( pos->shape->isRoof() ) {
+		roof[roofCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
 		roofCount++;
-	} else if ( shape->isStencil() ) {
-		stencil[stencilCount].xpos = xpos2;
-		stencil[stencilCount].ypos = ypos2;
-		stencil[stencilCount].zpos = zpos2;
-		stencil[stencilCount].shape = shape;
-		stencil[stencilCount].item = item;
-		stencil[stencilCount].creature = creature;
-		stencil[stencilCount].effect = NULL;
-		stencil[stencilCount].name = name;
-		stencil[stencilCount].pos = pos;
-		stencil[stencilCount].inFront = false;
-		stencil[stencilCount].x = posX;
-		stencil[stencilCount].y = posY;
-		stencil[stencilCount].light = false;
+	} else if ( pos->shape->isStencil() ) {
+		// walls
+		stencil[stencilCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
 		stencilCount++;
-	} else if ( !shape->isStencil() ) {
-		if ( shape->drawFirst() ) {
-			other[otherCount].xpos = xpos2;
-			other[otherCount].ypos = ypos2;
-			other[otherCount].zpos = zpos2;
-			other[otherCount].shape = shape;
-			other[otherCount].item = item;
-			other[otherCount].creature = creature;
-			other[otherCount].effect = NULL;
-			other[otherCount].name = name;
-			other[otherCount].pos = pos;
-			other[otherCount].inFront = false;
-			other[otherCount].x = posX;
-			other[otherCount].y = posY;
-			other[otherCount].light = false;
-			if ( creature ) {
-				creatureMap[creature] = &( other[otherCount] );
-			}
-			otherCount++;
+	} else if( pos->shape->isBlended() ) {
+		// torches, teleporters, etc.
+		later[laterCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		laterCount++;
+	} else {
+		// items, creatures, etc.
+		other[otherCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		if ( pos->creature ) {
+			creatureMap[pos->creature] = &( other[otherCount] );
 		}
-		if ( shape->drawLater() ) {
-			later[laterCount].xpos = xpos2;
-			later[laterCount].ypos = ypos2;
-			later[laterCount].zpos = zpos2;
-			later[laterCount].shape = shape;
-			later[laterCount].item = item;
-			later[laterCount].creature = creature;
-			later[laterCount].effect = NULL;
-			later[laterCount].name = name;
-			later[laterCount].pos = pos;
-			later[laterCount].inFront = false;
-			later[laterCount].x = posX;
-			later[laterCount].y = posY;
-			later[laterCount].light = false;
-			laterCount++;
-		}
+		otherCount++;
 	}
 }
 
@@ -972,7 +896,7 @@ bool Map::isValidPosition( int x, int y, int z ) {
 /// This is so that even if the wall extends below the player the entire
 /// length has the same characteristics.
 
-void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCount ) {
+void Map::sortShapes( RenderedLocation *playerDrawLater, RenderedLocation *shapes, int shapeCount ) {
 	GLdouble mm[16];
 	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
 	GLdouble pm[16];
@@ -988,10 +912,10 @@ void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCo
 	GLdouble objX, objY;
 	for ( int i = 0; i < shapeCount; i++ ) {
 		// skip square shapes the first time around
-		if ( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+		if ( shapes[i].pos->shape->getWidth() == shapes[i].pos->shape->getDepth() ) {
 			shapes[i].inFront = false;
 			continue;
-		} else if ( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
+		} else if ( shapes[i].pos->shape->getWidth() > shapes[i].pos->shape->getDepth() ) {
 			objX = playerDrawLater->xpos;
 			objY = shapes[i].ypos;
 			yset.insert( toint( shapes[i].ypos ) );
@@ -1004,7 +928,7 @@ void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCo
 	}
 	// now process square shapes: if their x or y lies on a wall-line, they're transparent
 	for ( int i = 0; i < shapeCount; i++ ) {
-		if ( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+		if ( shapes[i].pos->shape->getWidth() == shapes[i].pos->shape->getDepth() ) {
 			if ( xset.find( toint( shapes[i].xpos ) ) != xset.end() ) {
 				objX = shapes[i].xpos;
 				objY = playerDrawLater->ypos;
@@ -1918,13 +1842,13 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 
 		// instead of repainting the entire map, just update this creature's rendering info
 		// resortShapes = mapChanged = true;
-		DrawLater *later = creatureMap[creature];
+		RenderedLocation *later = creatureMap[creature];
 		if ( later ) {
-			if ( later->creature != creature ) {
+			if ( later->pos->creature != creature ) {
 				cerr << "*** Error: creatureMap is damaged!!! creature=" << creature->getName() << endl;
-				cerr << "\tlocation: shape=" << ( later->shape ? later->shape->getName() : "null" ) <<
-				" item=" << ( later->item ? later->item->getItemName() : "null" ) <<
-				" creature=" << ( later->creature ? later->creature->getName() : "null" ) <<
+				cerr << "\tlocation: shape=" << ( later->pos->shape ? later->pos->shape->getName() : "null" ) <<
+				" item=" << ( later->pos->item ? later->pos->item->getItemName() : "null" ) <<
+				" creature=" << ( later->pos->creature ? later->pos->creature->getName() : "null" ) <<
 				endl;
 				//creatureMap.clear();
 				resortShapes = mapChanged = true;
@@ -1961,7 +1885,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				later->y = posY;
 
 				// also move the creature's effect
-				DrawLater *effect = creatureEffectMap[creature];
+				RenderedLocation *effect = creatureEffectMap[creature];
 				if ( effect ) {
 					effect->xpos = xpos2;
 					effect->ypos = ypos2;
@@ -1971,7 +1895,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				}
 				
 				// also move the creature's light
-				DrawLater *light = creatureLightMap[creature];
+				RenderedLocation *light = creatureLightMap[creature];
 				if( light ) {
 					light->xpos = xpos2;
 					light->ypos = ypos2;

@@ -25,6 +25,7 @@
 #include <sstream>
 #include "location.h"
 #include "maprenderhelper.h"
+#include "renderedlocation.h"
 
 class CFrustum;
 class RenderedProjectile;
@@ -69,21 +70,6 @@ public:
 	Texture tex;
 };
 
-
-/// Stores the state and contents of a level map location for later drawing.
-
-struct DrawLater {
-	float xpos, ypos, zpos;
-	Shape *shape;
-	RenderedCreature *creature;
-	RenderedItem *item;
-	EffectLocation *effect;
-	GLuint name;
-	Location *pos;
-	bool inFront;
-	int x, y;
-	bool light;
-};
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
 #define POS_CACHE_WIDTH    5
@@ -166,9 +152,6 @@ private:
 	// FIXME: either make this value adjustable or find a faster way to blast it onscreen?
 	static const int SHADE_SIZE = 20;
 
-	bool useShadow;
-
-	bool colorAlreadySet;
 	Location *selectedDropTarget;
 
 	int accessMap[MAP_CHUNKS_X][MAP_CHUNKS_Y];
@@ -233,7 +216,7 @@ private:
 	int weather;
 
 	std::set<Location*> gates, teleporters;
-	std::map<RenderedCreature*, DrawLater*> creatureMap, creatureEffectMap, creatureLightMap;
+	std::map<RenderedCreature*, RenderedLocation*> creatureMap, creatureEffectMap, creatureLightMap;
 
 public:
 	bool useFrustum;
@@ -887,15 +870,15 @@ protected:
 
 	ChunkInfo chunks[100];
 	int chunkCount;
-	DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
+	RenderedLocation later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
 	int laterCount, stencilCount, otherCount, damageCount, roofCount, lightCount;
 	std::map<Uint32, EffectLocation*> currentEffectsMap;
 
 	void setupShapes( bool forGround, bool forWater, int *csx = NULL, int *cex = NULL, int *csy = NULL, int *cey = NULL );
 	void setupPosition( int posX, int posY, int posZ,
 	                    float xpos2, float ypos2, float zpos2,
-	                    Shape *shape, RenderedItem *item, RenderedCreature *creature,
-	                    EffectLocation *effect, bool itemPos = false );
+	                    Location *pos,
+	                    EffectLocation *effect );
 	void setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY );
 	Shape *isWall( int x, int y, int z );
 
@@ -926,8 +909,8 @@ protected:
 
 	void removeCurrentEffects();
 
-	void sortShapes( DrawLater *playerDrawLater,
-	                 DrawLater *shapes,
+	void sortShapes( RenderedLocation *playerDrawLater,
+	                 RenderedLocation *shapes,
 	                 int shapeCount );
 
 	void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
@@ -939,7 +922,6 @@ protected:
 		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 
 		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );
 	}
-	
 	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };

@@ -70,10 +70,7 @@ public:
 
 	void draw();
 
-	inline bool drawFirst() {
-		return false;
-	}
-	inline bool drawLater() {
+	inline bool isBlended() {
 		return true;
 	}
 	inline void setupBlending() {

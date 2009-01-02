@@ -59,13 +59,13 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 		                                     map->getZRot() );
 	}
 
-	if ( shape->drawLater() ) {
+	if ( shape->isBlended() ) {
 		glEnable( GL_BLEND );
 		glDepthMask( GL_FALSE );
 		shape->setupBlending();
 	}
 	shape->draw();
-	if ( shape->drawLater() ) {
+	if ( shape->isBlended() ) {
 		shape->endBlending();
 		glDisable( GL_BLEND );
 		glDepthMask( GL_TRUE );

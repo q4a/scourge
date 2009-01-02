@@ -182,12 +182,8 @@ public:
 		return index;
 	}
 
-	/**
-	  Draw after all the others?
-	  */
-	virtual bool drawFirst() = 0;
 	// if true, the next two functions are called
-	virtual bool drawLater() = 0;
+	virtual bool isBlended() = 0;
 	virtual void setupBlending() = 0;
 	virtual void endBlending() = 0;
 

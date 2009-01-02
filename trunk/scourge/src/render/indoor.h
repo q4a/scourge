@@ -44,7 +44,6 @@ protected:
 	virtual void drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
 	
 private:		
-	void drawRoofsIndoor();
 	void drawFrontWallsAndWater();
 	void drawWaterIndoor();
 	void drawIndoorShadows();

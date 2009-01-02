@@ -129,9 +129,8 @@ public:
 	void draw();
 	void outline( float r, float g, float b );
 
-	bool drawFirst();
 	// if true, the next two functions are called
-	bool drawLater();
+	bool isBlended();
 	void setupBlending();
 	void endBlending();
 	inline float getWindValue() {

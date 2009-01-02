@@ -169,11 +169,8 @@ public:
 		return zrot;
 	}
 
-	inline bool drawFirst() {
-		return true;
-	}
 	// if true, the next two functions are called
-	inline bool drawLater() {
+	inline bool isBlended() {
 		return false;
 	}
 	//inline void setupBlending() { glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA); }

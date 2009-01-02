@@ -49,25 +49,25 @@ void Outdoor::drawMap() {
 
 	// draw the creatures/objects/doors/etc.
 	for ( int i = 0; i < map->otherCount; i++ ) {
-		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].creature ) ||
-		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].item ) ) ) {
-			map->colorAlreadySet = true;
+		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
+		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
+			RenderedLocation::colorAlreadySet = true;
 			setupDropLocationColor();
 		}
-		doDrawShape( &map->other[i] );
+		map->other[i].draw();
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 		// draw simple shadow in outdoors
-		if ( map->other[i].creature ) {
+		if ( map->other[i].pos->creature ) {
 			setupShadowColor();
-			drawGroundTex( map->outdoorShadow, map->other[i].creature->getX() + 0.25f, map->other[i].creature->getY() + 0.25f, ( map->other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].creature->getShape()->getDepth() * 0.7f );
-		} else if ( map->other[i].pos && map->other[i].shape && map->other[i].shape->isOutdoorShadow() ) {
+			drawGroundTex( map->outdoorShadow, map->other[i].pos->creature->getX() + 0.25f, map->other[i].pos->creature->getY() + 0.25f, ( map->other[i].pos->creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].pos->creature->getShape()->getDepth() * 0.7f );
+		} else if ( map->other[i].pos && map->other[i].pos->shape && map->other[i].pos->shape->isOutdoorShadow() ) {
 			setupShadowColor();
-			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].shape->getWidth() / 2.0f ) + ( map->other[i].shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].shape->getDepth() / 2.0f ), map->other[i].shape->getWidth() * 1.7f, map->other[i].shape->getDepth() * 1.7f );
+			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
 		}
 	}
 
-	for ( int i = 0; i < map->stencilCount; i++ ) doDrawShape( &( map->stencil[i] ) );
+	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
 
 	// draw the effects
 	glEnable( GL_TEXTURE_2D );
@@ -92,13 +92,13 @@ void Outdoor::drawMap() {
 
 void Outdoor::drawEffects() {
 	for ( int i = 0; i < map->laterCount; i++ ) {
-		map->later[i].shape->setupBlending();
-		doDrawShape( &map->later[i] );
-		map->later[i].shape->endBlending();
+		map->later[i].pos->shape->setupBlending();
+		map->later[i].draw();
+		map->later[i].pos->shape->endBlending();
 	}
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	for ( int i = 0; i < map->damageCount; i++ ) {
-		doDrawShape( &map->damage[i], 1 );
+		map->damage[i].draw();
 	}
 }
 
@@ -127,8 +127,8 @@ void Outdoor::drawRoofs() {
 //  glEnable( GL_BLEND );
 //  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->roofCount; i++ ) {
-			( ( GLShape* )map->roof[i].shape )->setAlpha( map->roofAlpha );
-			doDrawShape( &map->roof[i] );
+			( ( GLShape* )map->roof[i].pos->shape )->setAlpha( map->roofAlpha );
+			map->roof[i].draw();
 		}
 //    glDisable( GL_BLEND );
 	}
