@@ -18,6 +18,7 @@
 #include "renderedcreature.h"
 #include "effect.h"
 #include "map.h"
+#include "mapsettings.h"
 #include "glshape.h"
 #include <map>
 
@@ -113,7 +114,7 @@ bool RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 			cerr << "Warning: can't find place for creature." << endl;
 		} else {
 			moveTo( fx, fy, 0 );
-			setSelXY( fx, fy );
+			if( levelMap->getSettings()->isPlayerEnabled() ) setSelXY( fx, fy );
 			levelMap->setCreature( fx, fy, 0, this );
 			if ( finalX ) *finalX = fx;
 			if ( finalY ) *finalY = fy;

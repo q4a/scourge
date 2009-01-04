@@ -607,6 +607,9 @@ bool Creature::follow( Creature *leader ) {
 /// Sets where to move the creature. Returns true if the move is possible, false otherwise.
 
 bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible ) {
+	
+	if( !session->getParty() || !session->getParty()->getPlayer() ) return false;
+	
 	bool ignoreParty = session->getParty()->getPlayer() == this && !session->getGameAdapter()->inTurnBasedCombat();
 	int oldSelX = selX;
 	int oldSelY = selY;

@@ -51,16 +51,18 @@ void Outdoor::drawMap() {
 	
 	// find the player
 	if ( map->resortShapes ) {
-		RenderedLocation *player = NULL;
-		for ( int i = 0; i < map->otherCount; i++ ) {
-			if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
-				player = &map->other[i];
-				break;
+		if ( map->helper->isShapeSortingEnabled() ) {
+			RenderedLocation *player = NULL;
+			for ( int i = 0; i < map->otherCount; i++ ) {
+				if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
+					player = &map->other[i];
+					break;
+				}
 			}
-		}
-		if( player ) {
-			if( map->roofAlpha >= 1 ) {
-				sortShapesOutdoors( player, map->roof, map->roofCount );
+			if( player ) {
+				if( map->roofAlpha >= 1 ) {
+					sortShapesOutdoors( player, map->roof, map->roofCount );
+				}
 			}
 		}
 		map->resortShapes = false;
