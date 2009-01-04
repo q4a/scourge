@@ -255,7 +255,7 @@ public:
 	inline bool getCurrentlyUnderRoof() {
 		return isCurrentlyUnderRoof;
 	}
-
+	
 	/// Which weather will the map have?
 	inline void setWeather( int i ) {
 		weather = i;
@@ -909,14 +909,8 @@ protected:
 
 	void removeCurrentEffects();
 
-	void sortShapes( RenderedLocation *playerDrawLater,
-	                 RenderedLocation *shapes,
-	                 int shapeCount );
-
 	void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
 	void getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos );
-
-	bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
 		
 	inline float distance( Location *pos1, Location *pos2 ) {
 		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 

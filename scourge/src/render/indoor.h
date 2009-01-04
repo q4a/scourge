@@ -52,6 +52,8 @@ private:
 	void drawLightsWalls();
 	bool isFacingLight( Surface *surface, Location *p, Location *lightPos );
 	void drawFlatFloor();	
+	void sortShapes( RenderedLocation *playerDrawLater, RenderedLocation *shapes, int shapeCount );
+	bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
 	
 	
 	DECLARE_NOISY_OPENGL_SUPPORT();

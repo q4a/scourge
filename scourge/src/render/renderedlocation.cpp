@@ -76,6 +76,8 @@ void RenderedLocation::reset() {
   name = 0;
   x = y = 0;
   inFront = light = effectMode = false;
+  roofAlpha = 1.0f;
+  roofAlphaUpdate = 0;
 }
 
 void RenderedLocation::set( Map *map, 
@@ -482,4 +484,36 @@ void RenderedLocation::outlineVirtuals() {
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
 	}	
+}
+
+#define MIN_ROOF_ALPHA 0.25f
+
+void RenderedLocation::updateRoofAlpha() {
+	if( !( map && getRoofAlphaUpdate() ) ) return;
+	
+	if ( map->getCurrentlyUnderRoof() || inFront ) {
+		float min = inFront ? MIN_ROOF_ALPHA : 0;
+		if ( roofAlpha > min ) {
+			roofAlpha -= 0.05f;
+		} else {
+			roofAlpha = min;
+		}
+	} else {
+		float max = inFront ? MIN_ROOF_ALPHA : 1.0f;
+		if ( roofAlpha < max ) {
+			roofAlpha += 0.05f;
+		} else {
+			roofAlpha = max;
+		}
+	}
+}
+
+bool RenderedLocation::getRoofAlphaUpdate() {
+	Uint32 now = SDL_GetTicks();
+	if ( now - roofAlphaUpdate > 25 ) {
+		roofAlphaUpdate = now;
+		return true;
+	} else {
+		return false;
+	}
 }

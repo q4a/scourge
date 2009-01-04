@@ -28,6 +28,10 @@ class EffectLocation;
 /// Stores the state and contents of a level map location for later drawing.
 
 class RenderedLocation {
+private:
+	float roofAlpha;
+	Uint32 roofAlphaUpdate;
+	
 public:
 	
 	// todo: make these private w. accessors
@@ -60,6 +64,9 @@ public:
             bool effectMode );
 	
 	void draw();
+	void updateRoofAlpha();
+	
+	inline float getRoofAlpha() { return roofAlpha; }
 	
 protected:
 	void findOccludedSides( bool *sides );
@@ -75,6 +82,7 @@ protected:
 	void drawEffect();
 	void drawMousePosition();
 	void outlineVirtuals();
+	bool getRoofAlphaUpdate();	
 };
 
 #endif /*RENDEREDLOCATION_H_*/
