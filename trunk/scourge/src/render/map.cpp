@@ -708,7 +708,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
 	name = posX + ( MAP_WIDTH * ( posY ) ) + ( MAP_WIDTH * MAP_DEPTH * posZ );
 	
 	// lights
-	if( pos && ( ( pos->shape && pos->shape->getLightEmitter() ) || ( pos->creature == adapter->getPlayer() ) ) ) {
+	if( pos && ( ( pos->shape && pos->shape->getLightEmitter() ) || ( settings->isPlayerEnabled() && pos->creature == adapter->getPlayer() ) ) ) {
 		lights[lightCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, true, false );
 		if( pos->creature ) {
 			creatureLightMap[pos->creature] = &(lights[lightCount]);
@@ -748,6 +748,8 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		}
 		otherCount++;
 	}
+	
+	// cerr << "later=" << laterCount << " stencil=" << stencilCount << " other=" << otherCount << " damage=" << damageCount << " roof=" << roofCount << " light=" << lightCount << endl;
 }
 
 /// Current camera zoom as a percentage value.
