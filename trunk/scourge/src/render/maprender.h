@@ -67,8 +67,8 @@ public:
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 	}
 
-	virtual inline void setupBlendedWallColor() {
-		glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+	virtual inline void setupBlendedWallColor( float alpha=0.45f ) {
+		glColor4f( 1.0f, 1.0f, 1.0f, alpha );
 	}
 
 	virtual inline void setupDropLocationColor() {

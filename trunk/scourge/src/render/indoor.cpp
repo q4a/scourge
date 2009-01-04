@@ -70,7 +70,7 @@ void Indoor::drawMap() {
 
 		if ( map->floorTexWidth == 0 && map->resortShapes ) {
 			if ( map->helper->isShapeSortingEnabled() ) {
-				map->sortShapes( playerDrawLater, map->stencil, map->stencilCount );
+				sortShapes( playerDrawLater, map->stencil, map->stencilCount );
 			}
 			map->resortShapes = false;
 		}
@@ -529,4 +529,79 @@ void Indoor::drawFlatFloor() {
 	glTexCoord2f( ( map->getX() + map->mapViewWidth ) / MUL * ratio, ( map->getY() + map->mapViewDepth ) / MUL * ratio );
 	glVertex3f( w, d, 0.0f );
 	glEnd();
+}
+
+/// Sorts the shapes in respect to the player's position.
+
+/// Since rooms are rectangular, we can do this hack... a wall horizontal
+/// wall piece will use the player's x coord. and its y coord.
+/// A vertical one will use its X and the player's Y.
+/// This is so that even if the wall extends below the player the entire
+/// length has the same characteristics.
+
+void Indoor::sortShapes( RenderedLocation *playerDrawLater, RenderedLocation *shapes, int shapeCount ) {
+	GLdouble mm[16];
+	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
+	GLdouble pm[16];
+	glGetDoublev( GL_PROJECTION_MATRIX, pm );
+	GLint vp[4];
+	glGetIntegerv( GL_VIEWPORT, vp );
+
+	GLdouble playerWinX, playerWinY, playerWinZ;
+	gluProject( playerDrawLater->xpos, playerDrawLater->ypos, 0, mm, pm, vp, &playerWinX, &playerWinY, &playerWinZ );
+
+	std::set< int > xset, yset;
+	std::map< string, bool > cache;
+	GLdouble objX, objY;
+	for ( int i = 0; i < shapeCount; i++ ) {
+		// skip square shapes the first time around
+		if ( shapes[i].pos->shape->getWidth() == shapes[i].pos->shape->getDepth() ) {
+			shapes[i].inFront = false;
+			continue;
+		} else if ( shapes[i].pos->shape->getWidth() > shapes[i].pos->shape->getDepth() ) {
+			objX = playerDrawLater->xpos;
+			objY = shapes[i].ypos;
+			yset.insert( toint( shapes[i].ypos ) );
+		} else {
+			objX = shapes[i].xpos;
+			objY = playerDrawLater->ypos;
+			xset.insert( toint( shapes[i].xpos ) );
+		}
+		shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp );
+	}
+	// now process square shapes: if their x or y lies on a wall-line, they're transparent
+	for ( int i = 0; i < shapeCount; i++ ) {
+		if ( shapes[i].pos->shape->getWidth() == shapes[i].pos->shape->getDepth() ) {
+			if ( xset.find( toint( shapes[i].xpos ) ) != xset.end() ) {
+				objX = shapes[i].xpos;
+				objY = playerDrawLater->ypos;
+			} else if ( yset.find( toint( shapes[i].ypos ) ) != yset.end() ) {
+				objX = playerDrawLater->xpos;
+				objY = shapes[i].ypos;
+			} else {
+				continue;
+			}
+			shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp );
+		}
+	}
+}
+
+/// Is there a shape in front of the player, obscuring him/her?
+
+bool Indoor::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp ) {
+
+	GLdouble wallWinX, wallWinY, wallWinZ;
+	bool b;
+	char tmp[80];
+
+	snprintf( tmp, 80, "%f,%f", objX, objY );
+	string key = tmp;
+	if ( cache->find( key ) == cache->end() ) {
+		gluProject( objX, objY, 0, mm, pm, vp, &wallWinX, &wallWinY, &wallWinZ );
+		b = ( wallWinY < playerWinY );
+		( *cache )[ key ] = b;
+	} else {
+		b = ( *cache )[ key ];
+	}
+	return b;
 }

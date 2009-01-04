@@ -26,6 +26,8 @@
 #include "glshape.h"
 #include "../debug.h"
 
+#include "../scourge.h"
+
 using namespace std;
 
 // ###### MS Visual C++ specific ###### 
@@ -46,6 +48,23 @@ GLfloat waterTexY = 0;
 void Outdoor::drawMap() {
 	// draw the ground
 	renderFloor();
+	
+	// find the player
+	if ( map->resortShapes ) {
+		RenderedLocation *player = NULL;
+		for ( int i = 0; i < map->otherCount; i++ ) {
+			if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
+				player = &map->other[i];
+				break;
+			}
+		}
+		if( player ) {
+			if( map->roofAlpha >= 1 ) {
+				sortShapesOutdoors( player, map->roof, map->roofCount );
+			}
+		}
+		map->resortShapes = false;
+	}
 
 	// draw the creatures/objects/doors/etc.
 	for ( int i = 0; i < map->otherCount; i++ ) {
@@ -66,26 +85,62 @@ void Outdoor::drawMap() {
 			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
 		}
 	}
-
+	
+	// doors
 	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
 
 	// draw the effects
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
+	
 	drawRoofs();
 
+	glEnable( GL_BLEND );
 	glDepthMask( GL_FALSE );
 	drawEffects();
-
+		
 	// draw the fog of war or shading
 #if DEBUG_MOUSE_POS == 0
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
-		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
+//		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
 	}
 #endif
 
 	glDisable( GL_BLEND );
 	glDepthMask( GL_TRUE );
+}
+
+void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount ) {
+	GLdouble mm[16];
+	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
+	GLdouble pm[16];
+	glGetDoublev( GL_PROJECTION_MATRIX, pm );
+	GLint vp[4];
+	glGetIntegerv( GL_VIEWPORT, vp );
+
+	GLdouble playerWinX, playerWinY, playerWinZ;
+	gluProject( player->xpos, player->ypos, 0, mm, pm, vp, &playerWinX, &playerWinY, &playerWinZ );
+	
+	GLdouble objWinX, objWinY, objWinZ;
+	for( int i = 0; i < shapeCount; i++ ) {
+		if( shapes[i].pos->creature || shapes[i].pos->item || shapes[i].pos->shape->getHeight() < 10 ) continue;
+		
+		int count = 0;
+		gluProject( shapes[i].xpos, shapes[i].ypos, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
+		if( objWinY < playerWinY ) count++;
+		
+		gluProject( shapes[i].xpos + shapes[i].pos->shape->getWidth() * MUL, shapes[i].ypos, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
+		if( objWinY < playerWinY ) count++;
+		
+		gluProject( shapes[i].xpos, shapes[i].ypos + shapes[i].pos->shape->getDepth() * MUL, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
+		if( objWinY < playerWinY ) count++;
+		
+		gluProject( shapes[i].xpos + shapes[i].pos->shape->getWidth() * MUL, shapes[i].ypos + shapes[i].pos->shape->getDepth() * MUL, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
+		if( objWinY < playerWinY ) count++;
+
+		// 3 points of a 4 point base has to be lower than the player for the roof element to be see-thru
+		shapes[i].inFront = ( count >= 3 );
+	}
 }
 
 /// Draws creature effects and damage counters.
@@ -105,32 +160,24 @@ void Outdoor::drawEffects() {
 /// Draws the roofs on outdoor levels, including the fading.
 
 void Outdoor::drawRoofs() {
-	// draw the roofs
-	Uint32 now = SDL_GetTicks();
-	if ( now - map->roofAlphaUpdate > 25 ) {
-		map->roofAlphaUpdate = now;
-		if ( map->isCurrentlyUnderRoof ) {
-			if ( map->roofAlpha > 0 ) {
-				map->roofAlpha -= 0.05f;
-			} else {
-				map->roofAlpha = 0;
-			}
-		} else {
-			if ( map->roofAlpha < 1 ) {
-				map->roofAlpha += 0.05f;
-			} else {
-				map->roofAlpha = 1;
-			}
-		}
-	}
 	if ( map->roofAlpha > 0 ) {
-//  glEnable( GL_BLEND );
-//  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->roofCount; i++ ) {
-			( ( GLShape* )map->roof[i].pos->shape )->setAlpha( map->roofAlpha );
+			
+			map->roof[i].updateRoofAlpha();
+			
+			if( map->roof[i].getRoofAlpha() <= 0 ) continue;
+			
+			if( map->roof[i].getRoofAlpha() < 1 ) {
+				glEnable( GL_BLEND );
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( map->roof[i].getRoofAlpha() );
+				RenderedLocation::colorAlreadySet = true;
+			} else {
+				glDisable( GL_BLEND );
+				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( 1.0f );
+			}
 			map->roof[i].draw();
 		}
-//    glDisable( GL_BLEND );
 	}
 }
 
