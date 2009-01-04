@@ -115,7 +115,7 @@ void C3DSShape::normalizeModel() {
 					snprintf( tmp, 80, "%d,%d", i, index );
 					string key = tmp;
 					if ( seenIndexes.find( key ) == seenIndexes.end() ) {
-						if ( getZRot3d() != 0 ) {
+						if ( getZRot3d() == 1 ) {
 							n = g_3DModel.pObject[i].pVerts[ index ].x;
 							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].y;
 							g_3DModel.pObject[i].pVerts[ index ].y = n;
@@ -123,6 +123,26 @@ void C3DSShape::normalizeModel() {
 							n = g_3DModel.pObject[i].pNormals[ index ].x;
 							g_3DModel.pObject[i].pNormals[ index ].x = g_3DModel.pObject[i].pNormals[ index ].y;
 							g_3DModel.pObject[i].pNormals[ index ].y = n;
+						} else if ( getZRot3d() == 2 ) {
+							g_3DModel.pObject[i].pVerts[ index ].x *= -1;
+							g_3DModel.pObject[i].pVerts[ index ].y *= -1;
+
+							g_3DModel.pObject[i].pNormals[ index ].x *= -1;
+							g_3DModel.pObject[i].pNormals[ index ].y *= -1;
+						} else if ( getZRot3d() == 3 ) {
+							n = g_3DModel.pObject[i].pVerts[ index ].x;
+							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].y;
+							g_3DModel.pObject[i].pVerts[ index ].y = n;
+
+							n = g_3DModel.pObject[i].pNormals[ index ].x;
+							g_3DModel.pObject[i].pNormals[ index ].x = g_3DModel.pObject[i].pNormals[ index ].y;
+							g_3DModel.pObject[i].pNormals[ index ].y = n;
+							
+							g_3DModel.pObject[i].pVerts[ index ].x *= -1;
+							g_3DModel.pObject[i].pVerts[ index ].y *= -1;
+
+							g_3DModel.pObject[i].pNormals[ index ].x *= -1;
+							g_3DModel.pObject[i].pNormals[ index ].y *= -1;							
 						} else if ( getYRot3d() != 0 ) {
 							n = g_3DModel.pObject[i].pVerts[ index ].x;
 							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].z;
