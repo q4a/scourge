@@ -102,7 +102,7 @@ void Outdoor::drawMap() {
 	// draw the fog of war or shading
 #if DEBUG_MOUSE_POS == 0
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
-//		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
+		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
 	}
 #endif
 
