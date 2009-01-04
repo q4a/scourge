@@ -121,7 +121,7 @@ public:
 		return false;
 	}
 	inline virtual bool isShapeSortingEnabled() {
-		return false;
+		return true;
 	}
 	inline virtual bool isIndoors() {
 		return false;
