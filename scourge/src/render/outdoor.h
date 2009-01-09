@@ -64,7 +64,7 @@ private:
 	void addHighVariation( int ref, int z );
 	bool isRockTexture( int x, int y );
 	bool isLakebedTexture( int x, int y );
-	bool Outdoor::isAllHigh( int x, int y, int w, int h );
+	bool isAllHigh( int x, int y, int w, int h );
 	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
 	void sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount );
 };
