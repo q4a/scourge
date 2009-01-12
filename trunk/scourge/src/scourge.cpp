@@ -3327,7 +3327,7 @@ bool Scourge::isLevelShaded() {
 }
 
 void Scourge::printToConsole( const char *s ) {
-	if ( squirrelLabel ) {
+	if ( squirrelLabel && squirrelWin ) {
 		if ( squirrelWin->isVisible() ) {
 			//cerr << s << endl;
 			string q( s );

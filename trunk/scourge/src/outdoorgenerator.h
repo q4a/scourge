@@ -62,7 +62,6 @@ public:
 	void addVillage( Map *map, ShapePalette *shapePal );
 	void flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy );
 	void flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
-	void flattenChunk( Map *map, Sint16 mapX, Sint16 mapY, float height = 0 );
 	void addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape );
 
 	// -=K=-: just a wrapper class of static-sized-bool-array;
@@ -97,7 +96,7 @@ protected:
 	void createRoads( Map *map, ShapePalette *shapePal, int x, int y );
 	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName );
 	void addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, int ref, float angle = 0.0f, bool horiz = false, bool vert = false );
-	void createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY );
+	void createHouses( Map *map, ShapePalette *shapePal, int x, int y );
 	bool buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h );
 	bool createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h );
 	virtual void generate( Map *map, ShapePalette *shapePal );
