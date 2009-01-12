@@ -299,6 +299,16 @@ function drawHouseNew( x, y, w, h ) {
  * Called whenever a shape is added to the map.
  */
 function shapeAdded( shape_name, x, y, z ) {
+	if( shape_name == "P_ROOF_2x2" ) {
+		scourgeGame.getMission().setMapEffect( x + 8, y - 14, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 9, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+	}
 //	if( shape_name == "HOUSE_1_TOP" ) {
 //		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
 //	                                       "EFFECT_SMOKE",												// effect 
