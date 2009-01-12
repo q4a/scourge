@@ -193,10 +193,24 @@ void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, 
 
 	glPushName( name );
 	setupShapeColor();
-	shape->drawHeightMap( map->ground, posX, posY );
+	shape->setGround( true );
+	shape->draw();
+	shape->setGround( false );
 	glPopName();
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );
+//	
+//	GLuint name;
+//	// encode this shape's map location in its name
+//	name = posX + ( MAP_WIDTH * posY );
+//	glTranslatef( xpos2, ypos2, 0.0f );
+//
+//	glPushName( name );
+//	setupShapeColor();
+//	shape->drawHeightMap( map->ground, posX, posY );
+//	glPopName();
+//
+//	glTranslatef( -xpos2, -ypos2, 0.0f );
 }
 
 void Outdoor::doRenderFloor() {

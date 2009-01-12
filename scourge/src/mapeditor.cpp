@@ -733,7 +733,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 						if ( shape->getIgnoreHeightMap() && !shape->isRoof() ) {
 							for ( int sx = mapx; sx < mapx + shape->getWidth(); sx++ ) {
 								for ( int sy = mapy - shape->getDepth(); sy <= mapy; sy++ ) {
-									flattenChunk( sx, sy );
+									scourge->getMap()->flattenChunk( sx, sy );
 								}
 							}
 						}
@@ -878,20 +878,8 @@ void MapEditor::removeTrap( Sint16 mapx, Sint16 mapy ) {
 	if ( trapIndex > -1 ) scourge->getMap()->removeTrap( trapIndex );
 }
 
-void MapEditor::flattenChunk( Sint16 mapX, Sint16 mapY ) {
-	int chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( mapY - MAP_OFFSET ) / MAP_UNIT;
-	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
-		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
-			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
-			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
-			scourge->getMap()->setGroundHeight( xx, yy, 0 );
-		}
-	}
-}
-
 void MapEditor::addWall( Sint16 mapx, Sint16 mapy, int dir ) {
-	flattenChunk( mapx, mapy );
+	scourge->getMap()->flattenChunk( mapx, mapy );
 	switch ( dir ) {
 	case Constants::NORTH: addNSWall( mapx, mapy, 1 ); break;
 	case Constants::SOUTH: addNSWall( mapx, mapy, -1 ); break;
@@ -902,7 +890,7 @@ void MapEditor::addWall( Sint16 mapx, Sint16 mapy, int dir ) {
 }
 
 void MapEditor::addDoor( Sint16 mapx, Sint16 mapy, int dir ) {
-	flattenChunk( mapx, mapy );
+	scourge->getMap()->flattenChunk( mapx, mapy );
 	switch ( dir ) {
 	case Constants::NORTH: addNSDoor( mapx, mapy, 1 ); break;
 	case Constants::SOUTH: addNSDoor( mapx, mapy, -1 ); break;
@@ -1237,7 +1225,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
 
 void MapEditor::addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk ) {
 	if ( scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
-	if ( doFlattenChunk ) flattenChunk( mapx, mapy );
+	if ( doFlattenChunk ) scourge->getMap()->flattenChunk( mapx, mapy );
 	scourge->getMap()->
 	setFloorPosition( mapx, mapy + MAP_UNIT,
 	                  scourge->getShapePalette()->

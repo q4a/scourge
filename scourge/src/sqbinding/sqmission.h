@@ -74,9 +74,11 @@ public:
 	static int _isFree( HSQUIRRELVM vm );
 	static int _isFreeOutdoors( HSQUIRRELVM vm );
 	static int _setMapPosition( HSQUIRRELVM vm );
+	static int _setMapFloorPosition( HSQUIRRELVM vm );
 	static int _setMapEffect( HSQUIRRELVM vm );
 	static int _removeMapEffect( HSQUIRRELVM vm );
 	static int _removeMapPosition( HSQUIRRELVM vm );
+	static int _flattenChunk( HSQUIRRELVM vm );
 	static int _getShape( HSQUIRRELVM vm );
 
 	static int _getHeightMap( HSQUIRRELVM vm );

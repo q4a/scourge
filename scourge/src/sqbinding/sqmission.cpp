@@ -48,6 +48,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },
 	{ "void", "isFreeOutdoors", SqMission::_isFreeOutdoors, 0, 0, "Same as isFree plus it discounts lakes, high elevations and where a floor shape is set." },
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
+	{ "void", "setMapFloorPosition", SqMission::_setMapFloorPosition, 0, 0, "Set a floor shape at this map position. Shape is given by its name." },
+	{ "void", "flattenChunk", SqMission::_flattenChunk, 0, 0, "Flatten a chunk on an outdoors map." },	
 	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
 	{ "void", "removeMapEffect", SqMission::_removeMapEffect, 0, 0, "Remove an effect at this map position." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
@@ -197,6 +199,23 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
+	return 0;
+}
+
+int SqMission::_setMapFloorPosition( HSQUIRRELVM vm ) {
+	GET_STRING( shapeName, 255 )
+	GET_INT( y )
+	GET_INT( x )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	SqBinding::sessionRef->getMap()->flattenChunk( x, y );
+	SqBinding::sessionRef->getMap()->setFloorPosition( x, y, shape );
+	return 0;
+}
+
+int SqMission::_flattenChunk( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getMap()->flattenChunk( x, y );
 	return 0;
 }
 

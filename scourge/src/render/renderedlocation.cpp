@@ -123,9 +123,9 @@ void RenderedLocation::draw() {
 		drawShape();
 	}
 
-#if DEBUG_MOUSE_POS == 1
-	drawMousePosition();
-#endif
+	if( ( map->inMapEditor() && map->isGridEnabled() ) || DEBUG_MOUSE_POS ) {
+		drawMousePosition();
+	}
 
 	outlineVirtuals();
 	glPopMatrix();
@@ -398,7 +398,7 @@ void RenderedLocation::drawShape() {
 }
 
 void RenderedLocation::drawMousePosition() {
-	if ( pos && pos->shape && !useShadow && ( ( pos->item ) || ( pos->creature ) || pos->shape->isInteractive() ) ) {
+	if ( pos && pos->shape && !useShadow && ( pos->item || pos->creature || pos->shape->isInteractive() || pos->shape->isRoof() ) ) {
 		glDisable( GL_DEPTH_TEST );
 		glDepthMask( GL_FALSE );
 		glDisable( GL_CULL_FACE );

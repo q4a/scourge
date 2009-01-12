@@ -244,8 +244,8 @@ bool OutdoorGenerator::isShapeOnFloor( Shape *shape, int x, int y, Map *map ) {
 	return false;
 }
 
-#define VILLAGE_WIDTH 7
-#define VILLAGE_HEIGHT 7
+#define VILLAGE_WIDTH 15
+#define VILLAGE_HEIGHT 15
 
 // start party in the middle of the cross-roads
 void OutdoorGenerator::getPartyStartingLocation( int *xx, int *yy ) {
@@ -260,9 +260,10 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	removeLakes( map, x, y );
 
 	createRoads( map, shapePal, x, y );
+	
+	createHouses( map, shapePal, x, y );
 
-	createHouses( map, shapePal, x, y, roadX, roadY - MAP_UNIT );
-
+	/*
 	// the rest of the village is in squirrel
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageX", x );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageY", y );
@@ -297,6 +298,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 
 	// clean up free space
 	//deleteFreeSpaceMap( map, shapePal );
+	 */
 }
 
 void OutdoorGenerator::addNpcs( Map *map, ShapePalette *shapePal, int villageX, int villageY, int villageWidth, int villageHeight ) {
@@ -344,15 +346,39 @@ void OutdoorGenerator::createNpc( Map *map, ShapePalette *shapePal, int x, int y
 void OutdoorGenerator::removeLakes( Map *map, int x, int y ) {
 	for ( int vx = x; vx < x + VILLAGE_WIDTH * MAP_UNIT; vx++ ) {
 		for ( int vy = y; vy < y + VILLAGE_HEIGHT * MAP_UNIT; vy++ ) {
-			flattenChunk( map, vx, vy, Util::roll( 0.3f, 3 ) );
+			map->flattenChunk( vx, vy, Util::roll( 0, 1 ) );
 		}
 	}
 }
 
 #define HOUSE_SHAPES_SIZE 3
 int HOUSE_SHAPES[][2] = { { 2, 2 }, { 2, 3 }, { 3, 2 } };
-void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY ) {
-
+void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, int y ) {
+	int coords[4];
+	for( int vx = 0; vx < VILLAGE_WIDTH; vx += 4 ) {
+		for( int vy = 1; vy <= VILLAGE_HEIGHT; vy += 4 ) {
+			coords[0] = x + vx * MAP_UNIT;
+			coords[1] = y + vy * MAP_UNIT;
+			coords[2] = 3 * MAP_UNIT;
+			coords[3] = 3 * MAP_UNIT;
+			shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawHouseNew", 4, coords );
+		}
+	}
+	
+	//Êany floors created should be kept
+	for( int vx = 0; vx < VILLAGE_WIDTH; vx++ ) {
+		for( int vy = 0; vy < VILLAGE_HEIGHT; vy++ ) {
+			int hx = x + vx * MAP_UNIT;
+			int hy = y + vy * MAP_UNIT;
+			Shape *shape = map->getFloorPosition( hx, hy );
+			if( shape ) {
+				keepFloor[ hx + MAP_WIDTH * hy ] = (GLShape*)shape;
+			}
+		}
+	}	
+	
+	
+/*
 	// set rooms
 	doorCount = 0;
 	roomCount = 0;
@@ -382,6 +408,7 @@ void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, in
 		i = HOUSE_SHAPES[ n ];
 		buildHouse( map, shapePal, x, y, ix, ry + 1, i[0], i[1]  );
 	}
+*/	
 }
 
 bool OutdoorGenerator::buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h ) {
@@ -440,7 +467,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 		for ( int vy = 0; vy < h; vy++ ) {
 			int xp = x + vx * MAP_UNIT;
 			int yp = y + vy * MAP_UNIT;
-			flattenChunk( map, xp, yp );
+			map->flattenChunk( xp, yp );
 		}
 	}
 
@@ -450,76 +477,6 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 	coords[2] = w * MAP_UNIT;
 	coords[3] = h * MAP_UNIT;
 	shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawHouse", 4, coords );
-
-	/*
-	int door = Util::dice( 4 );
-	for( int vx = 0; vx < w; vx++ ) {
-	 for( int vy = 0; vy < h; vy++ ) {
-	  int xp = x + vx * MAP_UNIT;
-	  int yp = y + vy * MAP_UNIT;
-	  GLShape *shape = shapePal->findShapeByName( "ROOM_FLOOR_TILE" );
-	  addFloor( map, shapePal, xp, yp, true, shape );
-	  keepFloor[ xp + MAP_WIDTH * yp ] = shape;
-	 
-	  // draw the walls
-	  if( vx == 0 ) {
-	   if( vy == 0 ) {
-	    map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "CORNER" ) );
-	    if( door == 0 || door == 3 ) {
-	     addEWDoor( map, shapePal, xp, yp );
-	    } else {
-	     map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
-	    }
-	    if( door == 1 || door == 2 ) {
-	     addNSDoor( map, shapePal, xp + 2, yp + 2 );
-	    } else {
-	     map->setPosition( xp + 2, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
-	    }
-	    map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NW" ) );
-	   } else if( vy == h - 1 ) {
-	    map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER" ) );
-	    map->setPosition( xp, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
-	    if( door == 3 || door == 0 ) {
-	     addNSDoor( map, shapePal, xp + 2, yp + MAP_UNIT );
-	    } else {
-	     map->setPosition( xp + 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
-	    }
-	    map->setPosition( xp - 2, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SW" ) );
-	   } else {
-	    map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
-	    map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_W" ) );
-	   }
-	  } else if( vx == w - 1 ) {
-	   if( vy == 0 ) {
-	    map->setPosition( xp + MAP_UNIT - 2, yp + 2, 0, shapePal->findShapeByName( "CORNER" ) );
-	    if( door == 2 || door == 1 ) {
-	     addEWDoor( map, shapePal, xp + MAP_UNIT - 2, yp );
-	    } else {
-	     map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
-	    }
-	    map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
-	    map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NE" ) );
-	   } else if( vy == h - 1 ) {
-	    map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER" ) );
-	    map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
-	    map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
-	    map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SE" ) );
-	   } else {
-	    map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
-	    map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_E" ) );
-	   }
-	  } else if( vx > 0 && vx < w - 1 ) {
-	   if( vy == 0 ) {
-	    map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
-	    map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_N" ) );
-	   } else if( vy == h - 1 ) {
-	    map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
-	    map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_S" ) );
-	   }
-	  }
-	 }
-	}
-	*/
 	return true;
 }
 
@@ -542,31 +499,41 @@ void OutdoorGenerator::addNSDoor( Map *map, ShapePalette *shapePal, int x, int y
 }
 
 void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int y ) {
-	roadX = x + ( 1 + Util::dice( VILLAGE_WIDTH - 1 ) ) * MAP_UNIT;
-	for ( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
-		int vy = y + ( i * MAP_UNIT );
-		if ( i == 0 ) {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270, 0 );
-		} else if ( i == VILLAGE_WIDTH - 1 ) {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
-		} else {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90, 0 );
+	for( int yy = 4; yy <= VILLAGE_HEIGHT; yy += 4 ) {
+		int vy = y + ( yy * MAP_UNIT );
+		for ( int i = 0; i < VILLAGE_WIDTH; i++ ) {
+			int vx = x + ( i * MAP_UNIT );
+			if ( i == 0 ) {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END );
+			} else if ( i >= VILLAGE_WIDTH - 1 ) {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
+			} else {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET );
+			}
 		}
 	}
-
-	roadY = y + ( 1 + Util::dice( VILLAGE_HEIGHT - 1 ) ) * MAP_UNIT;
-	for ( int i = 0; i < VILLAGE_WIDTH; i++ ) {
-		int vx = x + ( i * MAP_UNIT );
-		if ( vx == roadX ) {
-			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_CROSS );
-		} else if ( i == 0 ) {
-			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_END );
-		} else if ( i == VILLAGE_WIDTH - 1 ) {
-			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
-		} else {
-			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET );
+	bool foundCrossRoad = false;
+	for( int xx = 3; xx <= VILLAGE_WIDTH - 1; xx += 4 ) {
+		int vx = x + ( xx * MAP_UNIT );
+		for ( int i = 1; i <= VILLAGE_HEIGHT; i++ ) {
+			int vy = y + ( i * MAP_UNIT );
+			if ( i == 1 ) {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270 );
+			} else if ( i % 4 == 0 ) {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_CROSS );
+				if( !foundCrossRoad ) {
+					// needed for party start location
+					roadX = vx + MAP_UNIT / 2;
+					roadY = vy - MAP_UNIT / 2;
+					foundCrossRoad = true;
+				}
+			} else if ( i >= VILLAGE_HEIGHT  ) {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
+			} else {
+				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90 );
+			}
 		}
-	}
+	}	
 }
 
 void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, int ref, float angle, bool horiz, bool vert ) {
@@ -609,20 +576,8 @@ void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, S
 
 void OutdoorGenerator::addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape ) {
 	if ( map->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
-	if ( doFlattenChunk ) flattenChunk( map, mapx, mapy );
+	if ( doFlattenChunk ) map->flattenChunk( mapx, mapy );
 	map->setFloorPosition( mapx, mapy + MAP_UNIT, shape );
-}
-
-void OutdoorGenerator::flattenChunk( Map *map, Sint16 mapX, Sint16 mapY, float height ) {
-	int chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( mapY - MAP_OFFSET ) / MAP_UNIT;
-	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
-		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
-			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
-			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
-			map->setGroundHeight( xx, yy, height );
-		}
-	}
 }
 
 void OutdoorGenerator::flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy ) {

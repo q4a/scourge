@@ -601,8 +601,8 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 					if ( forGround || forWater ) {
 						shape = floorPositions[posX][posY];
 						if ( shape ) {
-							//cerr << "pos=" << posX << "," << posY << endl;
-							//cerr << "\tfloor shape=" << shape->getName() << endl;
+//							cerr << "pos=" << posX << "," << posY << endl;
+//							cerr << "\tfloor shape=" << shape->getName() << endl;
 							xpos2 = static_cast<float>( ( chunkX - chunkStartX ) * MAP_UNIT + xp + chunkOffsetX ) * MUL;
 							ypos2 = static_cast<float>( ( chunkY - chunkStartY ) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY ) * MUL;
 
@@ -3422,4 +3422,16 @@ void Map::setRoofShowing( bool b ) {
 
 void Map::refresh() {
 	mapChanged = lightMapChanged = resortShapes = true;
+}
+
+void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
+	int chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
+	int chunkY = ( mapY - MAP_OFFSET ) / MAP_UNIT;
+	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
+		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			setGroundHeight( xx, yy, height );
+		}
+	}
 }
