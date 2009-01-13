@@ -59,7 +59,7 @@ public:
 	}
 
 	void getPartyStartingLocation( int *xx, int *yy );
-	void addVillage( Map *map, ShapePalette *shapePal );
+	void addVillage( Map *map, ShapePalette *shapePal, int *x, int *y );
 	void flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy );
 	void flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
 	void addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape );
