@@ -88,22 +88,26 @@ function getVillageNpcType() {
 	return npcs[ c ];
 }
 
+trees <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21" ];
+function getTree() {
+	c <- ( rand() * trees.len().tofloat() / RAND_MAX ).tointeger();
+	return trees[c];
+}
+
 /**
  * Add some random shapes throughout the town. Currently it's trees only but it could
  * contain other random shapes.
  */
 function villageShapes() {
-	shapes <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21" ];
 	i <- 0;
-	c <- 0;
 	x <- 0;
 	y <- 0;
 	for( i = 0; i < 20; i++ ) {
 		x = villageX + ( rand() * villageWidth.tofloat() / RAND_MAX ).tointeger();
 		y = villageY + ( rand() * villageHeight.tofloat() / RAND_MAX ).tointeger();
-		c = ( rand() * shapes.len().tofloat() / RAND_MAX ).tointeger();
-		if( scourgeGame.getMission().isFreeOutdoors( x, y, 0, shapes[c] ) ) {
-			scourgeGame.getMission().setMapPosition( x, y, 0, shapes[c] );
+		tree <- getTree();
+		if( scourgeGame.getMission().isFreeOutdoors( x, y, 0, tree ) ) {
+			scourgeGame.getMission().setMapPosition( x, y, 0, tree );
 		}
 	}
 }
@@ -181,28 +185,46 @@ function drawHouseZ( x, y ) {
 	drawHousePart( x, y + MAP_UNIT * 2, 1, 1, 0 );
 	drawHousePart( x + MAP_UNIT, y + MAP_UNIT * 2, 1, 3, 0 );
 	drawHousePart( x + MAP_UNIT * 2, y, 1, 1, 180 );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + MAP_UNIT * 2, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 9, y + MAP_UNIT * 2 - 10, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 2, y - 10, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 5, y + 4, 0, getTree() );
 }
 
 function drawHouseL( x, y ) {
 	drawHousePart( x, y + 2 * MAP_UNIT, 1, 3, 0 );
 	drawHousePart( x + 1 * MAP_UNIT, y, 2, 1, 180 );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 5, y + MAP_UNIT - 7, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 8, y + MAP_UNIT * 2 - 8, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 19, y + MAP_UNIT * 2 - 12, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 30, y + MAP_UNIT * 2 - 8, 0, getTree() );
 }
 
 function drawHouseL2( x, y ) {
 	drawHousePart( x + 2 * MAP_UNIT, y + 2 * MAP_UNIT, 1, 3, 0 );
 	drawHousePart( x, y + 2 * MAP_UNIT, 2, 1, 0 );
+	scourgeGame.getMission().setMapPosition( x, y - 8, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 11, y - 2, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 22, y - 8, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 23, y + 11, 0, getTree() );
 }
 
 function drawHouseSquare( x, y ) {
 	drawHousePart( x + MAP_UNIT, y + 2 * MAP_UNIT, 2, 2, 0 );
 	drawHousePart( x + MAP_UNIT, y, 1, 1, 90 );
 	drawHousePart( x, y, 1, 1, 0 );
+	scourgeGame.getMission().setMapPosition( x, y + MAP_UNIT - 7, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y - 7, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 7, y + MAP_UNIT * 2, 0, getTree() );	
 }
 
 function drawHouseSquare2( x, y ) {
 	drawHousePart( x, y + 1 * MAP_UNIT, 2, 2, 0 );
 	drawHousePart( x + MAP_UNIT, y + 2 * MAP_UNIT, 1, 1, 270 );
 	drawHousePart( x + 2 * MAP_UNIT, y + 2 * MAP_UNIT, 1, 1, 180 );
+	scourgeGame.getMission().setMapPosition( x, y + MAP_UNIT * 2 - 7, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + MAP_UNIT - 7, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 5, y - 10, 0, getTree() );
 }
 
 house_functions <- [ drawHouseZ, drawHouseL, drawHouseL2, drawHouseSquare, drawHouseSquare2 ];
@@ -305,46 +327,45 @@ function shapeAdded( shape_name, x, y, z ) {
 	                                       3, 3, 																	// base size
 	                                       0,																			// delay
 	                                       true,																	// forever 
-	                                       0.5, 0, 9, 														// offset
+	                                       0.5, 0, 7, 														// offset
 	                                       0.2, 0.2, 0.5 														// color
 																				);
+	} else if( shape_name == "P_ROOF_2x1_180" ) {
+		scourgeGame.getMission().setMapEffect( x + 17, y - 15, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 7, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+	} else if( shape_name == "P_ROOF_2x1" ) {
+		scourgeGame.getMission().setMapEffect( x + 11, y - 7, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 7, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+	} else if( shape_name == "P_ROOF_1x3" ) {
+		scourgeGame.getMission().setMapEffect( x + 4, y - 14, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 7, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+		scourgeGame.getMission().setMapEffect( x + 13, y - 40, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 7, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);		
 	}
-//	if( shape_name == "HOUSE_1_TOP" ) {
-//		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
-//	                                       "EFFECT_SMOKE",												// effect 
-//	                                       3, 3, 																	// base size
-//	                                       0,																			// delay
-//	                                       true,																	// forever 
-//	                                       0.5, 0, 15, 														// offset
-//	                                       0.2, 0.2, 0.5 														// color
-//																				);
-//	} else if( shape_name == "HOUSE_2_BASE" ) {
-//		scourgeGame.getMission().setMapEffect( x - 1, y - 17, z + 9, // map location 
-//		                                       	"EFFECT_FIRE",  												// effect 
-//				                                       1, 1, 																	// base size
-//				                                       0,																			// delay
-//				                                       true,																	// forever 
-//				                                       0.3, -0.7, 0, 														// offset
-//				                                       0.5, 0.3, 0.1 														// color
-//																							);		
-//		scourgeGame.getMission().setMapEffect( x - 1, y - 7, z + 9, // map location 
-//		                                       "EFFECT_FIRE",  												// effect 
-//				                                       1, 1, 																	// base size
-//				                                       0,																			// delay
-//				                                       true,																	// forever 
-//				                                       0.3, -0.7, 0, 														// offset
-//				                                       0.5, 0.3, 0.1 														// color
-//																							);
-//	} else if( shape_name == "HOUSE_2_TOP" ) {
-//		scourgeGame.getMission().setMapEffect( x + 16, y + - 7, z - 2, // map location 
-//				                                       "EFFECT_SMOKE",  												// effect 
-//				                                       4, 4, 																	// base size
-//				                                       0,																			// delay
-//				                                       true,																	// forever 
-//				                                       0, 0, 18, 														// offset
-//				                                       0.3, 0.1, 0.3 														// color
-//																							);		
-//	}
 }
 
 /**
