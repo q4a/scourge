@@ -642,6 +642,15 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 								seenPos.insert( location );
 								//if( location && location->x == posX && location->y == posY && location->z == zp ) {
 								setupLocation( location, drawSide, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY );
+								
+								// make sure no roof is shown w/o its walls
+								for( set<Location*>::iterator e = location->drawTogether.begin(); e != location->drawTogether.end(); ++e ) {
+									Location *under = *e;
+									if( under && seenPos.find( under ) == seenPos.end() ) {
+										seenPos.insert( under );
+										setupLocation( under, drawSide, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY );
+									}
+								}
 							}
 						}
 					}
@@ -1419,6 +1428,15 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	for ( int xp = 0; xp < shape->getWidth(); xp++ ) {
 		for ( int yp = 0; yp < shape->getDepth(); yp++ ) {
 			if ( !shape->isInside( xp, yp ) ) continue;
+			
+			// draw roof and walls together
+			if( shape->isRoof() ) {
+				Location *under = pos[x + xp][y - yp][z - 1];
+				if( under ) {
+					p->drawTogether.insert( under );
+				}
+			}
+			
 			for ( int zp = 0; zp < shape->getHeight(); zp++ ) {
 
 				// I _hate_ c++... moving secret doors up causes array roll-over problems.
@@ -1429,7 +1447,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 				// If these are not true, we're leaking memory.
 				//assert( pos[x + xp][y - yp][z + zp] == p ||
 				//!( pos[x + xp][y - yp][z + zp] ) );
-
+				
 				if ( zp && pos[x + xp][y - yp][z + zp] && pos[x + xp][y - yp][z + zp] != p ) {
 					cerr << "error setting position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) <<
 					" shape=" << p->shape->getName() << endl;

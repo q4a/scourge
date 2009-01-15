@@ -61,7 +61,8 @@ void Outdoor::drawMap() {
 			}
 			if( player ) {
 				if( map->roofAlpha >= 1 ) {
-					sortShapesOutdoors( player, map->roof, map->roofCount );
+					//sortShapesOutdoors( player, map->roof, map->roofCount );
+					//sortShapesOutdoors( player, map->other, map->otherCount );
 				}
 			}
 		}
@@ -70,6 +71,8 @@ void Outdoor::drawMap() {
 
 	// draw the creatures/objects/doors/etc.
 	for ( int i = 0; i < map->otherCount; i++ ) {
+		if( map->other[i].inFront ) continue;
+		
 		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
 		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
 			RenderedLocation::colorAlreadySet = true;
@@ -96,7 +99,25 @@ void Outdoor::drawMap() {
 	glEnable( GL_BLEND );
 	
 	drawRoofs();
-
+	
+	// todo: if enabling house blending reuse drawroofs() code, it's the same for other[] shapes
+//	for ( int i = 0; i < map->otherCount; i++ ) {
+//			if( !map->other[i].inFront ) continue;
+//			map->other[i].updateRoofAlpha();
+//						
+//			if( map->other[i].getRoofAlpha() <= 0 ) continue;
+//			
+//			if( map->other[i].getRoofAlpha() < 1 ) {
+//				glEnable( GL_BLEND );
+//				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//				( ( GLShape* )map->other[i].pos->shape )->setAlpha( map->other[i].getRoofAlpha() );
+//				RenderedLocation::colorAlreadySet = true;
+//			} else {
+//				glDisable( GL_BLEND );
+//				( ( GLShape* )map->other[i].pos->shape )->setAlpha( 1.0f );
+//			}
+//			map->other[i].draw();
+//	}
 	glEnable( GL_BLEND );
 	glDepthMask( GL_FALSE );
 	drawEffects();
@@ -125,7 +146,7 @@ void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *sh
 	
 	GLdouble objWinX, objWinY, objWinZ;
 	for( int i = 0; i < shapeCount; i++ ) {
-		if( shapes[i].pos->creature || shapes[i].pos->item || shapes[i].pos->shape->getHeight() < 10 ) continue;
+		if( shapes[i].pos->creature || shapes[i].pos->item || shapes[i].pos->shape->getHeight() < 8 ) continue;
 		
 		int count = 0;
 		gluProject( shapes[i].xpos, shapes[i].ypos, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );

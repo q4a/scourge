@@ -104,6 +104,7 @@ public:
 	float moveX, moveY, moveZ;
 	int texIndex;
 	std::set<Surface*> lightFacingSurfaces;
+	std::set<Location*> drawTogether;
 
 	Location() {
 		this->creature = NULL;
