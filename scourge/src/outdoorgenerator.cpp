@@ -361,15 +361,23 @@ void OutdoorGenerator::removeLakes( Map *map, int x, int y ) {
 int HOUSE_SHAPES[][2] = { { 2, 2 }, { 2, 3 }, { 3, 2 } };
 void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, int y ) {
 	int coords[4];
-	for( int vx = 0; vx < VILLAGE_WIDTH; vx += 4 ) {
-		for( int vy = 1; vy <= VILLAGE_HEIGHT; vy += 4 ) {
-			coords[0] = x + vx * MAP_UNIT;
-			coords[1] = y + vy * MAP_UNIT;
-			coords[2] = 3 * MAP_UNIT;
-			coords[3] = 3 * MAP_UNIT;
-			shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawHouseNew", 4, coords );
-		}
-	}
+	coords[0] = x;
+	coords[1] = y;
+	coords[2] = VILLAGE_WIDTH;
+	coords[3] = VILLAGE_HEIGHT;
+	shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawVillage", 4, coords );
+	
+	
+//	int coords[4];
+//	for( int vx = 0; vx < VILLAGE_WIDTH; vx += 4 ) {
+//		for( int vy = 1; vy <= VILLAGE_HEIGHT; vy += 4 ) {
+//			coords[0] = x + vx * MAP_UNIT;
+//			coords[1] = y + vy * MAP_UNIT;
+//			coords[2] = 3 * MAP_UNIT;
+//			coords[3] = 3 * MAP_UNIT;
+//			shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawHouseNew", 4, coords );
+//		}
+//	}
 	
 	//Êany floors created should be kept
 	for( int vx = 0; vx < VILLAGE_WIDTH; vx++ ) {
