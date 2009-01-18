@@ -115,7 +115,7 @@ function villageShapes() {
 // draw parts of a house
 // NOTE: make sure roof-s are placed on the map, after walls! (so they're drawn together)
 function drawHousePart( postfix, roof_postfix, x, y, w, h, angle ) {
-	print( "postfix=" + postfix + " roof=" + roof_postfix + "\n" );
+	//print( "postfix=" + postfix + " roof=" + roof_postfix + "\n" );
 	i <- 0;
 	t <- 0;
 	if( w == 1 && h == 3 && angle == 0 ) {
@@ -187,14 +187,14 @@ function drawHousePart( postfix, roof_postfix, x, y, w, h, angle ) {
 HOUSE_POSTFIX <- [ "", "_WOOD" ];
 function getHousePostfix() {
 	house_postfix <- HOUSE_POSTFIX[ ( rand() * HOUSE_POSTFIX.len().tofloat() / RAND_MAX ).tointeger() ];
-	print( "Using house type: " + house_postfix + "\n" );
+	//print( "Using house type: " + house_postfix + "\n" );
 	return house_postfix;
 }
 
 ROOF_POSTFIX <- [ "", "_SLATE" ];
 function getRoofPostfix() {
 	roof_postfix <- ROOF_POSTFIX[ ( rand() * ROOF_POSTFIX.len().tofloat() / RAND_MAX ).tointeger() ];
-	print( "Using roof type: " + roof_postfix + "\n" );
+	//print( "Using roof type: " + roof_postfix + "\n" );
 	return roof_postfix;
 }
 
@@ -255,9 +255,50 @@ function drawHouseSquare2( x, y ) {
 }
 
 house_functions <- [ drawHouseZ, drawHouseL, drawHouseL2, drawHouseSquare, drawHouseSquare2 ];
-function drawHouseNew( x, y, w, h ) {
+function drawRandomHouse( x, y ) {
 	n <- ( rand() * house_functions.len().tofloat() / RAND_MAX ).tointeger();
 	house_functions[ n ].call( this, x, y );
+}
+
+function drawArmorShop( x, y ) {
+	print("Making armor shop!\n");
+	drawHouseZ( x, y );
+	scourgeGame.getMission().setMapPosition( x + 3, y + MAP_UNIT, 7, "SIGN_ARMOR" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_ARMOR_180" );
+}
+
+function drawWeaponShop( x, y ) {
+	print("Making weapon shop!\n");
+	drawHouseL( x, y );
+	scourgeGame.getMission().setMapPosition( x - 4, y + MAP_UNIT * 2 - 3, 7, "SIGN_WEAPON_90" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_WEAPON_180" );
+}
+
+function drawVillage( x, y, village_width, village_height ) {
+	vx <- 0;
+	vy <- 0;
+	xp <- 0;
+	yp <- 0;
+	
+	armor_x <- ( rand() * 4.0 / RAND_MAX ).tointeger();
+	armor_y <- ( rand() * 4.0 / RAND_MAX ).tointeger();
+	print( "amor shop at " + armor_x.tostring() + "," + armor_y.tostring() + "\n" );
+	weapon_x <- ( rand() * 4.0 / RAND_MAX ).tointeger();
+	weapon_y <- ( rand() * 4.0 / RAND_MAX ).tointeger();
+	print( "weapon shop at " + weapon_x.tostring() + "," + weapon_y.tostring() + "\n" );
+	for( vx = 0; vx < 4; vx++ ) {
+		for( vy = 0; vy < 4; vy++ ) {
+			xp = x + vx * 4 * MAP_UNIT;
+			yp = y + (( vy * 4 ) + 1 ) * MAP_UNIT;
+			if( vx == armor_x && vy == armor_y ) {
+				drawArmorShop( xp, yp )
+			} else if( vx == weapon_x && vy == weapon_y ) {
+				drawWeaponShop( xp, yp )
+			} else {
+				drawRandomHouse( xp, yp );
+			}
+		}
+	}	
 }
 
 /** 
