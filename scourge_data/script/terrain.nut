@@ -265,6 +265,15 @@ function drawArmorShop( x, y ) {
 	drawHouseZ( x, y );
 	scourgeGame.getMission().setMapPosition( x + 3, y + MAP_UNIT, 7, "SIGN_ARMOR" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_ARMOR_180" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y - 8, 0, "BAR" );	
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 5, y - 8, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 4, y - 11, 0, true );
+	scourgeGame.getMission().addItem( "Crate", x + MAP_UNIT * 2 + 12, y - 2, 0, true );
+	// this could be a random object
+	scourgeGame.getMission().addItem( "Horned helmet", x + MAP_UNIT * 2 + 10, y - 8, 4, false );
+	// add the shop-keeper
+	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 10, y - 10, 0, getVillageNpcType() );
+	// now make this person a trader of armor
 }
 
 function drawWeaponShop( x, y ) {
