@@ -62,6 +62,7 @@ private:
 	int textureCount, textureIndex;
 	bool roof;
 	bool iAmGround;
+	bool shading;
 
 protected:
 	int width, height, depth;
@@ -166,6 +167,8 @@ public:
 
 	virtual LightEmitter *getLightEmitter() { return NULL; }
 	virtual void draw() = 0;
+	inline void setShade( bool b ) { shading = b; }
+	inline bool isShade() { return shading; }
 	void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) {
 		draw();
 	}

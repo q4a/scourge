@@ -132,10 +132,26 @@ void RenderedLocation::draw() {
 	resetAfterDraw();
 }
 
+void RenderedLocation::shade() {
+	glPushMatrix();
+	setupTransforms();
+	//setupColor();
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	glColor4f( 0.25f, 0.25f, 0.25f, 0.25f );
+	//drawShape();
+	pos->shape->setShade( true );
+	pos->shape->draw();
+	glDisable( GL_BLEND );
+	glPopMatrix();
+	resetAfterDraw();	
+}
+
 void RenderedLocation::resetAfterDraw() {
 	if ( pos && pos->shape ) {
 		pos->shape->setLightFacingSurfaces( NULL );
 		( ( GLShape* )pos->shape )->useShadow = false;
+		pos->shape->setShade( false );
 	}
 	colorAlreadySet = false;
 }

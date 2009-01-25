@@ -64,6 +64,7 @@ public:
             bool effectMode );
 	
 	void draw();
+	void shade();
 	void updateRoofAlpha();
 	void updateWallAlpha();
 	

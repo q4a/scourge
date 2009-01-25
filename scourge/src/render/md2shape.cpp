@@ -94,11 +94,19 @@ void MD2Shape::draw() {
 	glEnable( GL_CULL_FACE );
 	glCullFace( GL_BACK );
 	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
-	glEnable( GL_TEXTURE_2D );
+	if( isShade() ) {
+		glDisable( GL_TEXTURE_2D );
+	} else {
+		glEnable( GL_TEXTURE_2D );
+	}
 
 	AnimateMD2Model();
 
-	if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+	if( isShade() ) {
+		if ( textureWasEnabled ) glEnable( GL_TEXTURE_2D );
+	} else {
+		if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+	}
 	glDisable( GL_CULL_FACE );
 	glPopMatrix();
 }
