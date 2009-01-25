@@ -487,6 +487,28 @@ void RenderedLocation::outlineVirtuals() {
 }
 
 #define MIN_ROOF_ALPHA 0.25f
+#define MIN_WALL_ALPHA 0.5f
+
+void RenderedLocation::updateWallAlpha() {
+	if( !( map && getRoofAlphaUpdate() ) ) return;
+	
+	if ( map->getCurrentlyUnderRoof() ) {
+		float min = MIN_WALL_ALPHA;
+		if ( roofAlpha > min ) {
+			roofAlpha -= 0.05f;
+		} else {
+			roofAlpha = min;
+		}
+	} else {
+		float max = 1.0f;
+		if ( roofAlpha < max ) {
+			roofAlpha += 0.05f;
+		} else {
+			roofAlpha = max;
+		}
+	}
+}
+
 
 void RenderedLocation::updateRoofAlpha() {
 	if( !( map && getRoofAlphaUpdate() ) ) return;

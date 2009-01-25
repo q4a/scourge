@@ -65,6 +65,7 @@ public:
 	
 	void draw();
 	void updateRoofAlpha();
+	void updateWallAlpha();
 	
 	inline float getRoofAlpha() { return roofAlpha; }
 	

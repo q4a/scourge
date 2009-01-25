@@ -102,6 +102,10 @@ public:
 	static int _setMapConfig( HSQUIRRELVM vm );
 
 	static int _setOffset( HSQUIRRELVM vm );
+	
+	static int _startHouse( HSQUIRRELVM vm );
+	static int _endHouse( HSQUIRRELVM vm );
+	static int _clearHouses( HSQUIRRELVM vm ); 
 };
 
 #endif

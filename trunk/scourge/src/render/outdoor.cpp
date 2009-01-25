@@ -24,6 +24,7 @@
 #include "renderedcreature.h"
 #include "rendereditem.h"
 #include "glshape.h"
+#include "virtualshape.h"
 #include "../debug.h"
 
 #include "../scourge.h"
@@ -50,34 +51,50 @@ void Outdoor::drawMap() {
 	renderFloor();
 	
 	// find the player
-	if ( map->resortShapes ) {
-		if ( map->helper->isShapeSortingEnabled() ) {
-			RenderedLocation *player = NULL;
-			for ( int i = 0; i < map->otherCount; i++ ) {
-				if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
-					player = &map->other[i];
-					break;
-				}
-			}
-			if( player ) {
-				if( map->roofAlpha >= 1 ) {
-					//sortShapesOutdoors( player, map->roof, map->roofCount );
-					//sortShapesOutdoors( player, map->other, map->otherCount );
-				}
-			}
-		}
-		map->resortShapes = false;
-	}
+//	if ( map->resortShapes ) {
+//		if ( !map->isCurrentlyUnderRoof && map->helper->isShapeSortingEnabled() ) {
+//			RenderedLocation *player = NULL;
+//			for ( int i = 0; i < map->otherCount; i++ ) {
+//				if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
+//					player = &map->other[i];
+//					break;
+//				}
+//			}
+//			if( player ) {
+//				if( map->roofAlpha >= 1 ) {
+//					//sortShapesOutdoors( player, map->roof, map->roofCount );
+//					//sortShapesOutdoors( player, map->other, map->otherCount );
+//				}
+//			}
+//		}
+//		map->resortShapes = false;
+//	}
 
 	// draw the creatures/objects/doors/etc.
+	RenderedLocation *player = NULL;
 	for ( int i = 0; i < map->otherCount; i++ ) {
-		if( map->other[i].inFront ) continue;
+		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
+		if( shape->isVirtual() ) {
+			shape = ((VirtualShape*)shape)->getRef();
+		}
+		
+		if( shape->isLightBlocking() ) {
+			continue;
+		}
 		
 		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
 		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
 			RenderedLocation::colorAlreadySet = true;
 			setupDropLocationColor();
 		}
+		
+		if ( map->other[i].pos->creature && map->adapter->getPlayer() == map->other[i].pos->creature ) {
+			player = &map->other[i];
+			
+			// if stencil buffer on, start stencil + draw
+			// later when drawing roofs/walls, incr. stencil buffer
+		}
+		
 		map->other[i].draw();
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
@@ -96,32 +113,13 @@ void Outdoor::drawMap() {
 
 	// draw the effects
 	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
-	
+	drawWalls();
+
+	// roofs
 	drawRoofs();
-	
-	// todo: if enabling house blending reuse drawroofs() code, it's the same for other[] shapes
-//	for ( int i = 0; i < map->otherCount; i++ ) {
-//			if( !map->other[i].inFront ) continue;
-//			map->other[i].updateRoofAlpha();
-//						
-//			if( map->other[i].getRoofAlpha() <= 0 ) continue;
-//			
-//			if( map->other[i].getRoofAlpha() < 1 ) {
-//				glEnable( GL_BLEND );
-//				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-//				( ( GLShape* )map->other[i].pos->shape )->setAlpha( map->other[i].getRoofAlpha() );
-//				RenderedLocation::colorAlreadySet = true;
-//			} else {
-//				glDisable( GL_BLEND );
-//				( ( GLShape* )map->other[i].pos->shape )->setAlpha( 1.0f );
-//			}
-//			map->other[i].draw();
-//	}
-	glEnable( GL_BLEND );
-	glDepthMask( GL_FALSE );
+
 	drawEffects();
-		
+	
 	// draw the fog of war or shading
 #if DEBUG_MOUSE_POS == 0
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
@@ -131,6 +129,23 @@ void Outdoor::drawMap() {
 
 	glDisable( GL_BLEND );
 	glDepthMask( GL_TRUE );
+	
+	if( player ) {
+//		// draw only on stencil area where value >= 2
+//		
+//		
+//			glEnable( GL_BLEND );
+//			Scourge::setBlendFuncStatic();
+//			glDepthMask( GL_FALSE );	
+////			glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+////			glDisable( GL_DEPTH_TEST );
+//			player->draw();
+////			glEnable( GL_DEPTH_TEST );
+//			
+//			glDisable( GL_BLEND );
+//			glDepthMask( GL_TRUE );
+		}	
 }
 
 void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount ) {
@@ -164,11 +179,32 @@ void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *sh
 		// 3 points of a 4 point base has to be lower than the player for the roof element to be see-thru
 		shapes[i].inFront = ( count >= 3 );
 	}
+	
+	// make every other shape in the same house also transparent
+	for( int i = 0; i < shapeCount; i++ ) {
+		if( shapes[i].inFront ) {
+			for( unsigned int i = 0; i < map->houses.size(); i++ ) {
+				set<Location*> house = map->houses[i];
+				if( house.find( shapes[i].pos ) != house.end() ) {
+					for( set<Location*>::iterator e = house.begin(); e != house.end(); ++e ) {
+						Location *pos = *e;
+						RenderedLocation *renderedLocation = map->getRenderedLocation( pos );
+						if( renderedLocation ) {
+							renderedLocation->inFront = true;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 }
 
 /// Draws creature effects and damage counters.
 
 void Outdoor::drawEffects() {
+	glEnable( GL_BLEND );
+	glDepthMask( GL_FALSE );	
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		map->later[i].pos->shape->setupBlending();
 		map->later[i].draw();
@@ -178,6 +214,33 @@ void Outdoor::drawEffects() {
 	for ( int i = 0; i < map->damageCount; i++ ) {
 		map->damage[i].draw();
 	}
+}
+
+
+void Outdoor::drawWalls() {
+	float alpha;
+	for ( int i = 0; i < map->otherCount; i++ ) {
+		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
+		if( shape->isVirtual() ) {
+			shape = ((VirtualShape*)shape)->getRef();
+		}
+		if( shape->isLightBlocking() ) {
+			map->other[i].updateWallAlpha();
+				
+			alpha = map->other[i].getRoofAlpha();
+			if( alpha <= 0.5f ) alpha = 0.5f;
+			
+			if( alpha >= 1.0f ) {
+				glDisable( GL_BLEND );
+			} else {
+				glEnable( GL_BLEND );
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				shape->setAlpha( alpha );
+				RenderedLocation::colorAlreadySet = true;
+			}
+			map->other[i].draw();
+		}
+	}	
 }
 
 /// Draws the roofs on outdoor levels, including the fading.

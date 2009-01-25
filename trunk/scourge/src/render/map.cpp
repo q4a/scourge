@@ -104,6 +104,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	cursorHeight = MAP_WALL_HEIGHT;
 	cursorZ = 0;
 	lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
+	currentHouse = NULL;
 
 	mouseMoveScreen = true;
 	mouseZoom = mouseRot = false;
@@ -198,6 +199,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	helper = NULL;
 
 	laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
+	renderedLocations.clear();
 
 	quakesEnabled = false;
 
@@ -345,6 +347,7 @@ void Map::reset() {
 	floorTex.clear();
 	mapCenterCreature = NULL;
 	secretDoors.clear();
+	currentHouse = NULL;
 
 	this->xrot = 0.0f;
 	this->yrot = 30.0f;
@@ -401,6 +404,7 @@ void Map::reset() {
 	if ( helper ) helper->reset();
 
 	laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
+	renderedLocations.clear();
 
 	quakesEnabled = false;
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -497,6 +501,7 @@ bool Map::checkLightMap( int chunkX, int chunkY ) {
 void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey ) {
 	if ( !forGround && !forWater ) {
 		laterCount = stencilCount = otherCount = damageCount = roofCount = lightCount = 0;
+		renderedLocations.clear();
 		creatureMap.clear();
 		creatureEffectMap.clear();
 		creatureLightMap.clear();
@@ -740,18 +745,22 @@ void Map::setupPosition( int posX, int posY, int posZ,
 	// roofs
 	if ( pos->shape->isRoof() ) {
 		roof[roofCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		renderedLocations[ pos ] = &roof[roofCount];
 		roofCount++;
 	} else if ( pos->shape->isStencil() ) {
 		// walls
 		stencil[stencilCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		renderedLocations[ pos ] = &stencil[stencilCount];
 		stencilCount++;
 	} else if( pos->shape->isBlended() ) {
 		// torches, teleporters, etc.
 		later[laterCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		renderedLocations[ pos ] = &later[laterCount];
 		laterCount++;
 	} else {
 		// items, creatures, etc.
 		other[otherCount].set( this, xpos2, ypos2, zpos2, effect, pos, name, posX, posY, false, false, false );
+		renderedLocations[ pos ] = &other[otherCount];
 		if ( pos->creature ) {
 			creatureMap[pos->creature] = &( other[otherCount] );
 		}
@@ -1407,6 +1416,10 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
 	if ( !p ) {
 		p = mapMemoryManager.newLocation();
+	}
+	
+	if( currentHouse ) {
+		currentHouse->insert( p );
 	}
 
 	p->shape = shape;
@@ -2882,6 +2895,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 	GLShape *shape;
 	DisplayInfo di;
+	set<Location*> roofs;
 	for ( int i = 0; i < static_cast<int>( info->pos_count ); i++ ) {
 
 		if ( info->pos[i]->x >= MAP_WIDTH || info->pos[i]->y >= MAP_DEPTH || info->pos[i]->z >= MAP_VIEW_HEIGHT ) {
@@ -2950,6 +2964,9 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 			shape = shapes->findShapeByName( ( char* )( info->pos[i]->shape_name ) );
 			if ( shape ) {
 				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
+				if( shape->isRoof() ) {
+					roofs.insert( pos[info->pos[i]->x][info->pos[i]->y][info->pos[i]->z]);
+				}
 				if ( settings->isPlayerEnabled() ) {
 					if ( ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
 					        ( goingDown && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_UP" ) ) ||
@@ -3037,6 +3054,20 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	adapter->loadMapData( txtfileName.str() );
 
 	strcpy( this->name, ( templateMapName ? templateMapName : name.c_str() ) );
+	
+	// draw roof and walls together
+	for( set<Location*>::iterator e = roofs.begin(); e != roofs.end(); ++e ) {
+		Location *p = *e;
+		Shape *shape = p->shape;
+		for ( int xp = 0; xp < shape->getWidth(); xp++ ) {
+			for ( int yp = 0; yp < shape->getDepth(); yp++ ) {
+				Location *under = pos[p->x + xp][p->y - yp][p->z - 1];
+				if( under ) {
+					p->drawTogether.insert( under );
+				}
+			}
+		}
+	}
 
 	if ( report ) report->updateStatus( 6, 7, _( "Starting party" ) );
 
@@ -3453,3 +3484,27 @@ void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
 		}
 	}
 }
+
+void Map::startHouse() {
+	set<Location*> newHouse;
+	houses.push_back( newHouse );
+	currentHouse = &(houses[houses.size() - 1]);
+}
+
+void Map::endHouse() {
+	currentHouse = NULL;
+	cerr << "House count=" << houses.size() << endl;
+	for( unsigned int i = 0; i < houses.size(); i++ ) {
+		cerr << "House " << i;
+		for( set<Location*>::iterator e = houses[i].begin(); e != houses[i].end(); ++e ) {
+			Location *pos = *e;
+			cerr << ", " << "[" << pos->x << "," << pos->y << "," << pos->z << "]:" << pos->shape->getName();
+		}
+		cerr << endl;
+	}
+}
+
+void Map::clearHouses() {
+	houses.clear();
+}
+

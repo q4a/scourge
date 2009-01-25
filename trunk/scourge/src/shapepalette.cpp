@@ -552,6 +552,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->outdoorShadow = false;
 	sv->wind = false;
 	sv->ambient = node->getValueAsString( "ambient" );
+	sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
 	if ( sv->ambient != "" ) {
 		session->getSound()->storeAmbientObjectSound( sv->ambient );
 	}
@@ -773,7 +774,7 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 		}
 
 		sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
-
+		
 		initOccurance( node, sv );
 
 		// store it for now
@@ -812,7 +813,6 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
 		sv->skipSide = toint( node->getValueAsFloat( "skip_side" ) );
 		sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
-		sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
 
 		initOccurance( node, sv );
 

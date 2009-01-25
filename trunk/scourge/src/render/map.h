@@ -217,6 +217,8 @@ private:
 
 	std::set<Location*> gates, teleporters;
 	std::map<RenderedCreature*, RenderedLocation*> creatureMap, creatureEffectMap, creatureLightMap;
+	std::vector<std::set<Location*> > houses;
+	std::set<Location*> *currentHouse;
 
 public:
 	bool useFrustum;
@@ -800,6 +802,9 @@ public:
 	bool isValidPosition( int x, int y, int z );
 	inline MapRender *getRender() { return helper->isIndoors() ? indoor : outdoor; }
 	void flattenChunk( Sint16 mapX, Sint16 mapY, float height = 0 );
+	void startHouse();
+	void endHouse();
+	void clearHouses();
 
 protected:
 	bool checkLightMap( int chunkX, int chunkY );
@@ -874,6 +879,15 @@ protected:
 	RenderedLocation later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
 	int laterCount, stencilCount, otherCount, damageCount, roofCount, lightCount;
 	std::map<Uint32, EffectLocation*> currentEffectsMap;
+	std::map<Location*, RenderedLocation*> renderedLocations;
+	
+	inline RenderedLocation *getRenderedLocation( Location *pos ) {
+		if( renderedLocations.find( pos ) == renderedLocations.end() ) {
+			return NULL;
+		} else {
+			return renderedLocations[ pos ]; 
+		}
+	}
 
 	void setupShapes( bool forGround, bool forWater, int *csx = NULL, int *cex = NULL, int *csy = NULL, int *cey = NULL );
 	void setupPosition( int posX, int posY, int posZ,
