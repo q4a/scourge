@@ -69,6 +69,9 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },
 	{ "Item", "addItem", SqMission::_addItem, 0, 0, "Create a new item on the map at this location." },
 	{ "void", "setOffset", SqMission::_setOffset, 0, 0, "Set a location's offset on the map." },
+	{ "void", "startHouse", SqMission::_startHouse, 0, 0, "Start defining a house." },
+	{ "void", "endHouse", SqMission::_endHouse, 0, 0, "End defining a house." },
+	{ "void", "clearHouses", SqMission::_clearHouses, 0, 0, "Clear house definitions." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -138,6 +141,21 @@ int SqMission::_addItem( HSQUIRRELVM vm ) {
 	Item *item = SqBinding::sessionRef->addItemFromScript( itemType, x, y, z, isContainer, 1, 1 );
 	sq_pushobject( vm, *( SqBinding::binding->itemMap[ item ] ) );
 	return 1;
+}
+
+int SqMission::_startHouse( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getMap()->startHouse();
+	return 0;
+}
+
+int SqMission::_endHouse( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getMap()->endHouse();
+	return 0;
+}
+
+int SqMission::_clearHouses( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getMap()->clearHouses();
+	return 0;
 }
 
 int SqMission::_getItemCount( HSQUIRRELVM vm ) {

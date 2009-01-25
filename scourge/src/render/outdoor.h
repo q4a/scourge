@@ -48,6 +48,8 @@ protected:
 	virtual inline void setupShapeColor() {
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 	}	
+	
+	void drawWalls();
 
 	/// Draws creature effects and damage counters.
 	void drawEffects();
