@@ -88,14 +88,15 @@ void Outdoor::drawMap() {
 			setupDropLocationColor();
 		}
 		
+		// don't draw the player
+		bool playerFound = false;
 		if ( map->other[i].pos->creature && map->adapter->getPlayer() == map->other[i].pos->creature ) {
 			player = &map->other[i];
-			
-			// if stencil buffer on, start stencil + draw
-			// later when drawing roofs/walls, incr. stencil buffer
+			playerFound = true;
+		} 
+		if( map->isCurrentlyUnderRoof || !playerFound ) {
+			map->other[i].draw();
 		}
-		
-		map->other[i].draw();
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 		// draw simple shadow in outdoors
@@ -108,44 +109,73 @@ void Outdoor::drawMap() {
 		}
 	}
 	
-	// doors
-	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
-
-	// draw the effects
 	glEnable( GL_TEXTURE_2D );
+	
+	if( map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+		glClear( GL_STENCIL_BUFFER_BIT );
+		glEnable( GL_STENCIL_TEST );
+		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+	}	
+
 	drawWalls();
 
 	// roofs
 	drawRoofs();
-
+	
+	// draw the player and remove it from the stencil (so walls behind the player don't show thru)
+	if( !map->isCurrentlyUnderRoof && player ) {
+		if( map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+			glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+			glStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
+		}
+		player->draw();
+	}
+	
+	// doors
+	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();	
+	
+	if( !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	}
+ 
 	drawEffects();
+	
+	glDisable( GL_BLEND );
+	glDepthMask( GL_TRUE );
+	glEnable( GL_TEXTURE_2D );
+		
+	if( !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+		glDisable( GL_DEPTH_TEST );
+		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+		glStencilOp( GL_ZERO, GL_ZERO, GL_ZERO );
+		
+		// player
+		if( player ) {
+			player->shade();
+		}
+		
+		// doors
+		for ( int i = 0; i < map->stencilCount; i++ ) {
+			map->stencil[i].shade();
+		}
+		
+		glDisable( GL_BLEND );
+		glDepthMask( GL_TRUE );
+		glDisable( GL_STENCIL_TEST );
+		glEnable( GL_DEPTH_TEST );
+	}
 	
 	// draw the fog of war or shading
 #if DEBUG_MOUSE_POS == 0
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
+		glEnable( GL_BLEND );
+		glDepthMask( GL_FALSE );		
 		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
+		glDisable( GL_BLEND );
+		glDepthMask( GL_TRUE );		
 	}
 #endif
-
-	glDisable( GL_BLEND );
-	glDepthMask( GL_TRUE );
-	
-	if( player ) {
-//		// draw only on stencil area where value >= 2
-//		
-//		
-//			glEnable( GL_BLEND );
-//			Scourge::setBlendFuncStatic();
-//			glDepthMask( GL_FALSE );	
-////			glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-//			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
-////			glDisable( GL_DEPTH_TEST );
-//			player->draw();
-////			glEnable( GL_DEPTH_TEST );
-//			
-//			glDisable( GL_BLEND );
-//			glDepthMask( GL_TRUE );
-		}	
 }
 
 void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount ) {

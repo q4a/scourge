@@ -39,6 +39,7 @@ Shape::Shape( int width, int depth, int height, char const* name, int descriptio
 	offsetX = offsetY = offsetZ = 0.0f;
 	for ( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 	lightFacingSurfaces = NULL;
+	shading = false;
 }
 
 Shape::Shape( Shape *shape )
@@ -63,6 +64,7 @@ Shape::Shape( Shape *shape )
 	this->offsetZ = shape->getOffsZ();
 	for ( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 	lightFacingSurfaces = NULL;
+	shading = false;
 }
 
 Shape::~Shape() {
