@@ -138,7 +138,6 @@ void RenderedLocation::shade() {
 	//setupColor();
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glColor4f( 0.25f, 0.25f, 0.25f, 0.25f );
 	//drawShape();
 	pos->shape->setShade( true );
 	pos->shape->draw();
