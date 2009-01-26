@@ -47,31 +47,20 @@ GLfloat waterTexY = 0;
 /// Renders the 3D view for outdoor levels.
 
 void Outdoor::drawMap() {
+	bool stencilOn = !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized();
+	
+	if( stencilOn ) {
+		glClear( GL_STENCIL_BUFFER_BIT );
+		glEnable( GL_STENCIL_TEST );
+		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+	}
+	
 	// draw the ground
 	renderFloor();
 	
-	// find the player
-//	if ( map->resortShapes ) {
-//		if ( !map->isCurrentlyUnderRoof && map->helper->isShapeSortingEnabled() ) {
-//			RenderedLocation *player = NULL;
-//			for ( int i = 0; i < map->otherCount; i++ ) {
-//				if( map->other[i].pos->creature == map->adapter->getPlayer() ) {
-//					player = &map->other[i];
-//					break;
-//				}
-//			}
-//			if( player ) {
-//				if( map->roofAlpha >= 1 ) {
-//					//sortShapesOutdoors( player, map->roof, map->roofCount );
-//					//sortShapesOutdoors( player, map->other, map->otherCount );
-//				}
-//			}
-//		}
-//		map->resortShapes = false;
-//	}
-
 	// draw the creatures/objects/doors/etc.
-	RenderedLocation *player = NULL;
+	vector<RenderedLocation*> shades;
 	for ( int i = 0; i < map->otherCount; i++ ) {
 		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
 		if( shape->isVirtual() ) {
@@ -89,13 +78,10 @@ void Outdoor::drawMap() {
 		}
 		
 		// don't draw the player
-		bool playerFound = false;
-		if ( map->other[i].pos->creature && map->adapter->getPlayer() == map->other[i].pos->creature ) {
-			player = &map->other[i];
-			playerFound = true;
-		} 
-		if( map->isCurrentlyUnderRoof || !playerFound ) {
+		if( map->isCurrentlyUnderRoof || !( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
 			map->other[i].draw();
+		} else {
+			shades.push_back( &map->other[i] );
 		}
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
@@ -111,31 +97,26 @@ void Outdoor::drawMap() {
 	
 	glEnable( GL_TEXTURE_2D );
 	
-	if( map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
-		glClear( GL_STENCIL_BUFFER_BIT );
-		glEnable( GL_STENCIL_TEST );
-		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-	}	
-
+	// doors
+	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
+	
 	drawWalls();
 
 	// roofs
 	drawRoofs();
 	
 	// draw the player and remove it from the stencil (so walls behind the player don't show thru)
-	if( !map->isCurrentlyUnderRoof && player ) {
-		if( map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+	if( !map->isCurrentlyUnderRoof ) {
+		if( stencilOn ) {
 			glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
 			glStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
 		}
-		player->draw();
+		for( unsigned int i = 0; i < shades.size(); i++ ) {
+			shades[i]->draw();
+		}
 	}
-	
-	// doors
-	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();	
-	
-	if( !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+		
+	if( !map->isCurrentlyUnderRoof && stencilOn ) {
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	}
  
@@ -145,20 +126,16 @@ void Outdoor::drawMap() {
 	glDepthMask( GL_TRUE );
 	glEnable( GL_TEXTURE_2D );
 		
-	if( !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+	if( !map->isCurrentlyUnderRoof && stencilOn ) {
 		glDisable( GL_DEPTH_TEST );
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_ZERO, GL_ZERO, GL_ZERO );
+		glColor4f( 0.25f, 0.25f, 0.25f, 0.5f );
 		
 		// player
-		if( player ) {
-			player->shade();
-		}
-		
-		// doors
-		for ( int i = 0; i < map->stencilCount; i++ ) {
-			map->stencil[i].shade();
-		}
+		for( unsigned int i = 0; i < shades.size(); i++ ) {
+			shades[i]->shade();
+		}		
 		
 		glDisable( GL_BLEND );
 		glDepthMask( GL_TRUE );
@@ -178,71 +155,24 @@ void Outdoor::drawMap() {
 #endif
 }
 
-void Outdoor::sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount ) {
-	GLdouble mm[16];
-	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
-	GLdouble pm[16];
-	glGetDoublev( GL_PROJECTION_MATRIX, pm );
-	GLint vp[4];
-	glGetIntegerv( GL_VIEWPORT, vp );
-
-	GLdouble playerWinX, playerWinY, playerWinZ;
-	gluProject( player->xpos, player->ypos, 0, mm, pm, vp, &playerWinX, &playerWinY, &playerWinZ );
-	
-	GLdouble objWinX, objWinY, objWinZ;
-	for( int i = 0; i < shapeCount; i++ ) {
-		if( shapes[i].pos->creature || shapes[i].pos->item || shapes[i].pos->shape->getHeight() < 8 ) continue;
-		
-		int count = 0;
-		gluProject( shapes[i].xpos, shapes[i].ypos, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
-		if( objWinY < playerWinY ) count++;
-		
-		gluProject( shapes[i].xpos + shapes[i].pos->shape->getWidth() * MUL, shapes[i].ypos, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
-		if( objWinY < playerWinY ) count++;
-		
-		gluProject( shapes[i].xpos, shapes[i].ypos + shapes[i].pos->shape->getDepth() * MUL, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
-		if( objWinY < playerWinY ) count++;
-		
-		gluProject( shapes[i].xpos + shapes[i].pos->shape->getWidth() * MUL, shapes[i].ypos + shapes[i].pos->shape->getDepth() * MUL, 0, mm, pm, vp, &objWinX, &objWinY, &objWinZ );
-		if( objWinY < playerWinY ) count++;
-
-		// 3 points of a 4 point base has to be lower than the player for the roof element to be see-thru
-		shapes[i].inFront = ( count >= 3 );
-	}
-	
-	// make every other shape in the same house also transparent
-	for( int i = 0; i < shapeCount; i++ ) {
-		if( shapes[i].inFront ) {
-			for( unsigned int i = 0; i < map->houses.size(); i++ ) {
-				set<Location*> house = map->houses[i];
-				if( house.find( shapes[i].pos ) != house.end() ) {
-					for( set<Location*>::iterator e = house.begin(); e != house.end(); ++e ) {
-						Location *pos = *e;
-						RenderedLocation *renderedLocation = map->getRenderedLocation( pos );
-						if( renderedLocation ) {
-							renderedLocation->inFront = true;
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-}
-
 /// Draws creature effects and damage counters.
 
 void Outdoor::drawEffects() {
 	glEnable( GL_BLEND );
 	glDepthMask( GL_FALSE );	
 	for ( int i = 0; i < map->laterCount; i++ ) {
-		map->later[i].pos->shape->setupBlending();
-		map->later[i].draw();
-		map->later[i].pos->shape->endBlending();
+		// skip roof-top effects when roof is off
+		if( map->later[i].zpos < 10 * MUL || !map->isCurrentlyUnderRoof ) {
+			map->later[i].pos->shape->setupBlending();
+			map->later[i].draw();
+			map->later[i].pos->shape->endBlending();
+		}
 	}
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	for ( int i = 0; i < map->damageCount; i++ ) {
-		map->damage[i].draw();
+		if( map->damage[i].zpos < 12 * MUL || !map->isCurrentlyUnderRoof ) {
+			map->damage[i].draw();
+		}
 	}
 }
 

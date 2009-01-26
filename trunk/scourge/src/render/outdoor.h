@@ -68,7 +68,6 @@ private:
 	bool isLakebedTexture( int x, int y );
 	bool isAllHigh( int x, int y, int w, int h );
 	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
-	void sortShapesOutdoors( RenderedLocation *player, RenderedLocation *shapes, int shapeCount );
 };
 
 #endif /*OUTDOOR_H_*/

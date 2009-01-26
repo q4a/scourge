@@ -166,7 +166,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 
 	// --------------------------------------------
 	if ( side == Shape::W_SIDE ) {
-		//glNormal3f(-1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
 		glVertex3fv( surfaces[LEFT_SURFACE]->vertices[1] );
@@ -182,7 +181,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 	// --------------------------------------------
 	if ( side == Shape::N_SIDE ) {
 		// bottom
-		//glNormal3f(0.0f, -1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( Constants::multitexture ) {
 			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 0.0f );
@@ -208,13 +206,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 			glVertex3fv( surfaces[BOTTOM_SURFACE]->vertices[3] );
 		}
 		glEnd();
-//		if ( Constants::multitexture ) {
-//			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//			glBindTexture( GL_TEXTURE_2D, 0 );
-//			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//		}
 	}
 
 
@@ -223,7 +214,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 	// --------------------------------------------
 	if ( side == Shape::E_SIDE ) {
 		// right
-		//glNormal3f(1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( Constants::multitexture ) {
 			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 1.0f );
@@ -249,13 +239,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[3] );
 		}
 		glEnd( );
-//		if ( Constants::multitexture ) {
-//			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//			glBindTexture( GL_TEXTURE_2D, 0 );
-//			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//		}
 	}
 
 
@@ -263,7 +246,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 	// --------------------------------------------
 	if ( side == Shape::S_SIDE ) {
 		// front
-		//glNormal3f(0.0f, 1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( Constants::multitexture ) {
 			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 0.0f );
@@ -289,14 +271,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 			glVertex3fv( surfaces[FRONT_SURFACE]->vertices[3] );
 		}
 		glEnd();
-
-//		if ( Constants::multitexture ) {
-//			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//			glBindTexture( GL_TEXTURE_2D, 0 );
-//			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-//			glEnable( GL_TEXTURE_2D );
-//		}
 	}
 	glEndList();
 }
@@ -304,7 +278,6 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 void GLShape::createTopList( GLuint listName ) {
 	glNewList( listName, GL_COMPILE );
 
-	//glNormal3f(0.0f, 0.0f, 1.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 
 	if ( getWidth() > getHeight() ) {
@@ -326,16 +299,6 @@ void GLShape::createTopList( GLuint listName ) {
 		glTexCoord2f( 1.0f, 1.0f );
 		glVertex3fv( surfaces[TOP_SURFACE]->vertices[3] );
 	}
-	/*
-	  glTexCoord2f( 1.0f, 1.0f );
-	  glVertex3fv(surfaces[TOP_SURFACE]->vertices[0]);
-	  glTexCoord2f( 1.0f, 0.0f );
-	  glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
-	  glTexCoord2f( 0.0f, 0.0f );
-	  glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
-	  glTexCoord2f( 0.0f, 1.0f );
-	  glVertex3fv(surfaces[TOP_SURFACE]->vertices[3]);
-	*/
 	glEnd();
 	glEndList();
 }
@@ -359,6 +322,16 @@ void GLShape::drawShadow() {
 
 	// reset shadow flag
 	useShadow = false;
+}
+
+void GLShape::resetMultiTexture() {
+	if ( !isShade() && Constants::multitexture ) {
+		glSDLActiveTextureARB( GL_TEXTURE1_ARB );
+		glEnable( GL_TEXTURE_2D );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		glSDLActiveTextureARB( GL_TEXTURE0_ARB );
+		glEnable( GL_TEXTURE_2D );
+	}	
 }
 
 void GLShape::draw() {
@@ -405,14 +378,7 @@ void GLShape::draw() {
 				tex[textureIndexFront].glBind();
 			}
 			glCallList( displayListStart + 2 + Shape::N_SIDE );
-			if ( !isShade() && Constants::multitexture ) {
-				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
-				glBindTexture( GL_TEXTURE_2D, 0 );
-				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
-			}
-			
+			resetMultiTexture();
 		}
 		if ( sides[Shape::S_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[FRONT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			if ( !isShade() && Constants::multitexture ) {
@@ -426,13 +392,7 @@ void GLShape::draw() {
 				tex[textureIndexFront].glBind();
 			}
 			glCallList( displayListStart + 2 + Shape::S_SIDE );
-			if ( !isShade() && Constants::multitexture ) {
-				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
-				glBindTexture( GL_TEXTURE_2D, 0 );
-				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
-			}
+			resetMultiTexture();
 		}
 		if ( sides[Shape::E_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[RIGHT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			if ( !isShade() && Constants::multitexture ) {
@@ -446,13 +406,7 @@ void GLShape::draw() {
 				tex[textureIndexSide].glBind();
 			}
 			glCallList( displayListStart + 2 + Shape::E_SIDE );
-			if ( !isShade() && Constants::multitexture ) {
-				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
-				glBindTexture( GL_TEXTURE_2D, 0 );
-				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
-			}			
+			resetMultiTexture();			
 		}
 		if ( sides[Shape::W_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[LEFT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			tex[textureIndexSide].glBind();

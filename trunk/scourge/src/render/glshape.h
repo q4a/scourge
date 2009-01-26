@@ -269,6 +269,7 @@ protected:
 	void createShadowList( GLuint listName );
 	void createBodyList( int side, GLuint listName );
 	void createTopList( GLuint listName );
+	void resetMultiTexture(); 
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
