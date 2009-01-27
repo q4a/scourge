@@ -140,15 +140,15 @@ function drawHousePart( postfix, roof_postfix, x, y, w, h, angle ) {
 		case 0: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_2x1" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 5, y - 14, 0, "NS_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
-			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x - 2, y + 2, 12, "P_ROOF_2x1" + roof_postfix );
 			break;
 		case 180: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_2x1_180" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 21, y - 1, 0, "NS_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
-			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x + 2, y + 2, 12, "P_ROOF_2x1_180" + roof_postfix );
 			break;
 		}		
@@ -157,25 +157,25 @@ function drawHousePart( postfix, roof_postfix, x, y, w, h, angle ) {
 		case 0: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_1x1" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 5, y - 14, 0, "NS_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x - 2, y + 2, 12, "P_ROOF_1x1" + roof_postfix );
 			break;
 		case 90: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_1x1_90" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 1, y - 5, 0, "EW_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x - 2, y - 2, 12, "P_ROOF_1x1_90" + roof_postfix );
 			break;
 		case 180: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_1x1_180" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 5, y - 1, 0, "NS_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x + 2, y + 2, 12, "P_ROOF_1x1_180" + roof_postfix );
 			break;
 		case 270: 
 			scourgeGame.getMission().setMapPosition( x, y, 0, "P_BASE_1x1_270" + postfix );
 			scourgeGame.getMission().setMapPosition( x + 14, y - 5, 0, "EW_DOOR" );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
 			scourgeGame.getMission().setMapPosition( x - 2, y + 2, 12, "P_ROOF_1x1_270" + roof_postfix );
 			break;
 		}
@@ -270,20 +270,56 @@ function drawRandomHouse( x, y ) {
 	house_functions[ n ].call( this, x, y );
 }
 
+armor <- [ "Horned helmet", "Leather Work Gloves", "Adventuring Hat", "Wooden Shield" ];
+function getRandomArmorItem() {
+	c <- ( rand() * armor.len().tofloat() / RAND_MAX ).tointeger();
+	return armor[c];
+}
+
+weapon <- [ "Kitchen Knife", "Dagger", "Ornamental officer sword", "Battleaxe", "Smallbow", "Rounded mace" ];
+function getRandomWeaponItem() {
+	c <- ( rand() * weapon.len().tofloat() / RAND_MAX ).tointeger();
+	return weapon[c];
+}
+
+inn <- [ "Beer barrel", "Wine barrel", "Fine wine bottle", "Wine bottle", "Milk", "Apple", "Bread", "Mutton meat", "Chalice" ];
+function getRandomInnItem() {
+	c <- ( rand() * inn.len().tofloat() / RAND_MAX ).tointeger();
+	return inn[c];
+}
+
+function createTable( x, y ) {
+	scourgeGame.getMission().addItem( "Table", x, y, 0, false );
+	xx <- mixHouseCoordinates( [ 0, 1, 2 ] );
+	yy <- mixHouseCoordinates( [ 0, 1, 2 ] );
+	n <- ( rand() * 2.0 / RAND_MAX ).tointeger() + 1;
+	for( tt <- 0; tt < n; tt++ ) {
+		scourgeGame.getMission().addItem( getRandomInnItem(), x + 1 + xx[tt], y - 1 - yy[tt], 3, true );
+	}
+}
+
 function drawArmorShop( x, y ) {
 	print("Making armor shop!\n");
 	drawHouseZ( x, y );
 	scourgeGame.getMission().setMapPosition( x + 3, y + MAP_UNIT, 7, "SIGN_ARMOR" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_ARMOR_180" );
-	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y - 8, 0, "BAR" );	
-	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 5, y - 8, 0, true );
-	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 4, y - 11, 0, true );
-	scourgeGame.getMission().addItem( "Crate", x + MAP_UNIT * 2 + 12, y - 2, 0, true );
-	// this could be a random object
-	scourgeGame.getMission().addItem( "Horned helmet", x + MAP_UNIT * 2 + 10, y - 8, 4, false );
+	
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 6, y + MAP_UNIT, 0, "BAR_90" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 6, y + MAP_UNIT - 6, 0, "BAR_90" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 6, y + MAP_UNIT - 12, 0, "BAR_90" );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT + 2, y + MAP_UNIT + 2, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT + 5, y + MAP_UNIT + 3, 0, true );
+	scourgeGame.getMission().addItem( "Crate", x + MAP_UNIT + 2, y, 0, true );
+	scourgeGame.getMission().addItem( "Crate", x + MAP_UNIT + 4, y - 1, 0, true );
+	
+	scourgeGame.getMission().addItem( getRandomArmorItem(), x + MAP_UNIT + 6, y + MAP_UNIT - 2, 4, false );
+	scourgeGame.getMission().addItem( getRandomArmorItem(), x + MAP_UNIT + 6, y + MAP_UNIT - 8, 4, false );
+	scourgeGame.getMission().addItem( getRandomArmorItem(), x + MAP_UNIT + 6, y + MAP_UNIT - 14, 4, false );
+	scourgeGame.getMission().addItem( getRandomArmorItem(), x + MAP_UNIT + 2, y + 4, 0, true );
+	
 	// add the shop-keeper
-	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 10, y - 10, 0, getVillageNpcType() );
-	// now make this person a trader of armor
+	scourgeGame.getMission().addCreature( x + MAP_UNIT + 3, y + 10, 0, getVillageNpcType() );
+	// now make this person a trader of armor	
 }
 
 function drawWeaponShop( x, y ) {
@@ -291,6 +327,65 @@ function drawWeaponShop( x, y ) {
 	drawHouseL( x, y );
 	scourgeGame.getMission().setMapPosition( x - 4, y + MAP_UNIT * 2 - 3, 7, "SIGN_WEAPON_90" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_WEAPON_180" );
+	
+	scourgeGame.getMission().setMapPosition( x + 6, y + MAP_UNIT, 0, "BAR_90" );
+	scourgeGame.getMission().setMapPosition( x + 6, y + MAP_UNIT - 6, 0, "BAR_90" );
+	scourgeGame.getMission().setMapPosition( x + 6, y + MAP_UNIT - 12, 0, "BAR_90" );
+	scourgeGame.getMission().addItem( "Barrel", x + 2, y + MAP_UNIT + 2, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + 5, y + MAP_UNIT + 3, 0, true );
+	scourgeGame.getMission().addItem( "Crate", x + 2, y, 0, true );
+	scourgeGame.getMission().addItem( "Crate", x + 4, y - 1, 0, true );
+	
+	scourgeGame.getMission().addItem( getRandomWeaponItem(), x + 6, y + MAP_UNIT - 2, 4, false );
+	scourgeGame.getMission().addItem( getRandomWeaponItem(), x + 6, y + MAP_UNIT - 8, 4, false );
+	scourgeGame.getMission().addItem( getRandomWeaponItem(), x + 6, y + MAP_UNIT - 14, 4, false );
+	scourgeGame.getMission().addItem( getRandomWeaponItem(), x + 2, y + 4, 0, true );
+	
+	// add the shop-keeper
+	scourgeGame.getMission().addCreature( x + 3, y + 10, 0, getVillageNpcType() );
+	// now make this person a trader of weapons
+	
+}
+
+function drawInn( x, y ) {
+	print("Making inn!\n");
+	drawHouseSquare( x, y );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y + MAP_UNIT, 0, "BAR_270" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y + MAP_UNIT + 6, 0, "BAR_270" );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 10, y + MAP_UNIT - 6, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 11, y + MAP_UNIT - 9, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 10, y + MAP_UNIT + 8, 0, true );
+	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 11, y + MAP_UNIT + 11, 0, true );
+	
+	scourgeGame.getMission().addItem( getRandomInnItem(), x + MAP_UNIT * 2 + 8, y + MAP_UNIT + 4, 4, false );
+	scourgeGame.getMission().addItem( getRandomInnItem(), x + MAP_UNIT * 2 + 9, y + MAP_UNIT + 6, 4, false );
+	scourgeGame.getMission().addItem( getRandomInnItem(), x + MAP_UNIT * 2 + 8, y + MAP_UNIT - 3, 4, false );
+	
+	createTable( x + MAP_UNIT + 6, y + MAP_UNIT - 3 );
+	//scourgeGame.getMission().addItem( "Table", x + MAP_UNIT + 6, y + MAP_UNIT - 3, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT + 4, y + MAP_UNIT - 4, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT + 8, y + MAP_UNIT - 1, 0, false );
+	
+	createTable( x + MAP_UNIT + 6, y + MAP_UNIT * 2 - 8 );
+	//scourgeGame.getMission().addItem( "Table", x + MAP_UNIT + 6, y + MAP_UNIT * 2 - 8, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT + 9, y + MAP_UNIT * 2 - 13, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT + 4, y + MAP_UNIT * 2 - 9, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT + 7, y + MAP_UNIT * 2 - 6, 0, false );
+	
+	createTable( x + MAP_UNIT + 15, y + MAP_UNIT * 2 - 9 );
+	//scourgeGame.getMission().addItem( "Table", x + MAP_UNIT + 15, y + MAP_UNIT * 2 - 9, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2, y + MAP_UNIT * 2 - 7, 0, false );	
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2 + 2, y + MAP_UNIT * 2 - 14, 0, false );
+	
+	createTable( x + MAP_UNIT * 2, y + MAP_UNIT - 4 );
+	//scourgeGame.getMission().addItem( "Table", x + MAP_UNIT * 2, y + MAP_UNIT - 4, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2 + 3, y + MAP_UNIT - 2, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2 + 5, y + MAP_UNIT - 7, 0, false );
+	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2 + 1, y + MAP_UNIT - 9, 0, false );
+	
+	// add the shop-keeper
+	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 10, y + MAP_UNIT + 3, 0, getVillageNpcType() );
+	// now make this person an inn-keeper
 }
 
 function drawVillage( x, y, village_width, village_height ) {
@@ -301,25 +396,42 @@ function drawVillage( x, y, village_width, village_height ) {
 	xp <- 0;
 	yp <- 0;
 	
-	armor_x <- ( rand() * 4.0 / RAND_MAX ).tointeger();
-	armor_y <- ( rand() * 4.0 / RAND_MAX ).tointeger();
-	print( "amor shop at " + armor_x.tostring() + "," + armor_y.tostring() + "\n" );
-	weapon_x <- ( rand() * 4.0 / RAND_MAX ).tointeger();
-	weapon_y <- ( rand() * 4.0 / RAND_MAX ).tointeger();
-	print( "weapon shop at " + weapon_x.tostring() + "," + weapon_y.tostring() + "\n" );
-	for( vx = 0; vx < 4; vx++ ) {
-		for( vy = 0; vy < 4; vy++ ) {
-			xp = x + vx * 4 * MAP_UNIT;
-			yp = y + (( vy * 4 ) + 1 ) * MAP_UNIT;
-			if( vx == armor_x && vy == armor_y ) {
-				drawArmorShop( xp, yp )
-			} else if( vx == weapon_x && vy == weapon_y ) {
-				drawWeaponShop( xp, yp )
-			} else {
-				drawRandomHouse( xp, yp );
-			}
+	xpos <- mixHouseCoordinates( [ 0, 1, 2, 3 ] );
+	ypos <- mixHouseCoordinates( [ 0, 1, 2, 3 ] );
+	for( h <- 0; h < 16; h++ ) {
+		vx = xpos[h % 4];
+		vy = ypos[h / 4];
+		
+		xp = x + vx * 4 * MAP_UNIT;
+		yp = y + (( vy * 4 ) + 1 ) * MAP_UNIT;
+		
+		if( h == 0 ) {
+			print( "amor shop at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
+			drawArmorShop( xp, yp )
+		} else if( h == 1 ) {
+			print( "weapon shop at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
+			drawWeaponShop( xp, yp )
+		} else if( h == 2 ) {
+			print( "inn at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
+			drawInn( xp, yp )				
+		} else {
+			drawRandomHouse( xp, yp );
 		}
 	}	
+}
+
+function mixHouseCoordinates( pos ) {
+  i <- 0;
+  tmp <- 0;
+  p <- 0;
+  for( i = 0; i < pos.len(); i++ ) {
+  	p = ( rand() * pos.len().tofloat() / RAND_MAX ).tointeger();
+  	tmp = pos[i];
+  	pos[i] = pos[p];
+  	pos[p] = tmp;
+  }
+  
+  return pos;
 }
 
 /** 
