@@ -230,6 +230,8 @@ public:
 
 	Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
 	~Map();
+	
+	bool isOnFloorTile( int px, int py );
 
 	inline void setGridEnabled( bool b ) {
 		this->gridEnabled = b;

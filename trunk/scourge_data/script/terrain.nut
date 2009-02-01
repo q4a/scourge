@@ -350,6 +350,8 @@ function drawWeaponShop( x, y ) {
 function drawInn( x, y ) {
 	print("Making inn!\n");
 	drawHouseSquare( x, y );
+	scourgeGame.getMission().setMapPosition( x + 2, y - MAP_UNIT, 7, "SIGN_INN" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 12, y + MAP_UNIT * 2 + 4, 7, "SIGN_INN_180" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y + MAP_UNIT, 0, "BAR_270" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8, y + MAP_UNIT + 6, 0, "BAR_270" );
 	scourgeGame.getMission().addItem( "Barrel", x + MAP_UNIT * 2 + 10, y + MAP_UNIT - 6, 0, true );
