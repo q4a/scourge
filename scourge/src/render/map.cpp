@@ -676,12 +676,22 @@ bool Map::checkUnderRoof() {
 	} else if ( adapter->getPlayer() ) {
 		int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
 		int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
-		Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
-		if ( !( roof && roof->shape && roof->shape->isRoof() ) ) {
+		if( !isOnFloorTile( px, py ) ) {
 			isCurrentlyUnderRoof = false;
 		}
+		
+//		Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
+//		if ( !( roof && roof->shape && roof->shape->isRoof() ) ) {
+//			isCurrentlyUnderRoof = false;
+//		}
 	}
 	return ( isCurrentlyUnderRoof != oldRoof );
+}
+
+bool Map::isOnFloorTile( int px, int py ) {
+	int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;		
+	return getFloorPosition( fx, fy );
 }
 
 /// Sets up a map location and checks whether it is visible/accessible.

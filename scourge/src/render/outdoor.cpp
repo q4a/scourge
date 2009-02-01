@@ -79,8 +79,14 @@ void Outdoor::drawMap() {
 		
 		// don't draw the player
 		if( map->isCurrentlyUnderRoof || !( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
-			map->other[i].draw();
+			// only draw inside of houses when under roof
+			int px = map->other[i].pos->x + map->other[i].pos->shape->getWidth() / 2;
+			int py = map->other[i].pos->y - 1 - map->other[i].pos->shape->getDepth() / 2;
+			if( map->isCurrentlyUnderRoof || !map->isOnFloorTile( px, py ) ) {
+				map->other[i].draw();
+			}
 		} else {
+			// don't draw party members yet
 			shades.push_back( &map->other[i] );
 		}
 
