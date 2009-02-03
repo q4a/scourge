@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2009-02-03 13:32+0100\n"
-"PO-Revision-Date: 2009-02-03 23:53+0100\n"
+"PO-Revision-Date: 2009-02-04 00:19+0100\n"
 "Last-Translator: Diego J. Romero López <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -228,7 +228,7 @@ msgstr "Partidas guardadas actualmente:"
 
 #: src/savegamedialog.cpp:59
 msgid "New Save"
-msgstr "Guardar nueva"
+msgstr "Guarda nueva"
 
 #: src/savegamedialog.cpp:60
 #: src/mapeditor.cpp:98
@@ -445,7 +445,7 @@ msgstr "Total seleccionado:"
 #: src/identifydialog.cpp:48
 #: src/containergui.cpp:47
 msgid "Info"
-msgstr "Información"
+msgstr "Inform."
 
 #: src/tradedialog.cpp:54
 msgid "Steal"
