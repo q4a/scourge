@@ -785,7 +785,7 @@ public:
 	/// The item at a specified backpack index.
 	Item *getBackpackItem( int backpackIndex );
 
-	bool addToBackpack( Item *item, int itemX=0, int itemY=0 );
+	bool addToBackpack( Item *item, int itemX=0, int itemY=0, bool force=false );
 	Item *removeFromBackpack( int backpackIndex );
 	void debugBackpack();
 	int findInBackpack( Item *item );
@@ -793,7 +793,7 @@ public:
 
 	Item *getEquippedItem( int equipLocation );
 	Item *getEquippedItemByIndex( int equipIndex );
-	void equipFromBackpack( int backpackIndex, int equipIndexHint = -1 );
+	bool equipFromBackpack( int backpackIndex, int equipIndexHint = -1 );
 	int doff( int backpackIndex );
 	bool isEquippedWeapon( int equipLocation );
 
