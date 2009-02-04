@@ -206,8 +206,8 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 
 /// Puts another item inside this item.
 
-bool Item::addContainedItem( Item *item, int itemX, int itemY ) {
-	if ( containedItemCount < MAX_CONTAINED_ITEMS && findInventoryPosition( item, itemX, itemY, true ) ) {
+bool Item::addContainedItem( Item *item, int itemX, int itemY, bool force ) {
+	if ( containedItemCount < MAX_CONTAINED_ITEMS && ( findInventoryPosition( item, itemX, itemY, true ) || force ) ) {
 		containedItems[containedItemCount++] = item;
 		if ( item->isMagicItem() ) containsMagicItem = true;
 		return true;

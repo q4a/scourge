@@ -182,7 +182,7 @@ public:
 	inline int getContainedItemCount() {
 		return containedItemCount;
 	}
-	bool addContainedItem( Item *item, int itemX=0, int itemY=0 );
+	bool addContainedItem( Item *item, int itemX=0, int itemY=0, bool force=false );
 	void removeContainedItem( Item *item );
 	Item *getContainedItem( int index );
 	void setContainedItem( int index, Item *item );

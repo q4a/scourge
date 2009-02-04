@@ -419,9 +419,8 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
 		Item *item = Item::load( session, info->backpack[i] );
 		if ( item ) {
-			if( !creature->addToBackpack( item ) ) {
-				cerr << "Warning: could not add item to backpack: " << item->getName() << endl;
-			}
+			// force add to backpack
+			creature->addToBackpack( item, 0, 0, true );
 		}
 	}
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
@@ -919,9 +918,9 @@ void Creature::pickUpOnMap( RenderedItem *item ) {
 
 /// Adds an item to the creature's backpack.
 
-bool Creature::addToBackpack( Item *item, int itemX, int itemY ) {
+bool Creature::addToBackpack( Item *item, int itemX, int itemY, bool force ) {
 	BackpackInfo *info = getBackpackInfo( item, true );
-	if ( backpack->addContainedItem( item, itemX, itemY ) ) {
+	if ( backpack->addContainedItem( item, itemX, itemY, force ) ) {
 
 		info->equipIndex = -1;
 		info->backpackIndex = backpack->getContainedItemCount() - 1;
@@ -1266,13 +1265,14 @@ void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *sk
 
 /// equip or doff if already equipped
 
-void Creature::equipFromBackpack( int backpackIndex, int equipIndexHint ) {
+bool Creature::equipFromBackpack( int backpackIndex, int equipIndexHint ) {
 	this->battle->invalidate();
 	// doff
-	if ( doff( backpackIndex ) ) return;
+	if ( doff( backpackIndex ) ) return true;
 	// don
 	// FIXME: take into account: two-handed weapons, min skill req-s., etc.
 	Item *item = getBackpackItem( backpackIndex );
+	if( !item ) return false;
 #ifdef DEBUG_INVENTORY
 	cerr << "item at pos " << backpackIndex << " item=" << item << endl;
 	debugBackpack();
@@ -1328,7 +1328,9 @@ void Creature::equipFromBackpack( int backpackIndex, int equipIndexHint ) {
 		// call script
 		if ( isPartyMember() ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
 
-		return;
+		return true;
+	} else {
+		return false;
 	}
 }
 
