@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2009-02-03 13:32+0100\n"
-"PO-Revision-Date: 2009-02-04 00:19+0100\n"
+"PO-Revision-Date: 2009-02-05 01:22+0100\n"
 "Last-Translator: Diego J. Romero López <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -584,7 +584,7 @@ msgstr "Cargando formas"
 #: src/session.cpp:127
 #: src/rpg/character.cpp:51
 msgid "Loading Professions"
-msgstr "Cargando Profesiones"
+msgstr "Cargando profesiones"
 
 #: src/session.cpp:131
 #: src/rpg/rpgitem.cpp:165
@@ -596,7 +596,7 @@ msgstr "Cargando ítems"
 #: src/session.cpp:135
 #: src/rpg/spell.cpp:99
 msgid "Loading Spells"
-msgstr "Cargando Hechizos"
+msgstr "Cargando hechizos"
 
 #: src/session.cpp:139
 msgid "Loading Characters"
@@ -606,7 +606,7 @@ msgstr "Cargando personajes"
 #: src/rpg/monster.cpp:35
 #: src/render/map.cpp:3050
 msgid "Loading Creatures"
-msgstr "Cargando Criaturas"
+msgstr "Cargando criaturas"
 
 #: src/session.cpp:146
 msgid "Loading Portraits"
@@ -614,7 +614,7 @@ msgstr "Cargando retratos"
 
 #: src/session.cpp:156
 msgid "Initializing Party"
-msgstr "Inicializando la fiesta"
+msgstr "Inicializando grupo"
 
 #: src/session.cpp:159
 msgid "Initializing Scripting"
