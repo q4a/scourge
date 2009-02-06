@@ -390,6 +390,39 @@ function drawInn( x, y ) {
 	// now make this person an inn-keeper
 }
 
+function drawMarket( x, y ) {
+	print("Making market!\n");
+}
+
+function drawGarden( x, y ) {
+	print("Making garden!\n");
+	scourgeGame.getMission().setMapPosition( x, y - MAP_UNIT + 2, 0, "FENCE_CORNER" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y - MAP_UNIT + 2, 0, "FENCE_CORNER_90" );
+	scourgeGame.getMission().setMapPosition( x, y + MAP_UNIT * 2, 0, "FENCE_CORNER_270" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + MAP_UNIT * 2, 0, "FENCE_CORNER_180" );
+	for( ix <- 0; ix < 3; ix++ ) {
+		scourgeGame.getMission().setMapPosition( x + 2 + ix * 6, y - MAP_UNIT + 1, 0, "FENCE" );
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8 - ( ix * 6 ), y - MAP_UNIT + 1, 0, "FENCE" );
+		scourgeGame.getMission().setMapPosition( x + 2 + ix * 6, y + MAP_UNIT * 2, 0, "FENCE" );		
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 8 - ( ix * 6 ), y + MAP_UNIT * 2, 0, "FENCE" );
+		scourgeGame.getMission().setMapPosition( x, y - MAP_UNIT + 8 + ix * 6, 0, "FENCE_90" );
+		scourgeGame.getMission().setMapPosition( x, y + MAP_UNIT * 2 - 2 - ix * 6, 0, "FENCE_90" );
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 15, y - MAP_UNIT + 8 + ix * 6, 0, "FENCE_90" );
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 15, y + MAP_UNIT * 2 - 2 - ix * 6, 0, "FENCE_90" );
+	}
+	scourgeGame.getMission().addItem( "Bench", x + 4, y - MAP_UNIT + 3, 0, false );
+	scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT * 2, y - MAP_UNIT + 3, 0, false );
+	scourgeGame.getMission().addItem( "Bench", x + 4, y + MAP_UNIT * 2 - 1, 0, false );
+		scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT * 2, y + MAP_UNIT * 2 - 1, 0, false );
+	scourgeGame.getMission().setMapPosition( x + 10, y - MAP_UNIT + 14, 0, getTree() );			
+	scourgeGame.getMission().setMapPosition( x + 36, y - MAP_UNIT + 14, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 10, y - MAP_UNIT + 38, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 36, y - MAP_UNIT + 38, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 23, y - MAP_UNIT + 20, 0, "RUINS" );
+	scourgeGame.getMission().setMapPosition( x + 22, y - MAP_UNIT + 28, 0, "POOL" );
+	scourgeGame.getMission().setMapPosition( x + 23, y - MAP_UNIT + 34, 0, "RUINS2" );
+}
+
 function drawVillage( x, y, village_width, village_height ) {
 	scourgeGame.getMission().clearHouses();
 	
@@ -398,24 +431,29 @@ function drawVillage( x, y, village_width, village_height ) {
 	xp <- 0;
 	yp <- 0;
 	
-	xpos <- mixHouseCoordinates( [ 0, 1, 2, 3 ] );
-	ypos <- mixHouseCoordinates( [ 0, 1, 2, 3 ] );
+	pos <- mixHouseCoordinates( [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ] );
 	for( h <- 0; h < 16; h++ ) {
-		vx = xpos[h % 4];
-		vy = ypos[h / 4];
+		vx = pos[h] % 4;
+		vy = pos[h] / 4;
 		
 		xp = x + vx * 4 * MAP_UNIT;
 		yp = y + (( vy * 4 ) + 1 ) * MAP_UNIT;
 		
 		if( h == 0 ) {
-			print( "amor shop at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
+			print( "amor shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawArmorShop( xp, yp )
 		} else if( h == 1 ) {
-			print( "weapon shop at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
+			print( "weapon shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawWeaponShop( xp, yp )
 		} else if( h == 2 ) {
-			print( "inn at " + xpos[vx].tostring() + "," + ypos[vy].tostring() + "\n" );
-			drawInn( xp, yp )				
+			print( "inn at " + vx.tostring() + "," + vy.tostring() + "\n" );
+			drawInn( xp, yp )
+		} else if( h == 3 ) {
+			print( "market at " + vx.tostring() + "," + vy.tostring() + "\n" );
+			drawMarket( xp, yp );
+		} else if( h == 4 ) {
+			print( "garden at " + vx.tostring() + "," + vy.tostring() + "\n" );
+			drawGarden( xp, yp );			
 		} else {
 			drawRandomHouse( xp, yp );
 		}
@@ -423,13 +461,12 @@ function drawVillage( x, y, village_width, village_height ) {
 }
 
 function mixHouseCoordinates( pos ) {
-  i <- 0;
   tmp <- 0;
   p <- 0;
-  for( i = 0; i < pos.len(); i++ ) {
+  for( im <- 0; im < pos.len(); im++ ) {
   	p = ( rand() * pos.len().tofloat() / RAND_MAX ).tointeger();
-  	tmp = pos[i];
-  	pos[i] = pos[p];
+  	tmp = pos[im];
+  	pos[im] = pos[p];
   	pos[p] = tmp;
   }
   
