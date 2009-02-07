@@ -106,6 +106,9 @@ void Outdoor::drawMap() {
 	// doors
 	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
 	
+	// floor tiles (so there is no weird aliasing effect with trees)
+	map->setupShapes( true, false );
+	
 	drawWalls();
 
 	// roofs
@@ -268,7 +271,8 @@ void Outdoor::doRenderFloor() {
 		drawHeightMapFloor();
 		drawWaterLevel();
 	}
-	map->setupShapes( true, false );
+	// floor tiles come later
+	//map->setupShapes( true, false );
 }
 
 /// Draws the ground on outdoor maps.

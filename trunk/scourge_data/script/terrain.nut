@@ -191,7 +191,7 @@ function getHousePostfix() {
 	return house_postfix;
 }
 
-ROOF_POSTFIX <- [ "", "_SLATE" ];
+ROOF_POSTFIX <- [ "", "_SLATE", "_RED" ];
 function getRoofPostfix() {
 	roof_postfix <- ROOF_POSTFIX[ ( rand() * ROOF_POSTFIX.len().tofloat() / RAND_MAX ).tointeger() ];
 	//print( "Using roof type: " + roof_postfix + "\n" );
@@ -208,8 +208,14 @@ function drawHouseZ( x, y ) {
 	scourgeGame.getMission().endHouse();
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + MAP_UNIT * 2, 0, getTree() );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 9, y + MAP_UNIT * 2 - 10, 0, getTree() );
-	scourgeGame.getMission().setMapPosition( x + 2, y - 10, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 2, y - 4, 0, getTree() );
 	scourgeGame.getMission().setMapPosition( x + 5, y + 4, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + 6, 0, "FENCE_90" );
+	scourgeGame.getMission().setMapPosition( x + 2, y + MAP_UNIT, 0, "FENCE_90" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2, y + MAP_UNIT * 2 - 2, 0, "FENCE" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 6, y + MAP_UNIT * 2 - 2, 0, "FENCE" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT - 6, y - MAP_UNIT + 2, 0, "FENCE" );
+	scourgeGame.getMission().setMapPosition( x + MAP_UNIT - 12, y - MAP_UNIT + 2, 0, "FENCE" );
 }
 
 function drawHouseL( x, y ) {
@@ -223,6 +229,12 @@ function drawHouseL( x, y ) {
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 8, y + MAP_UNIT * 2 - 8, 0, getTree() );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 19, y + MAP_UNIT * 2 - 12, 0, getTree() );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT + 30, y + MAP_UNIT * 2 - 8, 0, getTree() );
+	for( fx <- 0; fx < 5; fx++ ) {
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT + ( fx * 6 ), y + MAP_UNIT * 2 - 2, 0, "FENCE" );
+	}
+	for( fy <- 0; fy < 1; fy++ ) {
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y + ( ( fy + 1 ) * 6 ), 0, "FENCE_90" );
+	}
 }
 
 function drawHouseL2( x, y ) {
@@ -232,10 +244,16 @@ function drawHouseL2( x, y ) {
 	drawHousePart( postfix, roof_postfix,  x + 2 * MAP_UNIT, y + 2 * MAP_UNIT, 1, 3, 0 );
 	drawHousePart( postfix, roof_postfix,  x, y + 2 * MAP_UNIT, 2, 1, 0 );
 	scourgeGame.getMission().endHouse();
-	scourgeGame.getMission().setMapPosition( x, y - 8, 0, getTree() );
-	scourgeGame.getMission().setMapPosition( x + 11, y - 2, 0, getTree() );
-	scourgeGame.getMission().setMapPosition( x + 22, y - 8, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x, y - 4, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 11, y, 0, getTree() );
+	scourgeGame.getMission().setMapPosition( x + 22, y - 4, 0, getTree() );
 	scourgeGame.getMission().setMapPosition( x + 23, y + 11, 0, getTree() );
+	for( fx <- 0; fx < 5; fx++ ) {
+		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 - ( ( fx + 1 ) * 6 ), y - MAP_UNIT + 2, 0, "FENCE" );
+	}
+	for( fy <- 0; fy < 1; fy++ ) {
+		scourgeGame.getMission().setMapPosition( x + 2, y + MAP_UNIT, 0, "FENCE_90" );
+	}
 }
 
 function drawHouseSquare( x, y ) {
