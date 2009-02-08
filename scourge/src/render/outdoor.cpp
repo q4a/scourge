@@ -47,6 +47,7 @@ GLfloat waterTexY = 0;
 /// Renders the 3D view for outdoor levels.
 
 void Outdoor::drawMap() {
+	vector<RenderedLocation*> shades;
 	bool stencilOn = !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized();
 	
 	if( stencilOn ) {
@@ -59,46 +60,8 @@ void Outdoor::drawMap() {
 	// draw the ground
 	renderFloor();
 	
-	// draw the creatures/objects/doors/etc.
-	vector<RenderedLocation*> shades;
-	for ( int i = 0; i < map->otherCount; i++ ) {
-		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
-		if( shape->isVirtual() ) {
-			shape = ((VirtualShape*)shape)->getRef();
-		}
-		
-		if( shape->isLightBlocking() ) {
-			continue;
-		}
-		
-		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
-		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
-			RenderedLocation::colorAlreadySet = true;
-			setupDropLocationColor();
-		}
-		
-		// don't draw the player
-		if( map->isCurrentlyUnderRoof || !( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
-			// only draw inside of houses when under roof
-			int px = map->other[i].pos->x + map->other[i].pos->shape->getWidth() / 2;
-			int py = map->other[i].pos->y - 1 - map->other[i].pos->shape->getDepth() / 2;
-			if( map->isCurrentlyUnderRoof || !map->isOnFloorTile( px, py ) ) {
-				map->other[i].draw();
-			}
-		} else {
-			// don't draw party members yet
-			shades.push_back( &map->other[i] );
-		}
-
-		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
-		// draw simple shadow in outdoors
-		if ( map->other[i].pos->creature ) {
-			setupShadowColor();
-			drawGroundTex( map->outdoorShadow, map->other[i].pos->creature->getX() + 0.25f, map->other[i].pos->creature->getY() + 0.25f, ( map->other[i].pos->creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].pos->creature->getShape()->getDepth() * 0.7f );
-		} else if ( map->other[i].pos && map->other[i].pos->shape && map->other[i].pos->shape->isOutdoorShadow() ) {
-			setupShadowColor();
-			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
-		}
+	if( map->isCurrentlyUnderRoof ) {
+		drawObjects( &shades );	
 	}
 	
 	glEnable( GL_TEXTURE_2D );
@@ -106,13 +69,15 @@ void Outdoor::drawMap() {
 	// doors
 	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
 	
-	// floor tiles (so there is no weird aliasing effect with trees)
-	map->setupShapes( true, false );
-	
 	drawWalls();
 
 	// roofs
 	drawRoofs();
+	
+	// draw the creatures/objects/trees/etc.
+	if( !map->isCurrentlyUnderRoof ) {
+		drawObjects( &shades );	
+	}
 	
 	// draw the player and remove it from the stencil (so walls behind the player don't show thru)
 	if( !map->isCurrentlyUnderRoof ) {
@@ -162,6 +127,48 @@ void Outdoor::drawMap() {
 		glDepthMask( GL_TRUE );		
 	}
 #endif
+}
+
+void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
+	for ( int i = 0; i < map->otherCount; i++ ) {
+		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
+		if( shape->isVirtual() ) {
+			shape = ((VirtualShape*)shape)->getRef();
+		}
+		
+		if( shape->isLightBlocking() ) {
+			continue;
+		}
+		
+		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
+		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
+			RenderedLocation::colorAlreadySet = true;
+			setupDropLocationColor();
+		}
+		
+		// don't draw the player
+		if( map->isCurrentlyUnderRoof || !( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
+			// only draw inside of houses when under roof
+			int px = map->other[i].pos->x + map->other[i].pos->shape->getWidth() / 2;
+			int py = map->other[i].pos->y - 1 - map->other[i].pos->shape->getDepth() / 2;
+			if( map->isCurrentlyUnderRoof || !map->isOnFloorTile( px, py ) ) {
+				map->other[i].draw();
+			}
+		} else {
+			// don't draw party members yet
+			shades->push_back( &map->other[i] );
+		}
+
+		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
+		// draw simple shadow in outdoors
+		if ( map->other[i].pos->creature ) {
+			setupShadowColor();
+			drawGroundTex( map->outdoorShadow, map->other[i].pos->creature->getX() + 0.25f, map->other[i].pos->creature->getY() + 0.25f, ( map->other[i].pos->creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].pos->creature->getShape()->getDepth() * 0.7f );
+		} else if ( map->other[i].pos && map->other[i].pos->shape && map->other[i].pos->shape->isOutdoorShadow() ) {
+			setupShadowColor();
+			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
+		}
+	}
 }
 
 /// Draws creature effects and damage counters.
@@ -271,8 +278,7 @@ void Outdoor::doRenderFloor() {
 		drawHeightMapFloor();
 		drawWaterLevel();
 	}
-	// floor tiles come later
-	//map->setupShapes( true, false );
+	map->setupShapes( true, false );
 }
 
 /// Draws the ground on outdoor maps.
