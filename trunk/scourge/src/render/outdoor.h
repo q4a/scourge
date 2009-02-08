@@ -58,6 +58,7 @@ protected:
 	void drawRoofs();
 	
 private:
+	void drawObjects( std::vector<RenderedLocation*> *shades );
 	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );	
 	bool drawHeightMapFloor();
 	void drawWaterLevel();

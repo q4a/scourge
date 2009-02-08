@@ -408,12 +408,7 @@ function drawInn( x, y ) {
 	// now make this person an inn-keeper
 }
 
-function drawMarket( x, y ) {
-	print("Making market!\n");
-}
-
-function drawGarden( x, y ) {
-	print("Making garden!\n");
+function drawFence( x, y ) {
 	scourgeGame.getMission().setMapPosition( x, y - MAP_UNIT + 2, 0, "FENCE_CORNER" );
 	scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 14, y - MAP_UNIT + 2, 0, "FENCE_CORNER_90" );
 	scourgeGame.getMission().setMapPosition( x, y + MAP_UNIT * 2, 0, "FENCE_CORNER_270" );
@@ -428,6 +423,16 @@ function drawGarden( x, y ) {
 		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 15, y - MAP_UNIT + 8 + ix * 6, 0, "FENCE_90" );
 		scourgeGame.getMission().setMapPosition( x + MAP_UNIT * 2 + 15, y + MAP_UNIT * 2 - 2 - ix * 6, 0, "FENCE_90" );
 	}
+}
+
+function drawMarket( x, y ) {
+	print("Making market!\n");
+	drawFence( x, y );
+}
+
+function drawGarden( x, y ) {
+	print("Making garden!\n");
+	drawFence( x, y );
 	scourgeGame.getMission().addItem( "Bench", x + 4, y - MAP_UNIT + 3, 0, false );
 	scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT * 2, y - MAP_UNIT + 3, 0, false );
 	scourgeGame.getMission().addItem( "Bench", x + 4, y + MAP_UNIT * 2 - 1, 0, false );
