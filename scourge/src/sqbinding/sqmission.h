@@ -106,6 +106,9 @@ public:
 	static int _startHouse( HSQUIRRELVM vm );
 	static int _endHouse( HSQUIRRELVM vm );
 	static int _clearHouses( HSQUIRRELVM vm ); 
+	
+	static int _setRug( HSQUIRRELVM vm );
+	static int _removeRug( HSQUIRRELVM vm ); 	
 };
 
 #endif
