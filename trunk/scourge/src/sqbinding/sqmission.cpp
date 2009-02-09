@@ -72,6 +72,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "startHouse", SqMission::_startHouse, 0, 0, "Start defining a house." },
 	{ "void", "endHouse", SqMission::_endHouse, 0, 0, "End defining a house." },
 	{ "void", "clearHouses", SqMission::_clearHouses, 0, 0, "Clear house definitions." },
+	{ "void", "setRug", SqMission::_setRug, 0, 0, "Put a rug on the map." },
+	{ "void", "removeRug", SqMission::_removeRug, 0, 0, "Remove a rug from the map." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -218,6 +220,25 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	if( shape->getIgnoreHeightMap() ) SqBinding::sessionRef->getMap()->flattenChunk( x, y ); 
 	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
+	return 0;
+}
+
+int SqMission::_setRug( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+	Rug rug;
+	rug.isHorizontal = Util::dice( 2 ) == 0 ? true : false;
+	rug.texture = SqBinding::sessionRef->getShapePalette()->getRandomRug();
+	cerr << "texture=" << rug.texture.isSpecified() << endl;
+	rug.angle = Util::roll( -15.0f, 15.0f );
+	SqBinding::sessionRef->getMap()->setRugPosition( x, y, &rug );
+	return 0;
+}
+
+int SqMission::_removeRug( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getMap()->removeRugPosition( x, y );
 	return 0;
 }
 
