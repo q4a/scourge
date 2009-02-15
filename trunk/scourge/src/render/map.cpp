@@ -3503,15 +3503,15 @@ void Map::startHouse() {
 
 void Map::endHouse() {
 	currentHouse = NULL;
-	cerr << "House count=" << houses.size() << endl;
-	for( unsigned int i = 0; i < houses.size(); i++ ) {
-		cerr << "House " << i;
-		for( set<Location*>::iterator e = houses[i].begin(); e != houses[i].end(); ++e ) {
-			Location *pos = *e;
-			cerr << ", " << "[" << pos->x << "," << pos->y << "," << pos->z << "]:" << pos->shape->getName();
-		}
-		cerr << endl;
-	}
+//	cerr << "House count=" << houses.size() << endl;
+//	for( unsigned int i = 0; i < houses.size(); i++ ) {
+//		cerr << "House " << i;
+//		for( set<Location*>::iterator e = houses[i].begin(); e != houses[i].end(); ++e ) {
+//			Location *pos = *e;
+//			cerr << ", " << "[" << pos->x << "," << pos->y << "," << pos->z << "]:" << pos->shape->getName();
+//		}
+//		cerr << endl;
+//	}
 }
 
 void Map::clearHouses() {
