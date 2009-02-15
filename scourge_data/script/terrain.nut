@@ -306,6 +306,8 @@ function drawHouseZ( x, y, furnish ) {
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT, y + MAP_UNIT * 2, 1, 3, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT * 2, y, 1, 1, 180, furnish );
 	scourgeGame.getMission().endHouse();
+	setPosition( x + MAP_UNIT - 2, y + MAP_UNIT - 4, 0, "LOGS_90", false );
+	setPosition( x + MAP_UNIT * 2, y + MAP_UNIT - 6, 0, "LOGS_90", true );
 	setPosition( x + MAP_UNIT * 2 + 14, y + MAP_UNIT * 2, 0, getTree(), false );
 	setPosition( x + MAP_UNIT * 2 + 9, y + MAP_UNIT * 2 - 10, 0, getTree(), false );
 	setPosition( x + 2, y - 4, 0, getTree(), false );
@@ -339,6 +341,7 @@ function drawHouseL( x, y, furnish ) {
 	}
 	setPosition( x - 1, y + MAP_UNIT * 2 + 2, 0, "ROAD_SIGN", false );
 	setPosition( x + MAP_UNIT * 3 - 7, y - MAP_UNIT - 1, 0, "ROAD_SIGN", false );
+	setPosition( x + MAP_UNIT, y + MAP_UNIT - 6, 0, "LOGS_90", false );
 }
 
 function drawHouseL2( x, y, furnish ) {
@@ -348,6 +351,7 @@ function drawHouseL2( x, y, furnish ) {
 	drawHousePart( postfix, roof_postfix,  x + 2 * MAP_UNIT, y + 2 * MAP_UNIT, 1, 3, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x, y + 2 * MAP_UNIT, 2, 1, 0, furnish );
 	scourgeGame.getMission().endHouse();
+	setPosition( x + MAP_UNIT, y + MAP_UNIT, 0, "LOGS", true );
 	setPosition( x, y - 4, 0, getTree(), false );
 	setPosition( x + 11, y, 0, getTree(), false );
 	setPosition( x + 22, y - 4, 0, getTree(), false );
@@ -360,6 +364,7 @@ function drawHouseL2( x, y, furnish ) {
 	}
 	setPosition( x - 2, y + 2 * MAP_UNIT, 0, "ROAD_SIGN_90", false );
 	setPosition( x + 3 * MAP_UNIT + 1, y - 11, 0, "ROAD_SIGN_90", false );
+	
 }
 
 function drawHouseSquare( x, y, furnish ) {
