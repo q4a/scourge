@@ -229,7 +229,6 @@ int SqMission::_setRug( HSQUIRRELVM vm ) {
 	Rug rug;
 	rug.isHorizontal = Util::dice( 2 ) == 0 ? true : false;
 	rug.texture = SqBinding::sessionRef->getShapePalette()->getRandomRug();
-	cerr << "texture=" << rug.texture.isSpecified() << endl;
 	rug.angle = Util::roll( -15.0f, 15.0f );
 	SqBinding::sessionRef->getMap()->setRugPosition( x, y, &rug );
 	return 0;
