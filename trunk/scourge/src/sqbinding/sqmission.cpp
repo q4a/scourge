@@ -39,7 +39,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
 	{ "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
 	{ "void", "replaceCreature", SqMission::_replaceCreature, 0, 0, "Replace the given creature with a new one of the given type on the map." },
-	{ "Creature", "addCreature", SqMission::_addCreature, 0, 0, "Create a new creature from the given template. Return a reference to the monster or npc created. It is valid while on this map." },
+	{ "Creature", "addCreature", SqMission::_addCreature, 0, 0, "Create a new creature from the given template exactly at the specified location. Return a reference to the monster or npc created. It is valid while on this map." },
+	{ "Creature", "addCreatureAround", SqMission::_addCreatureAround, 0, 0, "Create a new creature from the given template around the specified location. Return a reference to the monster or npc created. It is valid while on this map." },
 	{ "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
 	{ "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
 	{ "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
@@ -133,6 +134,18 @@ int SqMission::_addCreature( HSQUIRRELVM vm ) {
 	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
 	return 1;
 }
+
+int SqMission::_addCreatureAround( HSQUIRRELVM vm ) {
+	GET_STRING( creatureType, 200 )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	int fx, fy;
+	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y, &fx, &fy );
+	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
+	return 1;
+}
+
 
 int SqMission::_addItem( HSQUIRRELVM vm ) {
 	GET_BOOL( isContainer )
