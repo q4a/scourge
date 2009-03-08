@@ -142,8 +142,14 @@ function furnishArea( x, y, w, h ) {
 
 // draw parts of a house
 // NOTE: make sure roof-s are placed on the map, after walls! (so they're drawn together)
-function drawHousePart( postfix, roof_postfix, x, y, w, h, angle, furnish ) {
-	//print( "postfix=" + postfix + " roof=" + roof_postfix + "\n" );
+function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, furnish ) {
+	//print( "pos=" + x + "," + y + " size=" + w + "," + h + " postfix=" + postfix_param + " roof=" + roof_postfix_param + "\n" );
+	postfix <- postfix_param
+	if( roof_postfix_param == "church" ) {
+		roof_postfix <- "";
+	} else {
+		roof_postfix <- roof_postfix_param
+	}
 	i <- 0;
 	t <- 0;
 	if( w == 1 && h == 3 && angle == 0 ) {
@@ -162,7 +168,11 @@ function drawHousePart( postfix, roof_postfix, x, y, w, h, angle, furnish ) {
 		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x,            y - 2 * MAP_UNIT, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - 2 * MAP_UNIT, "ROOM_FLOOR_TILE" );
-		setPosition( x - 2, y + 2, 12, "P_ROOF_2x2" + roof_postfix, true );
+		if( roof_postfix_param == "church" ) {
+			setPosition( x - 2, y + 2, 12, "P_CHURCH_2x2", true );
+		} else {
+			setPosition( x - 2, y + 2, 12, "P_ROOF_2x2" + roof_postfix, true );
+		}
 	} else if( w == 2 && h == 1 ) {
 		switch( angle ) {	
 		case 0: 
@@ -236,9 +246,13 @@ function drawStreetlights( x, y ) {
 	setPosition( x + 8 + 7, y + MAP_UNIT * 2 + 5, 0, "STREETLIGHT_90", true );
 }
 
-function drawHouseZ( x, y, furnish ) {
-	postfix <- getHousePostfix();
-	roof_postfix <- getRoofPostfix();
+function drawHouseZ( x, y, furnish, postfix, roof_postfix ) {
+	if( postfix == null ) {
+		postfix = getHousePostfix();
+	}
+	if( roof_postfix == null ) {
+		roof_postfix = getRoofPostfix();
+	}
 	scourgeGame.getMission().startHouse();
 	drawHousePart( postfix, roof_postfix,  x, y + MAP_UNIT * 2, 1, 1, 0, true );
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT, y + MAP_UNIT * 2, 1, 3, 0, furnish );
@@ -261,9 +275,13 @@ function drawHouseZ( x, y, furnish ) {
 	setPosition( x + MAP_UNIT * 3 - 7, y - MAP_UNIT - 1, 0, "ROAD_SIGN", false );
 }
 
-function drawHouseL( x, y, furnish ) {
-	postfix <- getHousePostfix();
-	roof_postfix <- getRoofPostfix();
+function drawHouseL( x, y, furnish, postfix, roof_postfix ) {
+	if( postfix == null ) {
+		postfix = getHousePostfix();
+	}
+	if( roof_postfix == null ) {
+		roof_postfix = getRoofPostfix();
+	}
 	scourgeGame.getMission().startHouse();
 	drawHousePart( postfix, roof_postfix,  x, y + 2 * MAP_UNIT, 1, 3, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x + 1 * MAP_UNIT, y, 2, 1, 180, true );
@@ -284,9 +302,13 @@ function drawHouseL( x, y, furnish ) {
 	setPosition( x + MAP_UNIT, y + MAP_UNIT - 6, 0, "LOGS_90", false );
 }
 
-function drawHouseL2( x, y, furnish ) {
-	postfix <- getHousePostfix();
-	roof_postfix <- getRoofPostfix();
+function drawHouseL2( x, y, furnish, postfix, roof_postfix ) {
+	if( postfix == null ) {
+		postfix = getHousePostfix();
+	}
+	if( roof_postfix == null ) {
+		roof_postfix = getRoofPostfix();
+	}
 	scourgeGame.getMission().startHouse();
 	drawHousePart( postfix, roof_postfix,  x + 2 * MAP_UNIT, y + 2 * MAP_UNIT, 1, 3, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x, y + 2 * MAP_UNIT, 2, 1, 0, true );
@@ -308,9 +330,13 @@ function drawHouseL2( x, y, furnish ) {
 	
 }
 
-function drawHouseSquare( x, y, furnish ) {
-	postfix <- getHousePostfix();
-	roof_postfix <- getRoofPostfix();
+function drawHouseSquare( x, y, furnish, postfix, roof_postfix ) {
+	if( postfix == null ) {
+		postfix = getHousePostfix();
+	}
+	if( roof_postfix == null ) {
+		roof_postfix = getRoofPostfix();
+	}
 	scourgeGame.getMission().startHouse();
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT, y + 2 * MAP_UNIT, 2, 2, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT, y, 1, 1, 90, true );
@@ -324,9 +350,13 @@ function drawHouseSquare( x, y, furnish ) {
 	setPosition( x + 3, y + MAP_UNIT * 2, 0, getTree(), false );	
 }
 
-function drawHouseSquare2( x, y, furnish ) {
-	postfix <- getHousePostfix();
-	roof_postfix <- getRoofPostfix();
+function drawHouseSquare2( x, y, furnish, postfix, roof_postfix ) {
+	if( postfix == null ) {
+		postfix = getHousePostfix();
+	}
+	if( roof_postfix == null ) {
+		roof_postfix = getRoofPostfix();
+	}
 	scourgeGame.getMission().startHouse();
 	drawHousePart( postfix, roof_postfix,  x, y + 1 * MAP_UNIT, 2, 2, 0, furnish );
 	drawHousePart( postfix, roof_postfix,  x + MAP_UNIT, y + 2 * MAP_UNIT, 1, 1, 270, true );
@@ -343,7 +373,7 @@ function drawHouseSquare2( x, y, furnish ) {
 house_functions <- [ drawHouseZ, drawHouseL, drawHouseL2, drawHouseSquare, drawHouseSquare2 ];
 function drawRandomHouse( x, y ) {
 	n <- ( rand() * house_functions.len().tofloat() / RAND_MAX ).tointeger();
-	house_functions[ n ].call( this, x, y, true );
+	house_functions[ n ].call( this, x, y, true, null, null );
 }
 
 armor <- [ "Horned helmet", "Leather Work Gloves", "Adventuring Hat", "Wooden Shield" ];
@@ -376,7 +406,7 @@ function createTable( x, y ) {
 
 function drawArmorShop( x, y ) {
 	print("Making armor shop!\n");
-	drawHouseZ( x, y, false );
+	drawHouseZ( x, y, false, null, null );
 	setPosition( x + 3, y + MAP_UNIT, 7, "SIGN_ARMOR", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_ARMOR_180", true );
 	
@@ -400,7 +430,7 @@ function drawArmorShop( x, y ) {
 
 function drawWeaponShop( x, y ) {
 	print("Making weapon shop!\n");
-	drawHouseL( x, y, false );
+	drawHouseL( x, y, false, null, null );
 	setPosition( x - 4, y + MAP_UNIT * 2 - 3, 7, "SIGN_WEAPON_90", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_WEAPON_180", true );
 	
@@ -425,7 +455,7 @@ function drawWeaponShop( x, y ) {
 
 function drawInn( x, y ) {
 	print("Making inn!\n");
-	drawHouseSquare( x, y, false );
+	drawHouseSquare( x, y, false, null, null );
 	setPosition( x + 2, y - MAP_UNIT, 7, "SIGN_INN", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + MAP_UNIT * 2 + 4, 7, "SIGN_INN_180", true );
 	setPosition( x + MAP_UNIT * 2 + 8, y + MAP_UNIT, 0, "BAR_270", false );
@@ -470,6 +500,32 @@ function drawInn( x, y ) {
 		                                            y + 2 + ( rand() * (MAP_UNIT * 2.0 - 4.0) / RAND_MAX ).tointeger(),
 		                                            0, getVillageNpcType() );
 	}	
+}
+
+function drawChurch( x, y ) {
+	print("Making church!\n");
+	drawHouseSquare( x, y, false, null, "church" );
+	for( i <- 1; i < 5; i++ ) {
+		scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT + 4, y + MAP_UNIT * 2 - ( i * 5 ), 0, false );
+		if( i >= 2 ) {
+			scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT * 2 + 2, y + MAP_UNIT * 2 - ( i * 5 ), 0, false );
+		}
+	}
+	setPosition( x + MAP_UNIT * 2 + 9, y + 7, 0, "BRAZIER_BASE", true );
+	setPosition( x + MAP_UNIT * 2 + 10, y + 6, 2, "BRAZIER", true );
+	setPosition( x + MAP_UNIT + 12, y + 5, 0, "COLUMN", true );
+	setPosition( x + MAP_UNIT * 2 - 1, y + 8, 0, "POOL", true );
+	setPosition( x + MAP_UNIT * 2 + 4, y + 5, 0, "COLUMN", true );
+	addRug( x + MAP_UNIT * 2, y + MAP_UNIT * 2, 1, 1 );
+	addRug( x + MAP_UNIT, y + MAP_UNIT, 1, 1 );
+	setPosition( x + MAP_UNIT * 2 + 1, y + MAP_UNIT * 2 + 4, 0, "COLUMN", true );
+	setPosition( x + MAP_UNIT * 3 - 4, y + MAP_UNIT * 2 + 4, 0, "COLUMN", true );
+	setPosition( x + 1, y - MAP_UNIT, 0, "COLUMN", true );
+	setPosition( x + MAP_UNIT - 4, y - MAP_UNIT, 0, "COLUMN", true );
+	
+	// add a healer
+	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 6, y + MAP_UNIT + 8, 0, getVillageNpcType() );
+		// now make this person a healer
 }
 
 function drawFence( x, y ) {
@@ -541,6 +597,9 @@ function drawVillage( x, y, village_width, village_height ) {
 		} else if( h == 4 ) {
 			print( "garden at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawGarden( xp, yp );			
+		} else if( h == 5 ) {
+			print( "church at " + vx.tostring() + "," + vy.tostring() + "\n" );
+			drawChurch( xp, yp );			
 		} else {
 			drawRandomHouse( xp, yp );
 		}
