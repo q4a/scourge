@@ -545,9 +545,50 @@ function drawFence( x, y ) {
 	}
 }
 
+carts <- [ "CART", "CART2" ];
+function getRandomCart() {
+	c <- ( rand() * carts.len().tofloat() / RAND_MAX ).tointeger();
+	return carts[c];
+}
+
 function drawMarket( x, y ) {
 	print("Making market!\n");
 	drawFence( x, y );
+	
+	mx <- 0;
+	my <- 0;
+	for( mx = 4 + ( rand() * 2.0 / RAND_MAX ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+		if( mx < MAP_UNIT + 4 || mx >= MAP_UNIT + 12 ) {
+			my = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			setPosition( x + mx, y - MAP_UNIT + 8 + my, 0, getRandomCart(), false );
+		}
+	}
+	
+	for( mx = 4 + ( rand() * 2.0 / RAND_MAX ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+		if( mx < MAP_UNIT + 4 || mx >= MAP_UNIT + 12 ) {
+			my = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			setPosition( x + mx, y + MAP_UNIT * 2 - ( 4 + my ), 0, getRandomCart(), false );
+		}
+	}
+	
+	for( my = -MAP_UNIT + 10 + ( rand() * 2.0 / RAND_MAX ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+		if( my < 4 || my > 12 ) {
+			mx = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			setPosition( x + 4 + mx, y + my, 0, getRandomCart() + "_90", false );
+		}
+	}
+	
+	for( my = -MAP_UNIT + 10 + ( rand() * 2.0 / RAND_MAX ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+		if( my < 4 || my > 12 ) {
+			mx = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			setPosition( x + MAP_UNIT * 3 - ( 8 + mx ), y + my, 0, getRandomCart() + "_90", false );
+		}
+	}
+	
+	setPosition( x + MAP_UNIT - 2, y + 5, 0, getTree(), false );
+	setPosition( x + 2 * MAP_UNIT - 6, y + 5, 0, getTree(), false );
+	setPosition( x + MAP_UNIT - 2, y + MAP_UNIT + 2, 0, getTree(), false );
+	setPosition( x + 2 * MAP_UNIT - 6, y + MAP_UNIT + 2, 0, getTree(), false );
 }
 
 function drawGarden( x, y ) {
