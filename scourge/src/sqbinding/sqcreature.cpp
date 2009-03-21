@@ -94,6 +94,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
 	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
 	{ "void", "setNpc", SqCreature::_setNpc, 0, 0, "Toggle if this creature is an npc or a monster." },
+	{ "void", "setNpcInfo", SqCreature::_setNpcInfo, 0, 0, "Make an existing creature into a specific type of npc. Params are name-suffix, profession and subtype as they appear in the maps/*.cfg files." },
 	{ "void", "setOffset", SqCreature::_setOffset, 0, 0, "Set the creature's offset on the map." },
 	
 	{ "void", "castSpell", SqCreature::_castSpell, 0, 0, "Cast a spell." },
@@ -627,7 +628,20 @@ int SqCreature::_setNpc( HSQUIRRELVM vm ) {
 	GET_BOOL( b )
 	GET_OBJECT( Creature* )
 	object->setNpc( b );
-	return 1;
+	return 0;
+}
+
+int SqCreature::_setNpcInfo( HSQUIRRELVM vm ) {
+	GET_STRING( subtype, 255 )
+	GET_STRING( profession, 255 )
+	GET_STRING( name_suffix, 255 )
+	GET_OBJECT( Creature* )
+	
+	char name[3000];
+	sprintf( name, "%s %s", Rpg::createName().c_str(), name_suffix );
+	NpcInfo *npcInfo = new NpcInfo( toint( object->getX() ), toint( object->getY() ), name, object->getLevel(), profession, subtype );
+	object->setNpcInfo( npcInfo );
+	return 0;
 }
 
 int SqCreature::_moveTo( HSQUIRRELVM vm ) {

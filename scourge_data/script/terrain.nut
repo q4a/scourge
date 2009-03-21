@@ -24,6 +24,24 @@ function getTree() {
 	return trees[c];
 }
 
+carts <- [ "CART", "CART2" ];
+function getRandomCart() {
+	c <- ( rand() * carts.len().tofloat() / RAND_MAX ).tointeger();
+	return carts[c];
+}
+
+merchant_types <- [ "ARMOR", "FOOD;DRINK", "SCROLL;POTION;WAND;RING;AMULET;STAFF", "SWORD;AXE;BOW;MACE;POLE" ];
+function getRandomMerchantType() {
+	c <- ( rand() * merchant_types.len().tofloat() / RAND_MAX ).tointeger();
+	return merchant_types[c];
+}
+
+magic_schools <- [ "Confrontation", "Ambush Trickery and Deceit", "History and Lore", "Life and Death", "Divine Awareness", "Nature" ];
+function getRandomMagicSchool() {
+	c <- ( rand() * magic_schools.len().tofloat() / RAND_MAX ).tointeger();
+	return magic_schools[c];
+}
+
 /**
  * Add some random shapes throughout the town. Currently it's trees only but it could
  * contain other random shapes.
@@ -424,8 +442,11 @@ function drawArmorShop( x, y ) {
 	scourgeGame.getMission().addItem( getRandomArmorItem(), x + MAP_UNIT + 2, y + 4, 0, false );
 	
 	// add the shop-keeper
-	scourgeGame.getMission().addCreature( x + MAP_UNIT + 3, y + 10, 0, getVillageNpcType() );
-	// now make this person a trader of armor	
+	merchant <- scourgeGame.getMission().addCreature( x + MAP_UNIT + 3, y + 10, 0, getVillageNpcType() );
+	// now make this person a trader of armor
+	if( merchant != null ) {
+		merchant.setNpcInfo( _("the Armorer"), "merchant", "ARMOR" );
+	}
 }
 
 function drawWeaponShop( x, y ) {
@@ -448,8 +469,11 @@ function drawWeaponShop( x, y ) {
 	scourgeGame.getMission().addItem( getRandomWeaponItem(), x + 2, y + 4, 0, false );
 	
 	// add the shop-keeper
-	scourgeGame.getMission().addCreature( x + 3, y + 10, 0, getVillageNpcType() );
+	merchant <- scourgeGame.getMission().addCreature( x + 3, y + 10, 0, getVillageNpcType() );
 	// now make this person a trader of weapons
+	if( merchant != null ) {
+		merchant.setNpcInfo( _("the Blacksmith"), "merchant", "SWORD;AXE;BOW;MACE;POLE" );
+	}
 	
 }
 
@@ -492,8 +516,11 @@ function drawInn( x, y ) {
 	scourgeGame.getMission().addItem( "Chair", x + MAP_UNIT * 2 + 1, y + MAP_UNIT - 9, 0, false );
 	
 	// add the shop-keeper
-	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 10, y + MAP_UNIT + 3, 0, getVillageNpcType() );
+	merchant <- scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 10, y + MAP_UNIT + 3, 0, getVillageNpcType() );
 	// now make this person an inn-keeper
+	if( merchant != null ) {
+		merchant.setNpcInfo( _("the Innkeeper"), "merchant", "FOOD;DRINK" );
+	}
 
 	for( i <- 0; i < 5; i++ ) {
 		scourgeGame.getMission().addCreatureAround( x + MAP_UNIT + 2 + ( rand() * (MAP_UNIT * 2.0 - 4.0) / RAND_MAX ).tointeger(),
@@ -524,8 +551,11 @@ function drawChurch( x, y ) {
 	setPosition( x + MAP_UNIT - 4, y - MAP_UNIT, 0, "COLUMN", true );
 	
 	// add a healer
-	scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 6, y + MAP_UNIT + 8, 0, getVillageNpcType() );
-		// now make this person a healer
+	healer <- scourgeGame.getMission().addCreature( x + MAP_UNIT * 2 + 6, y + MAP_UNIT + 8, 0, getVillageNpcType() );
+	// now make this person a healer
+	if( healer != null ) {
+		healer.setNpcInfo( _("the Healer"), "healer", getRandomMagicSchool() );
+	}
 }
 
 function drawFence( x, y ) {
@@ -543,12 +573,6 @@ function drawFence( x, y ) {
 		setPosition( x + MAP_UNIT * 2 + 15, y - MAP_UNIT + 8 + ix * 6, 0, "FENCE_90", false );
 		setPosition( x + MAP_UNIT * 2 + 15, y + MAP_UNIT * 2 - 2 - ix * 6, 0, "FENCE_90", false );
 	}
-}
-
-carts <- [ "CART", "CART2" ];
-function getRandomCart() {
-	c <- ( rand() * carts.len().tofloat() / RAND_MAX ).tointeger();
-	return carts[c];
 }
 
 function drawMarket( x, y ) {
@@ -589,6 +613,19 @@ function drawMarket( x, y ) {
 	setPosition( x + 2 * MAP_UNIT - 6, y + 5, 0, getTree(), false );
 	setPosition( x + MAP_UNIT - 2, y + MAP_UNIT + 2, 0, getTree(), false );
 	setPosition( x + 2 * MAP_UNIT - 6, y + MAP_UNIT + 2, 0, getTree(), false );
+	
+	// add merchants
+	merchant <- null;
+	for( i <- 0; i < 5; i++ ) {
+		merchant = scourgeGame.getMission().addCreatureAround( xp + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
+		                                                       yp - MAP_UNIT + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
+		                                                       0, getVillageNpcType() );
+		if( merchant != null ) {
+			merchant.setNpcInfo( _("the Traveling Merchant"), "merchant", getRandomMerchantType() );
+		}
+	}
+	
+	// todo: add boxes, barrels	
 }
 
 function drawGarden( x, y ) {
