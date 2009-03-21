@@ -77,6 +77,7 @@ public:
 	static int _isMonster( HSQUIRRELVM vm );
 	static int _isNpc( HSQUIRRELVM vm );
 	static int _setNpc( HSQUIRRELVM vm );
+	static int _setNpcInfo( HSQUIRRELVM vm );
 	static int _getMonsterType( HSQUIRRELVM vm );
 
 	// other
