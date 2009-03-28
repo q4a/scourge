@@ -807,3 +807,40 @@ void Sound::setEffectsVolume( int volume ) {
 #endif
 }
 
+void Sound::setWeatherVolume( bool underRoof ) {
+#ifdef HAVE_SDL_MIXER
+	if ( haveSound ) {
+		// Dim the weather sounds when inside a house.
+		if ( underRoof ) {
+			Mix_Volume( Constants::RAIN_CHANNEL, 40 );
+			Mix_Volume( Constants::AMBIENT_CHANNEL, 40 );
+		} else {
+			Mix_Volume( Constants::RAIN_CHANNEL, 128 );
+			Mix_Volume( Constants::AMBIENT_CHANNEL, 128 );
+		}
+	}
+#endif	
+}
+
+void Sound::playThunderSound( bool underRoof ) {
+#ifdef HAVE_SDL_MIXER
+	if ( haveSound ) {
+		int channel;
+		int volume = ( underRoof ? 40 : 128 );
+		int thunderSound = Util::pickOne( 1, 4 );
+		if ( thunderSound == 1 ) {
+			channel = playSound( "thunder1", Util::pickOne( 41, 213 ) );
+			if ( channel > -1 ) Mix_Volume( channel, volume );
+		} else if ( thunderSound == 2 ) {
+			channel = playSound( "thunder2", Util::pickOne( 41, 213 ) );
+			if ( channel > -1 ) Mix_Volume( channel, volume );
+		} else if ( thunderSound == 3 ) {
+			channel = playSound( "thunder3", Util::pickOne( 41, 213 ) );
+			if ( channel > -1 ) Mix_Volume( channel, volume );
+		} else if ( thunderSound == 4 ) {
+			channel = playSound( "thunder4", Util::pickOne( 41, 213 ) );
+			if ( channel > -1 ) Mix_Volume( channel, volume );
+		}
+	}
+#endif					
+}

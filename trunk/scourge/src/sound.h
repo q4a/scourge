@@ -149,6 +149,9 @@ public:
 
 	void startRain();
 	void stopRain();
+	
+	void setWeatherVolume( bool underRoof );
+	void playThunderSound( bool underRoof ); 
 
 protected:
 	AmbientSound *getAmbientSound( std::string& name, int depth );
