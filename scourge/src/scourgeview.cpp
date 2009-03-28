@@ -1287,14 +1287,9 @@ void ScourgeView::drawWeather() {
 
 		glPopMatrix();
 	}
-
-	// Dim the weather sounds when inside a house.
-	if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getCurrentlyUnderRoof() ) {
-		Mix_Volume( Constants::RAIN_CHANNEL, 40 );
-		Mix_Volume( Constants::AMBIENT_CHANNEL, 40 );
-	} else if ( scourge->getMap()->isHeightMapEnabled() ) {
-		Mix_Volume( Constants::RAIN_CHANNEL, 128 );
-		Mix_Volume( Constants::AMBIENT_CHANNEL, 128 );
+	
+	if ( scourge->getMap()->isHeightMapEnabled() ) {
+		scourge->getSession()->getSound()->setWeatherVolume( scourge->getMap()->getCurrentlyUnderRoof() );
 	}
 
 	glEnable( GL_TEXTURE_2D );
@@ -1431,22 +1426,7 @@ void ScourgeView::drawWeather() {
 			lastLightning = now;
 			lightningBrightness = 0.3f + ( Util::mt_rand() * 0.5f );
 			if ( thunderOnce || ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
-				int channel;
-				int volume = ( scourge->getMap()->getCurrentlyUnderRoof() ? 40 : 128 );
-				int thunderSound = Util::pickOne( 1, 4 );
-				if ( thunderSound == 1 ) {
-					channel = scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
-					if ( channel > -1 ) Mix_Volume( channel, volume );
-				} else if ( thunderSound == 2 ) {
-					channel = scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 41, 213 ) );
-					if ( channel > -1 ) Mix_Volume( channel, volume );
-				} else if ( thunderSound == 3 ) {
-					channel = scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 41, 213 ) );
-					if ( channel > -1 ) Mix_Volume( channel, volume );
-				} else if ( thunderSound == 4 ) {
-					channel = scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
-					if ( channel > -1 ) Mix_Volume( channel, volume );
-				}
+				scourge->getSession()->getSound()->playThunderSound( scourge->getMap()->getCurrentlyUnderRoof() );
 				thunderOnce = false;
 			}
 		}
