@@ -49,15 +49,15 @@ OutdoorGenerator::OutdoorGenerator( Scourge *scourge, int level, int depth, int 
     Mission *mission ) :
 		TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 13 ) {
 	// init the ground
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; x++ ) {
+		for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; y++ ) {
 			ground[x][y] = 0; //XXX: ?initializes ground[MAP_WIDTH][MAP_DEPTH] only partially
 		}
 	}
-	this->cellular[0][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
-	this->cellular[1][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
-	this->cellular[0][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
-	this->cellular[1][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	this->cellular[0][0] = new CellularAutomaton( OUTDOOR_WIDTH_IN_NODES, OUTDOOR_DEPTH_IN_NODES );
+	this->cellular[1][0] = new CellularAutomaton( OUTDOOR_WIDTH_IN_NODES, OUTDOOR_DEPTH_IN_NODES );
+	this->cellular[0][1] = new CellularAutomaton( OUTDOOR_WIDTH_IN_NODES, OUTDOOR_DEPTH_IN_NODES );
+	this->cellular[1][1] = new CellularAutomaton( OUTDOOR_WIDTH_IN_NODES, OUTDOOR_DEPTH_IN_NODES );
 	roadX = roadY = MAP_OFFSET + MAP_UNIT;
 }
 
@@ -71,14 +71,14 @@ OutdoorGenerator::~OutdoorGenerator() {
 
 OutdoorGenerator::AroundMapLooker seen; //we may make it static member?
 
-// refactored to burn stack lot less
+// How many spaces does this mountain take up? Refactored to burn stack lot less.
 int OutdoorGenerator::getMountainSize( int x, int y, Map *map, AroundMapLooker& lake ) {
 	int ret( 0 );
 	// the cases we look at something not worth looking at
 	if ( x < 0
-	        || x >= MAP_STEP_WIDTH
+	        || x >= OUTDOOR_MAP_STEP_WIDTH
 	        || y < 0
-	        || y >= MAP_STEP_DEPTH
+	        || y >= OUTDOOR_MAP_STEP_DEPTH
 	        || map->getGroundHeight( x, y ) < 10
 	        || seen.at( x, y ) ) return ret;
 	// look up everything west
@@ -100,7 +100,7 @@ int OutdoorGenerator::getMountainSize( int x, int y, Map *map, AroundMapLooker& 
 		seen.at( lookEast, y ) = true;
 		lake.at( lookEast, y ) = true;
 		++lookEast;
-		mountainAhead = ( lookEast < MAP_STEP_WIDTH )
+		mountainAhead = ( lookEast < OUTDOOR_MAP_STEP_WIDTH )
 		                && ( map->getGroundHeight( lookEast, y ) >= 10 );
 	} while ( mountainAhead );
 	// look up north and south too
@@ -121,15 +121,15 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	// add mountains
 	int offs = MAP_OFFSET / OUTDOORS_STEP;
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; x++ ) {
+		for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; y++ ) {
 			map->setGroundHeight( x, y, ground[x][y] );
-			if ( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
-			        y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
-				int cx = ( x - offs ) / WIDTH_IN_NODES;
-				int cy = ( y - offs ) / DEPTH_IN_NODES;
-				int mx = ( x - offs ) % WIDTH_IN_NODES;
-				int my = ( y - offs ) % DEPTH_IN_NODES;
+			if ( x >= offs && x < 2 * OUTDOOR_WIDTH_IN_NODES + offs &&
+			        y >= offs && y < 2 * OUTDOOR_DEPTH_IN_NODES + offs ) {
+				int cx = ( x - offs ) / OUTDOOR_WIDTH_IN_NODES;
+				int cy = ( y - offs ) / OUTDOOR_DEPTH_IN_NODES;
+				int mx = ( x - offs ) % OUTDOOR_WIDTH_IN_NODES;
+				int my = ( y - offs ) % OUTDOOR_DEPTH_IN_NODES;
 				if ( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
 					map->setGroundHeight( x, y, Util::roll( 14.0f, 20.0f ) );
 				}
@@ -141,14 +141,14 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	// turn some mountains into lakes
 	seen.clear();
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; x++ ) {
+		for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; y++ ) {
 			AroundMapLooker lake;
 			int size = getMountainSize( x, y, map, lake );
 			if ( size > 0 && size < SMALL_MOUNTAIN ) {
 				if ( 0 == Util::dice( 2 ) ) {
-					for ( int posX = 0; posX < MAP_STEP_WIDTH; ++posX ) {
-						for ( int posY = 0; posY < MAP_STEP_DEPTH; ++posY ) {
+					for ( int posX = 0; posX < OUTDOOR_MAP_STEP_WIDTH; ++posX ) {
+						for ( int posY = 0; posY < OUTDOOR_MAP_STEP_DEPTH; ++posY ) {
 							if ( lake.at( posX, posY ) )
 								map->setGroundHeight( posX, posY, -( map->getGroundHeight( posX, posY ) ) );
 						}
@@ -163,16 +163,16 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	addVillage( map, shapePal, &villageX, &villageY );
 
 	// add trees
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
-			if ( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
-			        y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
-				int cx = ( x - offs ) / WIDTH_IN_NODES;
-				int cy = ( y - offs ) / DEPTH_IN_NODES;
-				int mx = ( x - offs ) % WIDTH_IN_NODES;
-				int my = ( y - offs ) % DEPTH_IN_NODES;
+	for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; x++ ) {
+		for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; y++ ) {
+			if ( x >= offs && x < 2 * OUTDOOR_WIDTH_IN_NODES + offs &&
+			        y >= offs && y < 2 * OUTDOOR_DEPTH_IN_NODES + offs ) {
+				int cx = ( x - offs ) / OUTDOOR_WIDTH_IN_NODES;
+				int cy = ( y - offs ) / OUTDOOR_DEPTH_IN_NODES;
+				int mx = ( x - offs ) % OUTDOOR_WIDTH_IN_NODES;
+				int my = ( y - offs ) % OUTDOOR_DEPTH_IN_NODES;
 				if ( cellular[ cx ][ cy ]->getNode( mx, my )->island ) {
-					GLShape *shape = getRandomTreeShape( shapePal );
+					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
 					int xx = x * OUTDOORS_STEP;
 					int yy = y * OUTDOORS_STEP + shape->getHeight();
 
@@ -195,10 +195,10 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	for ( int cx = 0; cx < 2; cx++ ) {
 		for ( int cy = 0; cy < 2; cy++ ) {
 			//CellularAutomaton *c = cellular[cx][cy];
-			room[ roomCount ].x = offset + ( cx * WIDTH_IN_NODES * OUTDOORS_STEP );
-			room[ roomCount ].y = offset + ( cy * DEPTH_IN_NODES * OUTDOORS_STEP );
-			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP;
-			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP;
+			room[ roomCount ].x = offset + ( cx * OUTDOOR_WIDTH_IN_NODES * OUTDOORS_STEP );
+			room[ roomCount ].y = offset + ( cy * OUTDOOR_DEPTH_IN_NODES * OUTDOORS_STEP );
+			room[ roomCount ].w = OUTDOOR_WIDTH_IN_NODES * OUTDOORS_STEP;
+			room[ roomCount ].h = OUTDOOR_DEPTH_IN_NODES * OUTDOORS_STEP;
 			room[ roomCount ].valueBonus = 0;
 			roomCount++;
 		}
@@ -408,46 +408,6 @@ void OutdoorGenerator::flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 map
 	}
 }
 
-struct ShapeLimit {
-	GLShape *shape;
-	float start, end;
-};
-vector<ShapeLimit> trees;
-
-GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
-	if ( trees.empty() ) {
-		float offs = 0;
-		for ( int i = 1; i < shapePal->getShapeCount(); i++ ) {
-			Shape *shape = shapePal->getShape( i );
-			if ( shape->getOutdoorWeight() > 0 ) {
-				ShapeLimit limit;
-				limit.start = offs;
-				offs += shape->getOutdoorWeight();
-				limit.end = offs;
-				limit.shape = ( GLShape* )shape;
-				trees.push_back( limit );
-			}
-		}
-	}
-	assert( !trees.empty() );
-
-	float roll = Util::roll( 0.0f, trees[ trees.size() - 1 ].end - 0.001f );
-
-	// FIXME: implement binary search here
-	for ( unsigned int i = 0; i < trees.size(); i++ ) {
-		if ( trees[i].start <= roll && roll < trees[i].end ) {
-			return trees[i].shape;
-		}
-	}
-	cerr << "Unable to find tree shape! roll=" << roll << " max=" << trees[ trees.size() - 1 ].end << endl;
-	cerr << "--------------------" << endl;
-	for ( unsigned int i = 0; i < trees.size(); i++ ) {
-		cerr << "\t" << trees[i].shape->getName() << " " << trees[i].start << "-" << trees[i].end << endl;
-	}
-	cerr << "--------------------" << endl;
-	return NULL;
-}
-
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 	// we need fog
 	return MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ];
@@ -460,28 +420,29 @@ MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 //
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	cellular[0][0]->generate( true, true, 4 );
-	cellular[0][0]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
-	cellular[0][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
+	cellular[0][0]->makeAccessible( OUTDOOR_WIDTH_IN_NODES - 1, OUTDOOR_DEPTH_IN_NODES / 2 );
+	cellular[0][0]->makeAccessible( OUTDOOR_WIDTH_IN_NODES / 2, OUTDOOR_DEPTH_IN_NODES - 1 );
 	cellular[0][0]->makeMinSpace( 4 );
 	//cellular[0][0]->print();
 
 	cellular[1][0]->generate( true, true, 4 );
-	cellular[1][0]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
-	cellular[1][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
+	cellular[1][0]->makeAccessible( 0, OUTDOOR_DEPTH_IN_NODES / 2 );
+	cellular[1][0]->makeAccessible( OUTDOOR_WIDTH_IN_NODES / 2, OUTDOOR_DEPTH_IN_NODES - 1 );
 	cellular[1][0]->makeMinSpace( 4 );
 	//cellular[1][0]->print();
 
 	cellular[0][1]->generate( true, true, 4 );
-	cellular[0][1]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
-	cellular[0][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
+	cellular[0][1]->makeAccessible( OUTDOOR_WIDTH_IN_NODES - 1, OUTDOOR_DEPTH_IN_NODES / 2 );
+	cellular[0][1]->makeAccessible( OUTDOOR_WIDTH_IN_NODES / 2, 0 );
 	cellular[0][1]->makeMinSpace( 4 );
 	//cellular[0][1]->print();
 
 	cellular[1][1]->generate( true, true, 4 );
-	cellular[1][1]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
-	cellular[1][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
+	cellular[1][1]->makeAccessible( 0, OUTDOOR_DEPTH_IN_NODES / 2 );
+	cellular[1][1]->makeAccessible( OUTDOOR_WIDTH_IN_NODES / 2, 0 );
 	cellular[1][1]->makeMinSpace( 4 );
 	//cellular[1][1]->print();
+	
 	createGround();
 }
 
@@ -489,8 +450,8 @@ void OutdoorGenerator::createGround() {
 	// create the undulating ground
 	float amp = 1.0f;
 	float freq = 40.0f;
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; x++ ) {
+		for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
 			float a = Util::roll( 0.25f, amp );

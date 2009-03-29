@@ -28,6 +28,7 @@
 #include "shapepalette.h"
 #include "outdoorgenerator.h"
 #include "dungeongenerator.h"
+#include "landgenerator.h"
 
 using namespace std;
 
@@ -306,11 +307,10 @@ void MapEditor::createNewMapDialog() {
 	}
 	themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), themeNames );
 
-	newMapWin->createLabel( startx, 135, _( "Outdoor Map:" ) );
+	newMapWin->createLabel( startx, 135, _( "Map Type:" ) );
 	outdoorMapButton = newMapWin->createButton( startx + 100, 120, startx + 200, 140, "Outdoors", true );
-
-	newMapWin->createLabel( startx + 210, 135, _( "Dungeon Map:" ) );
-	dungeonMapButton = newMapWin->createButton( startx + 310, 120, startx + 410, 140, "Dungeon", true );
+	dungeonMapButton = newMapWin->createButton( startx + 210, 120, startx + 310, 140, "Dungeon", true );
+	landMapButton = newMapWin->createButton( startx + 320, 120, startx + 420, 140, "Land", true );
 
 	newMapWin->createLabel( startx, 160, _( "Select map location: (click on map, drag to move)" ) );
 	mapWidget = new MapWidget( scourge, newMapWin, startx, 170, nw - startx, 335 );
@@ -490,7 +490,16 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	}
 
 	string result;
-	if ( widget == roofButton ) {
+	if( widget == outdoorMapButton && outdoorMapButton->isSelected() ) {
+		dungeonMapButton->setSelected( !outdoorMapButton->isSelected() );
+		landMapButton->setSelected( !outdoorMapButton->isSelected() );
+	} else if( widget == dungeonMapButton && dungeonMapButton->isSelected() ) {
+		outdoorMapButton->setSelected( !dungeonMapButton->isSelected() );
+		landMapButton->setSelected( !dungeonMapButton->isSelected() ); 
+	} else if( widget == landMapButton && landMapButton->isSelected() ) {
+		outdoorMapButton->setSelected( !landMapButton->isSelected() );
+		dungeonMapButton->setSelected( !landMapButton->isSelected() );		
+	} else if ( widget == roofButton ) {
 		scourge->getMap()->setRoofShowing( roofButton->isSelected() );
 	} else if ( widget == saveButton ) {
 		string tmp( nameText->getText() );
@@ -541,6 +550,14 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 				raiseButton->setEnabled( true );
 				lowerButton->setEnabled( true );
 				outdoorTexturesButton->setEnabled( true );
+			} else if ( landMapButton->isSelected() ) {
+				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
+				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				delete og;
+				raiseButton->setEnabled( true );
+				lowerButton->setEnabled( true );
+				outdoorTexturesButton->setEnabled( true );				
 			} else if ( dungeonMapButton->isSelected() ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
 				DungeonGenerator *og = new DungeonGenerator( scourge, level, depth, 1, false, false, NULL );

@@ -876,7 +876,7 @@ protected:
 		int cx, cy;
 	};
 
-	ChunkInfo chunks[100];
+	ChunkInfo chunks[1000];
 	int chunkCount;
 	RenderedLocation later[100], stencil[1000], other[1000], damage[1000], roof[1000], lights[50];
 	int laterCount, stencilCount, otherCount, damageCount, roofCount, lightCount;

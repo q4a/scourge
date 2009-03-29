@@ -952,3 +952,42 @@ bool ShapePalette::getRandomMapLocation( char type, char **name, int *x, int *y 
 	}
 }
 
+struct ShapeLimit {
+	GLShape *shape;
+	float start, end;
+};
+vector<ShapeLimit> trees;
+
+GLShape *ShapePalette::getRandomTreeShape( ShapePalette *shapePal ) {
+	if ( trees.empty() ) {
+		float offs = 0;
+		for ( int i = 1; i < shapePal->getShapeCount(); i++ ) {
+			Shape *shape = shapePal->getShape( i );
+			if ( shape->getOutdoorWeight() > 0 ) {
+				ShapeLimit limit;
+				limit.start = offs;
+				offs += shape->getOutdoorWeight();
+				limit.end = offs;
+				limit.shape = ( GLShape* )shape;
+				trees.push_back( limit );
+			}
+		}
+	}
+	assert( !trees.empty() );
+
+	float roll = Util::roll( 0.0f, trees[ trees.size() - 1 ].end - 0.001f );
+
+	// FIXME: implement binary search here
+	for ( unsigned int i = 0; i < trees.size(); i++ ) {
+		if ( trees[i].start <= roll && roll < trees[i].end ) {
+			return trees[i].shape;
+		}
+	}
+	cerr << "Unable to find tree shape! roll=" << roll << " max=" << trees[ trees.size() - 1 ].end << endl;
+	cerr << "--------------------" << endl;
+	for ( unsigned int i = 0; i < trees.size(); i++ ) {
+		cerr << "\t" << trees[i].shape->getName() << " " << trees[i].start << "-" << trees[i].end << endl;
+	}
+	cerr << "--------------------" << endl;
+	return NULL;
+}
