@@ -56,6 +56,8 @@ using namespace std;
 
 #define MVW 100
 #define MVD 100
+#define EDITOR_MVW 200
+#define EDITOR_MVD 200  
 
 //#define DEBUG_RENDER 1
 
@@ -278,6 +280,13 @@ Map::~Map() {
 /// After work is done, reset everything.
 
 void Map::reset() {
+	
+	if( settings ) {
+		settings->setVisibleMapSize( &mapViewWidth, &mapViewDepth );
+	} else {
+		mapViewWidth = MVW;
+		mapViewDepth = MVD;
+	}
 
 	creatureMap.clear();
 	creatureEffectMap.clear();

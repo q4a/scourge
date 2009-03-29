@@ -37,6 +37,9 @@ public:
 	virtual float getMinZoomIn() = 0;
 	virtual float getMaxZoomOut() = 0;
 	virtual float getMaxYRot() = 0;
+	virtual void setVisibleMapSize( int *mapViewWidth, int *mapViewDepth ) {
+		*mapViewWidth = *mapViewDepth = 100;
+	}
 };
 
 /// General map settings (ingame).
@@ -71,6 +74,10 @@ public:
 	float getMinZoomIn();
 	float getMaxZoomOut();
 	float getMaxYRot();
+	
+	virtual void setVisibleMapSize( int *mapViewWidth, int *mapViewDepth ) {
+		*mapViewWidth = *mapViewDepth = 200;
+	}
 };
 
 

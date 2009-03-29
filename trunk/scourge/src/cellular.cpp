@@ -30,6 +30,7 @@ CellularAutomaton::CellularAutomaton( int w, int h ) {
 		node[ x ] =  new NodePoint[ h ];
 	}
 	phase = 1;
+	initialized = false;
 }
 
 CellularAutomaton::~CellularAutomaton() {
@@ -39,10 +40,26 @@ CellularAutomaton::~CellularAutomaton() {
 	delete [] node;
 }
 
+void CellularAutomaton::initialize( int dw, int dh, int *data ) {
+	for ( int x = 0; x < w; x++ ) {
+		for ( int y = 0; y < h; y++ ) {
+			
+			int dx = (int)( x * ( dw / (float)w ) );
+			int dy = (int)( y * ( dh / (float)h ) );
+			int d = data[ dy * dw + dx ];
+			
+			node[x][y].wall = ( d != 0 );
+			node[x][y].island = false;
+			node[x][y].room = -1;
+		}
+	}
+	initialized = true;
+}
+
 void CellularAutomaton::generate( bool islandsEnabled,
-    bool removeSinglesEnabled,
-    int pathWidth ) {
-	randomize();
+                                  bool removeSinglesEnabled,
+                                  int pathWidth ) {
+	if( !initialized ) randomize();
 
 	for ( int i = 0; i < CELL_GROWTH_CYCLES; i++ ) {
 		growCells();

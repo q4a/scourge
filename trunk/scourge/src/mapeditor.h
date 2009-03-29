@@ -84,6 +84,7 @@ private:
 	Button *applyButton;
 	Button *outdoorMapButton;
 	Button *dungeonMapButton;
+	Button *landMapButton;
 	TextField *levelText, *depthText;
 	ScrollingList *themeList;
 	std::string* themeNames;

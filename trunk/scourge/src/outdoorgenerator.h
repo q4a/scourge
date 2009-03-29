@@ -31,13 +31,13 @@ class Mission;
 class GLShape;
 class CellularAutomaton;
 
-#define WIDTH_IN_NODES 50
-#define DEPTH_IN_NODES 50
+#define OUTDOOR_WIDTH_IN_NODES 50
+#define OUTDOOR_DEPTH_IN_NODES 50
 
 //some other (hopefully) explanatory constants
-#define MAP_STEP_WIDTH (MAP_WIDTH / OUTDOORS_STEP)
-#define MAP_STEP_DEPTH (MAP_DEPTH / OUTDOORS_STEP)
-#define MAP_STEP_SIZE (MAP_STEP_WIDTH*MAP_STEP_DEPTH)
+#define OUTDOOR_MAP_STEP_WIDTH (MAP_WIDTH / OUTDOORS_STEP)
+#define OUTDOOR_MAP_STEP_DEPTH (MAP_DEPTH / OUTDOORS_STEP)
+#define OUTDOOR_MAP_STEP_SIZE (OUTDOOR_MAP_STEP_WIDTH*OUTDOOR_MAP_STEP_DEPTH)
 
 /// Outdoor specific terrain generator.
 class OutdoorGenerator : public TerrainGenerator {
@@ -72,18 +72,18 @@ public:
 		}
 		//compiler-genned destructor and operator = are OK
 		void clear() {
-			for ( int x = 0; x < MAP_STEP_WIDTH; ++x ) {
-				for ( int y = 0; y < MAP_STEP_DEPTH; ++y ) {
+			for ( int x = 0; x < OUTDOOR_MAP_STEP_WIDTH; ++x ) {
+				for ( int y = 0; y < OUTDOOR_MAP_STEP_DEPTH; ++y ) {
 					seen[x][y] = false;
 				}
 			}
 		}
 		bool& at( int x, int y ) {
-			assert( 0 <= x && x < MAP_STEP_WIDTH &&  0 <= y && y < MAP_STEP_DEPTH );
+			assert( 0 <= x && x < OUTDOOR_MAP_STEP_WIDTH &&  0 <= y && y < OUTDOOR_MAP_STEP_DEPTH );
 			return seen[x][y];
 		}
 	private:
-		bool seen[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
+		bool seen[OUTDOOR_MAP_STEP_WIDTH][OUTDOOR_MAP_STEP_DEPTH];
 	};
 protected:
 	virtual inline const char *getGateDownShapeName() {
@@ -97,7 +97,6 @@ protected:
 	int getMountainSize( int x, int y, Map *map, AroundMapLooker& lake );
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 	virtual MapRenderHelper* getMapRenderHelper();
-	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 	void createGround();
 	virtual void addFurniture( Map *map, ShapePalette *shapePal );
 	void addContainers( Map *map, ShapePalette *shapePal );

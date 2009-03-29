@@ -51,10 +51,13 @@ private:
 	NodePoint **node;
 	int roomCounter, biggestRoom;
 	Room room[ MAX_ROOM_COUNT ];
+	bool initialized;
 
 public:
 	CellularAutomaton( int w, int h );
 	virtual ~CellularAutomaton();
+	
+	void initialize( int dw, int dh, int *data );
 
 	void generate( bool islandsEnabled = false,
 	               bool removeSinglesEnabled = false,

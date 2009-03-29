@@ -260,6 +260,8 @@ public:
 		        &( equipLocationHoles[ equipIndex ] ) :
 		        NULL );
 	}
+	
+	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 
 protected:
 	void initFonts( ConfigLang *config );
