@@ -41,6 +41,8 @@ scourge_SOURCES = \
 	item.h\
 	terraingenerator.cpp\
 	terraingenerator.h\
+	landgenerator.cpp\
+	landgenerator.h\
 	cavemaker.cpp\
 	cavemaker.h\
 	dungeongenerator.cpp\
