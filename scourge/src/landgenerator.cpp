@@ -83,6 +83,8 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				int my = ( y - offs ) % DEPTH_IN_NODES;
 				if ( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
 					map->setGroundHeight( x, y, Util::roll( 14.0f, 20.0f ) );
+				} else if ( cellular[ cx ][ cy ]->getNode( mx, my )->water ) {
+					map->setGroundHeight( x, y, -Util::roll( 14.0f, 20.0f )	 );
 				}
 			//} else {
 				//map->setGroundHeight( x, y, Util::roll( 14.0f, 20.0f ) );
@@ -205,28 +207,28 @@ int data_1_1[] = {
 
 void LandGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	cellular[0][0]->initialize( 8, 8, data_0_0 );
-	cellular[0][0]->generate( true, true, 4 );
+	cellular[0][0]->generate( true, true, 4, true );
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
 	cellular[0][0]->makeMinSpace( 4 );
 	//cellular[0][0]->print();
 
 	cellular[1][0]->initialize( 8, 8, data_1_0 );
-	cellular[1][0]->generate( true, true, 4 );
+	cellular[1][0]->generate( true, true, 4, true );
 	cellular[1][0]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
 	cellular[1][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
 	cellular[1][0]->makeMinSpace( 4 );
 	//cellular[1][0]->print();
 
 	cellular[0][1]->initialize( 8, 8, data_0_1 );
-	cellular[0][1]->generate( true, true, 4 );
+	cellular[0][1]->generate( true, true, 4, true );
 	cellular[0][1]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
 	cellular[0][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
 	cellular[0][1]->makeMinSpace( 4 );
 	//cellular[0][1]->print();
 
 	cellular[1][1]->initialize( 8, 8, data_1_1 );
-	cellular[1][1]->generate( true, true, 4 );
+	cellular[1][1]->generate( true, true, 4, true );
 	cellular[1][1]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
 	cellular[1][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
 	cellular[1][1]->makeMinSpace( 4 );

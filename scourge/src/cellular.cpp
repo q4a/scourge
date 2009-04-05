@@ -48,7 +48,8 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 			int dy = (int)( y * ( dh / (float)h ) );
 			int d = data[ dy * dw + dx ];
 			
-			node[x][y].wall = ( d != 0 );
+			node[x][y].wall = ( d > 0 );
+			node[x][y].water = ( d < 0 );
 			node[x][y].island = false;
 			node[x][y].room = -1;
 		}
@@ -58,11 +59,17 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 
 void CellularAutomaton::generate( bool islandsEnabled,
                                   bool removeSinglesEnabled,
-                                  int pathWidth ) {
+                                  int pathWidth,
+                                  bool isWaterEnabled ) {
 	if( !initialized ) randomize();
 
 	for ( int i = 0; i < CELL_GROWTH_CYCLES; i++ ) {
 		growCells();
+	}
+	if( isWaterEnabled ) {
+		for ( int i = 0; i < CELL_GROWTH_CYCLES; i++ ) {
+			growWaterCells();
+		}
 	}
 
 	phase = 1;
@@ -71,7 +78,6 @@ void CellularAutomaton::generate( bool islandsEnabled,
 	connectRooms();
 
 	if ( removeSinglesEnabled ) removeSingles();
-
 
 
 	if ( islandsEnabled ) {
@@ -103,6 +109,8 @@ void CellularAutomaton::generate( bool islandsEnabled,
 
 #define isWall(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].wall )
 #define isIsland(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].island )
+#define isWater(x,y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].water )
+#define isWallOrWater(x, y) ( x < 0 || y < 0 || x >= w || y >= h || node[x][y].water || node[x][y].wall )
 
 #define DIST 4
 
@@ -110,17 +118,17 @@ void CellularAutomaton::addIslands() {
 	for ( int x = 0; x < w; x++ ) {
 		for ( int y = 0; y < h; y++ ) {
 			// does it qualify?
-			if ( !node[x][y].wall ) {
+			if ( !isWallOrWater(x, y) ) {
 				bool test = true;
 				for ( int i = 0; i < DIST; i++ ) {
-					if ( isWall( x + i, y ) ||
-					        isWall( x - i, y ) ||
-					        isWall( x, y + i ) ||
-					        isWall( x, y - i ) ||
-					        isWall( x + i, y + i ) ||
-					        isWall( x - i, y + i ) ||
-					        isWall( x + i, y - i ) ||
-					        isWall( x - i, y - i ) ) {
+					if ( isWallOrWater( x + i, y ) ||
+							isWallOrWater( x - i, y ) ||	
+							isWallOrWater( x, y + i ) ||
+							isWallOrWater( x, y - i ) ||
+							isWallOrWater( x + i, y + i ) ||
+							isWallOrWater( x - i, y + i ) ||
+							isWallOrWater( x + i, y - i ) ||
+							isWallOrWater( x - i, y - i ) ) {
 						test = false;
 					}
 				}
@@ -247,6 +255,31 @@ void CellularAutomaton::growCells() {
 			}
 			if ( count > 5 ) {
 				node[x][y].wall = true;
+			}
+		}
+	}
+}
+
+void CellularAutomaton::growWaterCells() {
+	for ( int x = 1; x < w - 1; x++ ) {
+		for ( int y = 1; y < h - 1; y++ ) {
+			// count the neighbors
+			int count = 0;
+			if ( node[x-1][y-1].water ) count++;
+			if ( node[x  ][y-1].water ) count++;
+			if ( node[x+1][y-1].water ) count++;
+			if ( node[x-1][y  ].water ) count++;
+			if ( node[x+1][y  ].water ) count++;
+			if ( node[x-1][y+1].water ) count++;
+			if ( node[x  ][y+1].water ) count++;
+			if ( node[x+1][y+1].water ) count++;
+
+			// 4-5 rule (<4 starves, >5 lives)
+			if ( count < 4 ) {
+				node[x][y].water = false;
+			}
+			if ( count > 5 ) {
+				node[x][y].water = true;
 			}
 		}
 	}
@@ -505,8 +538,9 @@ void CellularAutomaton::print() {
 		for ( int y = 0; y < h; y++ ) {
 			cerr << ( node[x][y].wall ? 'X' :
 			          ( node[x][y].island ? '+' :
+			          	( node[x][y].water ? '~' :
 			            //(char)( '0' + node[x][y].room ) ) );
-			            ' ' ) );
+			            ' ' ) ) );
 		}
 		cerr << endl;
 	}
