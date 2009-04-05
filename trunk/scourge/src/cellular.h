@@ -30,7 +30,7 @@
 
 /// A generated node.
 struct NodePoint {
-	bool wall, island;
+	bool wall, island, water;
 	int room;
 	bool seen;
 };
@@ -61,7 +61,8 @@ public:
 
 	void generate( bool islandsEnabled = false,
 	               bool removeSinglesEnabled = false,
-	               int pathWidth = 1 );
+	               int pathWidth = 1,
+	               bool isWaterEnabled = false );
 
 	inline int getWidth() {
 		return this->w;
@@ -89,6 +90,7 @@ public:
 protected:
 	void randomize();
 	void growCells();
+	void growWaterCells();
 	void setSeen( bool b );
 	bool canReach( int sx, int sy, int ex, int ey );
 	void findRooms();
