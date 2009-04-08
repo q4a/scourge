@@ -44,6 +44,9 @@ class LandGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	CellularAutomaton *cellular[2][2];
+	int regionX, regionY;
+	int bitmapIndex;
+	SDL_Surface *bitmapSurface;
 
 public:
 	LandGenerator( Scourge *scourge, int level, int depth, int maxDepth,
@@ -55,7 +58,11 @@ public:
 	inline void getName( char *s ) {
 		strcpy( s, "outdoor" );
 	}
-
+	
+	inline void setRegion( int x, int y ) { regionX = x; regionY = y; }
+	inline int getRegionX() { return regionX; }
+	inline int getRegionY() { return regionY; }
+	
 protected:
 	virtual inline const char *getGateDownShapeName() {
 		return "GATE_DOWN_OUTDOORS";

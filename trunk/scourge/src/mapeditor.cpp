@@ -553,6 +553,8 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 			} else if ( landMapButton->isSelected() ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
 				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
+				// todo: this should not be hard-coded (could come from map in dialog)
+				og->setRegion( 6, 4 * 8 + 7 );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				delete og;
 				raiseButton->setEnabled( true );

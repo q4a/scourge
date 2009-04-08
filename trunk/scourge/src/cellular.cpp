@@ -55,6 +55,9 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 		}
 	}
 	initialized = true;
+	phase = 1;
+	this->roomCounter = 0;
+	this->biggestRoom = 0;	
 }
 
 void CellularAutomaton::generate( bool islandsEnabled,
@@ -534,19 +537,18 @@ void CellularAutomaton::removeSingles() {
 }
 
 void CellularAutomaton::print() {
-	for ( int x = 0; x < w; x++ ) {
-		for ( int y = 0; y < h; y++ ) {
-			cerr << ( node[x][y].wall ? 'X' :
-			          ( node[x][y].island ? '+' :
-			          	( node[x][y].water ? '~' :
-			            //(char)( '0' + node[x][y].room ) ) );
-			            ' ' ) ) );
-		}
-		cerr << endl;
-	}
-	cerr << endl << "Rooms:" << endl;
-	for ( int i = 0; i < roomCounter; i++ ) {
-		cerr << "\tsize=" << room[i].size << ( i == biggestRoom ? " (biggest)" : "" ) << endl;
-	}
+//	for ( int x = 0; x < w; x++ ) {
+//		for ( int y = 0; y < h; y++ ) {
+//			cerr << ( node[x][y].wall ? 'X' :
+//			          ( node[x][y].island ? '+' :
+//			          	( node[x][y].water ? '~' :
+//			            ' ' ) ) );
+//		}
+//		cerr << endl;
+//	}
+//	cerr << endl << "Rooms:" << endl;
+//	for ( int i = 0; i < roomCounter; i++ ) {
+//		cerr << "\tsize=" << room[i].size << ( i == biggestRoom ? " (biggest)" : "" ) << endl;
+//	}
 }
 
