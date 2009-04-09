@@ -36,7 +36,7 @@ using namespace std;
 
 ContainerView::ContainerView( Scourge *scourge, Item *container, Window *win, int x, int y ) : 
 	Canvas( x, y, x + ( container ? container->getRpgItem()->getContainerWidth() : 1 ) * GRID_SIZE, 
-    y + ( container ? container->getRpgItem()->getContainerHeight() : 1 ) * GRID_SIZE, this, this ) {
+    y + ( container ? container->getRpgItem()->getContainerHeight() : 1 ) * GRID_SIZE, this ) {
 	this->scourge = scourge;
 	this->container = container;
 	this->win = win;

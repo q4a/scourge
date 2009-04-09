@@ -38,8 +38,7 @@ class ScourgeGui {
 public:
 	ScourgeGui();
 
-	virtual ~ScourgeGui() {
-	}
+	virtual ~ScourgeGui();
 
 	virtual void processEventsAndRepaint() = 0;
 	virtual void playSound( const std::string& file, int panning ) = 0;
@@ -92,7 +91,11 @@ public:
 	void drawVisibleWindows();
 	void addWindow( Window *win );
 	void removeWindow( Window *win );
+	// OLD STYLE
 	Widget* delegateEvent( SDL_Event* event, int x, int y, Window** selectedWindow );
+	// NEW STYLE
+	bool sendMousePosition( int x, int y );
+
 	Widget* selectCurrentEscapeHandler();
 	void toTop( Window* win );
 	void toBottom( Window* win );
@@ -108,6 +111,8 @@ public:
 	                        char const* title, Texture texture,
 	                        char const* message,
 	                        char const* buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ) );
+private:
+	Window* findTopmostWindowAt( int x, int y );
 
 };
 

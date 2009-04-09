@@ -37,6 +37,11 @@ ScourgeGui::ScourgeGui()
 	, message_button( NULL ) {
 }
 
+ScourgeGui::~ScourgeGui() {
+	delete message_dialog;
+}
+
+
 void ScourgeGui::addWindow( Window* win ) {
 	if ( windowCount < MAX_WINDOW ) {
 		win->setZ( 50 + windowCount * 10 );
@@ -67,33 +72,33 @@ void ScourgeGui::drawVisibleWindows() {
 	glEnable( GL_DEPTH_TEST );
 }
 
-Widget* ScourgeGui::delegateEvent( SDL_Event* event, int x, int y, Window** selectedWindow ) {
-
+bool ScourgeGui::sendMousePosition( int x, int y ) {
 	if ( mouseLockWindow ) {
-		return mouseLockWindow->handleWindowEvent( event, x, y );
+		return true; //### UNDER CONSTRUCTION:  mouseLockWindow->onMousePosition( x, y );
 	}
+	Window* win = findTopmostWindowAt( x, y );
+	// windows need to know that the mouse is elsewhere
+	for ( int i = 0; i < windowCount; i++ ) {
+		if ( window[i] != win ) {
+			window[i]->removeEffects();
+		}
+	}
+	if ( win ) {
+		//### UNDER CONSTRUCTION: set cursor mode ???
+		return true; //### UNDER CONSTRUCTION:   win->onMousePosition( x, y );
+	}
+	return false;
+}
 
-	// find the topmost window
-	Window *win = NULL;
+Window* ScourgeGui::findTopmostWindowAt( int x, int y ) {
+	Window* win = NULL;
 	int maxz = 0;
 	for ( int i = 0; i < windowCount; i++ ) {
 		if ( window[i]->isVisible() ) {
 			if ( window[i]->isModal() ) {
 				win = window[i];
 				break;
-			} else if ( event->type == SDL_KEYUP ||
-			            event->type == SDL_KEYDOWN ) {
-				if ( window[i] == currentWin ) {
-					win = window[i];
-					break;
-				}
 			} else if ( window[i]->isInside( x, y ) ) {
-				if ( getCursorMode() == Constants::CURSOR_ATTACK 
-				   || getCursorMode() == Constants::CURSOR_RANGED 
-				   || getCursorMode() == Constants::CURSOR_MOVE 
-				   || getCursorMode() == Constants::CURSOR_TALK ) {
-					setCursorMode( Constants::CURSOR_NORMAL );
-				}
 				if ( maxz < window[i]->getZ() ) {
 					win = window[i];
 					maxz = win->getZ();
@@ -101,9 +106,33 @@ Widget* ScourgeGui::delegateEvent( SDL_Event* event, int x, int y, Window** sele
 			}
 		}
 	}
+	return win;
+}
+
+Widget* ScourgeGui::delegateEvent( SDL_Event* event, int x, int y, Window** selectedWindow ) {
+
+	if ( mouseLockWindow ) {
+		return mouseLockWindow->handleWindowEvent( event, x, y );
+	}
+
+	// find the window
+	Window *win = NULL;
+	if ( (event->type == SDL_KEYUP || event->type == SDL_KEYDOWN) 
+	  && currentWin != NULL	) {
+		win = currentWin;
+	} else {
+		win = findTopmostWindowAt( x, y );
+	}
 	// find the active widget
 	Widget *widget = NULL;
 	if ( win ) {
+		if ( getCursorMode() == Constants::CURSOR_ATTACK 
+		  || getCursorMode() == Constants::CURSOR_RANGED 
+		  || getCursorMode() == Constants::CURSOR_MOVE 
+		  || getCursorMode() == Constants::CURSOR_TALK ) {
+			setCursorMode( Constants::CURSOR_NORMAL );
+		}
+				
 #ifdef DEBUG_WINDOWS
 		cerr << "handled by window: " << win->getZ() << endl;
 #endif		

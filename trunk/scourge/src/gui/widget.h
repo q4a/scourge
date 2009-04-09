@@ -53,13 +53,10 @@ public:
 	Widget( int x, int y, int w, int h );
 	virtual ~Widget();
 
-	// ***** Under construction STARTS ****
 	/// Example GUI Event  
 	static GuiEvent Draw;
 
-	/// map of GUI Event observers
 	typedef std::map<GuiEvent, Notifier*> ObserverMap;
-	ObserverMap observers;
 
 	/// registrate callback of any real listener of GUI events
 	template < typename T > 
@@ -73,13 +70,6 @@ public:
 		ObserverInfo<T>* info = new ObserverInfo<T>( update, observer );
 		observers[e] = info;
 	}
-
-	/// call attached observer to notify about event
-	bool notify( GuiEvent e ) {
-		if ( observers.find( e ) == observers.end() ) return false; // not all events must be observed 
-		return observers[e]->notify( this );
-	}
-	// ***** Under construction ENDS ****
 
 	/// XXX: it is confusing that Widget has both draw(parent) and drawWidget(parent) member functions 
 	/// removed virtuality from draw()
@@ -269,6 +259,16 @@ protected:
 	                         bool glowing, bool inside );
 	void breakText( char *text, int lineWidth, std::vector<std::string> *lines );
 	int getTextWidth( Window* parent, const char* s );
+
+	/// call attached observer to notify about event
+	bool notify( GuiEvent e ) {
+		if ( observers.find( e ) == observers.end() ) return false; // not all events must be observed 
+		return observers[e]->notify( this );
+	}
+
+private:
+	/// map of GUI Event observers
+	ObserverMap observers;
 };
 
 #endif
