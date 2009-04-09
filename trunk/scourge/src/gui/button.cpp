@@ -24,20 +24,22 @@
   *@author Gabor Torok
   */
 
-Button::Button( int x1, int y1, int x2, int y2, Texture const& highlight, char const* label, Texture const& texture ) :
-		Widget( x1, y1, x2 - x1, y2 - y1 ) {
-	this->x2 = x2;
-	this->y2 = y2;
+Button::Button( int x1, int y1, int x2, int y2, Texture const& highlight, char const* label, Texture const& texture ) 
+		: Widget( x1, y1, x2 - x1, y2 - y1 )
+		, x2( x2 )
+		, y2( y2 )
+		, inside( false )
+		, lastTick( 0 )
+		, labelPos( CENTER )
+		, toggle( false )
+		, selected( false )
+		, highlight( highlight )
+		, glowing( false )
+		, inverse( false )
+		, fontType( 0 )
+		, texture( texture )
+		, pressed( false ) {
 	setLabel( label );
-	labelPos = CENTER;
-	lastTick = 0;
-	toggle = selected = false;
-	inside = false;
-	this->highlight = highlight;
-	this->glowing = false;
-	this->inverse = false;
-	this->fontType = 0;
-	this->texture = texture;
 }
 
 Button::~Button() {
@@ -109,28 +111,31 @@ void Button::drawWidget( Window* parent ) {
 }
 	
 bool Button::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
-	inverse = false;
 	inside = isInside( x, y );
 	if ( inside ) parent->setLastWidget( this );
+
+	inverse = pressed;
 	// handle it
 	switch ( event->type ) {
 	case SDL_KEYUP:
 		if ( hasFocus() ) {
 			if ( event->key.keysym.sym == SDLK_RETURN ) {
-				if ( toggle ) selected = ( selected ? false : true );
+				if ( toggle ) selected = !selected;
 				return true;
 			}
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		inverse = ( inside && event->motion.state == SDL_PRESSED );
+		inverse = ( inside && pressed );
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if ( event->button.button != SDL_BUTTON_LEFT ) return false;
-		if ( inside && toggle ) selected = ( selected ? false : true );
+		if ( event->button.button != SDL_BUTTON_LEFT || !pressed ) return false;
+		pressed = false;
+		if ( inside && toggle ) selected = !selected;
 		return inside;
 	case SDL_MOUSEBUTTONDOWN:
 		if ( event->button.button != SDL_BUTTON_LEFT ) return false;
+		pressed = inside;
 		inverse = inside;
 		break;
 	default:

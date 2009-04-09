@@ -43,6 +43,7 @@ private:
 	bool inverse;
 	int fontType;
 	Texture texture;
+	bool pressed;
 
 public:
 
