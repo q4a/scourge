@@ -149,15 +149,6 @@ void Window::unregisterEventHandler() {
 
 Widget *Window::handleWindowEvent( SDL_Event *event, int x, int y ) {
 
-	/* duplicate, taken into account in delegateEvent()
-	if ( mouseLockWidget ) {
-		mouseLockWidget->
-		handleEvent( mouseLockWindow, event,
-		             x - getX(),
-		             y - getY() - gutter );
-		return mouseLockWidget;
-	}*/
-
 	if ( dragging ) {
 		handleEvent( NULL, event, x, y );
 		return this;
