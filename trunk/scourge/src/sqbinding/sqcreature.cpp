@@ -637,8 +637,8 @@ int SqCreature::_setNpcInfo( HSQUIRRELVM vm ) {
 	GET_STRING( name_suffix, 255 )
 	GET_OBJECT( Creature* )
 	
-	char name[3000];
-	sprintf( name, "%s %s", Rpg::createName().c_str(), name_suffix );
+	char name[3000] = {0};
+	snprintf( name, 3000, "%s %s", Rpg::createName().c_str(), name_suffix );
 	NpcInfo *npcInfo = new NpcInfo( toint( object->getX() ), toint( object->getY() ), name, object->getLevel(), profession, subtype );
 	object->setNpcInfo( npcInfo );
 	return 0;

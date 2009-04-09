@@ -17,7 +17,7 @@
 
 #include "mapsettings.h"
 
-using namespace std;
+// can't use, undefined: using namespace std;
 
 // ###### MS Visual C++ specific ###### 
 #if defined(_MSC_VER) && defined(_DEBUG)

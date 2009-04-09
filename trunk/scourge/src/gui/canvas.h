@@ -43,7 +43,7 @@ private:
 	bool drawBorders;
 
 public:
-	Canvas( int x, int y, int x2, int y2, /* WidgetView *view,*/
+	Canvas( int x, int y, int x2, int y2, 
 	        DragAndDropHandler *dragAndDropHandler = NULL,
 	        bool highlightOnMouseOver = false );
 	virtual ~Canvas();

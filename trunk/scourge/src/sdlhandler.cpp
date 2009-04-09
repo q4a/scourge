@@ -546,6 +546,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 		mouseEvent = mouseButton = 0;
 		Widget *widget = NULL;
 		Window *win = NULL;
+
 		switch ( event.type ) {
 		case SDL_MOUSEMOTION:
 			if ( invertMouse ) event.motion.y = screen->h - event.motion.y;
@@ -616,6 +617,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 				SDL_WM_ToggleFullScreen( screen );
 				break;
 			}
+			// NO BREAK!!!
 		case SDL_KEYDOWN:
 			applyMouseOffset( mouseX, mouseY, &mx, &my );
 			// don't process events during a fade
