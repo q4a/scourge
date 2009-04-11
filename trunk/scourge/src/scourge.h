@@ -846,6 +846,7 @@ protected:
 	void resetGame( bool resetParty );
 	void createMissionInfoMessage( Mission *lastMission );
 	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
+	void loadOrGenerateLargeMap();
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();

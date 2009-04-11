@@ -4,7 +4,6 @@
 //
 
 MAP_UNIT <- 16;
-MAP_OFFSET <- 80;
 
 /**
  * Return a random npc type (name, really) to use for a village population.
@@ -61,8 +60,8 @@ function villageShapes() {
 }
 
 function addRug( x, y, w, h ) {
-	rx <- ( x - MAP_OFFSET ) / MAP_UNIT + ( rand() * w.tofloat() / RAND_MAX ).tointeger();
-	ry <- ( y - MAP_OFFSET ) / MAP_UNIT - 1 - ( rand() * h.tofloat() / RAND_MAX ).tointeger();
+	rx <- ( x ) / MAP_UNIT + ( rand() * w.tofloat() / RAND_MAX ).tointeger();
+	ry <- ( y ) / MAP_UNIT - 1 - ( rand() * h.tofloat() / RAND_MAX ).tointeger();
 	scourgeGame.getMission().setRug( rx, ry );
 }
 

@@ -419,6 +419,17 @@ public:
 // it assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
 #define MAP_WIDTH 600
 #define MAP_DEPTH 600
+	
+// a region-square side's size in pixels 
+#define REGION_SIZE 16
+// a map-grid bitmap's side's size in pixels
+#define BITMAP_SIZE 128
+#define REGIONS_PER_BITMAP ( BITMAP_SIZE / REGION_SIZE )
+#define BITMAPS_PER_ROW 11
+#define BITMAPS_PER_COL 10
+#define BYTES_PER_PIXEL 3
+#define REGIONS_PER_ROW ( BITMAPS_PER_ROW * REGIONS_PER_BITMAP )
+#define REGIONS_PER_COL ( BITMAPS_PER_COL * REGIONS_PER_BITMAP )
 
 // How big is the on-screen view. Should be calculated.
 #define MAP_VIEW_HEIGHT 16

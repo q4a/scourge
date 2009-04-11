@@ -11,7 +11,7 @@
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any map->later version.                                   *
+ *   (at your option) any map->later version.                              *
  *                                                                         *
  ***************************************************************************/
 
@@ -300,8 +300,8 @@ bool Outdoor::drawHeightMapFloor() {
 	for ( int yy = startY; yy < endY; yy++ ) {
 		for ( int xx = startX; xx < endX; xx++ ) {
 
-			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
-			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
+			//int chunkX = ( ( xx * OUTDOORS_STEP ) ) / MAP_UNIT;
+			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP )  - 1 ) / MAP_UNIT;
 			//if( lightMap[chunkX][chunkY] ) {
 			map->groundPos[ xx ][ yy ].tex.glBind();
 			//} else {

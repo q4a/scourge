@@ -184,9 +184,9 @@ bool Projectile::move() {
 	}
 
 	// sanity checking: are we off the map?
-	if ( toint( ssx ) < MAP_OFFSET || toint( ssy ) < MAP_OFFSET ||
-	        toint( ssx ) >= MAP_WIDTH - MAP_OFFSET ||
-	        toint( ssy ) >= MAP_DEPTH - MAP_OFFSET ) {
+	if ( toint( ssx ) < 0 || toint( ssy ) < 0 ||
+	        toint( ssx ) >= MAP_WIDTH ||
+	        toint( ssy ) >= MAP_DEPTH ) {
 		return true;
 	}
 

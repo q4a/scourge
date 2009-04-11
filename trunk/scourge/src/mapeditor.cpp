@@ -555,6 +555,7 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
 				// todo: this should not be hard-coded (could come from map in dialog)
 				og->setRegion( 6, 4 * 8 + 7 );
+				og->setMapPosition( 75, 75 ); // the fourth quarter
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				delete og;
 				raiseButton->setEnabled( true );

@@ -35,16 +35,17 @@ class CellularAutomaton;
 #define DEPTH_IN_NODES 75
 
 //some other (hopefully) explanatory constants
-#define MAP_STEP_WIDTH (MAP_WIDTH / OUTDOORS_STEP)
-#define MAP_STEP_DEPTH (MAP_DEPTH / OUTDOORS_STEP)
-#define MAP_STEP_SIZE (MAP_STEP_WIDTH * MAP_STEP_DEPTH)
+#define MAP_STEP_WIDTH (WIDTH_IN_NODES * OUTDOORS_STEP)
+#define MAP_STEP_DEPTH (DEPTH_IN_NODES * OUTDOORS_STEP)
 
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
 private:
-	float ground[MAP_WIDTH][MAP_DEPTH];
-	CellularAutomaton *cellular[2][2];
-	int regionX, regionY;
+	float ground[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
+	CellularAutomaton *cellular;
+	int regionX, regionY; // which map region (of the large world map) are we in?
+	int mapPosX, mapPosY; // where to render the map in OUTDOOR_STEP units
+	bool willAddParty;
 	int bitmapIndex;
 	SDL_Surface *bitmapSurface;
 
@@ -63,7 +64,17 @@ public:
 	inline int getRegionX() { return regionX; }
 	inline int getRegionY() { return regionY; }
 	
+	inline void setMapPosition( int x, int y ) { mapPosX = x; mapPosY = y; }
+	inline int getMapPositionX() { return mapPosX; }
+	inline int getMapPositionY() { return mapPosY; }
+	
+	inline void setWillAddParty( bool b ) { willAddParty = b; }
+	inline bool getWillAddParty() { return willAddParty; }
+	
 protected:
+	void loadMapGridBitmap();
+	void loadMapGridBitmapRegion();
+	void packMapData( std::vector<GLubyte> &image );
 	virtual inline const char *getGateDownShapeName() {
 		return "GATE_DOWN_OUTDOORS";
 	}
@@ -84,6 +95,46 @@ protected:
 	virtual bool getUseBadassMonsters() {
 		return false;
 	}
+	
+	virtual bool addTeleporters( Map *map, ShapePalette *shapePal ) {
+		return true; // all is well...
+	}
+	
+	virtual void addContainers( Map *map, ShapePalette *shapePal ) {
+	}
+	
+	virtual bool addStairs( Map *map, ShapePalette *shapePal ){
+		return true;
+	}
+
+	virtual void addItems( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual void addMissionObjectives( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual void addMonsters( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual void addHarmlessCreatures( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual void addFurniture( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual bool addParty( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
+	
+	virtual void getPartyStartingLocation( int *xx, int *yy ) {
+		*xx = 100;
+		*yy = 56;
+	}
+	
+	virtual void addRugs( Map *map, ShapePalette *shapePal ){
+	}
+
+	virtual void addTraps( Map *map, ShapePalette *shapePal ){
+	}
+
 };
 
 #endif
