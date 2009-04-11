@@ -176,8 +176,8 @@ void MapRender::willDrawGrid() {
 
 	glDisable( GL_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	int chunkX = ( map->cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( map->cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
+	int chunkX = ( map->cursorFlatMapX ) / MAP_UNIT;
+	int chunkY = ( map->cursorFlatMapY - 1 ) / MAP_UNIT;
 	float m = 0.5f * MUL;
 	int const TMPLEN = 100;
 	char tmp[TMPLEN];
@@ -191,7 +191,7 @@ void MapRender::willDrawGrid() {
 		if ( map->chunks[i].cx == chunkX && map->chunks[i].cy == chunkY ) {
 			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
 			glLineWidth( 1 );
-			snprintf( tmp, TMPLEN, "%d,%d", ( chunkX * MAP_UNIT + MAP_OFFSET ), ( chunkY * MAP_UNIT + MAP_OFFSET + 1 ) );
+			snprintf( tmp, TMPLEN, "%d,%d", ( chunkX * MAP_UNIT ), ( chunkY * MAP_UNIT + 1 ) );
 			map->adapter->texPrint( 0, 0, tmp );
 			for ( int xx = 1; xx < MAP_UNIT; xx++ ) {
 				glBegin( GL_LINES );

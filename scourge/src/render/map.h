@@ -219,6 +219,10 @@ private:
 	std::map<RenderedCreature*, RenderedLocation*> creatureMap, creatureEffectMap, creatureLightMap;
 	std::vector<std::set<Location*> > houses;
 	std::set<Location*> *currentHouse;
+	
+	// world region coordinates
+	int regionX, regionY;
+	
 
 public:
 	bool useFrustum;
@@ -230,6 +234,12 @@ public:
 
 	Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
 	~Map();
+	
+	inline int getRegionX() { return regionX; }
+	inline void setRegionX( int n ) { this->regionX = n; }
+	inline int getRegionY() { return regionY; }
+	inline void setRegionY( int n ) { this->regionY = n; }
+	
 	
 	bool isOnFloorTile( int px, int py );
 

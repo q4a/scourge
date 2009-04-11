@@ -55,6 +55,7 @@
 #include "textscroller.h"
 #include "outdoorgenerator.h"
 #include "containerview.h"
+#include "landgenerator.h"
 
 using namespace std;
 
@@ -437,8 +438,6 @@ void Scourge::startMission( bool startInHq ) {
 		if ( mapCreated ) {
 			changingStory = goingDown = goingUp = false;
 
-			if ( inHq ) addWanderingHeroes();
-
 			// center map on the player
 			levelMap->center( toint( party->getPlayer()->getX() ),
 			                  toint( party->getPlayer()->getY() ),
@@ -700,6 +699,8 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 	}
 }
 
+#define USE_LARGE_MAP 1
+
 bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	Mission::clearConversations();
 
@@ -729,12 +730,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		getSession()->setCurrentMission( NULL );
 		missionWillAwardExpPoints = false;
 
-#ifdef CAVE_TEST
-		//dsg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
-		dg = new OutdoorGenerator( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
-		mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(), false, false );
+#ifdef USE_LARGE_MAP
+		loadOrGenerateLargeMap();
 #else
-
 		// FIXME: HQ is not loaded b/c there's no currentMission() (fails in loadMap)
 		// try to load a previously saved, random-generated map level
 		// On the other hand, you want HQ "restocked" with npc-s and items so maybe it doesn't
@@ -745,7 +743,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded )
 		string result;
-		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
+		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );		
+		addWanderingHeroes();
 #endif
 	} else {
 		// NOT in HQ map
@@ -786,6 +785,47 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	dg = NULL;
 
 	return mapCreated;
+}
+
+void Scourge::loadOrGenerateLargeMap() {
+	// for now always generate (later add load/save map regions)
+	LandGenerator *og = new LandGenerator( this, 1, 1, 1, false, false, NULL );
+	int rx = levelMap->getRegionX();
+	int ry = levelMap->getRegionY();
+	
+	og->setWillAddParty( false );
+	og->setRegion( rx, ry );
+	og->setMapPosition( 0, 0 );
+	og->toMap( levelMap, getShapePalette(), false, false );
+
+	og->setWillAddParty( false );
+	og->setRegion( rx + 1 >= REGIONS_PER_ROW ? 0 : rx + 1, ry );
+	og->setMapPosition( 75, 0 );
+	og->toMap( levelMap, getShapePalette(), false, false );
+
+	og->setWillAddParty( false );
+	og->setRegion( rx, ry + 1 >= REGIONS_PER_COL ? 0 : ry + 1 );
+	og->setMapPosition( 0, 75 );
+	og->toMap( levelMap, getShapePalette(), false, false );
+	
+	og->setWillAddParty( false );
+	og->setRegion( rx + 1 >= REGIONS_PER_ROW ? 0 : rx + 1, ry + 1 >= REGIONS_PER_COL ? 0 : ry + 1 );
+	og->setMapPosition( 75, 75 );
+	og->toMap( levelMap, getShapePalette(), false, false );
+	
+	// show party around 100,100
+	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+			getParty()->getParty( r )->findPlaceBounded( 90, 90, 110, 110 );
+		}
+	}	
+	
+	// event handler for custom map processing
+	if ( !getSession()->getMap()->inMapEditor() ) {
+		getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", levelMap->getName() );
+	}	
+	
+	delete og;	
 }
 
 bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {

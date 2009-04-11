@@ -134,8 +134,8 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 	}
 	int xx;
 	int yy;
-	for ( yy = *starty; yy >= MAP_OFFSET; --yy ) {
-		for ( xx = *startx; xx >= MAP_OFFSET; ) {
+	for ( yy = *starty; yy >= 0; --yy ) {
+		for ( xx = *startx; xx >= 0; ) {
 			Location *pos = levelMap->getLocation( xx, yy, 0 );
 			if ( !pos ) {
 				*startx = xx;
@@ -145,7 +145,7 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 				xx = pos->x - 1;
 			}
 		}
-		for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
+		for ( xx = *startx; xx < MAP_WIDTH - 0; ) {
 			Location *pos = levelMap->getLocation( xx, yy, 0 );
 			if ( !pos ) {
 				*startx = xx;
@@ -156,8 +156,8 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 			}
 		}
 	}
-	for ( yy = *starty; yy < MAP_DEPTH - MAP_OFFSET; ++yy ) {
-		for ( xx = *startx; xx >= MAP_OFFSET; ) {
+	for ( yy = *starty; yy < MAP_DEPTH; ++yy ) {
+		for ( xx = *startx; xx >= 0; ) {
 			Location *pos = levelMap->getLocation( xx, yy, 0 );
 			if ( !pos ) {
 				*startx = xx;
@@ -167,7 +167,7 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 				xx = pos->x - 1;
 			}
 		}
-		for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
+		for ( xx = *startx; xx < MAP_WIDTH; ) {
 			Location *pos = levelMap->getLocation( xx, yy, 0 );
 			if ( !pos ) {
 				*startx = xx;

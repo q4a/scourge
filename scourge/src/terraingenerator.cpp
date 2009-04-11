@@ -659,18 +659,22 @@ bool TerrainGenerator::addTeleporters( Map *map, ShapePalette *shapePal ) {
 bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {
 	int xx, yy;
 	if ( goingDown && stairsUpX > 0 ) {
+		cerr << "adding party at stairs up" << endl;
 		xx = stairsUpX;
 		yy = stairsUpY;
 	} else if ( goingUp && stairsDownX > 0 ) {
+		cerr << "adding party at stairs down" << endl;
 		xx = stairsDownX;
 		yy = stairsDownY;
 	} else {
 		getPartyStartingLocation( &xx, &yy );
+		cerr << "adding party at " << xx << "," << yy << endl;		
 	}
 	int nx, ny;
 	for ( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
 		if ( !scourge->getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
 			scourge->getParty()->getParty( r )->findPlace( xx, yy, &nx, &ny );
+			cerr << "* placed party member " << r << " at " << nx << "," << ny << endl;
 			if ( nx == -1 && ny == -1 ) {
 				char name[255];
 				getName( name );

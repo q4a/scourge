@@ -97,6 +97,10 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	hasWater = false;
 
+	// start near Horghh
+	regionX = 10 * 8 + 1;
+	regionY = 5 * 8 + 4;
+	
 	startx = starty = 128;
 	cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
 	cursorFlatMapX = cursorFlatMapY = MAP_WIDTH + 1;
@@ -604,8 +608,8 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 					 position 1 unit down the Y axis, which is the
 					 unit square's bottom left corner.
 					 */
-					posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
-					posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+					posX = chunkX * MAP_UNIT + xp;
+					posY = chunkY * MAP_UNIT + yp + 1;
 
 					// show traps
 					int trapIndex = getTrapAtLoc( posX, posY );
@@ -698,8 +702,8 @@ bool Map::checkUnderRoof() {
 }
 
 bool Map::isOnFloorTile( int px, int py ) {
-	int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;		
+	int fx = ( px / MAP_UNIT ) * MAP_UNIT;
+	int fy = ( py / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;		
 	return getFloorPosition( fx, fy );
 }
 
@@ -869,8 +873,8 @@ void Map::postDraw() {
 		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
 		cursorFlatMapX = cursorMapX;
 		cursorFlatMapY = cursorMapY;
-		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkX = cursorFlatMapX / MAP_UNIT;
+		cursorChunkY = cursorFlatMapY / MAP_UNIT;
 		if ( pos ) {
 			cursorMapX = pos->x;
 			cursorMapY = pos->y;
@@ -894,8 +898,8 @@ void Map::postDraw() {
 }
 
 bool Map::isValidPosition( int x, int y, int z ) {
-	return x >= MAP_OFFSET && x <= MAP_WIDTH - MAP_OFFSET &&
-		y >= MAP_OFFSET && y <= MAP_DEPTH - MAP_OFFSET &&
+	return x >= 0 && x <= MAP_WIDTH &&
+		y >= 0 && y <= MAP_DEPTH &&
 		z >= 0 && z < MAP_VIEW_HEIGHT;
 }
 
@@ -1875,8 +1879,8 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 }
 
 void Map::getChunk( int mapX, int mapY, int *chunkX, int *chunkY ) {
-	*chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
-	*chunkY = ( mapY - 1 - MAP_OFFSET ) / MAP_UNIT;
+	*chunkX = ( mapX ) / MAP_UNIT;
+	*chunkY = ( mapY - 1 ) / MAP_UNIT;
 }
 
 /// Sets up map location info.
@@ -1893,10 +1897,10 @@ void Map::calculateLocationInfo( Location *location,
 	*posY = location->y;
 	*posZ = location->z;
 	getChunk( location->x, location->y, &( *chunkX ), &( *chunkY ) );
-	//*chunkX = ( *posX - MAP_OFFSET ) / MAP_UNIT;
-	//*chunkY = ( *posY - 1 - MAP_OFFSET ) / MAP_UNIT;
-	int xp = ( *posX - MAP_OFFSET ) % MAP_UNIT;
-	int yp = ( *posY - 1 - MAP_OFFSET ) % MAP_UNIT;
+	//*chunkX = ( *posX ) / MAP_UNIT;
+	//*chunkY = ( *posY - 1 ) / MAP_UNIT;
+	int xp = ( *posX ) % MAP_UNIT;
+	int yp = ( *posY - 1 ) % MAP_UNIT;
 	int zp = *posZ;
 
 	// is this shape visible on the edge an chunk in darkness?
@@ -1919,16 +1923,16 @@ void Map::calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
                               int *chunkStartX, int *chunkStartY,
                               int *chunkEndX, int *chunkEndY ) {
 	*chunkOffsetX = 0;
-	*chunkStartX = ( getX() - MAP_OFFSET ) / MAP_UNIT;
-	int mod = ( getX() - MAP_OFFSET ) % MAP_UNIT;
+	*chunkStartX = ( getX() ) / MAP_UNIT;
+	int mod = ( getX() ) % MAP_UNIT;
 	if ( mod ) {
 		*chunkOffsetX = -mod;
 	}
 	*chunkEndX = mapViewWidth / MAP_UNIT + *chunkStartX;
 
 	*chunkOffsetY = 0;
-	*chunkStartY = ( getY() - MAP_OFFSET ) / MAP_UNIT;
-	mod = ( getY() - MAP_OFFSET ) % MAP_UNIT;
+	*chunkStartY = ( getY() ) / MAP_UNIT;
+	mod = ( getY() ) % MAP_UNIT;
 	if ( mod ) {
 		*chunkOffsetY = -mod;
 	}
@@ -2072,8 +2076,8 @@ bool Map::shapeFitsOutdoors( GLShape *shape, int x, int y, int z ) {
 		int h = getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP );
 		b = h >= -3 && h < 3;
 		if ( b ) {
-			int fx = ( ( x - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-			int fy = ( ( y - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+			int fx = ( ( x )  / MAP_UNIT ) * MAP_UNIT;
+			int fy = ( ( y )  / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;
 			b = getFloorPosition( fx, fy ) == NULL;
 		}
 	}
@@ -2139,8 +2143,8 @@ void Map::configureLightMap() {
 	if ( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) )
 		return;
 
-	int chunkX = ( toint( adapter->getPlayer()->getX() ) + ( adapter->getPlayer()->getShape()->getWidth() / 2 ) - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( toint( adapter->getPlayer()->getY() ) - ( adapter->getPlayer()->getShape()->getDepth() / 2 ) - MAP_OFFSET ) / MAP_UNIT;
+	int chunkX = ( toint( adapter->getPlayer()->getX() ) + ( adapter->getPlayer()->getShape()->getWidth() / 2 ) ) / MAP_UNIT;
+	int chunkY = ( toint( adapter->getPlayer()->getY() ) - ( adapter->getPlayer()->getShape()->getDepth() / 2 ) ) / MAP_UNIT;
 
 	traceLight( chunkX, chunkY, lightMap, false );
 }
@@ -2149,8 +2153,8 @@ void Map::configureLightMap() {
 
 bool Map::isPositionAccessible( int atX, int atY ) {
 	// interpret the results: see if the target is "in light"
-	int chunkX = ( atX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( atY - MAP_OFFSET ) / MAP_UNIT;
+	int chunkX = ( atX ) / MAP_UNIT;
+	int chunkY = ( atY ) / MAP_UNIT;
 	return ( accessMap[chunkX][chunkY] != 0 );
 }
 
@@ -2163,8 +2167,8 @@ void Map::configureAccessMap( int fromX, int fromY ) {
 			accessMap[x][y] = 0;
 		}
 	}
-	int chunkX = ( fromX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( fromY - MAP_OFFSET ) / MAP_UNIT;
+	int chunkX = ( fromX ) / MAP_UNIT;
+	int chunkY = ( fromY ) / MAP_UNIT;
 	traceLight( chunkX, chunkY, accessMap, true );
 }
 
@@ -2182,8 +2186,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 	lm[chunkX][chunkY] = 1;
 
 	// if there is no roof here, enable the ground
-	if ( !getLocation( MAP_OFFSET + chunkX * MAP_UNIT + ( MAP_UNIT / 2 ),
-	                   MAP_OFFSET + chunkY * MAP_UNIT + ( MAP_UNIT / 2 ),
+	if ( !getLocation( chunkX * MAP_UNIT + ( MAP_UNIT / 2 ),
+	                   chunkY * MAP_UNIT + ( MAP_UNIT / 2 ),
 	                   MAP_WALL_HEIGHT )  ) {
 		groundVisible = true;
 	}
@@ -2191,8 +2195,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 	// can we go N?
 	int x, y;
 	bool blocked = false;
-	x = chunkX * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 );
-	for ( y = chunkY * MAP_UNIT + MAP_OFFSET - ( MAP_UNIT / 2 ); y < chunkY * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ); y++ ) {
+	x = chunkX * MAP_UNIT + ( MAP_UNIT / 2 );
+	for ( y = chunkY * MAP_UNIT - ( MAP_UNIT / 2 ); y < chunkY * MAP_UNIT + ( MAP_UNIT / 2 ); y++ ) {
 		if ( isLocationBlocked( x, y, 0, onlyLockedDoors ) ) {
 			blocked = true;
 			break;
@@ -2203,8 +2207,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 
 	// can we go E?
 	blocked = false;
-	y = chunkY * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 );
-	for ( x = chunkX * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ); x < chunkX * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ) + MAP_UNIT; x++ ) {
+	y = chunkY * MAP_UNIT + ( MAP_UNIT / 2 );
+	for ( x = chunkX * MAP_UNIT + ( MAP_UNIT / 2 ); x < chunkX * MAP_UNIT + ( MAP_UNIT / 2 ) + MAP_UNIT; x++ ) {
 		if ( isLocationBlocked( x, y, 0, onlyLockedDoors ) ) {
 			blocked = true;
 			break;
@@ -2215,8 +2219,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 
 	// can we go S?
 	blocked = false;
-	x = chunkX * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 );
-	for ( y = chunkY * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ); y < chunkY * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ) + MAP_UNIT; y++ ) {
+	x = chunkX * MAP_UNIT + ( MAP_UNIT / 2 );
+	for ( y = chunkY * MAP_UNIT + ( MAP_UNIT / 2 ); y < chunkY * MAP_UNIT + ( MAP_UNIT / 2 ) + MAP_UNIT; y++ ) {
 		if ( isLocationBlocked( x, y, 0, onlyLockedDoors ) ) {
 			blocked = true;
 			break;
@@ -2227,8 +2231,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 
 	// can we go W?
 	blocked = false;
-	y = chunkY * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 );
-	for ( x = chunkX * MAP_UNIT + MAP_OFFSET - ( MAP_UNIT / 2 ); x < chunkX * MAP_UNIT + MAP_OFFSET + ( MAP_UNIT / 2 ); x++ ) {
+	y = chunkY * MAP_UNIT + ( MAP_UNIT / 2 );
+	for ( x = chunkX * MAP_UNIT - ( MAP_UNIT / 2 ); x < chunkX * MAP_UNIT + ( MAP_UNIT / 2 ); x++ ) {
 		if ( isLocationBlocked( x, y, 0, onlyLockedDoors ) ) {
 			blocked = true;
 			break;
@@ -2332,8 +2336,8 @@ bool Map::isLocationVisible( int x, int y ) {
 /// Is the location/shape currently visible on an indoor map?
 
 bool Map::isLocationInLight( int x, int y, Shape *shape ) {
-	int chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( y - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
+	int chunkX = ( x ) / MAP_UNIT;
+	int chunkY = ( y - 1 ) / MAP_UNIT;
 	if ( !checkLightMap( chunkX, chunkY ) ) return false;
 	return ( helper && helper->isVisible( x, y, shape ) );
 }
@@ -3433,12 +3437,12 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 /// Is it safe to put the shape on this map tile?
 
 bool Map::canFit( int x, int y, Shape *shape ) {
-	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
-	        y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+	if ( x < 0 || x >= MAP_WIDTH ||
+	        y < 0 || y >= MAP_DEPTH ) {
 		return false;
 	}
-	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	int fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	int fx = ( ( x ) / MAP_UNIT ) * MAP_UNIT;
+	int fy = ( ( y ) / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;
 	if ( isHeightMapEnabled() ) {
 		int gx = fx / OUTDOORS_STEP;
 		int gy = fy / OUTDOORS_STEP;
@@ -3457,8 +3461,8 @@ bool Map::canFit( int x, int y, Shape *shape ) {
 /// Nothing on this map tile?
 
 bool Map::isEmpty( int x, int y ) {
-	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
-	        y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+	if ( x < 0 || x >= MAP_WIDTH ||
+	        y < 0 || y >= MAP_DEPTH ) {
 		return false;
 	}
 	return( getLocation( x, y, 0 ) == NULL ? true : false );
@@ -3493,12 +3497,12 @@ void Map::refresh() {
 }
 
 void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
-	int chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
-	int chunkY = ( mapY - MAP_OFFSET ) / MAP_UNIT;
+	int chunkX = ( mapX ) / MAP_UNIT;
+	int chunkY = ( mapY ) / MAP_UNIT;
 	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
 		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
-			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
-			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			int xx = ( ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
 			setGroundHeight( xx, yy, height );
 		}
 	}
