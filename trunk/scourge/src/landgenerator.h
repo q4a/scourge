@@ -34,14 +34,10 @@ class CellularAutomaton;
 #define WIDTH_IN_NODES 75
 #define DEPTH_IN_NODES 75
 
-//some other (hopefully) explanatory constants
-#define MAP_STEP_WIDTH (WIDTH_IN_NODES * OUTDOORS_STEP)
-#define MAP_STEP_DEPTH (DEPTH_IN_NODES * OUTDOORS_STEP)
-
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
 private:
-	float ground[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
+	float ground[WIDTH_IN_NODES][DEPTH_IN_NODES];
 	CellularAutomaton *cellular;
 	int regionX, regionY; // which map region (of the large world map) are we in?
 	int mapPosX, mapPosY; // where to render the map in OUTDOOR_STEP units

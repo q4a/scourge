@@ -62,7 +62,8 @@ public:
 	void generate( bool islandsEnabled = false,
 	               bool removeSinglesEnabled = false,
 	               int pathWidth = 1,
-	               bool isWaterEnabled = false );
+	               bool isWaterEnabled = false,
+	               bool findRoomsEnabled = true );
 
 	inline int getWidth() {
 		return this->w;

@@ -57,8 +57,8 @@ LandGenerator::LandGenerator( Scourge *scourge, int level, int depth, int maxDep
                               Mission *mission ) :
 		TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 13 ) {
 	// init the ground
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
 			ground[x][y] = 0;
 		}
 	}
@@ -85,38 +85,29 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	// add mountains
 	int offs = 0;
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
-			map->setGroundHeight( mapPosX + x, mapPosY + y, ground[mapPosX + x][mapPosY + y] );
-			if ( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
-			        y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
-				int mx = ( x - offs ) % WIDTH_IN_NODES;
-				int my = ( y - offs ) % DEPTH_IN_NODES;
-				if ( cellular->getNode( mx, my )->wall ) {
-					map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 14.0f, 20.0f ) );
-				} else if ( cellular->getNode( mx, my )->water ) {
-					map->setGroundHeight( mapPosX + x, mapPosY + y, -Util::roll( 14.0f, 20.0f )	 );
-				}
+	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
+			if ( cellular->getNode( x, y )->wall ) {
+				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 14.0f, 20.0f ) );
+			} else if ( cellular->getNode( x, y )->water ) {
+				map->setGroundHeight( mapPosX + x, mapPosY + y, -Util::roll( 14.0f, 20.0f )	 );
+			} else {
+				map->setGroundHeight( mapPosX + x, mapPosY + y, ground[x][y] );
 			}
 		}
 	}
 
 	// add trees
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
-			if ( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
-			        y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
-				int mx = ( x - offs ) % WIDTH_IN_NODES;
-				int my = ( y - offs ) % DEPTH_IN_NODES;
-				if ( cellular->getNode( mx, my )->island ) {
-					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
-					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
-					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
+	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
+			if ( cellular->getNode( x, y )->island && !cellular->getNode( x, y )->water ) {
+				GLShape *shape = shapePal->getRandomTreeShape( shapePal );
+				int xx = ( mapPosX + x ) * OUTDOORS_STEP;
+				int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
 
-					// don't put them on roads and in houses
-					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
-						map->setPosition( xx, yy, 0, shape );
-					}
+				// don't put them on roads and in houses
+				if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
+					map->setPosition( xx, yy, 0, shape );
 				}
 			}
 		}
@@ -264,8 +255,9 @@ void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
 void LandGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	loadMapGridBitmap();
 	
-	cellular->generate( true, true, 4, true );
+	cellular->generate( true, true, 4, true, false );
 	cellular->makeMinSpace( 4 );
+	cellular->print();
 	
 	createGround();
 }
@@ -274,8 +266,8 @@ void LandGenerator::createGround() {
 	// create the undulating ground
 	float amp = 1.0f;
 	float freq = 40.0f;
-	for ( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
+	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
 			float a = Util::roll( 0.25f, amp );
