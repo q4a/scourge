@@ -63,7 +63,8 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 void CellularAutomaton::generate( bool islandsEnabled,
                                   bool removeSinglesEnabled,
                                   int pathWidth,
-                                  bool isWaterEnabled ) {
+                                  bool isWaterEnabled,
+                                  bool findRoomsEnabled ) {
 	if( !initialized ) randomize();
 
 	for ( int i = 0; i < CELL_GROWTH_CYCLES; i++ ) {
@@ -74,12 +75,22 @@ void CellularAutomaton::generate( bool islandsEnabled,
 			growWaterCells();
 		}
 	}
+	
+#ifdef DEBUG_CELLULAR	
+	cerr << "1111111111111111111111111111111111111111111111" << endl;
+	print();
+#endif	
 
 	phase = 1;
-	findRooms();
-
-	connectRooms();
-
+	if( findRoomsEnabled ) {
+		findRooms();
+		connectRooms();
+#ifdef DEBUG_CELLULAR		
+		cerr << "2222222222222222222222222222222222222222222222" << endl;
+		print();
+#endif		
+	}
+	
 	if ( removeSinglesEnabled ) removeSingles();
 
 
@@ -96,12 +107,34 @@ void CellularAutomaton::generate( bool islandsEnabled,
 
 		addIslands();
 
+#ifdef DEBUG_CELLULAR
+		cerr << "3333333333333333333333333333333333333333333333" << endl;
+		print();		
+#endif		
+
 		growCellsIsland();
+		
+#ifdef DEBUG_CELLULAR		
+		cerr << "4444444444444444444444444444444444444444444444" << endl;
+		print();
+#endif		
 
 		addIslandLand();
 
-		findRooms();
-		connectRooms( pathWidth );
+#ifdef DEBUG_CELLULAR		
+		cerr << "55555555555555555555555555555555555555555555555" << endl;
+		print();
+#endif		
+
+		if( findRoomsEnabled ) {
+			findRooms();
+			connectRooms( pathWidth );
+#ifdef DEBUG_CELLULAR			
+			cerr << "66666666666666666666666666666666666666666666666" << endl;
+			print();
+#endif			
+		}
+		
 
 		//if( removeSinglesEnabled ) removeSingles();
 
@@ -301,7 +334,8 @@ bool CellularAutomaton::canReach( int sx, int sy, int ex, int ey ) {
 	if ( sx > w - 1 || sx < 1 || sy > h - 1 || sy < 1 ||
 	        node[sx][sy].seen ||
 	        node[sx][sy].wall ||
-	        node[sx][sy].island ) return false;
+	        node[sx][sy].island ||
+	        node[sx][sy].water ) return false;
 	node[sx][sy].seen = true;
 	return( canReach( sx + 1, sy, ex, ey ) ||
 	        canReach( sx - 1, sy, ex, ey ) ||
@@ -323,7 +357,8 @@ void CellularAutomaton::findRooms() {
 			for ( int y = 1; y < h - 1; y++ ) {
 				if ( node[x][y].room == -1 &&
 				        !node[x][y].wall &&
-				        !node[x][y].island ) {
+				        !node[x][y].island &&
+				        !node[x][y].water ) {
 					sx = x;
 					sy = y;
 					break;
@@ -343,6 +378,7 @@ void CellularAutomaton::findRooms() {
 			for ( int y = 1; y < h - 1; y++ ) {
 				if ( !( node[x][y].wall ) &&
 				        !( node[x][y].island ) &&
+				        !( node[x][y].water ) &&
 				        node[x][y].room == -1 ) {
 					setSeen( false );
 					if ( canReach( x, y, sx, sy ) ) {
@@ -397,7 +433,7 @@ void CellularAutomaton::connectPoints( int sx, int sy, int ex, int ey, bool isBi
 			else if ( sy < ey ) sy++;
 			else if ( sy > ey ) sy--;
 		}
-		node[sx][sy].wall = node[sx][sy].island = false;
+		node[sx][sy].wall = node[sx][sy].island = node[sx][sy].water = false;
 	}
 }
 
@@ -433,7 +469,7 @@ void CellularAutomaton::connectRooms( int pathWidth ) {
 					}
 
 					// success?
-					if ( node[rx][ry].island == false && node[rx][ry].wall == false && node[rx][ry].room != i ) {
+					if ( node[rx][ry].island == false && node[rx][ry].wall == false && node[rx][ry].water == false && node[rx][ry].room != i ) {
 						success = true;
 						break;
 					}
