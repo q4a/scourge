@@ -819,6 +819,7 @@ public:
 	void clearHouses();
 
 protected:
+	bool isPartyOnMap( float dx, float dy );
 	bool checkLightMap( int chunkX, int chunkY );
 	void clearTraps();
 

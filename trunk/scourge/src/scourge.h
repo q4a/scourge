@@ -826,6 +826,8 @@ public:
 	bool isInMovieMode();
 	void setContinueAt( char *func, int timeout );
 	void pcApproved();
+	
+	void mapRegionsChanged( float party_x, float party_y );
 
 protected:
 	void preMainLoop();
@@ -846,7 +848,7 @@ protected:
 	void resetGame( bool resetParty );
 	void createMissionInfoMessage( Mission *lastMission );
 	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
-	void loadOrGenerateLargeMap();
+	void loadOrGenerateLargeMap( bool placeParty = true );
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();

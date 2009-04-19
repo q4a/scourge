@@ -417,8 +417,8 @@ public:
 // The map's dimensions
 // Warning: if this ever changes, be sure to look at Map::createTripletKey().
 // it assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
-#define MAP_WIDTH 600
-#define MAP_DEPTH 600
+#define MAP_WIDTH 592
+#define MAP_DEPTH 592
 	
 // a region-square side's size in pixels 
 #define REGION_SIZE 16

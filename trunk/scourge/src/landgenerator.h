@@ -31,8 +31,8 @@ class Mission;
 class GLShape;
 class CellularAutomaton;
 
-#define WIDTH_IN_NODES 75
-#define DEPTH_IN_NODES 75
+#define WIDTH_IN_NODES 74
+#define DEPTH_IN_NODES 74
 
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
