@@ -2413,10 +2413,70 @@ void Map::moveMap( int dir ) {
 
 		// cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
 
-		if ( mapy > MAP_DEPTH - mapViewDepth ) mapy = MAP_DEPTH - mapViewDepth;
-		if ( mapy < 0 ) mapy = 0;
-		if ( mapx > MAP_WIDTH - mapViewWidth ) mapx = MAP_WIDTH - mapViewWidth;
-		if ( mapx < 0 ) mapx = 0;
+		bool reloadRegions = false;
+		float party_x = 0.0f;
+		float party_y = 0.0f;
+		if ( mapy > MAP_DEPTH - mapViewDepth ) {
+			party_y = -MAP_DEPTH / 2;
+			if( isPartyOnMap( party_x, party_y ) ) {
+				regionY++; 
+				if( regionY >= REGIONS_PER_COL ) regionY = 0; 
+				reloadRegions = true;
+				mapy -= MAP_DEPTH / 2;
+			} else {
+				mapy = MAP_DEPTH - mapViewDepth;
+			}
+		}
+		if ( mapy < 0 ) {
+			party_y = MAP_DEPTH / 2;
+			if( isPartyOnMap( party_x, party_y ) ) {
+				regionY--;
+				if( regionY < 0 ) regionY = REGIONS_PER_COL - 1;
+				reloadRegions = true;
+				mapy += MAP_DEPTH / 2;
+			} else {
+				mapy = 0;
+			}
+		}
+		if ( mapx > MAP_WIDTH - mapViewWidth ) {
+			party_x = -MAP_WIDTH / 2;
+			if( isPartyOnMap( party_x, party_y ) ) {
+				regionX++;
+				if( regionX >= REGIONS_PER_ROW ) regionX = 0;
+				reloadRegions = true;
+				mapx -= MAP_WIDTH / 2;
+			} else {
+				mapx = MAP_WIDTH - mapViewWidth;
+			}
+		}
+		if ( mapx < 0 ) {
+			party_x = MAP_WIDTH / 2;
+			if( isPartyOnMap( party_x, party_y ) ) {
+				regionX--;
+				if( regionX < 0 ) regionX = REGIONS_PER_ROW - 1;
+				reloadRegions = true;
+				mapx += MAP_WIDTH / 2;
+			} else {
+				mapx = 0;
+			}
+		}
+		if( reloadRegions ) {
+			float old_zoom = zoom;
+			float old_xrot = xrot;
+			float old_yrot = yrot;
+			float old_zrot = zrot;
+			float old_mapx = mapx;
+			float old_mapy = mapy;
+			reset();
+			adapter->mapRegionsChanged( party_x, party_y );
+			zoom = old_zoom;
+			xrot = old_xrot;
+			yrot = old_yrot;
+			zrot = old_zrot;
+			mapx = old_mapx;
+			mapy = old_mapy;
+			refresh();
+		}
 		// cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
 
 		x = static_cast<int>( rint( mapx ) );
@@ -2424,6 +2484,23 @@ void Map::moveMap( int dir ) {
 		// cerr << "FINAL: x=" << x << " y=" << y << endl;
 
 	}
+}
+
+bool Map::isPartyOnMap( float dx, float dy ) {
+	float px, py;
+	for ( int t = 0; t < adapter->getPartySize(); t++ ) {
+		if ( !adapter->getParty( t )->getStateMod( StateMod::dead ) ) {
+			px = adapter->getParty( t )->getX() + dx;
+			py = adapter->getParty( t )->getY() + dy;
+			if( px < 0 || px >= MAP_WIDTH || py < 0 || py >= MAP_DEPTH ) {
+//				cerr << "FAIL: " << adapter->getParty( t )->getName() << 
+//					" pos=" << adapter->getParty( t )->getX() << "," << adapter->getParty( t )->getY() <<
+//					" delta=" << dx << "," << dy << endl;
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 void Map::handleEvent( SDL_Event *event ) {
@@ -3252,8 +3329,9 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 								*mapx = fx;
 								*mapy = fy;
 								*mapz = fz;
-								snprintf( mapDebugStr, DEBUG_SIZE, "map: %.2f,%.2f,%.2f pos:%d,%d,%d - %d,%d,%d",
+								snprintf( mapDebugStr, DEBUG_SIZE, "M:%.2f,%.2f,%.2f R:%d,%d P:%d,%d,%d - %d,%d,%d",
 								          mx, my, mz,
+								          regionX, regionY,
 								          location->x, location->y - shape->getDepth() + 1, location->z,
 								          location->x + shape->getWidth(), location->y + 1, location->z + shape->getHeight() );
 								adapter->setDebugStr( mapDebugStr );
@@ -3267,7 +3345,7 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 		if ( toint( mz ) <= 0.25f ) {
 			*pos = NULL;
 			*mapz = 0;
-			snprintf( mapDebugStr, DEBUG_SIZE, "map: %d,%d,%d", *mapx, *mapy, *mapz );
+			snprintf( mapDebugStr, DEBUG_SIZE, "R:%d,%d M: %d,%d,%d", regionX, regionY, *mapx, *mapy, *mapz );
 			adapter->setDebugStr( mapDebugStr );
 			return;
 		}

@@ -267,6 +267,8 @@ public:
 	virtual void setDepthLimits( float minLimit, float maxLimit ) {}
 	
 	virtual void forceRepaint() {}
+	
+	virtual void mapRegionsChanged( float party_x, float party_y ) {}
 };
 
 /// SDL/OpenGL related extensions to GameAdapter.

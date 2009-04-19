@@ -787,7 +787,23 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
-void Scourge::loadOrGenerateLargeMap() {
+void Scourge::mapRegionsChanged( float party_x, float party_y ) {
+	loadOrGenerateLargeMap( false );
+	
+	float px, py;
+	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+			px = getParty()->getParty( r )->getX() + party_x;
+			py = getParty()->getParty( r )->getY() + party_y;
+			
+			getParty()->getParty( r )->moveTo( px, py, 0 );
+			getParty()->getParty( r )->setSelXY( toint( px ), toint( py ) );
+			levelMap->setCreature( toint( px ), toint( py ), 0, getParty()->getParty( r ) );
+		}		
+	}
+}
+
+void Scourge::loadOrGenerateLargeMap( bool placeParty ) {
 	// for now always generate (later add load/save map regions)
 	LandGenerator *og = new LandGenerator( this, 1, 1, 1, false, false, NULL );
 	int rx = levelMap->getRegionX();
@@ -813,12 +829,14 @@ void Scourge::loadOrGenerateLargeMap() {
 	og->setMapPosition( 75, 75 );
 	og->toMap( levelMap, getShapePalette(), false, false );
 	
-	// show party around 100,100
-	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
-		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
-			getParty()->getParty( r )->findPlaceBounded( 90, 90, 110, 110 );
+	if( placeParty ) {
+		// show party around 100,100
+		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+				getParty()->getParty( r )->findPlaceBounded( 260, 450, 270, 460 );
+			}		
 		}
-	}	
+	}
 	
 	// event handler for custom map processing
 	if ( !getSession()->getMap()->inMapEditor() ) {
