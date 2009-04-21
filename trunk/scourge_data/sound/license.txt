@@ -10,6 +10,7 @@ You can contact them at these addresses:
 * Toofan Hosseinnezhad: <retrix at users.sourceforge.net>
 * Vincent Fiack: <vfiack at gmail.com>
 * Joel Ross: <joel.binarybrain at gmail.com>
+* Pal Zoltan Illes: http://musicliberated.blogspot.com
 
 FileName		Music Title		Author
 ---------		------------		-------
@@ -23,10 +24,10 @@ track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
 track06.ogg		Sur un theme de ...	Vincent Fiack
 chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
 chapters/chapter2.ogg   Maw of the Grizzled...  Vincent Fiack
+fight01.ogg     Till Last Blood     Pal Zoltan Illes
 
 The following music tracks were remixed by Dennis Murczak <dmurczak at versanet.de> from material uploaded to www.soundsnap.com by user "Dynamedion":
 
-fight01.ogg
 bossbattle.ogg
 finalbattle.ogg
 outro.ogg
