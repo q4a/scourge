@@ -403,6 +403,11 @@ public:
 		return move != 0;
 	}
 
+	/// Do we currently manipulate the view either way?
+	inline bool isViewChanging() {
+		return mouseRot || mouseZoom || ( move != 0 );
+	}
+
 	inline void setMapSettings( MapSettings *settings ) {
 		this->settings = settings;
 	}

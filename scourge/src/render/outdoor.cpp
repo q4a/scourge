@@ -277,12 +277,34 @@ void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, 
 }
 
 void Outdoor::doRenderFloor() {
+	map->isViewChanging() ? useDisplayList = false : useDisplayList = true;
+
 	if ( map->groundVisible || map->settings->isGridShowing() ) {
-		drawHeightMapFloor();
+
+		if ( useDisplayList ) {
+			if ( hasDisplayList ) {
+				glCallList(floorDisplayList);
+			} else {
+				floorDisplayList = glGenLists( 1 );
+				glNewList( floorDisplayList, GL_COMPILE );
+				drawHeightMapFloor();
+				glEndList();
+				hasDisplayList = true;
+				glCallList(floorDisplayList);
+			}
+		} else {
+			if ( hasDisplayList ) {
+				glDeleteLists( floorDisplayList, 1 );
+				hasDisplayList = false;
+			}
+			drawHeightMapFloor();
+		}
+
 #ifndef DEBUG_OUTDOOR		
 		drawWaterLevel();
 #endif		
 	}
+
 	map->setupShapes( true, false );
 }
 
