@@ -34,7 +34,7 @@ class Outdoor : public MapRender {
 private:
 	
 public:
-	Outdoor( Map *map ) : MapRender( map ) {}
+	Outdoor( Map *map ) : MapRender( map ) { useDisplayList = false; hasDisplayList = false; }
 	virtual ~Outdoor() {}
 	
 	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
@@ -58,6 +58,10 @@ protected:
 	void drawRoofs();
 	
 private:
+	GLuint floorDisplayList;
+	bool useDisplayList;
+	bool hasDisplayList;
+
 	void drawObjects( std::vector<RenderedLocation*> *shades );
 	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );	
 	bool drawHeightMapFloor();
