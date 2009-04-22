@@ -244,7 +244,7 @@ void SDLHandler::initGL() {
 		glEnable( GL_DITHER );
 	}
 
-	glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
+	glColorMaterial ( GL_FRONT, GL_AMBIENT ) ;
 	glEnable( GL_COLOR_MATERIAL );
 
 	/* initialize opengl extensions */
