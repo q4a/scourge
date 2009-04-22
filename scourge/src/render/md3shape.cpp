@@ -89,7 +89,6 @@ void MD3Shape::draw() {
 	// It seems that Quake2 orders their polygons clock-wise.
 	glEnable( GL_CULL_FACE );
 	glCullFace( GL_BACK );
-	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
 	if( isShade() ) {
 		glDisable( GL_TEXTURE_2D );
 	} else {
@@ -101,9 +100,9 @@ void MD3Shape::draw() {
 	md3->DrawModel( this );
 
 	if( isShade() ) {
-		if ( textureWasEnabled ) glEnable( GL_TEXTURE_2D );
+		glEnable( GL_TEXTURE_2D );
 	} else {
-		if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+		glDisable( GL_TEXTURE_2D );
 	}
 	glDisable( GL_CULL_FACE );
 	glPopMatrix();
@@ -111,7 +110,6 @@ void MD3Shape::draw() {
 
 void MD3Shape::outline( float r, float g, float b ) {
 	useShadow = true;
-	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
 	glDisable( GL_TEXTURE_2D );
 	glFrontFace( GL_CCW );
 	glPolygonMode( GL_BACK, GL_LINE );
@@ -140,7 +138,7 @@ void MD3Shape::outline( float r, float g, float b ) {
 	glLineWidth( 1 );
 	glDisable( GL_CULL_FACE );
 	glPolygonMode( GL_BACK, GL_FILL );
-	if ( texture ) glEnable( GL_TEXTURE_2D );
+	glEnable( GL_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }

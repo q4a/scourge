@@ -486,8 +486,6 @@ void C3DSShape::draw() {
 		cerr << "*** Warning: shape not intialized. name=" << getName() << endl;
 	}
 
-	GLboolean textureEnabled = glIsEnabled( GL_TEXTURE_2D );
-
 #ifdef DEBUG_3DS
 	if ( glIsEnabled( GL_TEXTURE_2D ) ) {
 		glPushMatrix();
@@ -527,16 +525,10 @@ void C3DSShape::draw() {
 	}
 	glPopMatrix();
 
-	//  if( !useShadow )
-	// glEnable(GL_TEXTURE_2D);
-
-	if ( textureEnabled ) glEnable( GL_TEXTURE_2D );
-	else glDisable( GL_TEXTURE_2D );
 }
 
 void C3DSShape::outline( float r, float g, float b ) {
 	useShadow = true;
-	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
 	glDisable( GL_TEXTURE_2D );
 	glPolygonMode( GL_FRONT, GL_LINE );
 	glLineWidth( 4 );
@@ -553,7 +545,7 @@ void C3DSShape::outline( float r, float g, float b ) {
 	//glCullFace( GL_BACK );
 	glDisable( GL_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
-	if ( texture ) glEnable( GL_TEXTURE_2D );
+	glEnable( GL_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }
