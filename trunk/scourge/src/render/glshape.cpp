@@ -348,7 +348,6 @@ void GLShape::draw() {
 	// cull back faces
 	glEnable( GL_CULL_FACE );
 	glCullFace( GL_BACK );
-	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
 	if( isShade() ) {
 		glDisable( GL_TEXTURE_2D );
 	} else {
@@ -415,9 +414,9 @@ void GLShape::draw() {
 	}
 
 	if( isShade() ) {
-		if ( textureWasEnabled ) glEnable( GL_TEXTURE_2D );
+		glEnable( GL_TEXTURE_2D );
 	} else {
-		if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+		glDisable( GL_TEXTURE_2D );
 	}
 }
 
@@ -427,10 +426,8 @@ void GLShape::outline( float r, float g, float b ) {
 	glGetFloatv( GL_CURRENT_COLOR, colors );
 
 	useShadow = true;
-	GLboolean blend = glIsEnabled( GL_BLEND );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
 	glDisable( GL_TEXTURE_2D );
 	glPolygonMode( GL_FRONT, GL_LINE );
 	glLineWidth( 4 );
@@ -447,8 +444,8 @@ void GLShape::outline( float r, float g, float b ) {
 	//glCullFace( GL_BACK );
 	glDisable( GL_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
-	if ( !blend ) glDisable( GL_BLEND );
-	if ( texture ) glEnable( GL_TEXTURE_2D );
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
 	useShadow = false;
 	//glColor4f(1, 1, 1, 0.9f);
 

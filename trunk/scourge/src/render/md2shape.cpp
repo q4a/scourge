@@ -68,11 +68,9 @@ void MD2Shape::commonInit( t3DModel * g_3DModel, Texture textureId,  float div )
 void MD2Shape::draw() {
 
 #ifdef DEBUG_MD2
-	//if( glIsEnabled( GL_TEXTURE_2D ) ) {
 	glPushMatrix();
 	debugShape->draw();
 	glPopMatrix();
-	//}
 #endif
 
 	glPushMatrix();

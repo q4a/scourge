@@ -123,11 +123,8 @@ void GLCaveShape::draw() {
 	float h = ( float )height * MUL;
 	if ( h == 0 ) h = 0.25f * MUL;
 
-	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
 	if ( !useShadow ) {
 		glEnable( GL_TEXTURE_2D );
-//		glEnable( GL_CULL_FACE );
-//		glCullFace( GL_BACK );
 	}
 	
 	// enabling face culling screws up caves
@@ -144,10 +141,7 @@ void GLCaveShape::draw() {
 	}
 
 
-	if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
-	//useShadow = false;
-
-	glDisable( GL_CULL_FACE );
+	glDisable( GL_TEXTURE_2D );
 
 }
 
