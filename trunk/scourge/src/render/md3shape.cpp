@@ -111,10 +111,6 @@ void MD3Shape::draw() {
 
 void MD3Shape::outline( float r, float g, float b ) {
 	useShadow = true;
-	GLboolean blend;
-	glGetBooleanv( GL_BLEND, &blend );
-	//glEnable( GL_BLEND );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
 	glDisable( GL_TEXTURE_2D );
 	glFrontFace( GL_CCW );
@@ -144,7 +140,6 @@ void MD3Shape::outline( float r, float g, float b ) {
 	glLineWidth( 1 );
 	glDisable( GL_CULL_FACE );
 	glPolygonMode( GL_BACK, GL_FILL );
-	if ( !blend ) glDisable( GL_BLEND );
 	if ( texture ) glEnable( GL_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
