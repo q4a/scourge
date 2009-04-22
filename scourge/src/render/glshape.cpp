@@ -427,8 +427,7 @@ void GLShape::outline( float r, float g, float b ) {
 	glGetFloatv( GL_CURRENT_COLOR, colors );
 
 	useShadow = true;
-	GLboolean blend;
-	glGetBooleanv( GL_BLEND, &blend );
+	GLboolean blend = glIsEnabled( GL_BLEND );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
