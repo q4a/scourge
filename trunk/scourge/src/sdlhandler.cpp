@@ -235,7 +235,7 @@ void SDLHandler::initGL() {
 	glEnable( GL_DEPTH_TEST );
 
 	/* The Type Of Depth Test To Do */
-	glDepthFunc( GL_LEQUAL );
+	glDepthFunc( GL_LESS );
 
 	// Don't dither textures on truecolor displays.
 	if ( gameAdapter->getPreferences()->getBpp() > 16 ) {

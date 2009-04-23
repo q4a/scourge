@@ -178,6 +178,8 @@ void MainMenu::drawView() {
 	if ( ( tickNow - lastMenuTick ) < 15 ) SDL_Delay( 15 - ( tickNow - lastMenuTick ) );
 	lastMenuTick = SDL_GetTicks();
 
+	glDisable( GL_DEPTH_TEST );
+
 	if ( !slideMode ) {
 		glDisable( GL_CULL_FACE );
 		
@@ -191,7 +193,6 @@ void MainMenu::drawView() {
 		glEnable( GL_TEXTURE_2D );
 
 		// create a stencil for the water
-		glDisable( GL_DEPTH_TEST );
 		glColorMask( 0, 0, 0, 0 );
 
 		if ( scourge->getUserConfiguration()->getStencilbuf() && scourge->getUserConfiguration()->getStencilBufInitialized() ) {
@@ -204,7 +205,6 @@ void MainMenu::drawView() {
 
 		// Use the stencil to draw
 		glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-		glEnable( GL_DEPTH_TEST );
 
 		if ( scourge->getUserConfiguration()->getStencilbuf() && scourge->getUserConfiguration()->getStencilBufInitialized() ) {
 			glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
@@ -223,18 +223,15 @@ void MainMenu::drawView() {
 		glDepthMask( GL_TRUE );
 		glDisable( GL_BLEND );
 
-		glDisable( GL_DEPTH_TEST );
 
 		drawClouds( true, false );
 
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		glDisable( GL_DEPTH_TEST );
 
 		drawScourge();
 
 		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_DEPTH_TEST );
 
 		drawMenu();
 	}
@@ -434,7 +431,6 @@ void MainMenu::drawMenu() {
 	glDisable( GL_STENCIL_TEST );
 	glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
 
 	for ( int i = 0; i < static_cast<int>( textEffects.size() ); i++ ) {
 		if ( this->scourge->getSession()->getPreferences()->getFlaky() == false ) {
@@ -442,7 +438,6 @@ void MainMenu::drawMenu() {
 			textEffect->setActive( i == activeMenuItem );
 			textEffect->draw();
 		} else {
-			glDisable( GL_DEPTH_TEST );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 			if ( i == activeMenuItem ) {
 				glColor4f( 1, 1, 0, 1 );
@@ -451,7 +446,6 @@ void MainMenu::drawMenu() {
 			}
 			scourge->getSDLHandler()->texPrint( 50, top + 230 + ( i * 50 ), _( menuText[i] ) );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-			glEnable( GL_DEPTH_TEST );
 		}
 	}
 }
