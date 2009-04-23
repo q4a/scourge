@@ -441,10 +441,10 @@ void Window::drawWidget( Window* ) {
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_TRIANGLE_STRIP );
-			glVertex2f( 0, topY );
-			glVertex2f( getWidth(), topY );
-			glVertex2f( 0, topY + TITLE_HEIGHT );
-			glVertex2f( getWidth(), topY + TITLE_HEIGHT );
+			glVertex2i( 0, topY );
+			glVertex2i( getWidth(), topY );
+			glVertex2i( 0, topY + TITLE_HEIGHT );
+			glVertex2i( getWidth(), topY + TITLE_HEIGHT );
 			glEnd();
 			glDisable( GL_BLEND );
 		}
@@ -665,14 +665,14 @@ void Window::drawLineBorder( int topY, int openHeight ) {
 		glLineWidth( 2.0f );
 	}
 	glBegin( GL_LINES );
-	glVertex2d( w, topY + openHeight );
-	glVertex2d( 0, topY + openHeight );
-	glVertex2d( 0, topY );
-	glVertex2d( w, topY );
-	glVertex2d( 0, topY );
-	glVertex2d( 0, topY + openHeight );
-	glVertex2d( w, topY );
-	glVertex2d( w, topY + openHeight );
+	glVertex2i( w, topY + openHeight );
+	glVertex2i( 0, topY + openHeight );
+	glVertex2i( 0, topY );
+	glVertex2i( w, topY );
+	glVertex2i( 0, topY );
+	glVertex2i( 0, topY + openHeight );
+	glVertex2i( w, topY );
+	glVertex2i( w, topY + openHeight );
 	glEnd();
 	glLineWidth( 1.0f );
 }
@@ -694,13 +694,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, n );
 	glEnd();
 	glPopMatrix();
@@ -711,13 +711,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, n );
 	glEnd();
 	glPopMatrix();
@@ -728,13 +728,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, n );
 	glEnd();
 	glPopMatrix();
@@ -745,13 +745,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, n );
 	glEnd();
 	glPopMatrix();
@@ -763,13 +763,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, h );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, h );
 	glEnd();
 	glPopMatrix();
@@ -780,13 +780,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( n, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, h );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( n, h );
 	glEnd();
 	glPopMatrix();
@@ -798,13 +798,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( w, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( w, n );
 	glEnd();
 	glPopMatrix();
@@ -815,13 +815,13 @@ void Window::drawBorder( int topY, int openHeight ) {
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2i( w, 0 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2i( 0, n );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2i( w, n );
 	glEnd();
 	glPopMatrix();
@@ -919,10 +919,10 @@ void Window::scissorToWindow( bool insideOnly ) {
 		glColor4f( 1, 0, 0, 1 );
 	}
 	glBegin( GL_LINE_LOOP );
-	glVertex2f( sx, sy - sh );
-	glVertex2f( sx + sw, sy - sh );
-	glVertex2f( sx + sw, sy  );
-	glVertex2f( sx, sy  );
+	glVertex2i( sx, sy - sh );
+	glVertex2i( sx + sw, sy - sh );
+	glVertex2i( sx + sw, sy  );
+	glVertex2i( sx, sy  );
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glPopMatrix();

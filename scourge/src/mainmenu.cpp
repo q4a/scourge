@@ -300,14 +300,14 @@ void MainMenu::drawView() {
 			glTranslatef( 0, openingTop + 1, 0 );
 			slide.glBind();
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( 0, 0 );
-			glVertex3f( 0, 0, 0 );
-			glTexCoord2f( 1, 0 );
-			glVertex3f( w, 0, 0 );
-			glTexCoord2f( 0, 1 );
-			glVertex3f( 0, h, 0 );
-			glTexCoord2f( 1, 1 );
-			glVertex3f( w, h, 0 );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( 0, 0 );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( w, 0 );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( 0, h );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( w, h );
 			glEnd();
 			//glPopMatrix();
 			glDisable( GL_TEXTURE_2D );
@@ -464,20 +464,20 @@ void MainMenu::drawLogo() {
 	glTranslatef( 70, logoRot, 0 );
 //  float w = scourge->getShapePalette()->logo->w;
 //  float h = scourge->getShapePalette()->logo->h;
-	float w = 352.0f;
-	float h = 173.0f;
+	int w = 352;
+	int h = 173;
 	glColor4f( 1, 1, 1, 1 );
 	scourge->getShapePalette()->logo_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f( w, 0, 0 );
-	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f( 0, h, 0 );
-	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f( w, h, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glPopMatrix();
 
@@ -497,14 +497,14 @@ void MainMenu::drawLogo() {
 		scourge->getShapePalette()->chain_texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0.0f, 0.0f );
-		glVertex3f( 0, 0, 0 );
-		glTexCoord2f( 1.0f, 0.0f );
-		glVertex3f( w, 0, 0 );
-		glTexCoord2f( 0.0f, 1.0f );
-		glVertex3f( 0, h, 0 );
-		glTexCoord2f( 1.0f, 1.0f );
-		glVertex3f( w, h, 0 );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( w, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, h );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( w, h );
 		glEnd();
 		glPopMatrix();
 	}
@@ -530,14 +530,14 @@ void MainMenu::drawLogo() {
 	h = 64;
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f( w, 0, 0 );
-	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f( 0, h, 0 );
-	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f( w, h, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glPopMatrix();
 
@@ -558,10 +558,10 @@ void MainMenu::drawStars() {
 		           Util::roll( 0.2f, 0.99f ) );
 		int n = 1;
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2d( 0, 0 );
-		glVertex2d( n, 0 );
-		glVertex2d( 0, n );
-		glVertex2d( n, n );
+		glVertex2i( 0, 0 );
+		glVertex2i( n, 0 );
+		glVertex2i( 0, n );
+		glVertex2i( n, n );
 		glEnd();
 		glPopMatrix();
 	}
@@ -588,14 +588,14 @@ void MainMenu::drawScourge() {
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0.005f, 0.005f );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 0.995f, 0.005f );
-	glVertex3f( w, 0, 0 );
-	glTexCoord2f( 0.005f, 0.995f );
-	glVertex3f( 0, h, 0 );
-	glTexCoord2f( 0.995f, 0.995f );
-	glVertex3f( w, h, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glPopMatrix();
 
@@ -623,14 +623,14 @@ void MainMenu::drawBackdrop() {
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f( w, 0, 0 );
-	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f( 0, h, 0 );
-	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f( w, h, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glPopMatrix();
 
@@ -643,7 +643,7 @@ void MainMenu::drawBackdrop() {
 
 void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	// draw clouds
-	float w, h;
+	int w, h;
 
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
@@ -665,24 +665,24 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 		} else {
 			glColor4f( 1, 1, 1, 1 );
 		}
-		glTexCoord2f( 0.0f, ( flipped ? 1.0f : 0.0f ) );
-		glVertex3f( 0, 0, 0 );
+		glTexCoord2i( 0, ( flipped ? 1 : 0 ) );
+		glVertex2i( 0, 0 );
 
 		if ( flipped ) {
 			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
 		} else {
 			glColor4f( 1, 1, 1, 1 );
 		}		
-		glTexCoord2f( 1.0f, ( flipped ? 1.0f : 0.0f ) );
-		glVertex3f( w, 0, 0 );
+		glTexCoord2i( 1, ( flipped ? 1 : 0 ) );
+		glVertex2i( w, 0 );
 		
 		glColor4f( 1, 0.3f, 0, 0.5f );
-		glTexCoord2f( 0.0f, ( flipped ? 0.0f : 1.0f ) );
-		glVertex3f( 0, ( flipped ? h / 2.0 : h ), 0 );
+		glTexCoord2i( 0, ( flipped ? 0 : 1 ) );
+		glVertex2i( 0, ( flipped ? h / 2 : h ) );
 		
 		glColor4f( 1, 0.3f, 0, 0.5f );
-		glTexCoord2f( 1.0f, ( flipped ? 0.0f : 1.0f ) );
-		glVertex3f( w, ( flipped ? h / 2.0 : h ), 0 );
+		glTexCoord2i( 1, ( flipped ? 0 : 1 ) );
+		glVertex2i( w, ( flipped ? h / 2 : h ) );
 		glEnd();
 		glPopMatrix();
 
@@ -700,7 +700,7 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 /// Draws the water.
 
 void MainMenu::drawWater() {
-	float w, h;
+	int w, h;
 	// draw the water
 	glPushMatrix();
 	w = scourge->getSDLHandler()->getScreen()->w;
@@ -714,13 +714,13 @@ void MainMenu::drawWater() {
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glColor4f( 0, 0, 0.1f, 1 );
-	glVertex3f( 0, 0, 0 );
+	glVertex2i( 0, 0 );
 	glColor4f( 0, 0, 0.1f, 1 );
-	glVertex3f( w, 0, 0 );
+	glVertex2i( w, 0 );
 	glColor4f( 0, 0.1f, 0.4f, 1 );
-	glVertex3f( 0, h, 0 );
+	glVertex2i( 0, h );
 	glColor4f( 0, 0.1f, 0.4f, 1 );
-	glVertex3f( w, h, 0 );
+	glVertex2i( w, h );
 	glEnd();
 	//glDisable( GL_BLEND );
 	glPopMatrix();

@@ -150,7 +150,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	int ox = sx % FOG_CHUNK_SIZE;
 	int oy = sy % FOG_CHUNK_SIZE;
 
-	GLfloat minLightX, minLightY, maxLightX, maxLightY;
+	int minLightX, minLightY, maxLightX, maxLightY;
 	minLightX = minLightY = 2000;
 	maxLightX = maxLightY = 0;
 	bool e[1000];
@@ -270,32 +270,30 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	        intersects( 0, 0,
 	                    map->getAdapter()->getScreenWidth(),
 	                    map->getAdapter()->getScreenHeight(),
-	                    static_cast<int>( minLightX ), static_cast<int>( minLightY ),
-	                    static_cast<int>( maxLightX - minLightX ),
-	                    static_cast<int>( maxLightY - minLightY ) ) ) {
+	                    minLightX, minLightY, maxLightX - minLightX, maxLightY - minLightY ) ) {
 
 
 		glBegin( GL_QUADS );
 
-		glVertex2f( 0, 0 );
-		glVertex2f( 0, minLightY );
-		glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
-		glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
+		glVertex2i( 0, 0 );
+		glVertex2i( 0, minLightY );
+		glVertex2i( map->getAdapter()->getScreenWidth(), minLightY );
+		glVertex2i( map->getAdapter()->getScreenWidth(), 0 );
 
-		glVertex2f( 0, maxLightY );
-		glVertex2f( 0, map->getAdapter()->getScreenHeight() );
-		glVertex2f( map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight() );
-		glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
+		glVertex2i( 0, maxLightY );
+		glVertex2i( 0, map->getAdapter()->getScreenHeight() );
+		glVertex2i( map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight() );
+		glVertex2i( map->getAdapter()->getScreenWidth(), maxLightY );
 
-		glVertex2f( 0, minLightY );
-		glVertex2f( 0, maxLightY );
-		glVertex2f( minLightX, maxLightY );
-		glVertex2f( minLightX, minLightY );
+		glVertex2i( 0, minLightY );
+		glVertex2i( 0, maxLightY );
+		glVertex2i( minLightX, maxLightY );
+		glVertex2i( minLightX, minLightY );
 
-		glVertex2f( maxLightX, minLightY );
-		glVertex2f( maxLightX, maxLightY );
-		glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
-		glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
+		glVertex2i( maxLightX, minLightY );
+		glVertex2i( maxLightX, maxLightY );
+		glVertex2i( map->getAdapter()->getScreenWidth(), maxLightY );
+		glVertex2i( map->getAdapter()->getScreenWidth(), minLightY );
 
 		glEnd();
 
@@ -308,22 +306,22 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 		glBindTexture( GL_TEXTURE_2D, overlay_tex );
 		glBegin( GL_TRIANGLE_STRIP );
 
-		glTexCoord2f( 0.0f, 0.0f );
-		glVertex2f( minLightX, minLightY );
-		glTexCoord2f( 1.0f, 0.0f );
-		glVertex2f( maxLightX, minLightY );
-		glTexCoord2f( 0.0f, 1.0f );
-		glVertex2f( minLightX, maxLightY );
-		glTexCoord2f( 1.0f, 1.0f );
-		glVertex2f( maxLightX, maxLightY );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( minLightX, minLightY );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( maxLightX, minLightY );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( minLightX, maxLightY );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( maxLightX, maxLightY );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 	} else {
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2f( 0, 0 );
-		glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
-		glVertex2f( 0, map->getAdapter()->getScreenHeight() );
-		glVertex2f( map->getAdapter()->getScreenWidth(),
+		glVertex2i( 0, 0 );
+		glVertex2i( map->getAdapter()->getScreenWidth(), 0 );
+		glVertex2i( 0, map->getAdapter()->getScreenHeight() );
+		glVertex2i( map->getAdapter()->getScreenWidth(),
 		            map->getAdapter()->getScreenHeight() );
 		glEnd();
 	}
@@ -347,16 +345,16 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			glColor4f( 1, 1, 1, 0.5f );
 			glBindTexture( GL_TEXTURE_2D, shade_tex );
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( 0, 0 );
+			glTexCoord2i( 0, 0 );
 			glVertex2f( x - ( w / 2 ), y - ( h / 2 ) );
 			//glVertex2f( x, y );
-			glTexCoord2f( 1, 0 );
+			glTexCoord2i( 1, 0 );
 			glVertex2f( x + w + ( w / 2 ), y - ( h / 2 ) );
 			//glVertex2f( x + w, y );
-			glTexCoord2f( 0, 1 );
+			glTexCoord2i( 0, 1 );
 			glVertex2f( x - ( w / 2 ), y + h + ( h / 2 ) );
 			//glVertex2f( x, y + h );
-			glTexCoord2f( 1, 1 );
+			glTexCoord2i( 1, 1 );
 			glVertex2f( x + w + ( w / 2 ), y + h + ( h / 2 ) );
 			//glVertex2f( x + w, y + h );
 			glEnd();

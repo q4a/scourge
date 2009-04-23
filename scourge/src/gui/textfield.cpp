@@ -137,10 +137,10 @@ void TextField::drawWidget( Window* parent ) {
 	}
 	glPushMatrix();
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2d( 0, 0 );
-	glVertex2d( getWidth(), 0 );
-	glVertex2d( 0, getHeight() );
-	glVertex2d( getWidth(), getHeight() );
+	glVertex2i( 0, 0 );
+	glVertex2i( getWidth(), 0 );
+	glVertex2i( 0, getHeight() );
+	glVertex2i( getWidth(), getHeight() );
 	glEnd();
 	glPopMatrix();
 
@@ -177,10 +177,10 @@ void TextField::drawWidget( Window* parent ) {
 	}
 	glPushMatrix();
 	glBegin( GL_LINE_LOOP );
-	glVertex2d( 0, 0 );
-	glVertex2d( 0, getHeight() );
-	glVertex2d( getWidth(), getHeight() );
-	glVertex2d( getWidth(), 0 );
+	glVertex2i( 0, 0 );
+	glVertex2i( 0, getHeight() );
+	glVertex2i( getWidth(), getHeight() );
+	glVertex2i( getWidth(), 0 );
 	glEnd();
 	glPopMatrix();
 	if ( inside ) {
@@ -190,8 +190,8 @@ void TextField::drawWidget( Window* parent ) {
 		glPushMatrix();
 		glTranslatef( OFFSET + pos * AVG_CHAR_WIDTH + 1, 0, 0 );
 		glBegin( GL_LINES );
-		glVertex2d( 0, 0 );
-		glVertex2d( 0, getHeight() );
+		glVertex2i( 0, 0 );
+		glVertex2i( 0, getHeight() );
 		glEnd();
 		glPopMatrix();
 		glLineWidth( 1.0f );

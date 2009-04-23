@@ -166,10 +166,10 @@ void FontMgr::drawUNICODE( Uint16 *p, int x, int y ) {
 
 			glBindTexture( GL_TEXTURE_2D, g->tex );
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( texMinX, texMinY ); glVertex2f( left,    top );
-			glTexCoord2f( texMaxX, texMinY ); glVertex2f( right,    top );
-			glTexCoord2f( texMinX, texMaxY ); glVertex2f( left, bottom );
-			glTexCoord2f( texMaxX, texMaxY ); glVertex2f( right, bottom );
+			glTexCoord2f( texMinX, texMinY ); glVertex2i( left,    top );
+			glTexCoord2f( texMaxX, texMinY ); glVertex2i( right,    top );
+			glTexCoord2f( texMinX, texMaxY ); glVertex2i( left, bottom );
+			glTexCoord2f( texMaxX, texMaxY ); glVertex2i( right, bottom );
 			glEnd();
 
 			x += g->advance;

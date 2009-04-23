@@ -962,14 +962,14 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glEnable( GL_TEXTURE_2D );
 	getItemIconTexture( smallIcon ).glBind();
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( x, y );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( x + w, y );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( x, y + h );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( x + w, y + h );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( x, y );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( x + w, y );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( x, y + h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( x + w, y + h );
 	glEnd();
 	glDisable( GL_BLEND );
 }
@@ -1094,14 +1094,14 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		              iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2, 0 );
 		//glRotatef( iconUnderEffectParticle[i]->life, 0, 0, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2d( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2d( 1, 0 );
-		glVertex2d( iconUnderEffectParticle[i]->zoom, 0 );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( 0, iconUnderEffectParticle[i]->zoom );
-		glTexCoord2d( 1, 1 );
-		glVertex2d( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
+		glTexCoord2i( 0, 0 );
+		glVertex2f( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2f( iconUnderEffectParticle[i]->zoom, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2f( 0, iconUnderEffectParticle[i]->zoom );
+		glTexCoord2i( 1, 1 );
+		glVertex2f( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
 		glEnd();
 		glPopMatrix();
 	}
@@ -1154,14 +1154,14 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 			glRotatef( 360.0f * a, 0, 0, 1 );
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2d( 0, 0 );
-		glVertex2d( x, y );
-		glTexCoord2d( 1, 0 );
-		glVertex2d( x + iconEffectParticle[i]->zoom, y );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( x, y + iconEffectParticle[i]->zoom );
-		glTexCoord2d( 1, 1 );
-		glVertex2d( x + iconEffectParticle[i]->zoom, y + iconEffectParticle[i]->zoom );
+		glTexCoord2i( 0, 0 );
+		glVertex2f( x, y );
+		glTexCoord2i( 1, 0 );
+		glVertex2f( x + iconEffectParticle[i]->zoom, y );
+		glTexCoord2i( 0, 1 );
+		glVertex2f( x, y + iconEffectParticle[i]->zoom );
+		glTexCoord2i( 1, 1 );
+		glVertex2f( x + iconEffectParticle[i]->zoom, y + iconEffectParticle[i]->zoom );
 		glEnd();
 		glPopMatrix();
 	}

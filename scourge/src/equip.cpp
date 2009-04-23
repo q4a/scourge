@@ -364,14 +364,14 @@ bool Equip::onDraw( Widget* ) {
 	}
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( 0, 0 );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( w, 0 );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, h );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( w, h );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glDisable( GL_BLEND );
 	// glDisable( GL_ALPHA_TEST );
@@ -405,10 +405,10 @@ void Equip::drawEquipment() {
 		glDisable( GL_TEXTURE_2D );
 		pcUi->getWindow()->setTopWindowBorderColor();
 		glBegin( GL_LINE_LOOP );
-		glVertex2d( rect->x, rect->y + rect->h );
-		glVertex2d( rect->x, rect->y );
-		glVertex2d( rect->x + rect->w, rect->y );
-		glVertex2d( rect->x + rect->w, rect->y + rect->h );
+		glVertex2i( rect->x, rect->y + rect->h );
+		glVertex2i( rect->x, rect->y );
+		glVertex2i( rect->x + rect->w, rect->y );
+		glVertex2i( rect->x + rect->w, rect->y + rect->h );
 		glEnd();
 	}
 }
@@ -435,24 +435,24 @@ void Equip::drawSpells() {
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( 0, 0, 0, 0.75 );
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2d( 0, 1 );
-		glVertex2d( size + width, 1 );
-		glVertex2d( 0, size );
-		glVertex2d( size + width, size );
+		glVertex2i( 0, 1 );
+		glVertex2i( size + width, 1 );
+		glVertex2i( 0, size );
+		glVertex2i( size + width, size );
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
 
 		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ).glBind();
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2d( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2d( 1, 0 );
-		glVertex2d( size, 0 );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( 0, size );
-		glTexCoord2d( 1, 1 );
-		glVertex2d( size, size );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( size, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, size );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( size, size );
 		glEnd();
 
 		glColor4f( 1, 0.35f, 0, 1 );
@@ -469,14 +469,14 @@ void Equip::drawSpells() {
 				pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
 				glColor4f( 1, 1, 1, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
-				glTexCoord2d( 0, 0 );
-				glVertex2d( xx, yy );
-				glTexCoord2d( 1, 0 );
-				glVertex2d( xx + SPELL_SIZE, yy );
-				glTexCoord2d( 0, 1 );
-				glVertex2d( xx, yy + SPELL_SIZE );
-				glTexCoord2d( 1, 1 );
-				glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+				glTexCoord2i( 0, 0 );
+				glVertex2i( xx, yy );
+				glTexCoord2i( 1, 0 );
+				glVertex2i( xx + SPELL_SIZE, yy );
+				glTexCoord2i( 0, 1 );
+				glVertex2i( xx, yy + SPELL_SIZE );
+				glTexCoord2i( 1, 1 );
+				glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 				glEnd();
 			}
 			if ( schoolIndex == i && spellIndex == t ) {
@@ -486,10 +486,10 @@ void Equip::drawSpells() {
 			}
 			glDisable( GL_TEXTURE_2D );
 			glBegin( GL_LINE_LOOP );
-			glVertex2d( xx, yy + SPELL_SIZE );
-			glVertex2d( xx, yy );
-			glVertex2d( xx + SPELL_SIZE, yy );
-			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glVertex2i( xx, yy + SPELL_SIZE );
+			glVertex2i( xx, yy );
+			glVertex2i( xx + SPELL_SIZE, yy );
+			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
 			glEnable( GL_TEXTURE_2D );
 		}
@@ -519,10 +519,10 @@ void Equip::drawCapabilities() {
 
 	glColor4f( 0, 0, 0, 0.75 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2d( 0, 1 );
-	glVertex2d( size + width, 1 );
-	glVertex2d( 0, size );
-	glVertex2d( size + width, size );
+	glVertex2i( 0, 1 );
+	glVertex2i( size + width, 1 );
+	glVertex2i( 0, size );
+	glVertex2i( size + width, size );
 	glEnd();
 
 	glEnable( GL_TEXTURE_2D );
@@ -565,14 +565,14 @@ void Equip::drawCapabilities() {
 			pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ].glBind();
 			glColor4f( 1, 1, 1, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2d( 0, 0 );
-			glVertex2d( xx, yy );
-			glTexCoord2d( 1, 0 );
-			glVertex2d( xx + SPELL_SIZE, yy );
-			glTexCoord2d( 0, 1 );
-			glVertex2d( xx, yy + SPELL_SIZE );
-			glTexCoord2d( 1, 1 );
-			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( xx, yy );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( xx + SPELL_SIZE, yy );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( xx, yy + SPELL_SIZE );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
 
 			if ( specialSkill == ss ) {
@@ -582,10 +582,10 @@ void Equip::drawCapabilities() {
 			}
 			glDisable( GL_TEXTURE_2D );
 			glBegin( GL_LINE_LOOP );
-			glVertex2d( xx, yy + SPELL_SIZE );
-			glVertex2d( xx, yy );
-			glVertex2d( xx + SPELL_SIZE, yy );
-			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glVertex2i( xx, yy + SPELL_SIZE );
+			glVertex2i( xx, yy );
+			glVertex2i( xx + SPELL_SIZE, yy );
+			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
 			glEnable( GL_TEXTURE_2D );
 

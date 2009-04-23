@@ -92,17 +92,17 @@ void Widget::draw( Window* parent ) {
 		}
 		glLineWidth( 2.0f );
 		glBegin( GL_LINES );
-		glVertex2f( -1, -1 );
-		glVertex2f( -1, getHeight() + 1 );
+		glVertex2i( -1, -1 );
+		glVertex2i( -1, getHeight() + 1 );
 
-		glVertex2f( -1, -1 );
-		glVertex2f( getWidth() + 2, -1 );
+		glVertex2i( -1, -1 );
+		glVertex2i( getWidth() + 2, -1 );
 
-		glVertex2f( -1, getHeight() + 1 );
-		glVertex2f( getWidth() + 2, getHeight() + 1 );
+		glVertex2i( -1, getHeight() + 1 );
+		glVertex2i( getWidth() + 2, getHeight() + 1 );
 
-		glVertex2f( getWidth() + 2, -1 );
-		glVertex2f( getWidth() + 2, getHeight() + 1 );
+		glVertex2i( getWidth() + 2, -1 );
+		glVertex2i( getWidth() + 2, getHeight() + 1 );
 		glEnd();
 		glLineWidth( 1.0f );
 	}
@@ -185,25 +185,25 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 
 	if ( inverse ) {
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( n, n );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( x2 - x - n, n );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( n, y2 - y - n );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( x2 - x - n, y2 - y - n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( n, n );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( x2 - x - n, n );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( n, y2 - y - n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
 	} else {
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( n, n );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( x2 - x - n, n );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( n, y2 - y - n );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( x2 - x - n, y2 - y - n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( n, n );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( x2 - x - n, n );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( n, y2 - y - n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
 	}
 
@@ -217,14 +217,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			else theme->getButtonBackground()->tex_north.glBind();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( x2 - x, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, n );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( x2 - x, n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( x2 - x, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( x2 - x, n );
 		glEnd();
 		glPopMatrix();
 
@@ -238,14 +238,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			else theme->getButtonBackground()->tex_south.glBind();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( x2 - x, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, n );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( x2 - x, n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( x2 - x, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( x2 - x, n );
 		glEnd();
 		glPopMatrix();
 
@@ -259,14 +259,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			else theme->getButtonBackground()->tex_west.glBind();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( n, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, y2 - y - ( 2 * n ) );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( n, y2 - y - ( 2 * n ) );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( n, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, y2 - y - ( 2 * n ) );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( n, y2 - y - ( 2 * n ) );
 		glEnd();
 		glPopMatrix();
 
@@ -280,14 +280,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			else theme->getButtonBackground()->tex_east.glBind();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( n, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, y2 - y - ( 2 * n ) );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( n, y2 - y - ( 2 * n ) );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( n, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, y2 - y - ( 2 * n ) );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( n, y2 - y - ( 2 * n ) );
 		glEnd();
 		glPopMatrix();
 	}
@@ -316,14 +316,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable( GL_BLEND );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( n, n );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( x2 - x - n, n );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( n, y2 - y - n );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( x2 - x - n, y2 - y - n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( n, n );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( x2 - x - n, n );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( n, y2 - y - n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
@@ -342,14 +342,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable( GL_BLEND );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( n, n );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( x2 - x - n, n );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( n, y2 - y - n );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( x2 - x - n, y2 - y - n );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( n, n );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( x2 - x - n, n );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( n, y2 - y - n );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
@@ -362,10 +362,10 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		           theme->getButtonBorder()->color.a );
 	}
 	glBegin( GL_LINE_LOOP );
-	glVertex2d( 0, 0 );
-	glVertex2d( 0, y2 - y );
-	glVertex2d( x2 - x, y2 - y );
-	glVertex2d( x2 - x, 0 );
+	glVertex2i( 0, 0 );
+	glVertex2i( 0, y2 - y );
+	glVertex2i( x2 - x, y2 - y );
+	glVertex2i( x2 - x, 0 );
 
 	/*
 	glVertex2d(0, 0);
@@ -478,63 +478,63 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 	if ( inverse ) {
 		// quad A
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
-		glVertex3f( 0, 0, 0 );
+		glVertex2i( 0, 0 );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
-		glVertex3f( 0, height, 0 );
+		glVertex2i( 0, height );
 		glTexCoord2f( 0, 0 );
-		glVertex3f( left, height, 0 );
+		glVertex2i( left, height );
 		glTexCoord2f( 0, 1 );
-		glVertex3f( left, 0, 0 );
+		glVertex2i( left, 0 );
 
 		// quad B
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
-		glVertex3f( left, 0, 0 );
+		glVertex2i( left, 0 );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
-		glVertex3f( left, height, 0 );
+		glVertex2i( left, height );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
-		glVertex3f( width - right, height, 0 );
+		glVertex2i( width - right, height );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
-		glVertex3f( width - right, 0, 0 );
+		glVertex2i( width - right, 0 );
 
 		// quad C
 		glTexCoord2f( 1, 1 );
-		glVertex3f( width - right, 0, 0 );
+		glVertex2i( width - right, 0 );
 		glTexCoord2f( 1, 0 );
-		glVertex3f( width - right, height, 0 );
+		glVertex2i( width - right, height );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
-		glVertex3f( width, height, 0 );
+		glVertex2i( width, height );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
-		glVertex3f( width, 0, 0 );
+		glVertex2i( width, 0 );
 	} else {
 		// quad A
 		glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
+		glVertex2i( 0, 0 );
 		glTexCoord2f( 0, 1 );
-		glVertex3f( 0, height, 0 );
+		glVertex2i( 0, height );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
-		glVertex3f( left, height, 0 );
+		glVertex2i( left, height );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
-		glVertex3f( left, 0, 0 );
+		glVertex2i( left, 0 );
 
 		// quad B
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
-		glVertex3f( left, 0, 0 );
+		glVertex2i( left, 0 );
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
-		glVertex3f( left, height, 0 );
+		glVertex2i( left, height );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
-		glVertex3f( width - right, height, 0 );
+		glVertex2i( width - right, height );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
-		glVertex3f( width - right, 0, 0 );
+		glVertex2i( width - right, 0 );
 
 		// quad C
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
-		glVertex3f( width - right, 0, 0 );
+		glVertex2i( width - right, 0 );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
-		glVertex3f( width - right, height, 0 );
+		glVertex2i( width - right, height );
 		glTexCoord2f( 1, 1 );
-		glVertex3f( width, height, 0 );
+		glVertex2i( width, height );
 		glTexCoord2f( 1, 0 );
-		glVertex3f( width, 0, 0 );
+		glVertex2i( width, 0 );
 	}
 	glEnd();
 

@@ -75,13 +75,13 @@ void TextEffect::draw() {
 	glEnable( GL_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );
 //  glNormal3f( 0, 0, 1 );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex2f( 0, 0 );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex2f( MENU_ITEM_WIDTH * zoom, 0 );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex2f( MENU_ITEM_WIDTH * zoom, MENU_ITEM_HEIGHT * zoom );
 	glEnd();
 	glDisable( GL_TEXTURE_2D );
@@ -148,13 +148,13 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			glEnable( GL_TEXTURE_2D );
 //   glNormal3f( 0, 0, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( 0, 1 );
+			glTexCoord2i( 0, 1 );
 			glVertex2f( 0, 0 );
-			glTexCoord2f( 1, 1 );
+			glTexCoord2i( 1, 1 );
 			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, 0 );
-			glTexCoord2f( 0, 0 );
+			glTexCoord2i( 0, 0 );
 			glVertex2f( 0, MENU_ITEM_HEIGHT * particle[i].zoom );
-			glTexCoord2f( 1, 0 );
+			glTexCoord2i( 1, 0 );
 			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, MENU_ITEM_HEIGHT * particle[i].zoom );
 			glEnd();
 			glDisable( GL_TEXTURE_2D );
@@ -176,10 +176,10 @@ void TextEffect::buildTextures() {
 
 	glEnable( GL_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2f( x, y - FONT_OFFSET );
-	glVertex2f( x + width, y - FONT_OFFSET );
-	glVertex2f( x, y - FONT_OFFSET + height );
-	glVertex2f( x + width, y - FONT_OFFSET + height );
+	glVertex2i( x, y - FONT_OFFSET );
+	glVertex2i( x + width, y - FONT_OFFSET );
+	glVertex2i( x, y - FONT_OFFSET + height );
+	glVertex2i( x + width, y - FONT_OFFSET + height );
 	glEnd();
 
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );

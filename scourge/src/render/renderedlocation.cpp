@@ -320,13 +320,13 @@ void RenderedLocation::drawLight() {
 	}		
 	
 	glBegin( GL_QUADS );
-	glTexCoord2f( 1.0f, 1.0f );
+	glTexCoord2i( 1, 1 );
 	glVertex3f( -r, r, 0 );
-	glTexCoord2f( 1.0f, 0.0f );
+	glTexCoord2i( 1, 0 );
 	glVertex3f( -r, -r, 0 );
-	glTexCoord2f( 0.0f, 0.0f );
+	glTexCoord2i( 0, 0 );
 	glVertex3f( r, -r, 0 );
-	glTexCoord2f( 0.0f, 1.0f );
+	glTexCoord2i( 0, 1 );
 	glVertex3f( r, r, 0 );		
 	glEnd();
 	glPopMatrix();

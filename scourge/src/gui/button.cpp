@@ -66,14 +66,14 @@ void Button::drawWidget( Window* parent ) {
 		}
 
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex3f( getWidth(), 0, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex3f( 0, getHeight(), 0 );
-		glTexCoord2f( 1, 1 );
-		glVertex3f( getWidth(), getHeight(), 0 );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( getWidth(), 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, getHeight() );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( getWidth(), getHeight() );
 		glEnd();
 		glPopMatrix();
 
