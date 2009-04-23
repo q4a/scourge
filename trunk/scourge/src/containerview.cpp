@@ -75,14 +75,14 @@ bool ContainerView::onDraw( Widget* ) {
 	container->getContainerTexture().glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( 0, 0 );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( w, 0 );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, h );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( w, h );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glDisable( GL_BLEND );
 	
@@ -114,10 +114,10 @@ bool ContainerView::onDraw( Widget* ) {
 			int ph = scourge->getMovingItem()->getBackpackHeight() * GRID_SIZE;
 			//cerr << "pw=" << pw << " ph=" << ph << endl;
 			glBegin( GL_TRIANGLE_STRIP );
-			glVertex2d( px, py );
-			glVertex2d( px + pw, py );
-			glVertex2d( px, py + ph );
-			glVertex2d( px + pw, py + ph );
+			glVertex2i( px, py );
+			glVertex2i( px + pw, py );
+			glVertex2i( px, py + ph );
+			glVertex2i( px + pw, py + ph );
 			glEnd();
 		}
 	} else if( getSelectedItem() ) {
@@ -128,10 +128,10 @@ bool ContainerView::onDraw( Widget* ) {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glColor4f( 0, 0, 0, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2d( px, py );
-		glVertex2d( px + pw, py );
-		glVertex2d( px, py + ph );
-		glVertex2d( px + pw, py + ph );
+		glVertex2i( px, py );
+		glVertex2i( px + pw, py );
+		glVertex2i( px, py + ph );
+		glVertex2i( px + pw, py + ph );
 		glEnd();
 		win->setTopWindowBorderColor();
 		glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
@@ -139,21 +139,21 @@ bool ContainerView::onDraw( Widget* ) {
 
 	for ( int yy = 0; yy <= rowCount; yy++ ) {
 		glBegin( GL_LINE_LOOP );
-		glVertex2d( 0, yy * GRID_SIZE );
-		glVertex2d( colCount * GRID_SIZE, yy * GRID_SIZE );
+		glVertex2i( 0, yy * GRID_SIZE );
+		glVertex2i( colCount * GRID_SIZE, yy * GRID_SIZE );
 		glEnd();
 	}
 	for ( int xx = 0; xx <= colCount; xx++ ) {
 		glBegin( GL_LINE_LOOP );
-		glVertex2d( xx * GRID_SIZE, 0 );
-		glVertex2d( xx * GRID_SIZE, rowCount * GRID_SIZE );
+		glVertex2i( xx * GRID_SIZE, 0 );
+		glVertex2i( xx * GRID_SIZE, rowCount * GRID_SIZE );
 		glEnd();
 	}
 	glBegin( GL_LINE_LOOP );
-	glVertex2d( 0, 0 );
-	glVertex2d( colCount * GRID_SIZE - 1, 0 );
-	glVertex2d( colCount * GRID_SIZE - 1, rowCount * GRID_SIZE - 1 );
-	glVertex2d( 0, rowCount * GRID_SIZE - 1 );
+	glVertex2i( 0, 0 );
+	glVertex2i( colCount * GRID_SIZE - 1, 0 );
+	glVertex2i( colCount * GRID_SIZE - 1, rowCount * GRID_SIZE - 1 );
+	glVertex2i( 0, rowCount * GRID_SIZE - 1 );
 	glEnd();
 	glDisable( GL_BLEND );
 

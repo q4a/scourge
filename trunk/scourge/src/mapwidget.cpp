@@ -150,14 +150,14 @@ bool  MapWidget::onDraw( Widget* ) {
 			glColor4f( 1, 1, 1, 1 );
 
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( 0, 0 );
-			glVertex2f( 0, 0 );
-			glTexCoord2f( 1, 0 );
-			glVertex2d( Constants::MAP_GRID_TILE_PIXEL_WIDTH, 0 );
-			glTexCoord2f( 0, 1 );
-			glVertex2f( 0, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
-			glTexCoord2f( 1, 1 );
-			glVertex2d( Constants::MAP_GRID_TILE_PIXEL_WIDTH, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( 0, 0 );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( Constants::MAP_GRID_TILE_PIXEL_WIDTH, 0 );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( 0, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( Constants::MAP_GRID_TILE_PIXEL_WIDTH, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
 			glEnd();
 			glPopMatrix();
 		}
@@ -171,20 +171,20 @@ bool  MapWidget::onDraw( Widget* ) {
 
 	glBegin( GL_QUADS );
 	glColor4f( 0, 0, 0, 0.75f );
-	glVertex2f( 0, 0 );
+	glVertex2i( 0, 0 );
 	glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
-	glVertex2f( getWidth(), 0 );
-	glVertex2f( getWidth(), shadowSize );
+	glVertex2i( getWidth(), 0 );
+	glVertex2i( getWidth(), shadowSize );
 	glColor4f( 0, 0, 0, 0.75f );
-	glVertex2f( 0, shadowSize );
+	glVertex2i( 0, shadowSize );
 
 	glColor4f( 0, 0, 0, 0.75f );
-	glVertex2f( 0, shadowSize );
-	glVertex2f( shadowSize, shadowSize );
+	glVertex2i( 0, shadowSize );
+	glVertex2i( shadowSize, shadowSize );
 	glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
-	glVertex2f( shadowSize, getHeight() );
+	glVertex2i( shadowSize, getHeight() );
 	glColor4f( 0, 0, 0, 0.75f );
-	glVertex2f( 0, getHeight() );
+	glVertex2i( 0, getHeight() );
 	glEnd();
 	glDisable( GL_BLEND );
 
@@ -195,17 +195,17 @@ bool  MapWidget::onDraw( Widget* ) {
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 1, 0, 0, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2f( 0, 0 );
-	glVertex2f( 10, 0 );
-	glVertex2f( 0, 10 );
-	glVertex2f( 10, 10 );
+	glVertex2i( 0, 0 );
+	glVertex2i( 10, 0 );
+	glVertex2i( 0, 10 );
+	glVertex2i( 10, 10 );
 	glEnd();
 	glColor4f( 0, 0, 0, 0 );
 	glBegin( GL_LINE_LOOP );
-	glVertex2f( 0, 0 );
-	glVertex2f( 10, 0 );
-	glVertex2f( 10, 10 );
-	glVertex2f( 0, 10 );
+	glVertex2i( 0, 0 );
+	glVertex2i( 10, 0 );
+	glVertex2i( 10, 10 );
+	glVertex2i( 0, 10 );
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glPopMatrix();

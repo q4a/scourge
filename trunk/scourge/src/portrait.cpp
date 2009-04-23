@@ -202,14 +202,14 @@ bool Portrait::onDraw( Widget* widget ) {
 	backgroundTexture.glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( 0, 0 );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( w, 0 );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, h );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( w, h );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( w, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, h );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( w, h );
 	glEnd();
 	glDisable( GL_BLEND );
 
@@ -315,14 +315,14 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( 0, 0 );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( size, 0 );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, size );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( size, size );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( size, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, size );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( size, size );
 	glEnd();
 
 	glDisable( GL_BLEND );
@@ -414,17 +414,17 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 				} else glColor3f( 0.5, 0.5, 0.5 );
 
 				glBegin( GL_LINE_LOOP );
-				glVertex2f( xx, dy + SKILL_BUTTON_SIZE );
-				glVertex2f( xx, dy );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, dy );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
+				glVertex2i( xx, dy + SKILL_BUTTON_SIZE );
+				glVertex2i( xx, dy );
+				glVertex2i( xx + SKILL_BUTTON_SIZE, dy );
+				glVertex2i( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
 				glEnd();
 				glBegin( GL_LINES );
-				glVertex2f( xx, dy + SKILL_BUTTON_SIZE / 2 );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE / 2 );
+				glVertex2i( xx, dy + SKILL_BUTTON_SIZE / 2 );
+				glVertex2i( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE / 2 );
 				if ( i > 0 ) {
-					glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy );
-					glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy + SKILL_BUTTON_SIZE );
+					glVertex2i( xx + SKILL_BUTTON_SIZE / 2, dy );
+					glVertex2i( xx + SKILL_BUTTON_SIZE / 2, dy + SKILL_BUTTON_SIZE );
 				}
 				glEnd();
 			}
@@ -526,14 +526,14 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 	glTranslatef( x, y - size, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( size, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, size, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( size, size, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( size, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, size );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( size, size );
 	glEnd();
 
 	glColor4f( 1, 1, 1, 1 );
@@ -547,14 +547,14 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	barTexture.glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2d( 0, 0 );
-	glVertex2d( 0, 0 );
-	glTexCoord2d( 1, 0 );
-	glVertex2d( BAR_WIDTH, 0 );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, BAR_HEIGHT );
-	glTexCoord2d( 1, 1 );
-	glVertex2d( BAR_WIDTH, BAR_HEIGHT );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( BAR_WIDTH, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, BAR_HEIGHT );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( BAR_WIDTH, BAR_HEIGHT );
 	glEnd();
 
 	glDisable( GL_TEXTURE_2D );
@@ -568,10 +568,10 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 			glDisable( GL_TEXTURE_2D );
 			glColor4f( 0, 0.5f, 1, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
-			glVertex2d( BAR_X, BAR_Y );
-			glVertex2d( BAR_X + n, BAR_Y );
-			glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
-			glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
+			glVertex2i( BAR_X, BAR_Y );
+			glVertex2i( BAR_X + n, BAR_Y );
+			glVertex2i( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
+			glVertex2i( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
 			glEnd();
 		}
 	}
@@ -583,10 +583,10 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( r, g, b, a );
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2d( BAR_X, BAR_Y );
-		glVertex2d( BAR_X + n, BAR_Y );
-		glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
-		glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
+		glVertex2i( BAR_X, BAR_Y );
+		glVertex2i( BAR_X + n, BAR_Y );
+		glVertex2i( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
+		glVertex2i( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
 		glEnd();
 	}
 
@@ -594,13 +594,13 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBegin( GL_TRIANGLE_STRIP );
 	glColor4f( 0, 0, 0, 0.9f );
-	glVertex2d( BAR_X, BAR_Y );
+	glVertex2i( BAR_X, BAR_Y );
 	glColor4f( 0, 0, 0, 0.85f );
-	glVertex2d( BAR_X + BAR_INNER_WIDTH, BAR_Y );
+	glVertex2i( BAR_X + BAR_INNER_WIDTH, BAR_Y );
 	glColor4f( 0, 0, 0, 0.2f );
-	glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
+	glVertex2i( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
 	glColor4f( 0, 0, 0, 0.2f );
-	glVertex2d( BAR_X + BAR_INNER_WIDTH, BAR_Y + BAR_INNER_HEIGHT );
+	glVertex2i( BAR_X + BAR_INNER_WIDTH, BAR_Y + BAR_INNER_HEIGHT );
 	glEnd();
 	glDisable( GL_BLEND );
 
@@ -620,12 +620,12 @@ void Portrait::drawHorizontalLine( int y ) {
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 	glBegin( GL_LINES );
 	glColor4f( 0.45f, 0.25f, 0, 0.75f );
-	glVertex2d( 20, y );
+	glVertex2i( 20, y );
 	glColor4f( 1, 0.75f, 0, 0.75f );
-	glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
-	glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
+	glVertex2i( ( canvas->getWidth() - 20 ) / 2, y );
+	glVertex2i( ( canvas->getWidth() - 20 ) / 2, y );
 	glColor4f( 0.45f, 0.25f, 0, 0.75f );
-	glVertex2d( canvas->getWidth() - 20, y );
+	glVertex2i( canvas->getWidth() - 20, y );
 	glEnd();
 	glDisable( GL_BLEND );
 	glColor4f( 1, 1, 1, 1 );

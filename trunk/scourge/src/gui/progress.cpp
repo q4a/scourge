@@ -114,10 +114,10 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 0, 0, 0, 0 );
 	glBegin( GL_QUADS );
-	glVertex3f( -TEXTURE_BORDER + 20, 10, 0 );
-	glVertex3f( width + TEXTURE_BORDER - 20, 10, 0 );
-	glVertex3f( width + TEXTURE_BORDER - 20, 30, 0 );
-	glVertex3f( -TEXTURE_BORDER + 20, 30, 0 );
+	glVertex2i( -TEXTURE_BORDER + 20, 10 );
+	glVertex2i( width + TEXTURE_BORDER - 20, 10 );
+	glVertex2i( width + TEXTURE_BORDER - 20, 30 );
+	glVertex2i( -TEXTURE_BORDER + 20, 30 );
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 

@@ -539,13 +539,13 @@ void Effect::drawRing( bool proceed ) {
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
-		if ( ringTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2i( 0, 1 );
 		glVertex3f( -r, -r, 0 );
-		if ( ringTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2i( 1, 1 );
 		glVertex3f( r, -r, 0 );
-		if ( ringTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2i( 0, 0 );
 		glVertex3f( -r, r, 0 );
-		if ( ringTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2i( 1, 0 );
 		glVertex3f( r, r, 0 );
 		glEnd();
 		glPopMatrix();
@@ -569,13 +569,13 @@ void Effect::drawRipple( bool proceed ) {
 
 	glBegin( GL_TRIANGLE_STRIP );
 	// front
-	if ( rippleTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2i( 0, 1 );
 	glVertex3f( -r, -r, z );
-	if ( rippleTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2i( 1, 1 );
 	glVertex3f( r, -r, z );
-	if ( rippleTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2i( 0, 0 );
 	glVertex3f( -r, r, z );
-	if ( rippleTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2i( 1, 0 );
 	glVertex3f( r, r, z );
 	glEnd();
 	glPopMatrix();
@@ -742,24 +742,24 @@ void Effect::drawParticle( Particle *particle ) {
 			glColor4f( particle->tailColor.r, particle->tailColor.g, particle->tailColor.b, particle->tailColor.a );
 
 			glBegin( GL_TRIANGLE_STRIP );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 0, 1 );
 			glVertex2f( -w / 2.0f, -sh );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 1 );
 			glVertex2f( w / 2.0f, -sh );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 0, 0 );
 			glVertex2f( -w / 2.0f, 0 );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 0 );
 			glVertex2f( w / 2.0f, 0 );
 			glEnd();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 0, 1 );
 		glVertex2f( -w / 2.0f, -h / 2.0f );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 1, 1 );
 		glVertex2f( w / 2.0f, -h / 2.0f );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 0, 0 );
 		glVertex2f( -w / 2.0f, h / 2.0f );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 1, 0 );
 		glVertex2f( w / 2.0f, h / 2.0f );
 		glEnd();
 

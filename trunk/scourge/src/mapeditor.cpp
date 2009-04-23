@@ -375,14 +375,14 @@ void MapEditor::drawView() {
 
 	int n = 30;
 	glBegin( GL_LINES );
-	glVertex2f( 0, 0 );
-	glVertex2f( 0, n );
+	glVertex2i( 0, 0 );
+	glVertex2i( 0, n );
 
-	glVertex2f( 0, 0 );
-	glVertex2f( -n / 2, n / 2 );
+	glVertex2i( 0, 0 );
+	glVertex2i( -n / 2, n / 2 );
 
-	glVertex2f( 0, 0 );
-	glVertex2f( n / 2, n / 2 );
+	glVertex2i( 0, 0 );
+	glVertex2i( n / 2, n / 2 );
 	glEnd();
 
 	glPopMatrix();

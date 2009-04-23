@@ -712,14 +712,14 @@ void SDLHandler::drawCursor() {
 	glColor4f( 1, 1, 1, 1 );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex2f( 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex2f( gameAdapter->getCursorWidth(), 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex2f( 0, gameAdapter->getCursorHeight() );
-	glTexCoord2f( 1, 1 );
-	glVertex2f( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( gameAdapter->getCursorWidth(), 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, gameAdapter->getCursorHeight() );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
 	glEnd();
 	glPopMatrix();
 
@@ -734,10 +734,10 @@ void SDLHandler::drawCursor() {
 	glTranslatef( mouseX, mouseY, 0 );
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2f( 0, 0 );
-	glVertex2f( 10, 0 );
-	glVertex2f( 0, 10 );
-	glVertex2f( 10, 10 );
+	glVertex2i( 0, 0 );
+	glVertex2i( 10, 0 );
+	glVertex2i( 0, 10 );
+	glVertex2i( 10, 10 );
 	glEnd();
 	glPopMatrix();
 #endif
@@ -878,10 +878,10 @@ void SDLHandler::drawDebugInfo() {
 	glLoadIdentity();
 	glColor3f( 0, 0, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2f( 400, 0 );
-	glVertex2f( screen->w, 0 );
-	glVertex2f( 400, 12 );
-	glVertex2f( screen->w, 12 );
+	glVertex2i( 400, 0 );
+	glVertex2i( screen->w, 0 );
+	glVertex2i( 400, 12 );
+	glVertex2i( screen->w, 12 );
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
@@ -907,10 +907,10 @@ void SDLHandler::drawFadeout() {
 	}
 	glLoadIdentity();
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2d( 0, 0 );
-	glVertex2d( screen->w, 0 );
-	glVertex2d( 0, screen->h );
-	glVertex2d( screen->w, screen->h );
+	glVertex2i( 0, 0 );
+	glVertex2i( screen->w, 0 );
+	glVertex2i( 0, screen->h );
+	glVertex2i( screen->w, screen->h );
 	glEnd();
 
 	glEnable( GL_DEPTH_TEST );
@@ -1108,20 +1108,20 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	//glColor4f( 0, 0.15f, 0.05f, 0.5 );
 	glColor4f( r, g, b, 0.8f );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2f( x, y );
-	glVertex2f( x + w, y );
-	glVertex2f( x, y + h );
-	glVertex2f( x + w, y + h );
+	glVertex2i( x, y );
+	glVertex2i( x + w, y );
+	glVertex2i( x, y + h );
+	glVertex2i( x + w, y + h );
 	glEnd();
 	glBegin( GL_TRIANGLES );
 	if ( right ) {
-		glVertex2f( x + w, y + h - 5 );
-		glVertex2f( x + w + 5, y + h + 5 );
-		glVertex2f( x + w - 5, y + h );
+		glVertex2i( x + w, y + h - 5 );
+		glVertex2i( x + w + 5, y + h + 5 );
+		glVertex2i( x + w - 5, y + h );
 	} else {
-		glVertex2f( x, y + h - 5 );
-		glVertex2f( x - 5, y + h + 5 );
-		glVertex2f( x + 5, y + h );
+		glVertex2i( x, y + h - 5 );
+		glVertex2i( x - 5, y + h + 5 );
+		glVertex2i( x + 5, y + h );
 	}
 	glEnd();
 	glDisable( GL_BLEND );
@@ -1137,19 +1137,19 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 		}
 		glBegin( GL_LINE_LOOP );
 		if ( right ) {
-			glVertex2f( x + w, y );
-			glVertex2f( x, y  );
-			glVertex2f( x, y + h  );
-			glVertex2f( x + w - 5, y + h  );
-			glVertex2f( x + w + 5, y + h + 5  );
-			glVertex2f( x + w, y + h - 5  );
+			glVertex2i( x + w, y );
+			glVertex2i( x, y  );
+			glVertex2i( x, y + h  );
+			glVertex2i( x + w - 5, y + h  );
+			glVertex2i( x + w + 5, y + h + 5  );
+			glVertex2i( x + w, y + h - 5  );
 		} else {
-			glVertex2f( x + w, y );
-			glVertex2f( x, y  );
-			glVertex2f( x, y + h - 5 );
-			glVertex2f( x - 5, y + h + 5 );
-			glVertex2f( x + 5, y + h );
-			glVertex2f( x + w, y + h );
+			glVertex2i( x + w, y );
+			glVertex2i( x, y  );
+			glVertex2i( x, y + h - 5 );
+			glVertex2i( x - 5, y + h + 5 );
+			glVertex2i( x + 5, y + h );
+			glVertex2i( x + w, y + h );
 		}
 		glEnd();
 	}

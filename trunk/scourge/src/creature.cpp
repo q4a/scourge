@@ -3540,14 +3540,14 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glColor4f( 1, 1, 1, 1 );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( textureSizeW, 0, 0 );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, textureSizeH, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( textureSizeW, textureSizeH, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( textureSizeW, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, textureSizeH );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( textureSizeW, textureSizeH );
 	glEnd();
 
 	session->getShapePalette()->getNamedTexture( "conv" ).glBind();
@@ -3557,14 +3557,14 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glTranslatef( -10, -20, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width + 20, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height + 40, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width + 20, height + 40, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( width + 20, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, height + 40 );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( width + 20, height + 40 );
 	glEnd();
 	glPopMatrix();
 
@@ -3595,14 +3595,14 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 
 
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex3f( width, 0, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex3f( 0, height, 0 );
-		glTexCoord2f( 1, 1 );
-		glVertex3f( width, height, 0 );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( width, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, height );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( width, height );
 		glEnd();
 		glPopMatrix();
 
@@ -3622,13 +3622,13 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
+		glTexCoord2i( 0, 0 );
 		glVertex2i( 20, 0 );
-		glTexCoord2f( 1, 0 );
+		glTexCoord2i( 1, 0 );
 		glVertex2i( 170, 0 );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2i( 0, 1 );
 		glVertex2i( 20, 150 );
-		glTexCoord2f( 1, 1 );
+		glTexCoord2i( 1, 1 );
 		glVertex2i( 170, 150 );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );

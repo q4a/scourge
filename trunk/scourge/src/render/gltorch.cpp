@@ -121,13 +121,13 @@ void GLTorch::draw() {
 			glBegin( GL_QUADS );
 			// front
 
-			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 1 );
 			glVertex3f( w / 2.0f, 0, -h / 2.0f );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 0, 1 );
 			glVertex3f( -w / 2.0f, 0, -h / 2.0f );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 0, 0 );
 			glVertex3f( -w / 2.0f, 0, h / 2.0f );
-			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 0 );
 			glVertex3f( w / 2.0f, 0, h / 2.0f );
 
 			glEnd();
@@ -190,52 +190,52 @@ void GLTorch::draw() {
 		d = 0;
 		h = size;
 		//glNormal3f(0.0f, 1.0f, 0.0f);
-		glTexCoord2f( 1.0f, 1.0f );
+		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
-		glTexCoord2f( 1.0f, 0.0f );
+		glTexCoord2i( 1, 0 );
 		glVertex3f( w, d, h );
-		glTexCoord2f( 0.0f, 0.0f );
+		glTexCoord2i( 0, 0 );
 		glVertex3f( 0, d, h );
-		glTexCoord2f( 0.0f, 1.0f );
+		glTexCoord2i( 0, 1 );
 		glVertex3f( 0, d, 0 );
 	} else if ( torch_dir == Constants::WEST ) {
 		w = 0;
 		d = size;
 		h = size;
 		//glNormal3f(-1.0f, 0.0f, 0.0f);
-		glTexCoord2f( 1.0f, 1.0f );
+		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
-		glTexCoord2f( 0.0f, 1.0f );
+		glTexCoord2i( 0, 1 );
 		glVertex3f( w, 0, 0 );
-		glTexCoord2f( 0.0f, 0.0f );
+		glTexCoord2i( 0, 0 );
 		glVertex3f( w, 0, h );
-		glTexCoord2f( 1.0f, 0.0f );
+		glTexCoord2i( 1, 0 );
 		glVertex3f( w, d, h );
 	} else if ( torch_dir == Constants::EAST ) {
 		w = 0;
 		d = size;
 		h = size;
 		//glNormal3f(-1.0f, 0.0f, 0.0f);
-		glTexCoord2f( 1.0f, 1.0f );
+		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
-		glTexCoord2f( 1.0f, 0.0f );
+		glTexCoord2i( 1, 0 );
 		glVertex3f( w, d, h );
-		glTexCoord2f( 0.0f, 0.0f );
+		glTexCoord2i( 0, 0 );
 		glVertex3f( w, 0, h );
-		glTexCoord2f( 0.0f, 1.0f );
+		glTexCoord2i( 0, 1 );
 		glVertex3f( w, 0, 0 );
 	} else if ( isSpell ) {
 		w = size;
 		d = 0;
 		h = size;
 //    glNormal3f(0.0f, 1.0f, 0.0f);
-		glTexCoord2f( 1.0f, 1.0f );
+		glTexCoord2i( 1, 1 );
 		glVertex3f( w, 0, 0 );
-		glTexCoord2f( 0.0f, 1.0f );
+		glTexCoord2i( 0, 1 );
 		glVertex3f( 0, 0, 0 );
-		glTexCoord2f( 0.0f, 0.0f );
+		glTexCoord2i( 0, 0 );
 		glVertex3f( 0, 0, h );
-		glTexCoord2f( 1.0f, 0.0f );
+		glTexCoord2i( 1, 0 );
 		glVertex3f( w, 0, h );
 	}
 	glEnd();

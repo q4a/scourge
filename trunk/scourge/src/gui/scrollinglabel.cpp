@@ -158,10 +158,10 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( 0, 0, 0, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex2d( 0, 0 );
-	glVertex2d( scrollerWidth, 0 );
-	glVertex2d( 0, h );
-	glVertex2d( scrollerWidth, h );
+	glVertex2i( 0, 0 );
+	glVertex2i( scrollerWidth, 0 );
+	glVertex2i( 0, h );
+	glVertex2i( scrollerWidth, h );
 	glEnd();
 	glDisable( GL_BLEND );
 	glEnable( GL_TEXTURE_2D );
@@ -181,20 +181,20 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	}
 
 	glBegin( GL_LINES );
-	glVertex2d( 0, 0 );
-	glVertex2d( 0, h );
-	glVertex2d( w, 0 );
-	glVertex2d( w, h );
-	glVertex2d( 0, 0 );
-	glVertex2d( w, 0 );
-	glVertex2d( 0, h );
-	glVertex2d( w, h );
-	glVertex2d( scrollerWidth, 0 );
-	glVertex2d( scrollerWidth, h );
-	glVertex2d( 0, scrollerY );
-	glVertex2d( scrollerWidth, scrollerY );
-	glVertex2d( 0, scrollerY + scrollerHeight );
-	glVertex2d( scrollerWidth, scrollerY + scrollerHeight );
+	glVertex2i( 0, 0 );
+	glVertex2i( 0, h );
+	glVertex2i( w, 0 );
+	glVertex2i( w, h );
+	glVertex2i( 0, 0 );
+	glVertex2i( w, 0 );
+	glVertex2i( 0, h );
+	glVertex2i( w, h );
+	glVertex2i( scrollerWidth, 0 );
+	glVertex2i( scrollerWidth, h );
+	glVertex2i( 0, scrollerY );
+	glVertex2i( scrollerWidth, scrollerY );
+	glVertex2i( 0, scrollerY + scrollerHeight );
+	glVertex2i( scrollerWidth, scrollerY + scrollerHeight );
 	glEnd();
 	glLineWidth( 1.0f );
 }

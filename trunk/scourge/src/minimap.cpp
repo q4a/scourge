@@ -90,14 +90,14 @@ void MiniMap::drawMap() {
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_ALPHA_TEST );
@@ -115,14 +115,14 @@ void MiniMap::drawMap() {
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
 		glColor4f( 0, 0, 0, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glPopMatrix();
@@ -132,9 +132,9 @@ void MiniMap::drawMap() {
 
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		glBegin( GL_TRIANGLES );
-		glVertex2f( 0, 0 );
-		glVertex2f( 30, 0 );
-		glVertex2f( 0, 30 );
+		glVertex2i( 0, 0 );
+		glVertex2i( 30, 0 );
+		glVertex2i( 0, 30 );
 		glEnd();
 		glPushMatrix();
 		glRotatef( -45, 0, 0, 1 );
@@ -148,10 +148,10 @@ void MiniMap::drawMap() {
 		// outline
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		glBegin( GL_LINE_LOOP );
-		glVertex2f( 0, 0 );
-		glVertex2f( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glVertex2f( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glVertex2i( 0, 0 );
+		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
 		glEnd();
 	}
 
@@ -178,14 +178,14 @@ void MiniMap::drawMap() {
 							}
 						}
 
-						float xp = ( x - sx ) * MINI_MAP_BLOCK;
-						float yp = ( y - sy ) * MINI_MAP_BLOCK;
+						int xp = ( x - sx ) * MINI_MAP_BLOCK;
+						int yp = ( y - sy ) * MINI_MAP_BLOCK;
 
 						glBegin( GL_TRIANGLE_STRIP );
-						glVertex2f( xp, yp );
-						glVertex2f( xp + MINI_MAP_BLOCK, yp );
-						glVertex2f( xp, yp + MINI_MAP_BLOCK );
-						glVertex2f( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
+						glVertex2i( xp, yp );
+						glVertex2i( xp + MINI_MAP_BLOCK, yp );
+						glVertex2i( xp, yp + MINI_MAP_BLOCK );
+						glVertex2i( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
 						glEnd();
 
 					} else {
@@ -208,7 +208,7 @@ void MiniMap::drawMap() {
 							}
 						}
 
-						float width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
+						int width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
 						float cx =  ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width;
 						float cy = ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width;
 
@@ -216,9 +216,9 @@ void MiniMap::drawMap() {
 						glTranslatef( cx, cy, 0 );
 						glRotatef( ( ( AnimatedShape* )pos->creature->getShape() )->getAngle(), 0, 0, 1 );
 						glBegin( GL_TRIANGLES );
-						glVertex2f( width, width );
-						glVertex2f( -width, width );
-						glVertex2f( 0, -width );
+						glVertex2i( width, width );
+						glVertex2i( -width, width );
+						glVertex2i( 0, -width );
 						glEnd();
 						glPopMatrix();
 
@@ -243,14 +243,14 @@ void MiniMap::drawMap() {
 		scourge->getShapePalette()->getMinimapTexture().glBind();
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2d( 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glTexCoord2f( 1, 1 );
-		glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_ALPHA_TEST );
@@ -285,17 +285,17 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
 		float ny = r + ( r - 10 ) * Constants::sinFromAngle( angle );
 		glColor4f( color.r, color.g, color.b, color.a );
 		glBegin( GL_TRIANGLE_STRIP );
-		glVertex2d( nx, ny );
-		glVertex2d( nx + 4, ny );
-		glVertex2d( nx, ny + 4 );
-		glVertex2d( nx + 4, ny + 4 );
+		glVertex2f( nx, ny );
+		glVertex2f( nx + 4, ny );
+		glVertex2f( nx, ny + 4 );
+		glVertex2f( nx + 4, ny + 4 );
 		glEnd();
 		glColor4f( 0, 0, 0, 1 );
 		glBegin( GL_LINE_LOOP );
-		glVertex2d( nx - 1, ny + 6 );
-		glVertex2d( nx + 6, ny + 6 );
-		glVertex2d( nx + 6, ny - 1 );
-		glVertex2d( nx - 1, ny - 1 );
+		glVertex2f( nx - 1, ny + 6 );
+		glVertex2f( nx + 6, ny + 6 );
+		glVertex2f( nx + 6, ny - 1 );
+		glVertex2f( nx - 1, ny - 1 );
 		glEnd();
 	}
 	glColor4f( 1, 1, 1, 1 );

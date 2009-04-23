@@ -121,13 +121,13 @@ void GLTeleporter::draw() {
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
-		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 0, 0 );
 		glVertex3f( 0, 0, h );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 1, 0 );
 		glVertex3f( w, 0, h );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 0, 1 );
 		glVertex3f( 0, d, h );
-		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, h );
 		glEnd();
 

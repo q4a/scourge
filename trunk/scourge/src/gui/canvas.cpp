@@ -84,10 +84,10 @@ void Canvas::drawWidget( Window* parent ) {
 			applyBorderColor();
 		}
 		glBegin( GL_LINE_LOOP );
-		glVertex2d( 0, 0 );
-		glVertex2d( 0, y2 - y );
-		glVertex2d( x2 - x, y2 - y );
-		glVertex2d( x2 - x, 0 );
+		glVertex2i( 0, 0 );
+		glVertex2i( 0, y2 - y );
+		glVertex2i( x2 - x, y2 - y );
+		glVertex2i( x2 - x, 0 );
 		glEnd();
 		glLineWidth( 1.0f );
 	}

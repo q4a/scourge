@@ -360,14 +360,14 @@ bool InfoGui::onDrawImage( Widget* w ) {
 			glColor4f( 1, 1, 1, 1 );
 	
 			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2f( 0, 0 );
-			glVertex3f( 0, 0, 0 );
-			glTexCoord2f( 1, 0 );
-			glVertex3f( image->getWidth(), 0, 0 );
-			glTexCoord2f( 0, 1 );
-			glVertex3f( 0, image->getHeight(), 0 );
-			glTexCoord2f( 1, 1 );
-			glVertex3f( image->getWidth(), image->getHeight(), 0 );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( 0, 0 );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( image->getWidth(), 0 );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( 0, image->getHeight() );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( image->getWidth(), image->getHeight() );
 			glEnd();
 			glPopMatrix();
 		}

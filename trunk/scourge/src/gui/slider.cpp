@@ -78,8 +78,8 @@ void Slider::drawWidget( Window* parent ) {
 	glPushMatrix();
 
 	glBegin( GL_LINES );
-	glVertex2d( 0, 20 );
-	glVertex2d( x2 - x, 20 );
+	glVertex2i( 0, 20 );
+	glVertex2i( x2 - x, 20 );
 	glEnd();
 
 

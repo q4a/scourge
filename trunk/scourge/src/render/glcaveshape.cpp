@@ -209,13 +209,13 @@ void GLCaveShape::drawBlock( float w, float h, float d ) {
 	wallTextureGroup[ GLShape::TOP_SIDE ].glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex3f( 0, 0, h );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex3f( w, 0, h );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex3f( 0, d, h );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex3f( w, d, h );
 	glEnd();
 }
@@ -227,13 +227,13 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 	floorTextureGroup[ GLShape::TOP_SIDE ].glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
+	glTexCoord2i( 0, 0 );
 	glVertex3f( 0, 0, h );
-	glTexCoord2f( 1, 0 );
+	glTexCoord2i( 1, 0 );
 	glVertex3f( w, 0, h );
-	glTexCoord2f( 0, 1 );
+	glTexCoord2i( 0, 1 );
 	glVertex3f( 0, d, h );
-	glTexCoord2f( 1, 1 );
+	glTexCoord2i( 1, 1 );
 	glVertex3f( w, d, h );
 	glEnd();
 }
@@ -284,13 +284,13 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 		glBindTexture( GL_TEXTURE_2D, our.floorTex[ stencilIndex ] );
 
 		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
+		glTexCoord2i( 0, 0 );
 		glVertex3f( 0, 0, n );
-		glTexCoord2f( 1, 0 );
+		glTexCoord2i( 1, 0 );
 		glVertex3f( w, 0, n );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2i( 0, 1 );
 		glVertex3f( 0, d, n );
-		glTexCoord2f( 1, 1 );
+		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, n );
 		glEnd();
 		glPopMatrix();

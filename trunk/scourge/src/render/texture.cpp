@@ -223,10 +223,10 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	glColor4f( 0, 0, 0, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glVertex3f( 0, 0, 0 );
-	glVertex3f( textureSizeW, 0, 0 );
-	glVertex3f( 0, textureSizeH, 0 );
-	glVertex3f( textureSizeW, textureSizeH, 0 );
+	glVertex2i( 0, 0 );
+	glVertex2i( textureSizeW, 0 );
+	glVertex2i( 0, textureSizeH );
+	glVertex2i( textureSizeW, textureSizeH );
 	glEnd();
 
 	glEnable( GL_TEXTURE_2D );
@@ -243,14 +243,14 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 //  glNormal3f( 0, 0, 1 );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width, height, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( width, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, height );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( width, height );
 	glEnd();
 
 	//glDisable( GL_ALPHA_TEST );
@@ -266,14 +266,14 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	glBindTexture( GL_TEXTURE_2D, alpha->_id );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width, height, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( width, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, height );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( width, height );
 	glEnd();
 
 	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
@@ -299,14 +299,14 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	glBindTexture( GL_TEXTURE_2D, background );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width, height, 0 );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( width, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, height );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( width, height );
 	glEnd();	
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
