@@ -36,10 +36,10 @@ using namespace std;
 /**
  * This generator generates a 296x296 (quarter) map. Before calling generate(), be sure to call setRegion().
  * 
- * A region is a 16x16 pixel section of the map bitmap. The map bitmap is broken into 128x128 pixel section.
- * (See: scourge_data/mapgrid/world/) There are 8x8 regions per bitmap grid (128/16). So for example, calling
- * setRegion( 6, 39 ) would load map_44.png ( (int)( 39 / 8 ) * 11 + (int)( 6 / 8 ) ). Then inside map_44.png, 
- * the region shown is 6, 7.
+ * A region is a 32x32 pixel section of the map bitmap. The map bitmap is broken into 128x128 pixel section.
+ * (See: scourge_data/mapgrid/world/) There are 4x4 regions per bitmap grid (128/32). So for example, calling
+ * setRegion( 6, 39 ) would load map_100.png ( (int)( 39 / 4 ) * 11 + (int)( 6 / 4 ) ). Then inside map_100.png, 
+ * the region shown is 2, 1.
  * 
  * A Map object can thus contain 4 296x296 map section (since it's 592x592 units large) which is the max number
  * of sections seen by the player at one time. (If the player reaches the corner of one 296x296 section.) 

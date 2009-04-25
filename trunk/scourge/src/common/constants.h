@@ -421,7 +421,7 @@ public:
 #define MAP_DEPTH 592
 	
 // a region-square side's size in pixels 
-#define REGION_SIZE 16
+#define REGION_SIZE 32
 // a map-grid bitmap's side's size in pixels
 #define BITMAP_SIZE 128
 #define REGIONS_PER_BITMAP ( BITMAP_SIZE / REGION_SIZE )
