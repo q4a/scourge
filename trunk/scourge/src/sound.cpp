@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace std;
 
 #define MISSION_MUSIC_COUNT 6
-#define FIGHT_MUSIC_COUNT 1
+#define FIGHT_MUSIC_COUNT 2
 
 char *Sound::TELEPORT = "teleport";
 char *Sound::OPEN_DOOR = "open door";
