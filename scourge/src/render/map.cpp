@@ -98,8 +98,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hasWater = false;
 
 	// start near Horghh
-	regionX = 10 * 8 + 1;
-	regionY = 5 * 8 + 4;
+	regionX = 9 * REGIONS_PER_BITMAP + 1;
+	regionY = 4 * REGIONS_PER_BITMAP + 2;
 	
 	startx = starty = 128;
 	cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;

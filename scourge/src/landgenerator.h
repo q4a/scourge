@@ -109,8 +109,8 @@ protected:
 	virtual void addMissionObjectives( Map *map, ShapePalette *shapePal ){
 	}
 
-	virtual void addMonsters( Map *map, ShapePalette *shapePal ){
-	}
+	//virtual void addMonsters( Map *map, ShapePalette *shapePal ){
+	//}
 
 	virtual void addHarmlessCreatures( Map *map, ShapePalette *shapePal ){
 	}
