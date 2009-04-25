@@ -24,7 +24,8 @@ track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
 track06.ogg		Sur un theme de ...	Vincent Fiack
 chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
 chapters/chapter2.ogg   Maw of the Grizzled...  Vincent Fiack
-fight01.ogg     Till Last Blood     Pal Zoltan Illes
+fight01.ogg             Till Last Blood         Pal Zoltan Illes
+fight02.ogg             Swift Strike            Pal Zoltan Illes
 
 The following music tracks were remixed by Dennis Murczak <dmurczak at versanet.de> from material uploaded to www.soundsnap.com by user "Dynamedion":
 
