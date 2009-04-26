@@ -126,7 +126,8 @@ Scourge::Scourge( UserConfiguration *config )
 		, optionsMenu( NULL )
 		, mainMenu( NULL )
 		, guiThemes( NULL )
-		, currentCombatMusic( NULL ) {
+		, currentCombatMusic( NULL )
+		, landGenerator( NULL ) {
 	// init the random number generator
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
@@ -239,7 +240,7 @@ void Scourge::start() {
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
 
 //	cerr << "Creating lookup tables... ";
-	Uint32 now = SDL_GetTicks();
+//	Uint32 now = SDL_GetTicks();
 
 	// Precalculate trigonometry
 	Constants::generateTrigTables();
@@ -407,6 +408,7 @@ Scourge::~Scourge() {
 	delete view;
 	delete handler;
 	delete descriptionScroller;
+	if( landGenerator ) delete landGenerator;
 }
 
 void Scourge::startMission( bool startInHq ) {
@@ -732,6 +734,14 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 
 #ifdef USE_LARGE_MAP
 		loadOrGenerateLargeMap();
+
+		// show party
+		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+				getParty()->getParty( r )->findPlaceBounded( 190, 160, 220, 190 );
+			}		
+		}
+
 #else
 		// FIXME: HQ is not loaded b/c there's no currentMission() (fails in loadMap)
 		// try to load a previously saved, random-generated map level
@@ -788,7 +798,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 }
 
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
-	loadOrGenerateLargeMap( false );
+	loadOrGenerateLargeMap();
 	
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
@@ -803,47 +813,34 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	}
 }
 
-void Scourge::loadOrGenerateLargeMap( bool placeParty ) {
-	// for now always generate (later add load/save map regions)
-	LandGenerator *og = new LandGenerator( this, 1, 1, 1, false, false, NULL );
-	int rx = levelMap->getRegionX();
-	int ry = levelMap->getRegionY();
-	
-	og->setWillAddParty( false );
-	og->setRegion( rx, ry );
-	og->setMapPosition( 0, 0 );
-	og->toMap( levelMap, getShapePalette(), false, false );
-
-	og->setWillAddParty( false );
-	og->setRegion( rx + 1 >= REGIONS_PER_ROW ? 0 : rx + 1, ry );
-	og->setMapPosition( 75, 0 );
-	og->toMap( levelMap, getShapePalette(), false, false );
-
-	og->setWillAddParty( false );
-	og->setRegion( rx, ry + 1 >= REGIONS_PER_COL ? 0 : ry + 1 );
-	og->setMapPosition( 0, 75 );
-	og->toMap( levelMap, getShapePalette(), false, false );
-	
-	og->setWillAddParty( false );
-	og->setRegion( rx + 1 >= REGIONS_PER_ROW ? 0 : rx + 1, ry + 1 >= REGIONS_PER_COL ? 0 : ry + 1 );
-	og->setMapPosition( 75, 75 );
-	og->toMap( levelMap, getShapePalette(), false, false );
-	
-	if( placeParty ) {
-		// show party around 100,100
-		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
-			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
-				getParty()->getParty( r )->findPlaceBounded( 260, 450, 270, 460 );
-			}		
-		}
+void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
+	if( !landGenerator ) {
+		landGenerator = new LandGenerator( this, 1, 1, 1, false, false, NULL );
 	}
-	
+	landGenerator->setWillAddParty( false );
+	landGenerator->setRegion( rx, ry );
+	landGenerator->setMapPosition( posX, posY );
+	landGenerator->toMap( levelMap, getShapePalette(), false, false );
 	// event handler for custom map processing
 	if ( !getSession()->getMap()->inMapEditor() ) {
-		getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", levelMap->getName() );
-	}	
+		int params[2];
+		params[0] = rx;
+		params[1] = ry;
+		getSession()->getSquirrel()->callIntArgMethod( "landGenerated", 2, params );
+	}
+}
+
+void Scourge::loadOrGenerateLargeMap() {
+	int orx = levelMap->getRegionX();
+	int ory = levelMap->getRegionY();
+
+	// for now always generate (later add load/save map regions)
+	generateRegion( orx, ory, 0, 0 );
+	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, 75, 0 );	
+	generateRegion( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, 75 );
+	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 75, 75 );
 	
-	delete og;	
+	levelMap->getRender()->initOutdoorsGroundTexture();
 }
 
 bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {

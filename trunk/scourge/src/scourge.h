@@ -101,6 +101,7 @@ class PcUi;
 class TextScroller;
 class Spell;
 class SpecialSkill;
+class LandGenerator;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -848,7 +849,8 @@ protected:
 	void resetGame( bool resetParty );
 	void createMissionInfoMessage( Mission *lastMission );
 	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
-	void loadOrGenerateLargeMap( bool placeParty = true );
+	void loadOrGenerateLargeMap();
+	void generateRegion( int rx, int ry, int posX, int posY );
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();
@@ -1018,6 +1020,8 @@ private:
 	std::vector<MovingDoor> movingDoors;
 	char chapterIntroMissionTitle[255];
 	const char *currentCombatMusic;
+	
+	LandGenerator *landGenerator;
 };
 
 #endif
