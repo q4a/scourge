@@ -32,7 +32,7 @@
 using namespace std;
 
 // comment-out!!!
-#define DEBUG_OUTDOOR 1
+//#define DEBUG_OUTDOOR 1
 
 // ###### MS Visual C++ specific ###### 
 #if defined(_MSC_VER) && defined(_DEBUG)
