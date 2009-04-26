@@ -99,7 +99,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	// start near Horghh
 	regionX = 9 * REGIONS_PER_BITMAP + 1;
-	regionY = 4 * REGIONS_PER_BITMAP + 2;
+	regionY = 4 * REGIONS_PER_BITMAP + 3;
 	
 	startx = starty = 128;
 	cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
@@ -1429,7 +1429,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
                             RenderedCreature *creature ) {
 	if ( x < 0 || y < 0 || z < 0 ||
 	        x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
-		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
+		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z;
+		cerr << " shape=" << ( shape ? shape->getName() : "" ) << " item=" << ( item ? item->getItemName() : "" ) << " creature=" << ( creature ? creature->getName() : "" ) << endl;
 		return;
 	}
 
@@ -2461,6 +2462,7 @@ void Map::moveMap( int dir ) {
 			}
 		}
 		if( reloadRegions ) {
+			cerr << "switching to map region: " << regionX << "," << regionY << endl;
 			float old_zoom = zoom;
 			float old_xrot = xrot;
 			float old_yrot = yrot;

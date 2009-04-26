@@ -111,7 +111,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			}
 		}
 	}
-
+	
 	// create a set of rooms for outdoor items
 	doorCount = 0;
 	roomCount = 0;
@@ -199,9 +199,9 @@ void LandGenerator::loadMapGridBitmapRegion() {
 //			fprintf( stderr, "%02x%02x%02x%02x,", data[i], data[i+1], data[i+2], data[i+3]);
 //			if( i > 0 && i % ( 128 * BYTES_PER_PIXEL ) == 0 ) cerr << endl;
 //		}
-	cerr << "bytesPerPixel: " << bitmapSurface->format->BytesPerPixel <<
-		" bitsPerPixel: " << bitmapSurface->format->BitsPerPixel <<
-		" pitch=" << bitmapSurface->pitch << endl;
+//	cerr << "bytesPerPixel: " << bitmapSurface->format->BytesPerPixel <<
+//		" bitsPerPixel: " << bitmapSurface->format->BitsPerPixel <<
+//		" pitch=" << bitmapSurface->pitch << endl;
 
 	// The destination image (a single tile)
 	std::vector<GLubyte> image( REGION_SIZE * REGION_SIZE * BYTES_PER_PIXEL );
@@ -217,7 +217,7 @@ void LandGenerator::loadMapGridBitmapRegion() {
 	int c = offs + ( ry * REGION_SIZE * bitmapSurface->pitch );
 	// the following lines extract R,G and B values from any bitmap
 
-	cerr << " c:" << c << " ";
+//	cerr << " c:" << c << " ";
 	for ( int i = 0; i < REGION_SIZE * REGION_SIZE; ++i ) {
 
 		if ( i > 0 && i % REGION_SIZE == 0 ) {
@@ -225,17 +225,17 @@ void LandGenerator::loadMapGridBitmapRegion() {
 			c += ( bitmapSurface->pitch - rest );
 			// skip the offset (go to where the tile starts)
 			c += offs;
-			cerr << endl;
-			cerr << " c:" << c << " ";
+//			cerr << endl;
+//			cerr << " c:" << c << " ";
 		}
 
 		for ( int p = 0; p < BYTES_PER_PIXEL; p++ ) {
-			fprintf( stderr, "%02x", data[c] );
+//			fprintf( stderr, "%02x", data[c] );
 			image[count++] = data[c++];
 		}
-		cerr << ",";
+//		cerr << ",";
 	}
-	cerr << endl << "found " << image.size() << " pixels." << endl;
+//	cerr << endl << "found " << image.size() << " pixels." << endl;
 	//printRGB( &image );
 	
 	packMapData( image );
@@ -245,7 +245,7 @@ void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
 	for( int i = 0; i < (int)image.size(); i += BYTES_PER_PIXEL ) {
 		data[ i / BYTES_PER_PIXEL ] = image[ i + 2 ] > 0 ? -1 : ( image[ i ] > 0 ? 1 : 0 );
 	}
-	printData();
+	//printData();
 	cellular->initialize( REGION_SIZE, REGION_SIZE, data );
 }
 
