@@ -554,9 +554,12 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
 				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
 				// todo: this should not be hard-coded (could come from map in dialog)
-				og->setRegion( 6, 4 * 8 + 7 );
-				og->setMapPosition( 75, 75 ); // the fourth quarter
+				scourge->getMap()->setRegionX( 9 * REGIONS_PER_BITMAP + 2 );
+				scourge->getMap()->setRegionY( 5 * REGIONS_PER_BITMAP );
+				og->setRegion( 9 * REGIONS_PER_BITMAP + 2, 5 * REGIONS_PER_BITMAP );
+				og->setMapPosition( 0, 0 );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				scourge->getMap()->getRender()->initOutdoorsGroundTexture();
 				delete og;
 				raiseButton->setEnabled( true );
 				lowerButton->setEnabled( true );

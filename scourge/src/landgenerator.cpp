@@ -57,12 +57,12 @@ LandGenerator::LandGenerator( Scourge *scourge, int level, int depth, int maxDep
                               Mission *mission ) :
 		TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 13 ) {
 	// init the ground
-	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
-		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
+	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 			ground[x][y] = 0;
 		}
 	}
-	this->cellular = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	this->cellular = new CellularAutomaton( QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
 	
 	this->regionX = this->regionY = 0;
 	this->mapPosX = this->mapPosY = 0;
@@ -84,8 +84,8 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	map->setHeightMapEnabled( true );
 
 	// add mountains
-	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
-		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
+	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 			if ( cellular->getNode( x, y )->wall ) {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 14.0f, 20.0f ) );
 			} else if ( cellular->getNode( x, y )->water ) {
@@ -95,36 +95,46 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			}
 		}
 	}
-
-	// add trees
-	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
-		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
-			if ( cellular->getNode( x, y )->island && !cellular->getNode( x, y )->water ) {
-				GLShape *shape = shapePal->getRandomTreeShape( shapePal );
-				int xx = ( mapPosX + x ) * OUTDOORS_STEP;
-				int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
-
-				// don't put them on roads and in houses
-				if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
-					map->setPosition( xx, yy, 0, shape );
+	
+	// event handler for custom map processing
+	int params[4];
+	params[0] = regionX;
+	params[1] = regionY;
+	params[2] = mapPosX * OUTDOORS_STEP;
+	params[3] = mapPosY * OUTDOORS_STEP;
+	bool ret = shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_land", 4, params );
+	
+	if( !ret ) {
+		// add trees
+		for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+			for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
+				if ( cellular->getNode( x, y )->island && !cellular->getNode( x, y )->water ) {
+					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
+					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
+					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
+	
+					// don't put them on roads and in houses
+					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
+						map->setPosition( xx, yy, 0, shape );
+					}
 				}
 			}
 		}
+		
+		// create a set of rooms for outdoor items
+		doorCount = 0;
+		roomCount = 0;
+		room[ roomCount ].x = mapPosX * OUTDOORS_STEP;
+		room[ roomCount ].y = mapPosY * OUTDOORS_STEP;
+		room[ roomCount ].w = QUARTER_WIDTH_IN_NODES * OUTDOORS_STEP;
+		room[ roomCount ].h = QUARTER_DEPTH_IN_NODES * OUTDOORS_STEP;
+		room[ roomCount ].valueBonus = 0;
+		roomCount++;
+		roomMaxWidth = 0;
+		roomMaxHeight = 0;
+		objectCount = 7 + ( level / 8 ) * 5;
+		monsters = true;
 	}
-	
-	// create a set of rooms for outdoor items
-	doorCount = 0;
-	roomCount = 0;
-	room[ roomCount ].x = mapPosX * OUTDOORS_STEP;
-	room[ roomCount ].y = mapPosY * OUTDOORS_STEP;
-	room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP;
-	room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP;
-	room[ roomCount ].valueBonus = 0;
-	roomCount++;
-	roomMaxWidth = 0;
-	roomMaxHeight = 0;
-	objectCount = 7 + ( level / 8 ) * 5;
-	monsters = true;
 
 	return true;
 }
@@ -263,8 +273,8 @@ void LandGenerator::createGround() {
 	// create the undulating ground
 	float amp = 1.0f;
 	float freq = 40.0f;
-	for ( int x = 0; x < WIDTH_IN_NODES; x++ ) {
-		for ( int y = 0; y < DEPTH_IN_NODES; y++ ) {
+	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
 			float a = Util::roll( 0.25f, amp );
