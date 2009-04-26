@@ -31,13 +31,10 @@ class Mission;
 class GLShape;
 class CellularAutomaton;
 
-#define WIDTH_IN_NODES 74
-#define DEPTH_IN_NODES 74
-
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
 private:
-	float ground[WIDTH_IN_NODES][DEPTH_IN_NODES];
+	float ground[QUARTER_WIDTH_IN_NODES][QUARTER_DEPTH_IN_NODES];
 	CellularAutomaton *cellular;
 	int regionX, regionY; // which map region (of the large world map) are we in?
 	int mapPosX, mapPosY; // where to render the map in OUTDOOR_STEP units

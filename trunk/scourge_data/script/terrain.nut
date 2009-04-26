@@ -173,18 +173,18 @@ function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, fu
 		setPosition( x, y, 0, "P_BASE_1x3" + postfix, true );
 		setPosition( x + 1, y - 5, 0, "EW_DOOR", true );
 		setPosition( x + 14, y - 37, 0, "EW_DOOR", true );
+		scourgeGame.getMission().setMapFloorPosition( x, y, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x, y - ( 2 * MAP_UNIT ), "ROOM_FLOOR_TILE" );
-		scourgeGame.getMission().setMapFloorPosition( x, y - ( 3 * MAP_UNIT ), "ROOM_FLOOR_TILE" );
 		setPosition( x - 2, y + 2, 12, "P_ROOF_1x3" + roof_postfix, true );
 	} else if( w == 2 && h == 2 && angle == 0 ) {
 		setPosition( x, y, 0, "P_BASE_2x2" + postfix, true );
 		setPosition( x + 21, y - 1, 0, "NS_DOOR", true );
 		setPosition( x + 5, y - 30, 0, "NS_DOOR", true );
+		scourgeGame.getMission().setMapFloorPosition( x,            y, "ROOM_FLOOR_TILE" );
+		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x,            y - MAP_UNIT, "ROOM_FLOOR_TILE" );
 		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
-		scourgeGame.getMission().setMapFloorPosition( x,            y - 2 * MAP_UNIT, "ROOM_FLOOR_TILE" );
-		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - 2 * MAP_UNIT, "ROOM_FLOOR_TILE" );
 		if( roof_postfix_param == "church" ) {
 			setPosition( x - 2, y + 2, 12, "P_CHURCH_2x2", true );
 		} else {
@@ -195,15 +195,15 @@ function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, fu
 		case 0: 
 			setPosition( x, y, 0, "P_BASE_2x1" + postfix, true );
 			setPosition( x + 5, y - 14, 0, "NS_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
-			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y, "FLOOR_TILE" );
 			setPosition( x - 2, y + 2, 12, "P_ROOF_2x1" + roof_postfix, true );
 			break;
 		case 180: 
 			setPosition( x, y, 0, "P_BASE_2x1_180" + postfix, true );
 			setPosition( x + 21, y - 1, 0, "NS_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
-			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y, "FLOOR_TILE" );
 			setPosition( x + 2, y + 2, 12, "P_ROOF_2x1_180" + roof_postfix, true );
 			break;
 		}		
@@ -212,25 +212,25 @@ function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, fu
 		case 0: 
 			setPosition( x, y, 0, "P_BASE_1x1" + postfix, true );
 			setPosition( x + 5, y - 14, 0, "NS_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
 			setPosition( x - 2, y + 2, 12, "P_ROOF_1x1" + roof_postfix, true );
 			break;
 		case 90: 
 			setPosition( x, y, 0, "P_BASE_1x1_90" + postfix, true );
 			setPosition( x + 1, y - 5, 0, "EW_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
 			setPosition( x - 2, y - 2, 12, "P_ROOF_1x1_90" + roof_postfix, true );
 			break;
 		case 180: 
 			setPosition( x, y, 0, "P_BASE_1x1_180" + postfix, true );
 			setPosition( x + 5, y - 1, 0, "NS_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
 			setPosition( x + 2, y + 2, 12, "P_ROOF_1x1_180" + roof_postfix, true );
 			break;
 		case 270: 
 			setPosition( x, y, 0, "P_BASE_1x1_270" + postfix, true );
 			setPosition( x + 14, y - 5, 0, "EW_DOOR", true );
-			scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "FLOOR_TILE" );
+			scourgeGame.getMission().setMapFloorPosition( x, y, "FLOOR_TILE" );
 			setPosition( x - 2, y + 2, 12, "P_ROOF_1x1_270" + roof_postfix, true );
 			break;
 		}

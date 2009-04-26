@@ -2489,6 +2489,8 @@ void Map::moveMap( int dir ) {
 }
 
 bool Map::isPartyOnMap( float dx, float dy ) {
+	if( inMapEditor() ) return false;
+	
 	float px, py;
 	for ( int t = 0; t < adapter->getPartySize(); t++ ) {
 		if ( !adapter->getParty( t )->getStateMod( StateMod::dead ) ) {

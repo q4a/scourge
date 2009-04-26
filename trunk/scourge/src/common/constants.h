@@ -417,8 +417,14 @@ public:
 // The map's dimensions
 // Warning: if this ever changes, be sure to look at Map::createTripletKey().
 // it assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
-#define MAP_WIDTH 592
-#define MAP_DEPTH 592
+#define MAP_WIDTH 576
+#define MAP_DEPTH 576
+	
+// outdoor floor tile
+#define OUTDOORS_STEP 4
+	
+#define QUARTER_WIDTH_IN_NODES ( ( MAP_WIDTH / 2 ) / OUTDOORS_STEP )
+#define QUARTER_DEPTH_IN_NODES ( ( MAP_DEPTH / 2 ) / OUTDOORS_STEP )
 	
 // a region-square side's size in pixels 
 #define REGION_SIZE 32
@@ -450,9 +456,6 @@ public:
 #define CAVE_CHUNK_SIZE 8
 
 #define OUTDOOR_FLOOR_TEX_SIZE 4
-
-// outdoor floor tile
-#define OUTDOORS_STEP 4
 
 // Number of tiles on an outdoor map
 #define MAP_TILES_X MAP_WIDTH / OUTDOORS_STEP

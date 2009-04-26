@@ -824,13 +824,6 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 	landGenerator->setRegion( rx, ry );
 	landGenerator->setMapPosition( posX, posY );
 	landGenerator->toMap( levelMap, getShapePalette(), false, false );
-	// event handler for custom map processing
-	if ( !getSession()->getMap()->inMapEditor() ) {
-		int params[2];
-		params[0] = rx;
-		params[1] = ry;
-		getSession()->getSquirrel()->callIntArgMethod( "land_generated", 2, params );
-	}
 }
 
 void Scourge::loadOrGenerateLargeMap() {
@@ -839,9 +832,10 @@ void Scourge::loadOrGenerateLargeMap() {
 
 	// for now always generate (later add load/save map regions)
 	generateRegion( orx, ory, 0, 0 );
-	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, 75, 0 );	
-	generateRegion( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, 75 );
-	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 75, 75 );
+	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, QUARTER_WIDTH_IN_NODES, 0 );	
+	generateRegion( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, QUARTER_DEPTH_IN_NODES );
+	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 
+                  QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
 	
 	levelMap->getRender()->initOutdoorsGroundTexture();
 }

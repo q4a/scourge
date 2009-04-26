@@ -606,7 +606,10 @@ bool SqBinding::callIntArgMethod( const char *name, int argc, int *args ) {
 			sq_pushinteger( vm, args[ i ] );
 		}
 		sq_call( vm, 1 + argc, 0 ); //calls the function
-		ret = true;
+		//ret = true;
+		SQBool sqres;
+		sq_getbool( vm, -1, &sqres );
+		ret = sqres != SQFalse;
 	} else {
 		cerr << "Can't find function " << name << endl;
 		ret = false;
