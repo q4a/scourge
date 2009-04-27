@@ -110,6 +110,8 @@ public:
 	
 	static int _setRug( HSQUIRRELVM vm );
 	static int _removeRug( HSQUIRRELVM vm ); 	
+	
+	static int _addOutdoorTexture( HSQUIRRELVM vm );
 };
 
 #endif

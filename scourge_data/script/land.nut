@@ -19,9 +19,5 @@ function horghh_q1( offset_x, offset_y ) {
 	hx <- offset_x;
 	hy <- offset_y + MAP_UNIT;
 	print( "Generating city Q1 at: " + hx.tostring() + "," + hy.tostring() + "\n" );
-	for( xx <- 0; xx < 2; xx++ ) {
-		for( yy <- 0; yy < 2; yy++ ) {
-			drawRandomHouse( hx + VILLAGE_OFFSET + xx * MAP_UNIT * 4, hy + VILLAGE_OFFSET + yy * MAP_UNIT * 4 );
-		}
-	}
+	drawVillage( hx + VILLAGE_OFFSET, hy + VILLAGE_OFFSET, 15, 15 );
 }

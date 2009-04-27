@@ -75,6 +75,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "clearHouses", SqMission::_clearHouses, 0, 0, "Clear house definitions." },
 	{ "void", "setRug", SqMission::_setRug, 0, 0, "Put a rug on the map." },
 	{ "void", "removeRug", SqMission::_removeRug, 0, 0, "Remove a rug from the map." },
+	{ "void", "addOutdoorTexture", SqMission::_addOutdoorTexture, 0, 0, "Set an outdoor texture (like a road)." },	
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -477,5 +478,16 @@ int SqMission::_setOffset( HSQUIRRELVM vm ) {
 		pos->moveY = oy * MUL;
 		pos->moveZ = oz * MUL;
 	}
+	return 0;
+}
+
+int SqMission::_addOutdoorTexture( HSQUIRRELVM vm ) {
+	GET_BOOL( vert )
+	GET_BOOL( horiz )
+	GET_FLOAT( angle )
+	GET_INT( ref )
+	GET_INT( mapy )
+	GET_INT( mapx )
+	SqBinding::sessionRef->getMap()->addOutdoorTexture( mapx, mapy, ref, angle, horiz, vert );	
 	return 0;
 }

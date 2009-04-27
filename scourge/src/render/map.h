@@ -822,6 +822,9 @@ public:
 	void startHouse();
 	void endHouse();
 	void clearHouses();
+	void addOutdoorTexture( int mapx, int mapy, int ref, float angle = 0.0f, bool horiz = false, bool vert = false );	
+	void flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
+
 
 protected:
 	bool isPartyOnMap( float dx, float dy );

@@ -349,11 +349,11 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 		for ( int i = 0; i < VILLAGE_WIDTH; i++ ) {
 			int vx = x + ( i * MAP_UNIT );
 			if ( i == 0 ) {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END );
 			} else if ( i >= VILLAGE_WIDTH - 1 ) {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
 			} else {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET );
 			}
 		}
 	}
@@ -363,9 +363,9 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 		for ( int i = 1; i <= VILLAGE_HEIGHT; i++ ) {
 			int vy = y + ( i * MAP_UNIT );
 			if ( i == 1 ) {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270 );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270 );
 			} else if ( i % 4 == 0 ) {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_CROSS );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_CROSS );
 				if( !foundCrossRoad ) {
 					// needed for party start location
 					roadX = vx + MAP_UNIT / 2;
@@ -373,39 +373,12 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 					foundCrossRoad = true;
 				}
 			} else if ( i >= VILLAGE_HEIGHT  ) {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
 			} else {
-				addOutdoorTexture( map, shapePal, vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90 );
+				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90 );
 			}
 		}
 	}	
-}
-
-void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, int ref, float angle, bool horiz, bool vert ) {
-	int faceCount = shapePal->getCurrentTheme()->getOutdoorFaceCount( ref );
-	if ( faceCount == 0 ) {
-		cerr << "Outdoor Generator Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
-		return;
-	}
-	int w = shapePal->getCurrentTheme()->getOutdoorTextureWidth( ref );
-	int h = shapePal->getCurrentTheme()->getOutdoorTextureHeight( ref );
-
-	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert, ROAD_LAYER );
-	flattenChunkWithLimits( map, mapx, mapy, w, h, 0, 1 );
-}
-
-void OutdoorGenerator::flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit ) {
-	for ( int x = mapX; x < mapEndX; x++ ) {
-		for ( int y = mapY; y < mapEndY; y++ ) {
-			int xx = x / OUTDOORS_STEP;
-			int yy = y / OUTDOORS_STEP;
-			if ( map->getGroundHeight( xx, yy ) < minLimit ) {
-				map->setGroundHeight( xx, yy, minLimit );
-			} else if ( map->getGroundHeight( xx, yy ) > maxLimit ) {
-				map->setGroundHeight( xx, yy, maxLimit );
-			}
-		}
-	}
 }
 
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
