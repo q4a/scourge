@@ -9,6 +9,8 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 	if( region_x == 38 && region_y == 20 ) {
 		horghh_q1( offset_x, offset_y );
 		return true;
+	} else if( region_x == 37 && region_y == 18 ) {
+		drawRandomHouse( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 	}
 	return false;
 }
