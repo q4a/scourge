@@ -3613,3 +3613,29 @@ void Map::clearHouses() {
 	houses.clear();
 }
 
+void Map::addOutdoorTexture( int mapx, int mapy, int ref, float angle, bool horiz, bool vert ) {
+	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
+	if ( faceCount == 0 ) {
+		cerr << "no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
+		return;
+	}
+	int w = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
+	int h = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
+
+	setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert, ROAD_LAYER );
+	flattenChunkWithLimits( mapx, mapy, w, h, 0, 1 );
+}
+
+void Map::flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit ) {
+	for ( int x = mapX; x < mapEndX; x++ ) {
+		for ( int y = mapY; y < mapEndY; y++ ) {
+			int xx = x / OUTDOORS_STEP;
+			int yy = y / OUTDOORS_STEP;
+			if ( getGroundHeight( xx, yy ) < minLimit ) {
+				setGroundHeight( xx, yy, minLimit );
+			} else if ( getGroundHeight( xx, yy ) > maxLimit ) {
+				setGroundHeight( xx, yy, maxLimit );
+			}
+		}
+	}
+}	

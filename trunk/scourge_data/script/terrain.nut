@@ -643,7 +643,69 @@ function drawGarden( x, y ) {
 	setPosition( x + 23, y - MAP_UNIT + 34, 0, "RUINS2", false );
 }
 
+// from shapes.h
+OUTDOOR_THEME_REF_GRASS <- 0;
+OUTDOOR_THEME_REF_STREET <- 1;
+OUTDOOR_THEME_REF_STREET_CROSS <- 2;
+OUTDOOR_THEME_REF_STREET_END <- 3;
+OUTDOOR_THEME_REF_TRAIL <- 4;
+OUTDOOR_THEME_REF_TRAIL_TURN <- 5;
+OUTDOOR_THEME_REF_TRAIL_END <- 6;
+OUTDOOR_THEME_REF_WATER <- 7;
+OUTDOOR_THEME_REF_ROCK <- 8;
+OUTDOOR_THEME_REF_GRASS_EDGE <- 9;
+OUTDOOR_THEME_REF_GRASS_CORNER <- 10;
+OUTDOOR_THEME_REF_GRASS_TIP <- 11;
+OUTDOOR_THEME_REF_GRASS_NARROW <- 12;
+OUTDOOR_THEME_REF_SNOW <- 13;
+OUTDOOR_THEME_REF_SNOW_BIG <- 14;
+OUTDOOR_THEME_REF_LAKEBED <- 15;
+OUTDOOR_THEME_REF_EXTRA <- 16;
+OUTDOOR_THEME_REF_STREET_90 <- 17;
+OUTDOOR_THEME_REF_STREET_END_90 <- 18;
+OUTDOOR_THEME_REF_STREET_END_180 <- 19;
+OUTDOOR_THEME_REF_STREET_END_270 <- 20;
+
+// must be the last one
+OUTDOOR_THEME_REF_COUNT <- 21;
+
+function drawRoads( x, y, village_width, village_height ) {
+	vx <- 0;
+	vy <- 0;
+	for( yy <- 4; yy <= village_height; yy += 4 ) {
+		vy = y + ( yy * MAP_UNIT );
+		for ( i <- 0; i < village_width; i++ ) {
+			vx = x + ( i * MAP_UNIT );
+			if ( i == 0 ) {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+			} else if ( i >= village_width - 1 ) {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+			} else {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+			}
+		}
+	}
+	for( xx <- 3; xx <= village_height - 1; xx += 4 ) {
+		vx = x + ( xx * MAP_UNIT );
+		for ( i <- 1; i <= village_height; i++ ) {
+			vy = y + ( i * MAP_UNIT );
+			if ( i == 1 ) {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_270, 0, false, false );
+			} else if ( i % 4 == 0 ) {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS, 0, false, false );
+			} else if ( i >= village_height  ) {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_90, 0, false, false );
+			} else {
+				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_90, 0, false, false );
+			}
+		}
+	}		
+}
+
 function drawVillage( x, y, village_width, village_height ) {
+	
+	drawRoads( x, y, village_width, village_height );
+	
 	scourgeGame.getMission().clearHouses();
 	
 	vx <- 0;
