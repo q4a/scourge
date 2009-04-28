@@ -823,7 +823,6 @@ function drawHouseTower( x, y ) {
 	w <- 2 * MAP_UNIT;
 	h <- 2 * MAP_UNIT;
 	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_2_BASE" ) ) {
-		scourgeGame.getMission().startHouse();
 		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_2_BASE" );
 		
 		// the door
@@ -831,7 +830,6 @@ function drawHouseTower( x, y ) {
 		
 		// the top
 		scourgeGame.getMission().setMapPosition( x + 2 - 2, y + h - 4 + 4, 12, "HOUSE_2_TOP" );
-		scourgeGame.getMission().endHouse();
 		
 		// add some objects
 		scourgeGame.getMission().setMapPosition( x + 3 + 2, y + h - 4, 0, "BED" );

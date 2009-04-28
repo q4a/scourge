@@ -86,6 +86,7 @@ public:
 	char refs[100];
 	bool draws;
 	bool roof;
+	bool noFloor;
 	bool usesAlpha;
 };
 
