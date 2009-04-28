@@ -765,6 +765,88 @@ function mixHouseCoordinates( pos ) {
   return pos;
 }
 
+// 2x3 base
+function drawHouseHut( x, y ) {
+	w <- 2 * MAP_UNIT;
+	h <- 3 * MAP_UNIT;
+	xx <- x + 5;
+	yy <- y + h - 4;
+	if( scourgeGame.getMission().isFree( xx, yy, 0, "HOUSE_3_BASE" ) ) {
+		scourgeGame.getMission().setMapPosition( xx, yy, 0, "HOUSE_3_BASE" );
+		
+		// the door
+		scourgeGame.getMission().setMapPosition( xx + 4, yy - 1, 0, "NS_DOOR" );
+		
+		// the top
+		scourgeGame.getMission().setMapPosition( xx - 5, yy + 1, 12, "HOUSE_3_TOP" );
+		
+		// add some objects
+		scourgeGame.getMission().setMapPosition( xx + 14, yy - 22, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( xx + 4, yy - 20, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( xx + 6, yy - 26 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( xx + 7, yy - 17, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( xx + 16, yy - 3, 0, "STOVE" );
+		
+		// tell the terrain generator where to populate the room with containers
+		scourgeGame.addRoom( xx + 1, yy - 31, 20, 30 );
+	}
+}
+
+// 3x2 base
+function drawHouseLogs( x, y ) {
+	w <- 3 * MAP_UNIT;
+	h <- 2 * MAP_UNIT;
+	shape_name <- "HOUSE_1_BASE"	
+	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, shape_name ) ) {
+		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, shape_name );
+		
+		// the door
+		scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 4 - 22, 0, "NS_DOOR" );
+		
+		// the top
+		scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
+		
+		// add some objects
+		scourgeGame.getMission().setMapPosition( x + 2 + 31, y + h - 10, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 12, y + h - 14, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 14, y + h - 12, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 16, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 27, y + h - 10, 0, "STOVE" );
+		
+		// tell the terrain generator where to populate the room with containers
+		scourgeGame.addRoom( x + 6, y + h - 4 - 21, 34, 17 );
+	}
+}
+
+// 2x2 base
+function drawHouseTower( x, y ) {
+	w <- 2 * MAP_UNIT;
+	h <- 2 * MAP_UNIT;
+	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_2_BASE" ) ) {
+		scourgeGame.getMission().startHouse();
+		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_2_BASE" );
+		
+		// the door
+		scourgeGame.getMission().setMapPosition( x + 2 + 1, y + h - 4 - 10, 0, "EW_DOOR" );
+		
+		// the top
+		scourgeGame.getMission().setMapPosition( x + 2 - 2, y + h - 4 + 4, 12, "HOUSE_2_TOP" );
+		scourgeGame.getMission().endHouse();
+		
+		// add some objects
+		scourgeGame.getMission().setMapPosition( x + 3 + 2, y + h - 4, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 10, y + h - 4 - 7, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 12, y + h - 4 - 4, 0, "CHAIR" );
+		//scourgeGame.getMission().setMapPosition( x + 2 + 5, y + h - 4 - 8, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 15, y + h - 4, 0, "STOVE" );
+				
+		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );
+		
+		// tell the terrain generator where to populate the room with containers
+		scourgeGame.addRoom( x + 2 + 1, y + h - 4 - 20, 19, 22 );
+	}
+}
+
 /** 
  * Called whenever a shape is added to the map.
  */
@@ -813,6 +895,41 @@ function shapeAdded( shape_name, x, y, z ) {
 	                                       0.5, 0, 7, 														// offset
 	                                       0.2, 0.2, 0.5 														// color
 																				);		
+	} else if( shape_name == "HOUSE_1_TOP" ) {
+		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
+	                                       0.5, 0, 15, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+	} else if( shape_name == "HOUSE_2_BASE" ) {
+		scourgeGame.getMission().setMapEffect( x - 1, y - 17, z + 9, // map location 
+		                                       	"EFFECT_FIRE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0.3, -0.7, 0, 														// offset
+				                                       0.5, 0.3, 0.1 														// color
+																							);		
+		scourgeGame.getMission().setMapEffect( x - 1, y - 7, z + 9, // map location 
+		                                       "EFFECT_FIRE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0.3, -0.7, 0, 														// offset
+				                                       0.5, 0.3, 0.1 														// color
+																							);
+	} else if( shape_name == "HOUSE_2_TOP" ) {
+		scourgeGame.getMission().setMapEffect( x + 16, y + - 7, z - 2, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       4, 4, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 18, 														// offset
+				                                       0.3, 0.1, 0.3 														// color
+																							);		
 	}
 }
 
@@ -868,7 +985,38 @@ function addVirtualShapes( shape_name ) {
 		scourgeGame.addVirtualShape( shape_name, 11, -14, 0, 21, 2, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 32, 2, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 12, 12, false );
-	}
+	} else if( shape_name == "HOUSE_1_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 6, 25, 10, true );
+		scourgeGame.addVirtualShape( shape_name, 6, 0, 0, 30, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 36, 0, 0, 6, 25, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 16, -19, 0, 20, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 6, -19, 0, 4, 6, 10, false );						
+	} else if( shape_name == "HOUSE_2_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 3, 12, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 3, 4, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 2, 0, 2, 22, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -18, 0, 16, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, 2, 0, 16, 2, 12, false );
+	} else if( shape_name == "HOUSE_3_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 0, 0, 3, 32, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -29, 0, 16, 3, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );
+	} else if( shape_name == "MONASTERY_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, -20, 0, 4, 6, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 4, -24, 0, 15, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 25, -24, 0, 7, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, -20, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, -6, 0, 2, 14, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, 0, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 4, 0, 0, 28, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 2, -6, 0, 2, 8, 12, false );
+	}	
 }
 
 /**
