@@ -252,8 +252,30 @@ void LandGenerator::loadMapGridBitmapRegion() {
 }
 
 void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
+	unsigned int r, g, b, color;
+
 	for( int i = 0; i < (int)image.size(); i += BYTES_PER_PIXEL ) {
-		data[ i / BYTES_PER_PIXEL ] = image[ i + 2 ] > 0 ? -1 : ( image[ i ] > 0 ? 1 : 0 );
+		r = (unsigned int)image[ i ]; g = (unsigned int)image[ i + 1 ]; b = (unsigned int)image[ i + 2 ];
+		color = ( r << 16 ) + ( g << 8 ) + b ;
+
+		switch( color ) {
+		case 0xff0000:
+			data[ i / BYTES_PER_PIXEL ] = 3;
+			break;
+		case 0xff00ff:
+			data[ i / BYTES_PER_PIXEL ] = 2;
+			break;
+		case 0xffff00:
+			data[ i / BYTES_PER_PIXEL ] = 1;
+			break;
+		case 0x0000ff:
+			data[ i / BYTES_PER_PIXEL ] = -1;
+			break;
+		default:
+			data[ i / BYTES_PER_PIXEL ] = 0;
+			break;
+		}
+
 	}
 	//printData();
 	cellular->initialize( REGION_SIZE, REGION_SIZE, data );

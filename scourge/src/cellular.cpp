@@ -48,7 +48,7 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 			int dy = (int)( y * ( dh / (float)h ) );
 			int d = data[ dy * dw + dx ];
 			
-			node[x][y].wall = ( d > 0 );
+			node[x][y].wall = ( d == 3 );
 			node[x][y].water = ( d < 0 );
 			node[x][y].island = false;
 			node[x][y].room = -1;
