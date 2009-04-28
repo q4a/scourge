@@ -615,6 +615,7 @@ void Shapes::loadShape( const char *name ) {
 		shapes[( i + 1 )]->setLightBlocking( sv->blocksLight == 1 );
 		shapes[( i + 1 )]->setIconRotation( sv->xrot, sv->yrot, sv->zrot );
 		shapes[( i + 1 )]->setIgnoreHeightMap( sv->ignoreHeightMap );
+		shapes[( i + 1 )]->setNoFloor( sv->noFloor );
 
 		if ( sv->wallShape ) shapes[( i + 1 )]->setIsWallShape( true );
 

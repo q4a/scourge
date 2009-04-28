@@ -636,6 +636,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 		sv->iconWidth = sv->iconHeight = 0;
 	}
 	sv->roof = node->getValueAsBool( "roof" );
+	sv->noFloor = node->getValueAsBool( "no_floor" );
 
 	sv->usesAlpha = node->getValueAsBool( "uses_alpha" );
 

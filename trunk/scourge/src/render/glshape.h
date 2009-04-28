@@ -55,6 +55,7 @@ protected:
 	float alpha;
 	std::vector<GLShape*> virtualShapes;
 	bool ignoreHeightMap;
+	bool noFloor;
 
 	Surface *surfaces[5];
 	enum {
@@ -85,6 +86,9 @@ public:
 		NORMAL_LIGHTING = 0,
 		OUTDOOR_LIGHTING
 	};
+	
+	inline void setNoFloor( bool b ) { noFloor = b; }
+	inline bool getNoFloor() { return noFloor; }
 	
 	virtual void getSurfaces( std::set<Surface*> *shape_surfaces, bool skip_top );
 

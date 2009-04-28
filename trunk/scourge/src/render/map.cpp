@@ -693,7 +693,7 @@ bool Map::checkUnderRoof() {
 		if( !isOnFloorTile( px, py ) ) {
 			// one-off houses don't
 			Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
-			if ( !( roof && roof->shape && roof->shape->isRoof() ) ) {
+			if ( !( roof && roof->shape && roof->shape->isRoof() && ((GLShape*)roof->shape)->getNoFloor() ) ) {
 				isCurrentlyUnderRoof = false;	
 			}
 		}
