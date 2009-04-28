@@ -689,8 +689,13 @@ bool Map::checkUnderRoof() {
 	} else if ( adapter->getPlayer() ) {
 		int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
 		int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
+		// reusable-shapes houses use floor tiles
 		if( !isOnFloorTile( px, py ) ) {
-			isCurrentlyUnderRoof = false;
+			// one-off houses don't
+			Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
+			if ( !( roof && roof->shape && roof->shape->isRoof() ) ) {
+				isCurrentlyUnderRoof = false;	
+			}
 		}
 		
 //		Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
