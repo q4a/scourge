@@ -91,9 +91,9 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			} else if ( cellular->getNode( x, y )->water ) {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, -Util::roll( 14.0f, 20.0f )	 );
 			} else if ( cellular->getNode( x, y )->elevated ) {
-				map->setGroundHeight( mapPosX + x, mapPosY + y, ground[x][y] * 2 );
+				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 1.0f, 3.0f ) + ground[x][y] * 2 );
 			} else if ( cellular->getNode( x, y )->high ) {
-				map->setGroundHeight( mapPosX + x, mapPosY + y, ground[x][y] * 4 );
+				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 4.0f, 7.0f ) + ground[x][y] * 3 );
 			} else {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, ground[x][y] );
 			}
