@@ -30,7 +30,7 @@
 
 /// A generated node.
 struct NodePoint {
-	bool wall, island, water;
+	bool elevated, high, wall, island, water;
 	int room;
 	bool seen;
 };
