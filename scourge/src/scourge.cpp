@@ -511,10 +511,6 @@ void Scourge::preMainLoop() {
 
 	if ( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 
-	// Set up the weather
-	getSession()->getWeather()->generateWeather();
-	if ( getSession()->getWeather()->getCurrentWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
-	
 	// adjust the map from script
 	getSession()->getSquirrel()->startLevel( "enterMap" );
 

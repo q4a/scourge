@@ -20,6 +20,7 @@
 #include "map.h"
 #include "../shapepalette.h"
 #include "../sound.h"
+#include "../configlang.h"
 
 using namespace std;
 
@@ -28,12 +29,226 @@ Weather::Weather( Session *session ) {
 
 	currentWeather = WEATHER_CLEAR;
 
-	lastWeatherUpdate = SDL_GetTicks();
+	lastWeatherUpdate = lastWeatherRoll = SDL_GetTicks();
+	lastWeatherChange = 0;
 	thunderOnce = false;
+
+	int climateIndex;
+
+	ConfigLang *config = ConfigLang::load( "config/climate.cfg" );
+
+	vector<ConfigNode*> *climates = config->getDocument()->getChildrenByName( "climate" );
+	
+	for ( unsigned int c = 0; climates && c < climates->size(); c++ ) {
+		ConfigNode *node = ( *climates )[c];
+		string id = node->getValueAsString( "id" );
+
+		if ( id == "boreal" ) {
+			climateIndex = CLIMATE_BOREAL;
+		} else if ( id == "alpine" ) {
+			climateIndex = CLIMATE_ALPINE;
+		} else if ( id == "temperate" ) {
+			climateIndex = CLIMATE_TEMPERATE;
+		} else if ( id == "subtropical" ) {
+			climateIndex = CLIMATE_SUBTROPICAL;
+		} else if ( id == "tropical" ) {
+			climateIndex = CLIMATE_TROPICAL;
+		} else {
+			climateIndex = CLIMATE_TEMPERATE;
+		}
+
+		vector<ConfigNode*> *times = node->getChildrenByName( "rain" );
+
+		if ( times ) {
+			ConfigNode *rainNode = ( *times )[0];
+			for ( map<string, ConfigValue*>::iterator t = rainNode->getValues()->begin();
+			        t != rainNode->getValues()->end(); ++t ) {
+				string name = t->first;
+				ConfigValue *value = t->second;
+
+				if ( name == "allyear" ) {
+					for ( int m = 0; m < 12; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winterhalfyear" ) {
+					for ( int m = 0; m < 2; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					for ( int m = 8; m < 12; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summerhalfyear" ) {
+					for ( int m = 2; m < 8; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winter" ) {
+					for ( int m = 0; m < 2; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					rainByMonths[ 11 ][ climateIndex ] = value->getAsFloat();
+				} else if ( name == "spring" ) {
+					for ( int m = 2; m < 5; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summer" ) {
+					for ( int m = 5; m < 8; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "autumn" ) {
+					for ( int m = 8; m < 11; m++ ) { rainByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "daytime" ) {
+					for ( int h = 6; h < 18; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "nighttime" ) {
+					for ( int h = 18; h < 24; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+					for ( int h = 0; h < 6; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "morning" ) {
+					for ( int h = 6; h < 10; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "noon" ) {
+					for ( int h = 10; h < 14; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "afternoon" ) {
+					for ( int h = 14; h < 18; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "evening" ) {
+					for ( int h = 18; h < 24; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "night" ) {
+					for ( int h = 0; h < 6; h++ ) { rainByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				}
+
+			}
+		}
+
+		times = node->getChildrenByName( "snow" );
+
+		if ( times ) {
+			ConfigNode *snowNode = ( *times )[0];
+			for ( map<string, ConfigValue*>::iterator t = snowNode->getValues()->begin();
+			        t != snowNode->getValues()->end(); ++t ) {
+				string name = t->first;
+				ConfigValue *value = t->second;
+
+				if ( name == "allyear" ) {
+					for ( int m = 0; m < 12; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winterhalfyear" ) {
+					for ( int m = 0; m < 2; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					for ( int m = 8; m < 12; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summerhalfyear" ) {
+					for ( int m = 2; m < 8; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winter" ) {
+					for ( int m = 0; m < 2; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					snowByMonths[ 11 ][ climateIndex ] = value->getAsFloat();
+				} else if ( name == "spring" ) {
+					for ( int m = 2; m < 5; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summer" ) {
+					for ( int m = 5; m < 8; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "autumn" ) {
+					for ( int m = 8; m < 11; m++ ) { snowByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "daytime" ) {
+					for ( int h = 6; h < 18; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "nighttime" ) {
+					for ( int h = 18; h < 24; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+					for ( int h = 0; h < 6; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "morning" ) {
+					for ( int h = 6; h < 10; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "noon" ) {
+					for ( int h = 10; h < 14; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "afternoon" ) {
+					for ( int h = 14; h < 18; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "evening" ) {
+					for ( int h = 18; h < 24; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "night" ) {
+					for ( int h = 0; h < 6; h++ ) { snowByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				}
+
+			}
+		}
+
+		times = node->getChildrenByName( "thunder" );
+
+		if ( times ) {
+			ConfigNode *thunderNode = ( *times )[0];
+			for ( map<string, ConfigValue*>::iterator t = thunderNode->getValues()->begin();
+			        t != thunderNode->getValues()->end(); ++t ) {
+				string name = t->first;
+				ConfigValue *value = t->second;
+
+				if ( name == "allyear" ) {
+					for ( int m = 0; m < 12; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winterhalfyear" ) {
+					for ( int m = 0; m < 2; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					for ( int m = 8; m < 12; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summerhalfyear" ) {
+					for ( int m = 2; m < 8; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winter" ) {
+					for ( int m = 0; m < 2; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					thunderByMonths[ 11 ][ climateIndex ] = value->getAsFloat();
+				} else if ( name == "spring" ) {
+					for ( int m = 2; m < 5; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summer" ) {
+					for ( int m = 5; m < 8; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "autumn" ) {
+					for ( int m = 8; m < 11; m++ ) { thunderByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "daytime" ) {
+					for ( int h = 6; h < 18; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "nighttime" ) {
+					for ( int h = 18; h < 24; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+					for ( int h = 0; h < 6; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "morning" ) {
+					for ( int h = 6; h < 10; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "noon" ) {
+					for ( int h = 10; h < 14; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "afternoon" ) {
+					for ( int h = 14; h < 18; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "evening" ) {
+					for ( int h = 18; h < 24; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "night" ) {
+					for ( int h = 0; h < 6; h++ ) { thunderByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				}
+
+			}
+		}
+
+		times = node->getChildrenByName( "fog" );
+
+		if ( times ) {
+			ConfigNode *fogNode = ( *times )[0];
+			for ( map<string, ConfigValue*>::iterator t = fogNode->getValues()->begin();
+			        t != fogNode->getValues()->end(); ++t ) {
+				string name = t->first;
+				ConfigValue *value = t->second;
+
+				if ( name == "allyear" ) {
+					for ( int m = 0; m < 12; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winterhalfyear" ) {
+					for ( int m = 0; m < 2; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					for ( int m = 8; m < 12; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summerhalfyear" ) {
+					for ( int m = 2; m < 8; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "winter" ) {
+					for ( int m = 0; m < 2; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+					fogByMonths[ 11 ][ climateIndex ] = value->getAsFloat();
+				} else if ( name == "spring" ) {
+					for ( int m = 2; m < 5; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "summer" ) {
+					for ( int m = 5; m < 8; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "autumn" ) {
+					for ( int m = 8; m < 11; m++ ) { fogByMonths[ m ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "daytime" ) {
+					for ( int h = 6; h < 18; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "nighttime" ) {
+					for ( int h = 18; h < 24; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+					for ( int h = 0; h < 6; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "morning" ) {
+					for ( int h = 6; h < 10; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "noon" ) {
+					for ( int h = 10; h < 14; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "afternoon" ) {
+					for ( int h = 14; h < 18; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "evening" ) {
+					for ( int h = 18; h < 24; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				} else if ( name == "night" ) {
+					for ( int h = 0; h < 6; h++ ) { fogByHours[ h ][ climateIndex ] = value->getAsFloat(); }
+				}
+
+			}
+		}
+
+	}
+
+	delete config;
 }
 
 Weather::~Weather() {
 }
+
+#define WEATHER_ROLL_INTERVAL 24000
+#define WEATHER_ROLL_CHANCE 0.2f
+
+#define WEATHER_CHANGE_DURATION 6000
 
 #define MIN_RAIN_DROP_COUNT 50
 #define MIN_CLOUD_COUNT 3
@@ -64,20 +279,67 @@ void Weather::drawWeather() {
 	float deltaX;
 	float cloudDelta;
 
+	bool weatherChanging = ( now - lastWeatherChange ) > WEATHER_CHANGE_DURATION ? false : true;
+
+	float rainIntensity, snowIntensity, thunderIntensity, fogIntensity;
+
+	if ( !weatherChanging ) {
+		rainIntensity = currentWeather & WEATHER_RAIN ? 1.0f : 0.0f;
+		snowIntensity = currentWeather & WEATHER_SNOW ? 1.0f : 0.0f;
+		thunderIntensity = currentWeather & WEATHER_THUNDER ? 1.0f : 0.0f;
+		fogIntensity = currentWeather & WEATHER_FOG ? 1.0f : 0.0f;
+		if ( ( now - lastWeatherRoll ) > WEATHER_ROLL_INTERVAL ) {
+			if ( Util::roll( 0.0f, 1.0f ) <= WEATHER_ROLL_CHANCE ) changeWeather( generateWeather() );
+			lastWeatherRoll = now;
+		}
+	} else {
+		if ( ( currentWeather & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) {
+			rainIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
+		} else if ( !( currentWeather & WEATHER_RAIN ) && ( oldWeather & WEATHER_RAIN ) ) {
+			rainIntensity = 1.0f - ( (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION );
+		} else if ( ( currentWeather & WEATHER_RAIN ) && ( oldWeather & WEATHER_RAIN ) ) {
+			rainIntensity = 1.0f;
+		}
+		if ( ( currentWeather & WEATHER_SNOW ) && !( oldWeather & WEATHER_SNOW ) ) {
+			snowIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
+		} else if ( !( currentWeather & WEATHER_SNOW ) && ( oldWeather & WEATHER_SNOW ) ) {
+			snowIntensity = 1.0f - ( (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION );
+		} else if ( ( currentWeather & WEATHER_SNOW ) && ( oldWeather & WEATHER_SNOW ) ) {
+			snowIntensity = 1.0f;
+		}
+		if ( ( currentWeather & WEATHER_THUNDER ) && !( oldWeather & WEATHER_THUNDER ) ) {
+			thunderIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
+		} else if ( !( currentWeather & WEATHER_THUNDER ) && ( oldWeather & WEATHER_THUNDER ) ) {
+			thunderIntensity = 1.0f - ( (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION );
+		} else if ( ( currentWeather & WEATHER_THUNDER ) && ( oldWeather & WEATHER_THUNDER ) ) {
+			thunderIntensity = 1.0f;
+		}
+		if ( ( currentWeather & WEATHER_FOG ) && !( oldWeather & WEATHER_FOG ) ) {
+			fogIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
+		} else if ( !( currentWeather & WEATHER_FOG ) && ( oldWeather & WEATHER_FOG ) ) {
+			fogIntensity = 1.0f - ( (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION );
+		} else if ( ( currentWeather & WEATHER_FOG ) && ( oldWeather & WEATHER_FOG ) ) {
+			fogIntensity = 1.0f;
+		}
+	}
+
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_DEPTH_TEST );
 	glDepthMask( GL_FALSE );
+
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_TEXTURE_2D );
 
 	// Draw the fog
-	if ( shouldDrawWeather && ( currentWeather & WEATHER_FOG ) ) {
+	if ( shouldDrawWeather && fogIntensity ) {
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 0, 0, 0 );
-		glColor4f( 1.0f, 1.0f, 1.0f, 0.4f );
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.4f * fogIntensity );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 0 );
@@ -96,14 +358,14 @@ void Weather::drawWeather() {
 	glEnable( GL_TEXTURE_2D );
 
 	// Draw the rain drops
-	if ( shouldDrawWeather && ( currentWeather & WEATHER_RAIN ) ) {
+	if ( shouldDrawWeather && rainIntensity ) {
 
 		deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
 		deltaX = deltaY / 4;
 
-		int rainDropCount = ( int )( RAIN_DROP_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) );
+		int rainDropCount = ( int )( RAIN_DROP_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) * rainIntensity );
 		if ( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
-		else if ( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+		else if ( ( rainDropCount < MIN_RAIN_DROP_COUNT ) && !weatherChanging ) rainDropCount = MIN_RAIN_DROP_COUNT;
 
 		glPushMatrix();
 		session->getShapePalette()->getRaindropTexture().glBind();
@@ -144,13 +406,13 @@ void Weather::drawWeather() {
 		glPopMatrix();
 	}
 
-	glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// Draw the fog clouds
-	if ( shouldDrawWeather && currentWeather & WEATHER_FOG ) {
+	if ( shouldDrawWeather && fogIntensity ) {
 
-		session->getShapePalette()->cloud.glBind();
-		glColor4f( 1.0f, 1.0f, 0.7f, 0.8f );
+		session->getShapePalette()->fogCloudTexture.glBind();
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.6f * fogIntensity );
 		glPushMatrix();
 
 		int cloudCount = ( int )( CLOUD_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) );
@@ -199,11 +461,11 @@ void Weather::drawWeather() {
 
 		float brightness;
 
-		if ( thunderOnce || ( shouldDrawWeather && ( currentWeather & WEATHER_THUNDER ) ) ) {
+		if ( thunderOnce || ( shouldDrawWeather && thunderIntensity ) ) {
 			if ( lightningTime < 101 ) {
-				brightness = ( ( float )lightningTime / 100 ) * lightningBrightness;
+				brightness = ( ( float )lightningTime / 100 ) * lightningBrightness * thunderIntensity;
 			} else {
-				brightness = ( ( 201 - ( float )lightningTime ) / 100 ) * lightningBrightness;
+				brightness = ( ( 201 - ( float )lightningTime ) / 100 ) * lightningBrightness * thunderIntensity;
 			}
 
 			glPushMatrix();
@@ -226,7 +488,7 @@ void Weather::drawWeather() {
 		if ( Util::dice( 25 ) == 0 ) {
 			lastLightning = now;
 			lightningBrightness = 0.3f + ( Util::mt_rand() * 0.5f );
-			if ( thunderOnce || ( outside && ( currentWeather & WEATHER_THUNDER ) ) ) {
+			if ( thunderOnce || ( outside && thunderIntensity ) ) {
 				session->getSound()->playThunderSound( underRoof );
 				thunderOnce = false;
 			}
@@ -235,6 +497,8 @@ void Weather::drawWeather() {
 	}
 
 	lastWeatherUpdate = now;
+
+	glDisable( GL_ALPHA_TEST );
 
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
@@ -245,12 +509,10 @@ void Weather::drawWeather() {
 /// Determines which type of weather the map will have.
 
 int Weather::generateWeather() {
-	if ( Util::dice( 3 ) == 0 && session->getMap()->isHeightMapEnabled() ) {
-		currentWeather = Util::pickOne( 1, MAX_WEATHER );
-	} else {
-		currentWeather = WEATHER_CLEAR;
-	}
-	return currentWeather;
+	int weather;
+	weather = Util::pickOne( 1, MAX_WEATHER );
+
+	return weather;
 }
 
 void Weather::thunder() {
@@ -274,4 +536,18 @@ void Weather::generateClouds() {
 		cloudX[i] = Util::pickOne( -( int )( 256.0f * cloudSize[i] ), session->getGameAdapter()->getScreenWidth() );
 		cloudY[i] = Util::pickOne( -( int )( 128.0f * cloudSize[i] ), session->getGameAdapter()->getScreenWidth() );
 	}
+}
+
+void Weather::changeWeather( int newWeather ) {
+	oldWeather = currentWeather;
+	currentWeather = newWeather;
+
+	lastWeatherChange = SDL_GetTicks();
+
+	if ( ( currentWeather & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) {
+		session->getSound()->startRain();
+	} else if ( ( oldWeather & WEATHER_RAIN ) && !( currentWeather & WEATHER_RAIN ) ) {
+		session->getSound()->stopRain();
+	}
+	
 }

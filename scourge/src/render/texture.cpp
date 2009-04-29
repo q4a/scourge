@@ -414,15 +414,18 @@ bool Texture::Actual::letsToBind() {
 	GLuint destFormat;
 	GLuint srcFormat;
 	GLuint minFilter;
+	GLuint magFilter;
 
 	if ( _hasAlpha ) {
 		srcFormat = GL_RGBA;
 		destFormat = ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 );
 		minFilter = ( _isSprite ? GL_LINEAR : GL_NEAREST_MIPMAP_NEAREST );
+		magFilter = GL_LINEAR;
 	} else {
 		srcFormat = GL_RGB;
 		destFormat = ( prefs->getBpp() > 16 ? GL_RGB : GL_RGB5 );
 		minFilter = GL_LINEAR_MIPMAP_LINEAR;
+		magFilter = prefs->getBpp() > 16 ? GL_LINEAR : GL_NEAREST;
 	}
 
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
@@ -430,7 +433,7 @@ bool Texture::Actual::letsToBind() {
 	glBindTexture( GL_TEXTURE_2D, _id );
 
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, prefs->getBpp() > 16 ? GL_LINEAR : GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter );
 
 	// Enable anisotropic filtering if requested, mipmapping is enabled
 	// and the hardware supports it.

@@ -28,6 +28,19 @@ class Session;
 class Weather {
 private:
 	Session *session;
+
+	float rainByHours[24][CLIMATE_COUNT];
+	float rainByMonths[12][CLIMATE_COUNT];
+
+	float snowByHours[24][CLIMATE_COUNT];
+	float snowByMonths[12][CLIMATE_COUNT];
+
+	float thunderByHours[24][CLIMATE_COUNT];
+	float thunderByMonths[12][CLIMATE_COUNT];
+
+	float fogByHours[24][CLIMATE_COUNT];
+	float fogByMonths[12][CLIMATE_COUNT];
+
 	int oldWeather;
 	int currentWeather;
 
@@ -41,6 +54,9 @@ private:
 	float cloudY[CLOUD_COUNT];
 	float cloudSize[CLOUD_COUNT];
 	int cloudSpeed[CLOUD_COUNT];
+
+	Uint32 lastWeatherChange;
+	Uint32 lastWeatherRoll;
 	Uint32 lastWeatherUpdate;
 	Uint32 lastLightning;
 	Uint32 lastLightningRoll;
@@ -51,6 +67,7 @@ public:
 	Weather( Session *session );
 	~Weather();
 
+	void changeWeather( int newWeather );
 	inline void setWeather( int i ) { currentWeather = i; }
 	inline int getOldWeather() { return oldWeather; }
 	inline int getCurrentWeather() { return currentWeather; }

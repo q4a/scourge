@@ -682,6 +682,14 @@ public:
 	#define WEATHER_SNOW 0x08
 	#define MAX_WEATHER 0x10
 
+	// Climate zone indices
+	#define CLIMATE_BOREAL 0
+	#define CLIMATE_ALPINE 1
+	#define CLIMATE_TEMPERATE 2
+	#define CLIMATE_SUBTROPICAL 3
+	#define CLIMATE_TROPICAL 4
+	#define CLIMATE_COUNT 5
+
 	// Creature actions
 	enum {
 		ACTION_NO_ACTION = -1,

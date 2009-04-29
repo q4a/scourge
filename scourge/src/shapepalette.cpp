@@ -132,6 +132,7 @@ void ShapePalette::initialize() {
 	pausedTexture.load( "/textures/paused.png" );
 	realTimeTexture.load( "/textures/realtime.png" );
 	raindropTexture.load( "/textures/raindrop.png", false, false );
+	fogCloudTexture.load( "/textures/fogcloud.png", false, false );
 	hand_attack_icon.load( "/textures/hands.png" );
 
 	// load map textures
