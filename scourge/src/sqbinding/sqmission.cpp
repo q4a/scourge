@@ -411,7 +411,7 @@ int SqMission::_quake( HSQUIRRELVM vm ) {
 }
 
 int SqMission::_thunder( HSQUIRRELVM vm ) {
-	SqBinding::sessionRef->getGameAdapter()->thunder();
+	SqBinding::sessionRef->getWeather()->thunder();
 	return 0;
 }
 

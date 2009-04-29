@@ -213,8 +213,6 @@ private:
 	float roofAlpha;
 	bool gridEnabled;
 
-	int weather;
-
 	std::set<Location*> gates, teleporters;
 	std::map<RenderedCreature*, RenderedLocation*> creatureMap, creatureEffectMap, creatureLightMap;
 	std::vector<std::set<Location*> > houses;
@@ -270,16 +268,6 @@ public:
 		return isCurrentlyUnderRoof;
 	}
 	
-	/// Which weather will the map have?
-	inline void setWeather( int i ) {
-		weather = i;
-	}
-	/// The current weather conditions.
-	inline int getWeather() {
-		return weather;
-	}
-	int generateWeather();
-
 	void addSecretDoor( int x, int y );
 	void removeSecretDoor( int x, int y );
 	bool isSecretDoor( Location *pos );

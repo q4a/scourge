@@ -226,7 +226,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	selectedTrapIndex = -1;
 
 	isCurrentlyUnderRoof = isRoofShowing = true;
-	weather = WEATHER_CLEAR;
 
 	gridEnabled = true;
 	
@@ -3557,17 +3556,6 @@ bool Map::isEmpty( int x, int y ) {
 
 bool Map::inMapEditor() {
 	return settings->isGridShowing();
-}
-
-/// Determines which type of weather the map will have.
-
-int Map::generateWeather() {
-	if ( Util::dice( 3 ) == 0 && heightMapEnabled ) {
-		weather = Util::pickOne( 1, MAX_WEATHER );
-	} else {
-		weather = WEATHER_CLEAR;
-	}
-	return weather;
 }
 
 /// Sets whether house roofs should be shown.

@@ -50,5 +50,6 @@
 #include "md3shape.h"
 #include "modelwrapper.h"
 #include "cutscene.h"
+#include "weather.h"
 
 #endif

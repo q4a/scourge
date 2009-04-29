@@ -246,8 +246,8 @@ void Scourge::start() {
 	Constants::generateTrigTables();
 
 	// Set up the weather effects
-	view->generateRain();
-	view->generateClouds();
+	getSession()->getWeather()->generateRain();
+	getSession()->getWeather()->generateClouds();
 
 //	cerr << "done in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 
@@ -512,8 +512,8 @@ void Scourge::preMainLoop() {
 	if ( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 
 	// Set up the weather
-	getMap()->generateWeather();
-	if ( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
+	getSession()->getWeather()->generateWeather();
+	if ( getSession()->getWeather()->getCurrentWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 	
 	// adjust the map from script
 	getSession()->getSquirrel()->startLevel( "enterMap" );
@@ -4316,7 +4316,7 @@ void Scourge::shapeAdded( const char *shapeName, int x, int y, int z ) {
 }
 
 void Scourge::thunder() {
-	view->thunder();
+	session->getWeather()->thunder();
 }
 
 /// Displays the loading screen background.

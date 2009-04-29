@@ -82,7 +82,7 @@ void Graphics::resizeWindow( int width, int height ) {
 /* general OpenGL initialization function */
 void Graphics::initGL( GLvoid ) {
   /* Enable Texture Mapping */
-  glEnable( GL_TEXTURE_2D );
+  rsmEnable( GL_TEXTURE_2D );
   
   /* Enable smooth shading */
   glShadeModel( GL_SMOOTH );
@@ -100,7 +100,7 @@ void Graphics::initGL( GLvoid ) {
   if( stencilBufferUsed ) glClearStencil(0); // Clear The Stencil Buffer To 0
 
   /* Enables Depth Testing */
-  glEnable( GL_DEPTH_TEST );
+  rsmEnable( GL_DEPTH_TEST );
 
   /* The Type Of Depth Test To Do */
   glDepthFunc( GL_LEQUAL );
@@ -109,7 +109,7 @@ void Graphics::initGL( GLvoid ) {
   // glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
   glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
-  glEnable( GL_COLOR_MATERIAL );
+  rsmEnable( GL_COLOR_MATERIAL );
 
   /* initialize opengl extensions */
   if( Constants::multitexture ) {
