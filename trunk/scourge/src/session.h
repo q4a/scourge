@@ -30,6 +30,7 @@
 #include "gameadapter.h"
 #include "terraingenerator.h"
 #include "render/texture.h"
+#include "render/weather.h"
 
 #ifdef HAVE_SDL_NET
 class Server;
@@ -54,6 +55,7 @@ class ShapePalette;
 class Sound;
 class Cutscene;
 class TerrainGenerator;
+class Weather;
 
 /**
  *@author Gabor Torok
@@ -69,6 +71,7 @@ private:
 	Map *map;
 	Board *board;
 	Cutscene *cutscene;
+	Weather *weather;
 #ifdef HAVE_SDL_NET
 	Server *server;
 	Client *client;
@@ -242,6 +245,9 @@ public:
 	}
 	inline Cutscene *getCutscene() {
 		return cutscene;
+	}
+	inline Weather *getWeather() {
+		return weather;
 	}
 	void setCurrentMission( Mission *mission );
 	void setChapterImage( char *image );

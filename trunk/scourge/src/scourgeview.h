@@ -63,27 +63,9 @@ private:
 	GLUquadric *quadric;
 	Progress *turnProgress;
 
-#define RAIN_DROP_COUNT 300
-#define RAIN_DROP_SIZE 32
-	float rainDropX[RAIN_DROP_COUNT];
-	float rainDropY[RAIN_DROP_COUNT];
-	float rainDropZ[RAIN_DROP_COUNT];
-#define CLOUD_COUNT 15
-	float cloudX[CLOUD_COUNT];
-	float cloudY[CLOUD_COUNT];
-	float cloudSize[CLOUD_COUNT];
-	int cloudSpeed[CLOUD_COUNT];
-	Uint32 lastWeatherUpdate;
-	Uint32 lastLightning;
-	Uint32 lastLightningRoll;
-	float lightningBrightness;
-	bool thunderOnce;
-
 public:
 	ScourgeView( Scourge *scourge );
 	virtual ~ScourgeView();
-
-	void thunder();
 
 	/**
 	  The main app loop calls this method to repaint the screen. In this implementation the
@@ -104,9 +86,6 @@ public:
 	void resetInfos();
 	void initUI();
 
-	void generateRain();
-	void generateClouds();
-
 protected:
 	void drawChapterIntro();
 	void centerOnMonsterInTB();
@@ -122,7 +101,6 @@ protected:
 	void drawDraggedItem();
 	void drawDisk( float w, float diff );
 	void ambientObjectSounds();
-	void drawWeather();
 	void endScissorToMap();
 	void showMovieConversation( Creature *creature );
 	DECLARE_NOISY_OPENGL_SUPPORT();

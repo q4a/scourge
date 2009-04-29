@@ -416,12 +416,12 @@ int SqGame::_ascendToSurface( HSQUIRRELVM vm ) {
 
 int SqGame::_setWeather( HSQUIRRELVM vm ) {
 	GET_INT( w )
-	SqBinding::sessionRef->getMap()->setWeather( w );
+	SqBinding::sessionRef->getWeather()->setWeather( w );
 	return 0;
 }
 
 int SqGame::_getWeather( HSQUIRRELVM vm ) {
-	int w = SqBinding::sessionRef->getMap()->getWeather();
+	int w = SqBinding::sessionRef->getWeather()->getCurrentWeather();
 	sq_pushinteger( vm, w );
 	return 1;
 }

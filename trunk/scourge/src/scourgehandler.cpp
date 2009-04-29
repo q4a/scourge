@@ -182,12 +182,12 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 			scourge->getSquirrelConsole()->setVisible( scourge->getSquirrelConsole()->isVisible() ? false : true );
 		} else if ( event->key.keysym.sym == SDLK_v ) {
 			if ( scourge->getMap()->isHeightMapEnabled() ) {
-				int w = scourge->getMap()->getWeather();
+				int w = scourge->getSession()->getWeather()->getCurrentWeather();
 				if ( w & WEATHER_RAIN ) scourge->getSession()->getSound()->stopRain();
 				w++;
 				if ( w == MAX_WEATHER ) w = WEATHER_CLEAR;
 				if ( w & WEATHER_RAIN ) scourge->getSession()->getSound()->startRain();
-				scourge->getMap()->setWeather( w );
+				scourge->getSession()->getWeather()->setWeather( w );
 				if ( w == WEATHER_CLEAR ) {
 					cerr << "Weather: clear" << endl;
 				} else {
@@ -195,6 +195,7 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 					if ( w & WEATHER_RAIN ) cerr << "rain";
 					if ( w & WEATHER_THUNDER ) cerr << "thunder";
 					if ( w & WEATHER_FOG ) cerr << "fog";
+					if ( w & WEATHER_SNOW ) cerr << "snow";
 					cerr << endl;
 				}
 			}

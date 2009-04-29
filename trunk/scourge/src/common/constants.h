@@ -679,7 +679,8 @@ public:
 	#define WEATHER_RAIN 0x01
 	#define WEATHER_THUNDER 0x02
 	#define WEATHER_FOG 0x04
-	#define MAX_WEATHER 0x08
+	#define WEATHER_SNOW 0x08
+	#define MAX_WEATHER 0x10
 
 	// Creature actions
 	enum {

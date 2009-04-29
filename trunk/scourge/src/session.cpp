@@ -24,6 +24,7 @@
 #include "test/combattest.h"
 #include "shapepalette.h"
 #include "render/cutscene.h"
+#include "render/weather.h"
 #include <iostream>
 #include <stdlib.h>
 //#include <strings.h>
@@ -59,6 +60,7 @@ Session::Session( GameAdapter *adapter )
 	map = NULL;
 	board = NULL;
 	cutscene = NULL;
+	weather = NULL;
 #ifdef HAVE_SDL_NET
 	server = NULL;
 	client = NULL;
@@ -92,6 +94,7 @@ Session::~Session() {
 		delete sound;
 		if ( board ) delete board;
 		if ( cutscene ) delete cutscene;
+		if ( weather ) delete weather;
 	#ifdef HAVE_SDL_NET
 		delete server;
 		delete client;
@@ -107,6 +110,7 @@ void Session::initialize() {
 	sound = new Sound( adapter->getPreferences() );
 	shapePal = new ShapePalette( this );
 	cutscene = new Cutscene( this );
+	weather = new Weather ( this );
 	adapter->setSession( this );
 	char* str = new char[100]; strcpy(str,"#1 no leaks before"); // a test leak
 	adapter->initVideo();
