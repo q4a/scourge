@@ -21,6 +21,7 @@
 #include "../shapepalette.h"
 #include "../sound.h"
 #include "../configlang.h"
+#include "../date.h"
 
 using namespace std;
 
@@ -550,9 +551,20 @@ void Weather::drawWeather() {
 /// Determines which type of weather the map will have.
 
 int Weather::generateWeather( int climate ) {
-	int weather;
+	int weather = WEATHER_CLEAR;
+
+	Date *date = new Date( session->getParty()->getCalendar()->getCurrentDate() );
+	int month = date->getMonth() - 1;
+	int hour = date->getHour();
+ 
+/*	if ( Util::roll( 0.0f, 1.0f ) < ( rainByMonths[month][climate] * rainByHours[hour][climate] ) ) weather = ( weather | WEATHER_RAIN );
+	if ( Util::roll( 0.0f, 1.0f ) < ( snowByMonths[month][climate] * snowByHours[hour][climate] ) ) weather = ( weather | WEATHER_SNOW );
+	if ( Util::roll( 0.0f, 1.0f ) < ( thunderByMonths[month][climate] * thunderByHours[hour][climate] ) ) weather = ( weather | WEATHER_THUNDER );
+	if ( Util::roll( 0.0f, 1.0f ) < ( fogByMonths[month][climate] * fogByHours[hour][climate] ) ) weather = ( weather | WEATHER_FOG );*/
 	weather = Util::pickOne( 1, MAX_WEATHER );
 
+//for( int i = 0; i < 12; i++) { cerr << rainByMonths[month][climate] << endl; } 
+//for( int i = 0; i < 24; i++) { cerr << rainByHours[hour][climate] << endl; } 
 	return weather;
 }
 
