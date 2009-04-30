@@ -35,6 +35,7 @@ Weather::Weather( Session *session ) {
 
 	int climateIndex;
 
+	// Load the climate specific weather patterns.
 	ConfigLang *config = ConfigLang::load( "config/climate.cfg" );
 
 	vector<ConfigNode*> *climates = config->getDocument()->getChildrenByName( "climate" );
@@ -240,6 +241,7 @@ Weather::Weather( Session *session ) {
 	}
 
 	delete config;
+
 }
 
 Weather::~Weather() {
@@ -248,9 +250,8 @@ Weather::~Weather() {
 #define WEATHER_ROLL_INTERVAL 24000
 #define WEATHER_ROLL_CHANCE 0.2f
 
-#define WEATHER_CHANGE_DURATION 6000
-
 #define MIN_RAIN_DROP_COUNT 50
+#define MIN_SNOW_FLAKE_COUNT 20
 #define MIN_CLOUD_COUNT 3
 
 /// Draws the weather effects.
@@ -258,6 +259,7 @@ Weather::~Weather() {
 void Weather::drawWeather() {
 
 #define RAIN_DROP_SPEED 1200
+#define SNOW_FLAKE_SPEED 180
 
 	// Draw weather effects only on outdoor maps, when not inside a house
 	bool shouldDrawWeather =  session->getMap()->isHeightMapEnabled() && !session->getMap()->getCurrentlyUnderRoof();
@@ -357,10 +359,52 @@ void Weather::drawWeather() {
 
 	glEnable( GL_TEXTURE_2D );
 
-	// Draw the rain drops
-	if ( shouldDrawWeather && rainIntensity ) {
+	// Draw the snowflakes
+	if ( shouldDrawWeather && snowIntensity ) {
 
-		deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
+		deltaX = static_cast<float>( now - lastWeatherUpdate )  / 1000;
+		deltaY = deltaX * static_cast<float>( SNOW_FLAKE_SPEED );
+
+		int snowFlakeCount = ( int )( SNOW_FLAKE_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) * snowIntensity );
+		if ( snowFlakeCount > SNOW_FLAKE_COUNT ) snowFlakeCount = SNOW_FLAKE_COUNT;
+		else if ( ( snowFlakeCount < MIN_SNOW_FLAKE_COUNT ) && !weatherChanging ) snowFlakeCount = MIN_SNOW_FLAKE_COUNT;
+
+		glPushMatrix();
+		session->getShapePalette()->getSnowFlakeTexture().glBind();
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
+		for ( int i = 0; i < snowFlakeCount; i++ ) {
+			glLoadIdentity();
+			glTranslatef( snowFlakeX[i], snowFlakeY[i], 0 );
+			glScalef( mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i] );
+//			glRotatef( 15, 0, 0, 1 );
+
+			glBegin( GL_TRIANGLE_STRIP );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( 0, 0 );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( SNOW_FLAKE_SIZE, 0 );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( 0, SNOW_FLAKE_SIZE );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( SNOW_FLAKE_SIZE, SNOW_FLAKE_SIZE );
+			glEnd();
+
+			snowFlakeY[i] += ( deltaY * snowFlakeZ[i] );
+			snowFlakeX[i] += ( deltaX * snowFlakeXSpeed[i] * snowFlakeZ[i] );
+
+			if ( ( snowFlakeX[i] < -SNOW_FLAKE_SIZE ) || ( snowFlakeX[i] > screenW ) || ( snowFlakeY[i] > screenH ) || ( snowFlakeY[i] < -screenH ) ) {
+				snowFlakeX[i] = Util::pickOne( -SNOW_FLAKE_SIZE, screenW );
+				// Start new drops somewhere above the screen.
+				// It prevents them sometimes aligning in horizontal "waves".
+				snowFlakeY[i] = -Util::pickOne( SNOW_FLAKE_SIZE, screenH );
+			}
+		}
+		glPopMatrix();
+	// Draw the rain drops (if no snow)
+	} else if ( shouldDrawWeather && rainIntensity ) {
+
+		deltaY = static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 );
 		deltaX = deltaY / 4;
 
 		int rainDropCount = ( int )( RAIN_DROP_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) * rainIntensity );
@@ -372,15 +416,15 @@ void Weather::drawWeather() {
 
 		for ( int i = 0; i < rainDropCount; i++ ) {
 			if ( lightningTime < 501 && ( currentWeather & WEATHER_THUNDER ) ) {
-				glColor4f( 1, 1, 1, rainDropZ[i] );
+				glColor4f( 1.0f, 1.0f, 1.0f, rainDropZ[i] );
 			} else {
 				//glColor4f( 0, 0.8f, 1, 0.5f );
-				glColor4f( 0, 0.5f, 0.7f, rainDropZ[i] );
+				glColor4f( 0.0f, 0.5f, 0.7f, rainDropZ[i] );
 			}
 			glLoadIdentity();
 			glTranslatef( rainDropX[i], rainDropY[i], 0 );
 			glScalef( mapZoom, mapZoom, mapZoom );
-			glRotatef( 15, 0, 0, 1 );
+			glRotatef( 15.0f, 0.0f, 0.0f, 1.0f );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -405,8 +449,6 @@ void Weather::drawWeather() {
 		}
 		glPopMatrix();
 	}
-
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// Draw the fog clouds
 	if ( shouldDrawWeather && fogIntensity ) {
@@ -453,7 +495,6 @@ void Weather::drawWeather() {
 
 	}
 
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_TEXTURE_2D );
 
 	// Draw the lightning
@@ -508,18 +549,22 @@ void Weather::drawWeather() {
 
 /// Determines which type of weather the map will have.
 
-int Weather::generateWeather() {
+int Weather::generateWeather( int climate ) {
 	int weather;
 	weather = Util::pickOne( 1, MAX_WEATHER );
 
 	return weather;
 }
 
+/// Starts a thunder.
+
 void Weather::thunder() {
 	thunderOnce = true;
 	lastLightning = SDL_GetTicks();
 	lastLightningRoll = 0;
 }
+
+/// Set up the raindrops array.
 
 void Weather::generateRain() {
 	for ( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
@@ -528,6 +573,19 @@ void Weather::generateRain() {
 		rainDropZ[i] = Util::roll( 0.25f, 1.0f );
 	}
 }
+
+/// Set up the snowflakes array.
+
+void Weather::generateSnow() {
+	for ( int i = 0; i < SNOW_FLAKE_COUNT; i++ ) {
+		snowFlakeX[i] = Util::pickOne( -SNOW_FLAKE_SIZE, session->getGameAdapter()->getScreenWidth() );
+		snowFlakeY[i] = Util::pickOne( -SNOW_FLAKE_SIZE, session->getGameAdapter()->getScreenHeight() );
+		snowFlakeZ[i] = Util::roll( 0.1f, 0.6f );
+		snowFlakeXSpeed[i] = Util::pickOne( -20.0f, 20.0f );
+	}
+}
+
+/// Set up the fog clouds array.
 
 void Weather::generateClouds() {
 	for ( int i = 0; i < CLOUD_COUNT; i++ ) {
@@ -538,15 +596,17 @@ void Weather::generateClouds() {
 	}
 }
 
+/// Initiates a fluid weather change.
+
 void Weather::changeWeather( int newWeather ) {
 	oldWeather = currentWeather;
 	currentWeather = newWeather;
 
 	lastWeatherChange = SDL_GetTicks();
 
-	if ( ( currentWeather & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) {
+	if ( ( currentWeather & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) && !( currentWeather & WEATHER_SNOW ) ) {
 		session->getSound()->startRain();
-	} else if ( ( oldWeather & WEATHER_RAIN ) && !( currentWeather & WEATHER_RAIN ) ) {
+	} else if ( ( oldWeather & WEATHER_RAIN ) && ( !( currentWeather & WEATHER_RAIN ) || ( currentWeather & WEATHER_SNOW ) ) ) {
 		session->getSound()->stopRain();
 	}
 	

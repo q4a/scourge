@@ -125,12 +125,14 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 
 #ifdef DEBUG_KEYS
 		if ( event->key.keysym.sym == SDLK_d ) {
-			//scourge->getParty()->getPlayer()->setPendingCauseOfDeath( "Testing" );
-			//scourge->getParty()->getPlayer()->takeDamage( 1000 );
-			//scourge->camp();
-			if ( !scourge->getSession()->getCutscene()->isInMovieMode() ) {
-				scourge->startMovieMode();
+			if ( SDL_GetModState() & KMOD_SHIFT ) {
+				scourge->getParty()->getCalendar()->addADay();
+			} else if ( SDL_GetModState() & KMOD_CTRL ) {
+				scourge->getParty()->getCalendar()->addAMonth();
+			} else {
+				scourge->getParty()->getCalendar()->addAnHour();
 			}
+
 			return false;
 		} else if ( event->key.keysym.sym == SDLK_l ) {
 			if ( scourge->getParty()->getPlayer()->getLevel() < MAX_LEVEL ) {
@@ -141,9 +143,6 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 			}
 			return false;
 		} else if ( event->key.keysym.sym == SDLK_e ) {
-			// add a day
-			//scourge->getSession()->getParty()->getCalendar()->addADay();
-			//scourge->getSession()->getMap()->toggleLightMap();
 			scourge->getBoard()->reset();
 			scourge->getBoard()->initMissions();
 		} else if ( event->key.keysym.sym == SDLK_f ) {
@@ -186,7 +185,7 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 				if ( w & WEATHER_RAIN ) scourge->getSession()->getSound()->stopRain();
 				w++;
 				if ( w == MAX_WEATHER ) w = WEATHER_CLEAR;
-				if ( w & WEATHER_RAIN ) scourge->getSession()->getSound()->startRain();
+				if ( ( w & WEATHER_RAIN ) && !( w & WEATHER_SNOW ) ) scourge->getSession()->getSound()->startRain();
 				scourge->getSession()->getWeather()->setWeather( w );
 				if ( w == WEATHER_CLEAR ) {
 					cerr << "Weather: clear" << endl;
