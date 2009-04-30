@@ -49,6 +49,12 @@ private:
 	float rainDropX[RAIN_DROP_COUNT];
 	float rainDropY[RAIN_DROP_COUNT];
 	float rainDropZ[RAIN_DROP_COUNT];
+#define SNOW_FLAKE_COUNT 120
+#define SNOW_FLAKE_SIZE 16
+	float snowFlakeX[SNOW_FLAKE_COUNT];
+	float snowFlakeY[SNOW_FLAKE_COUNT];
+	float snowFlakeZ[SNOW_FLAKE_COUNT];
+	float snowFlakeXSpeed[SNOW_FLAKE_COUNT];
 #define CLOUD_COUNT 15
 	float cloudX[CLOUD_COUNT];
 	float cloudY[CLOUD_COUNT];
@@ -67,17 +73,25 @@ public:
 	Weather( Session *session );
 	~Weather();
 
+	void drawWeather();
+
+	/// Initiate a fluid weather change.
 	void changeWeather( int newWeather );
+	/// Change weather instantly without a transition.
 	inline void setWeather( int i ) { currentWeather = i; }
+
 	inline int getOldWeather() { return oldWeather; }
 	inline int getCurrentWeather() { return currentWeather; }
+	/// Returns whether the weather is currently changing.
+	inline bool isWeatherChanging() { return ( ( SDL_GetTicks() - lastWeatherChange ) > WEATHER_CHANGE_DURATION ); }
 
 	void thunder();
 
-	int generateWeather();
+	/// Generate weather for the given climate zone.
+	int generateWeather( int climate = CLIMATE_TEMPERATE );
 	void generateRain();
+	void generateSnow();
 	void generateClouds();
-	void drawWeather();
 
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };

@@ -157,6 +157,7 @@ public:
 
 	Texture raindropTexture;
 	Texture fogCloudTexture;
+	Texture snowFlakeTexture;
 
 	inline Texture const& getGuiTexture() {
 		return gui_texture;
@@ -229,6 +230,10 @@ public:
 
 	inline Texture getFogCloudTexture() {
 		return fogCloudTexture;
+	}
+
+	inline Texture getSnowFlakeTexture() {
+		return snowFlakeTexture;
 	}
 
 	inline int getPortraitCount( int sex ) {

@@ -690,6 +690,8 @@ public:
 	#define CLIMATE_TROPICAL 4
 	#define CLIMATE_COUNT 5
 
+	#define WEATHER_CHANGE_DURATION 6000
+
 	// Creature actions
 	enum {
 		ACTION_NO_ACTION = -1,

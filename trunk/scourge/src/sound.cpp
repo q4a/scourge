@@ -620,7 +620,7 @@ void Sound::startRain() {
 		string s = soundNameMap["rain"];
 		if ( soundMap.find( s ) != soundMap.end() ) {
 			for ( int t = 0; t < 5; t++ ) {
-				if ( Mix_FadeInChannel( Constants::RAIN_CHANNEL, soundMap[s], -1, 6000 ) == Constants::RAIN_CHANNEL ) {
+				if ( Mix_FadeInChannel( Constants::RAIN_CHANNEL, soundMap[s], -1, WEATHER_CHANGE_DURATION ) == Constants::RAIN_CHANNEL ) {
 					Mix_SetPanning( Constants::RAIN_CHANNEL, 255 - panning, panning );
 					return;
 				}
@@ -633,7 +633,7 @@ void Sound::startRain() {
 void Sound::stopRain() {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
-		Mix_FadeOutChannel( Constants::RAIN_CHANNEL, 6000 );
+		Mix_FadeOutChannel( Constants::RAIN_CHANNEL, WEATHER_CHANGE_DURATION );
 	}
 #endif
 }

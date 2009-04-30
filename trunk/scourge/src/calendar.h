@@ -76,9 +76,17 @@ public:
 	inline Date getCurrentDate() {
 		return currentDate;
 	}
+	inline void addAnHour() {
+		currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour() + 1, currentDate.getDay(),
+		                     currentDate.getMonth(), currentDate.getYear() );
+	}
 	inline void addADay() {
 		currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour(), currentDate.getDay() + 1,
 		                     currentDate.getMonth(), currentDate.getYear() );
+	}
+	inline void addAMonth() {
+		currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour(), currentDate.getDay(),
+		                     currentDate.getMonth() + 1 , currentDate.getYear() );
 	}
 
 

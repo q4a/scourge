@@ -245,8 +245,8 @@ void Scourge::start() {
 	// Precalculate trigonometry
 	Constants::generateTrigTables();
 
-	// Set up the weather effects
 	getSession()->getWeather()->generateRain();
+	getSession()->getWeather()->generateSnow();
 	getSession()->getWeather()->generateClouds();
 
 //	cerr << "done in " << ( SDL_GetTicks() - now ) << " millis." << endl;
