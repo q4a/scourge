@@ -34,6 +34,24 @@ Weather::Weather( Session *session ) {
 	lastWeatherChange = 0;
 	thunderOnce = false;
 
+	for ( int m = 0; m < 12; m++ ) {
+		for ( int c = 0; c < CLIMATE_COUNT; c++ ) {
+			rainByMonths[ m ][ c ] = 0.0f;
+			snowByMonths[ m ][ c ] = 0.0f;
+			thunderByMonths[ m ][ c ] = 0.0f;
+			fogByMonths[ m ][ c ] = 0.0f;
+		}
+	}
+
+	for ( int h = 0; h < 24; h++ ) {
+		for ( int c = 0; c < CLIMATE_COUNT; c++ ) {
+			rainByHours[ h ][ c ] = 1.0f;
+			snowByHours[ h ][ c ] = 1.0f;
+			thunderByHours[ h ][ c ] = 1.0f;
+			fogByHours[ h ][ c ] = 1.0f;
+		}
+	}
+
 	int climateIndex;
 
 	// Load the climate specific weather patterns.
@@ -248,8 +266,8 @@ Weather::Weather( Session *session ) {
 Weather::~Weather() {
 }
 
-#define WEATHER_ROLL_INTERVAL 24000
-#define WEATHER_ROLL_CHANCE 0.2f
+#define WEATHER_ROLL_INTERVAL 8000
+#define WEATHER_ROLL_CHANCE 1.0f
 
 #define MIN_RAIN_DROP_COUNT 50
 #define MIN_SNOW_FLAKE_COUNT 20
@@ -291,6 +309,7 @@ void Weather::drawWeather() {
 		snowIntensity = currentWeather & WEATHER_SNOW ? 1.0f : 0.0f;
 		thunderIntensity = currentWeather & WEATHER_THUNDER ? 1.0f : 0.0f;
 		fogIntensity = currentWeather & WEATHER_FOG ? 1.0f : 0.0f;
+
 		if ( ( now - lastWeatherRoll ) > WEATHER_ROLL_INTERVAL ) {
 			if ( Util::roll( 0.0f, 1.0f ) <= WEATHER_ROLL_CHANCE ) changeWeather( generateWeather() );
 			lastWeatherRoll = now;
@@ -557,14 +576,12 @@ int Weather::generateWeather( int climate ) {
 	int month = date->getMonth() - 1;
 	int hour = date->getHour();
  
-/*	if ( Util::roll( 0.0f, 1.0f ) < ( rainByMonths[month][climate] * rainByHours[hour][climate] ) ) weather = ( weather | WEATHER_RAIN );
+	if ( Util::roll( 0.0f, 1.0f ) < ( rainByMonths[month][climate] * rainByHours[hour][climate] ) ) weather = ( weather | WEATHER_RAIN );
 	if ( Util::roll( 0.0f, 1.0f ) < ( snowByMonths[month][climate] * snowByHours[hour][climate] ) ) weather = ( weather | WEATHER_SNOW );
 	if ( Util::roll( 0.0f, 1.0f ) < ( thunderByMonths[month][climate] * thunderByHours[hour][climate] ) ) weather = ( weather | WEATHER_THUNDER );
-	if ( Util::roll( 0.0f, 1.0f ) < ( fogByMonths[month][climate] * fogByHours[hour][climate] ) ) weather = ( weather | WEATHER_FOG );*/
-	weather = Util::pickOne( 1, MAX_WEATHER );
+	if ( Util::roll( 0.0f, 1.0f ) < ( fogByMonths[month][climate] * fogByHours[hour][climate] ) ) weather = ( weather | WEATHER_FOG );
+	//DEBUG: weather = Util::pickOne( 1, MAX_WEATHER );
 
-//for( int i = 0; i < 12; i++) { cerr << rainByMonths[month][climate] << endl; } 
-//for( int i = 0; i < 24; i++) { cerr << rainByHours[hour][climate] << endl; } 
 	return weather;
 }
 
