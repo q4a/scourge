@@ -266,8 +266,8 @@ Weather::Weather( Session *session ) {
 Weather::~Weather() {
 }
 
-#define WEATHER_ROLL_INTERVAL 8000
-#define WEATHER_ROLL_CHANCE 1.0f
+#define WEATHER_ROLL_INTERVAL 24000
+#define WEATHER_ROLL_CHANCE 0.2f
 
 #define MIN_RAIN_DROP_COUNT 50
 #define MIN_SNOW_FLAKE_COUNT 20
@@ -556,6 +556,31 @@ void Weather::drawWeather() {
 		}
 		lastLightningRoll = now;
 	}
+
+
+	// Apply fake lighting depending on time of day.
+	
+//	Date *date = new Date( session->getParty()->getCalendar()->getCurrentDate() );
+//	int month = date->getMonth() - 1;
+//	int hour = date->getHour();
+//
+//	glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+//
+//	glPushMatrix();
+//	glLoadIdentity();
+//	glTranslatef( 0, 0, 0 );
+//	glColor4f( 0.0f, 0.0f, 1.0f, 0.4f );
+//
+//	glBegin( GL_TRIANGLE_STRIP );
+//	glVertex2i( 0, 0 );
+//	glVertex2i( screenW, 0 );
+//	glVertex2i( 0, screenH );
+//	glVertex2i( screenW, screenH );
+//	glEnd();
+//
+//	glPopMatrix();
+//
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	lastWeatherUpdate = now;
 
