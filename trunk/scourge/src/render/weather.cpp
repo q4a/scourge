@@ -560,27 +560,43 @@ void Weather::drawWeather() {
 
 	// Apply fake lighting depending on time of day.
 	
-//	Date *date = new Date( session->getParty()->getCalendar()->getCurrentDate() );
-//	int month = date->getMonth() - 1;
-//	int hour = date->getHour();
-//
-//	glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
-//
-//	glPushMatrix();
-//	glLoadIdentity();
-//	glTranslatef( 0, 0, 0 );
-//	glColor4f( 0.0f, 0.0f, 1.0f, 0.4f );
-//
-//	glBegin( GL_TRIANGLE_STRIP );
-//	glVertex2i( 0, 0 );
-//	glVertex2i( screenW, 0 );
-//	glVertex2i( 0, screenH );
-//	glVertex2i( screenW, screenH );
-//	glEnd();
-//
-//	glPopMatrix();
-//
-//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	if (shouldDrawWeather ) {
+		Date *date = new Date( session->getParty()->getCalendar()->getCurrentDate() );
+		int hour = date->getHour();
+		int seconds = ( date->getMin() * 60 ) + date->getSec();
+		float partOfOneHour = (float)seconds / 3600.0f;
+	
+		if ( ( hour < 5 ) || ( hour > 20 ) ) {
+			glColor4f( 0.0f, 0.0f, 1.0f, 0.6f );
+		} else if ( hour == 5 ) {
+			glColor4f( 0.0f, 0.0f, 1.0f - ( partOfOneHour * 0.5 ), 0.6f - ( partOfOneHour * 0.3f ) );
+		} else if ( hour == 6 ) {
+			glColor4f( 0.0f, 0.0f, 0.5f - ( partOfOneHour * 0.5f ), 0.3f - ( partOfOneHour * 0.3f ) );
+		} else if ( hour == 19 ) {
+			glColor4f( partOfOneHour, partOfOneHour * 0.2f, 0.0f, partOfOneHour * 0.2f );
+		} else if ( hour == 20 ) {
+			glColor4f( 1.0f - partOfOneHour, 0.2f - ( partOfOneHour * 0.2f ), partOfOneHour, 0.2f + ( partOfOneHour * 0.4f ) );
+		} else {
+			glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
+		}
+	
+		glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
+
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef( 0, 0, 0 );
+
+		glBegin( GL_TRIANGLE_STRIP );
+		glVertex2i( 0, 0 );
+		glVertex2i( screenW, 0 );
+		glVertex2i( 0, screenH );
+		glVertex2i( screenW, screenH );
+		glEnd();
+
+		glPopMatrix();
+
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	}
 
 	lastWeatherUpdate = now;
 
