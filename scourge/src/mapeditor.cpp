@@ -556,7 +556,7 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 				// todo: this should not be hard-coded (could come from map in dialog)
 				scourge->getMap()->setRegionX( 9 * REGIONS_PER_BITMAP + 2 );
 				scourge->getMap()->setRegionY( 5 * REGIONS_PER_BITMAP );
-				og->setRegion( 9 * REGIONS_PER_BITMAP + 2, 5 * REGIONS_PER_BITMAP );
+				og->setRegion( 10 * REGIONS_PER_BITMAP + 1, 5 * REGIONS_PER_BITMAP + 1 );
 				og->setMapPosition( 0, 0 );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				scourge->getMap()->getRender()->initOutdoorsGroundTexture();

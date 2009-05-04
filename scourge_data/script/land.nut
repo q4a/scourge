@@ -6,21 +6,111 @@ REGION_DEPTH <- ( 74 * 4 );
  * Return false to continue with the regular terrain generation.
  */
 function generate_land( region_x, region_y, offset_x, offset_y ) {
+	print( "Generate land at " + region_x.tostring() + "," + region_y.tostring() + 
+	       " offset=" + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
 	if( region_x == 38 && region_y == 20 ) {
-		horghh_q1( offset_x, offset_y );
+		drawVillage( offset_x + MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT, 15, 15 );
 		return true;
 	} else if( region_x == 37 && region_y == 18 ) {
 		//drawRandomHouse( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 		drawHouseTower( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
+	} else if( region_x == 40 && region_y == 21 ) {
+		drawHorghh_part1( offset_x + 6 * MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT );
+		return true;
+	} else if( region_x == 41 && region_y == 21 ) {
+		drawHorghh_part2( offset_x, offset_y + MAP_UNIT + MAP_UNIT );
+		return true;
 	}
 	return false;
 }
 
-VILLAGE_OFFSET <- MAP_UNIT
+//*************************************************************
+// Horggh
+//
+function drawHorghh_part1( x, y ) {
+	print( ">>> Drawing Horghh part 1 " + x.tostring() + "," + y.tostring() + "\n");
+	// one road goes thru Horghh
+	vx <- x + 7 * MAP_UNIT;
+	vy <- 0;
+	for( yy <- 0; yy <= 9; yy ++ ) {
+		vy = y + ( yy * MAP_UNIT );
+		if ( yy == 0 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_270, 0, false, false );
+		} else if ( yy >= 9  ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_90, 0, false, false );
+		} else if( yy == 3 || yy == 7 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS, 0, false, false );			
+		} else {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_90, 0, false, false );
+		}
+	}
+	vy = y + ( 3 * MAP_UNIT );
+	for( xx <- 4; xx <= 11; xx ++ ) {
+		vx = x + ( xx * MAP_UNIT );
+		if ( xx == 4 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+		} else if ( xx >= 11 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+		} else if ( xx != 7 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+		}
+	}
+	vy = y + ( 7 * MAP_UNIT );
+	for( xx <- 6; xx <= 11; xx ++ ) {
+		vx = x + ( xx * MAP_UNIT );
+		if ( xx == 6 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+		} else if ( xx != 7 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+		}
+	}
+	
+	// some houses
+	drawRandomHouse( x + 8 * MAP_UNIT, y );
+	drawRandomHouse( x + 8 * MAP_UNIT, y + 4 * MAP_UNIT );
+	drawInn( x + 4 * MAP_UNIT, y + 4 * MAP_UNIT );
+	//drawRandomHouse( x + 11 * MAP_UNIT, y + 8 * MAP_UNIT );
+	drawGarden( x + 4 * MAP_UNIT, y + 8 * MAP_UNIT );
+}
 
-function horghh_q1( offset_x, offset_y ) {
-	hx <- offset_x;
-	hy <- offset_y + MAP_UNIT;
-	print( "Generating city Q1 at: " + hx.tostring() + "," + hy.tostring() + "\n" );
-	drawVillage( hx + VILLAGE_OFFSET, hy + VILLAGE_OFFSET, 15, 15 );
+function drawHorghh_part2( x, y ) {
+	print( ">>> Drawing Horghh part 2 " + x.tostring() + "," + y.tostring() + "\n");
+	// one road goes thru Horghh
+	vx <- 0;
+	vy <- y + ( 7 * MAP_UNIT );
+	
+	drawHQ( x + 6 * MAP_UNIT, y + 5 * MAP_UNIT );
+	for( xx <- x + 3 * MAP_UNIT; xx < x + 12 * MAP_UNIT; xx++ ) {
+		for( i <- vy - 12; i < vy; i++ ) {
+			scourgeGame.getMission().setHeightMap( xx, i, 0 );	
+		}
+	}
+	
+	for( xx <- 0; xx <= 5; xx ++ ) {
+		vx = x + ( xx * MAP_UNIT );
+		if ( xx >= 5 ) {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+		} else {
+			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+		}
+	}
+	
+		
+}
+
+
+function drawHQ( x, y ) {
+	for( xx <- x + MAP_UNIT; xx < x + 5 * MAP_UNIT; xx++ ) {
+		for( yy <- y - 2 * MAP_UNIT; yy < y + 4 * MAP_UNIT; yy++ ) {
+			scourgeGame.getMission().setHeightMap( xx, yy, 0 );	
+		}
+	}
+	drawHouse2x2Corner( x - MAP_UNIT, y - MAP_UNIT, 90 )
+	drawHouse2x2Corner( x, y + 4 * MAP_UNIT, 180 )
+	drawHouse2x2Corner( x + 4 * MAP_UNIT, y - 2 * MAP_UNIT, 0 )
+	drawHouse2x2Corner( x + 5 * MAP_UNIT, y + 3 * MAP_UNIT, 270 )
+	drawHouse1x3Open( x, y + 2 * MAP_UNIT, 0 );
+	drawHouse1x3Open( x + 5 * MAP_UNIT, y + MAP_UNIT, 0 );
+	drawHouse1x3Open( x + MAP_UNIT, y - 2 * MAP_UNIT, 90 );
+	drawHouse1x3Open( x + 2 * MAP_UNIT, y + 3 * MAP_UNIT, 90 );
 }
