@@ -105,13 +105,13 @@ void Date::setDate( char *shortString ) {
 	this->sec = atoi( q );
 }
 
-/// Resets the date to 1128-01-01, midnight.
+/// Resets the date to 1200-03-01, 10:00
 
 void Date::reset( char *shortString ) {
 	if ( shortString && strlen( shortString ) ) {
 		setDate( shortString );
 	} else {
-		setDate( 0, 0, 0, 1, 1, 1128 );   // 01/01/1128, 00:00:00
+		setDate( 0, 0, 10, 1, 3, 1200 );
 	}
 }
 
