@@ -98,8 +98,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hasWater = false;
 
 	// start near Horghh
-	regionX = 9 * REGIONS_PER_BITMAP + 1;
-	regionY = 4 * REGIONS_PER_BITMAP + 3;
+	regionX = 10 * REGIONS_PER_BITMAP + 0;
+	regionY = 5 * REGIONS_PER_BITMAP + 1;
 	
 	startx = starty = 128;
 	cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
@@ -2417,15 +2417,16 @@ void Map::moveMap( int dir ) {
 		}
 
 		// cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
-
+		int newRegionX = regionX;
+		int newRegionY = regionY;				
 		bool reloadRegions = false;
 		float party_x = 0.0f;
 		float party_y = 0.0f;
 		if ( mapy > MAP_DEPTH - mapViewDepth ) {
 			party_y = -MAP_DEPTH / 2;
 			if( isPartyOnMap( party_x, party_y ) ) {
-				regionY++; 
-				if( regionY >= REGIONS_PER_COL ) regionY = 0; 
+				newRegionY = regionY + 1; 
+				if( newRegionY >= REGIONS_PER_COL ) newRegionY = 0; 
 				reloadRegions = true;
 				mapy -= MAP_DEPTH / 2;
 			} else {
@@ -2435,8 +2436,8 @@ void Map::moveMap( int dir ) {
 		if ( mapy < 0 ) {
 			party_y = MAP_DEPTH / 2;
 			if( isPartyOnMap( party_x, party_y ) ) {
-				regionY--;
-				if( regionY < 0 ) regionY = REGIONS_PER_COL - 1;
+				newRegionY = regionY - 1;
+				if( newRegionY < 0 ) newRegionY = REGIONS_PER_COL - 1;
 				reloadRegions = true;
 				mapy += MAP_DEPTH / 2;
 			} else {
@@ -2446,8 +2447,8 @@ void Map::moveMap( int dir ) {
 		if ( mapx > MAP_WIDTH - mapViewWidth ) {
 			party_x = -MAP_WIDTH / 2;
 			if( isPartyOnMap( party_x, party_y ) ) {
-				regionX++;
-				if( regionX >= REGIONS_PER_ROW ) regionX = 0;
+				newRegionX = regionX + 1;
+				if( newRegionX >= REGIONS_PER_ROW ) newRegionX = 0;
 				reloadRegions = true;
 				mapx -= MAP_WIDTH / 2;
 			} else {
@@ -2457,8 +2458,8 @@ void Map::moveMap( int dir ) {
 		if ( mapx < 0 ) {
 			party_x = MAP_WIDTH / 2;
 			if( isPartyOnMap( party_x, party_y ) ) {
-				regionX--;
-				if( regionX < 0 ) regionX = REGIONS_PER_ROW - 1;
+				newRegionX = regionX - 1;
+				if( newRegionX < 0 ) newRegionX = REGIONS_PER_ROW - 1;
 				reloadRegions = true;
 				mapx += MAP_WIDTH / 2;
 			} else {
@@ -2466,6 +2467,10 @@ void Map::moveMap( int dir ) {
 			}
 		}
 		if( reloadRegions ) {
+			//saveMapRegions();
+			
+			regionX = newRegionX;
+			regionY = newRegionY;
 			cerr << "switching to map region: " << regionX << "," << regionY << endl;
 			float old_zoom = zoom;
 			float old_xrot = xrot;

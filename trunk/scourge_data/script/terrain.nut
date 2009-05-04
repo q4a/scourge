@@ -422,7 +422,7 @@ function createTable( x, y ) {
 }
 
 function drawArmorShop( x, y ) {
-	print("Making armor shop!\n");
+	print("Making armor shop! " + x.tostring() + "," + y.tostring() + "\n");
 	drawHouseZ( x, y, false, null, null );
 	setPosition( x + 3, y + MAP_UNIT, 7, "SIGN_ARMOR", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_ARMOR_180", true );
@@ -449,7 +449,7 @@ function drawArmorShop( x, y ) {
 }
 
 function drawWeaponShop( x, y ) {
-	print("Making weapon shop!\n");
+	print("Making weapon shop! " + x.tostring() + "," + y.tostring() + "\n");
 	drawHouseL( x, y, false, null, null );
 	setPosition( x - 4, y + MAP_UNIT * 2 - 3, 7, "SIGN_WEAPON_90", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + 4, 7, "SIGN_WEAPON_180", true );
@@ -477,7 +477,7 @@ function drawWeaponShop( x, y ) {
 }
 
 function drawInn( x, y ) {
-	print("Making inn!\n");
+	print("Making inn! " + x.tostring() + "," + y.tostring() + "\n");
 	drawHouseSquare( x, y, false, null, null );
 	setPosition( x + 2, y - MAP_UNIT, 7, "SIGN_INN", true );
 	setPosition( x + MAP_UNIT * 2 + 12, y + MAP_UNIT * 2 + 4, 7, "SIGN_INN_180", true );
@@ -529,7 +529,7 @@ function drawInn( x, y ) {
 }
 
 function drawChurch( x, y ) {
-	print("Making church!\n");
+	print("Making church! " + x.tostring() + "," + y.tostring() + "\n");
 	drawHouseSquare( x, y, false, null, "church" );
 	for( i <- 1; i < 5; i++ ) {
 		scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT + 4, y + MAP_UNIT * 2 - ( i * 5 ), 0, false );
@@ -575,7 +575,7 @@ function drawFence( x, y ) {
 }
 
 function drawMarket( x, y ) {
-	print("Making market!\n");
+	print("Making market! " + x.tostring() + "," + y.tostring() + "\n");
 	drawFence( x, y );
 	
 	mx <- 0;
@@ -628,7 +628,7 @@ function drawMarket( x, y ) {
 }
 
 function drawGarden( x, y ) {
-	print("Making garden!\n");
+	print("Making garden! " + x.tostring() + "," + y.tostring() + "\n");
 	drawFence( x, y );
 	scourgeGame.getMission().addItem( "Bench", x + 4, y - MAP_UNIT + 3, 0, false );
 	scourgeGame.getMission().addItem( "Bench", x + MAP_UNIT * 2, y - MAP_UNIT + 3, 0, false );
@@ -939,7 +939,35 @@ function shapeAdded( shape_name, x, y, z ) {
  */
 function addVirtualShapes( shape_name ) {
 	scourgeGame.clearVirtualShapes( shape_name );
-	if( startsWith( shape_name, "P_BASE_2x2" ) ) {
+	if( startsWith( shape_name, "P_BASE_2x2_CORNER_270" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -30, 0, 7, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 13, -30, 0, 19, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -0, 0, 32, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -2, 0, 2, 28, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 3, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -11, 0, 2, 19, 12, false );
+	} else if( startsWith( shape_name, "P_BASE_2x2_CORNER_180" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -30, 0, 5, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 11, -30, 0, 21, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 32, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 28, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -2, 0, 2, 17, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -25, 0, 2, 5, 12, false );
+	} else if( startsWith( shape_name, "P_BASE_2x2_CORNER_90" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -30, 0, 32, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 0, -0, 0, 19, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 25, -0, 0, 7, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -2, 0, 2, 19, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -27, 0, 2, 3, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 28, 12, false );
+	} else if( startsWith( shape_name, "P_BASE_2x2_CORNER" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -30, 0, 32, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 21, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 27, 0, 0, 5, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 5, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -13, 0, 2, 17, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 30, -2, 0, 2, 28, 12, false );
+	} else if( startsWith( shape_name, "P_BASE_2x2" ) ) {
 		scourgeGame.addVirtualShape( shape_name, 0, -30, 0, 5, 2, 12, true );
 		scourgeGame.addVirtualShape( shape_name, 11, -30, 0, 21, 2, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 21, 2, 12, false );
@@ -965,7 +993,18 @@ function addVirtualShapes( shape_name ) {
 		scourgeGame.addVirtualShape( shape_name, 0, -14, 0, 5, 2, 12, true );
 		scourgeGame.addVirtualShape( shape_name, 11, -14, 0, 5, 2, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 16, 2, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 12, 12, false );		
+		scourgeGame.addVirtualShape( shape_name, 0, -2, 0, 2, 12, 12, false );	
+	} else if( startsWith( shape_name, "P_BASE_1x3_OPEN_90" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -14, 0, 37, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 43, -14, 0, 5, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 5, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 37, 2, 12, false );
+	} else if( startsWith( shape_name, "P_BASE_1x3_OPEN" ) ) {
+		scourgeGame.addVirtualShape( shape_name, 0, -46, 0, 2, 2, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 2, 5, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -11, 0, 2, 35, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 14, 0, 0, 2, 37, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 14, -43, 0, 2, 5, 12, false );		
 	} else if( startsWith( shape_name, "P_BASE_1x3" ) ) {
 		scourgeGame.addVirtualShape( shape_name, 0, -46, 0, 16, 2, 12, true );
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 16, 2, 12, false );
@@ -1015,6 +1054,67 @@ function addVirtualShapes( shape_name ) {
 		scourgeGame.addVirtualShape( shape_name, 4, 0, 0, 28, 2, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 2, -6, 0, 2, 8, 12, false );
 	}	
+}
+
+function drawHouse2x2Corner( x, y, angle ) {
+	postfix <- "";
+	roof_postfix <- "_RED";
+	scourgeGame.getMission().startHouse();
+	switch( angle ) {
+	case 0:
+		setPosition( x, y, 0, "P_BASE_2x2_CORNER" + postfix, true );
+		setPosition( x + 21, y - 1, 0, "NS_DOOR", true );
+		setPosition( x + 1, y - 7, 0, "EW_DOOR", true );
+		break;
+	case 90:
+		setPosition( x, y, 0, "P_BASE_2x2_CORNER_90" + postfix, true );
+		setPosition( x + 19, y - 1, 0, "NS_DOOR", true );
+		setPosition( x + 30, y - 21, 0, "EW_DOOR", true );
+		break;
+	case 180:
+		setPosition( x, y, 0, "P_BASE_2x2_CORNER_180" + postfix, true );
+		setPosition( x + 5, y - 30, 0, "NS_DOOR", true );
+		setPosition( x + 30, y - 19, 0, "EW_DOOR", true );
+		break;
+	case 270:
+		setPosition( x, y, 0, "P_BASE_2x2_CORNER_270" + postfix, true );
+		setPosition( x + 7, y - 30, 0, "NS_DOOR", true );
+		setPosition( x + 1, y - 5, 0, "EW_DOOR", true );
+		break;
+	}
+	scourgeGame.getMission().setMapFloorPosition( x,            y, "ROOM_FLOOR_TILE" );
+	scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y, "ROOM_FLOOR_TILE" );
+	scourgeGame.getMission().setMapFloorPosition( x,            y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+	scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+	setPosition( x - 2, y + 2, 12, "P_ROOF_2x2" + roof_postfix, true );
+	scourgeGame.getMission().endHouse();
+}
+
+function drawHouse1x3Open( x, y, angle ) {
+	postfix <- "";
+	roof_postfix <- "_RED";
+	scourgeGame.getMission().startHouse();
+	switch( angle ) {
+	case 0:
+		setPosition( x, y, 0, "P_BASE_1x3_OPEN" + postfix, true );
+		setPosition( x + 1, y - 5, 0, "EW_DOOR", true );
+		setPosition( x + 14, y - 37, 0, "EW_DOOR", true );
+		scourgeGame.getMission().setMapFloorPosition( x, y, "ROOM_FLOOR_TILE" );
+		scourgeGame.getMission().setMapFloorPosition( x, y - MAP_UNIT, "ROOM_FLOOR_TILE" );
+		scourgeGame.getMission().setMapFloorPosition( x, y - ( 2 * MAP_UNIT ), "ROOM_FLOOR_TILE" );		
+		//setPosition( x - 2, y + 2, 12, "P_ROOF_1x3" + roof_postfix, true );
+		break;
+	case 90:
+		setPosition( x, y, 0, "P_BASE_1x3_OPEN_90" + postfix, true );
+//		setPosition( x + 1, y - 5, 0, "EW_DOOR", true );
+//		setPosition( x + 14, y - 37, 0, "EW_DOOR", true );
+		scourgeGame.getMission().setMapFloorPosition( x, y, "ROOM_FLOOR_TILE" );
+		scourgeGame.getMission().setMapFloorPosition( x + MAP_UNIT, y, "ROOM_FLOOR_TILE" );
+		scourgeGame.getMission().setMapFloorPosition( x + 2 * MAP_UNIT, y, "ROOM_FLOOR_TILE" );		
+//		setPosition( x - 2, y + 2, 12, "P_ROOF_1x3" + roof_postfix, true );
+		break;
+	}
+	scourgeGame.getMission().endHouse();
 }
 
 /**
