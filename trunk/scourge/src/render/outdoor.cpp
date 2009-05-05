@@ -120,6 +120,9 @@ void Outdoor::drawMap() {
 		glEnable( GL_DEPTH_TEST );
 	}
 	
+	// draw water last so things like bridges show partially under-water
+	drawWaterLevel();
+	
 	// draw the fog of war or shading
 #ifndef DEBUG_OUTDOOR
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
@@ -300,7 +303,7 @@ void Outdoor::doRenderFloor() {
 			drawHeightMapFloor();
 		}
 
-		drawWaterLevel();
+		//drawWaterLevel();
 	}
 
 	map->setupShapes( true, false );
