@@ -921,3 +921,29 @@ function setPosition( x, y, z, shape, force ) {
 		return false;
 	}
 }
+
+function drawTrail( x_start, y_start, path ) {
+	tx <- x_start;
+	ty <- y_start;
+	ref <- OUTDOOR_THEME_REF_TRAIL_END;
+	angle <- 0;
+	for( i <- 0; i < path.len(); i++ ) {
+		if( path[i].slice(0, 1) == "e" ) {
+			ref = OUTDOOR_THEME_REF_TRAIL_END;
+		} else if( path[i].slice(0, 1) == "p" ) {
+			ref = OUTDOOR_THEME_REF_TRAIL;
+		} else if( path[i].slice(0, 1) == "t" ) {
+			ref = OUTDOOR_THEME_REF_TRAIL_TURN;
+		}
+		angle = path[i].slice(1).tointeger();
+		print( "ref=" + ref.tostring() + " angle=" + angle.tostring() + " " + tx.tostring() + "," + ty.tostring() + "\n" );
+		scourgeGame.getMission().addOutdoorTexture( tx, ty, ref, angle, false, false );
+		
+		// change direction: this is likely incorrect but works ok for now
+		if( angle == 0 || angle == 270 ) {
+			ty += 4;
+		} else if( angle == 90 || angle == 180 ) {
+			tx += 4;
+		}
+	}
+}
