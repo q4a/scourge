@@ -109,8 +109,45 @@ function drawHQ( x, y ) {
 	drawHouse2x2Corner( x, y + 4 * MAP_UNIT, 180 )
 	drawHouse2x2Corner( x + 4 * MAP_UNIT, y - 2 * MAP_UNIT, 0 )
 	drawHouse2x2Corner( x + 5 * MAP_UNIT, y + 3 * MAP_UNIT, 270 )
+	
 	drawHouse1x3Open( x, y + 2 * MAP_UNIT, 0 );
+	furnishArea( x, y + 2 * MAP_UNIT, 1, 3 );
 	drawHouse1x3Open( x + 5 * MAP_UNIT, y + MAP_UNIT, 0 );
+	furnishArea( x + 5 * MAP_UNIT, y + MAP_UNIT, 1, 3 );
 	drawHouse1x3Open( x + MAP_UNIT, y - 2 * MAP_UNIT, 90 );
+	furnishArea( x + MAP_UNIT, y - 2 * MAP_UNIT, 3, 1 );
 	drawHouse1x3Open( x + 2 * MAP_UNIT, y + 3 * MAP_UNIT, 90 );
+	furnishArea( x + 2 * MAP_UNIT, y + 3 * MAP_UNIT, 3, 1 );
+	
+	drawHousePart( "", "_RED",  x + MAP_UNIT, y, 2, 1, 180, true );
+	//drawHousePart( "", "_RED",  x + 2 * MAP_UNIT, y + MAP_UNIT, 1, 1, 270, true );
+	drawHousePart( "", "_RED",  x + 4 * MAP_UNIT, y + MAP_UNIT, 1, 1, 0, true );
+	//setPosition( x - MAP_UNIT, y + MAP_UNIT, 0, getTree(), false );
+	setPosition( x - MAP_UNIT + 3, y + MAP_UNIT - 12, 0, getTree(), false );
+	setPosition( x - 2 * MAP_UNIT, y - MAP_UNIT, 0, getTree(), false );
+	setPosition( x - 2 * MAP_UNIT + 5, y - MAP_UNIT - 12, 0, getTree(), false );
+	setPosition( x - MAP_UNIT, y + 4 * MAP_UNIT, 0, getTree(), false );
+	setPosition( x - MAP_UNIT + 4, y + 4 * MAP_UNIT - 14, 0, getTree(), false );
+	setPosition( x + MAP_UNIT + 9, y + 2 * MAP_UNIT - 8, 0, getTree(), false );
+	setPosition( x + MAP_UNIT + 25, y + 2 * MAP_UNIT - 17, 0, getTree(), true );
+	
+	setPosition( x + 4 * MAP_UNIT, y - MAP_UNIT, 0, "GATE_DOWN", false );
+	
+	// draw a path... there is got to be a simpler way of doing this...
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 4, y - MAP_UNIT - 12, OUTDOOR_THEME_REF_TRAIL_END, 0, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 4, y - MAP_UNIT - 8, OUTDOOR_THEME_REF_TRAIL, 0, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 4, y - MAP_UNIT - 4, OUTDOOR_THEME_REF_TRAIL_TURN, 90, false, false );
+	for( i <- 2; i < 9; i++ ) {
+		scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + i * 4, y - MAP_UNIT - 4, OUTDOOR_THEME_REF_TRAIL, 90, false, false );
+	}
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 9 * 4, y - MAP_UNIT - 4, OUTDOOR_THEME_REF_TRAIL_TURN, 270, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 9 * 4, y - MAP_UNIT, OUTDOOR_THEME_REF_TRAIL, 0, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 9 * 4, y - MAP_UNIT + 4, OUTDOOR_THEME_REF_TRAIL, 0, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 9 * 4, y - MAP_UNIT + 8, OUTDOOR_THEME_REF_TRAIL, 0, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 9 * 4, y - MAP_UNIT + 12, OUTDOOR_THEME_REF_TRAIL_TURN, 90, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 10 * 4, y - MAP_UNIT + 12, OUTDOOR_THEME_REF_TRAIL, 90, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 11 * 4, y - MAP_UNIT + 12, OUTDOOR_THEME_REF_TRAIL, 90, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 12 * 4, y - MAP_UNIT + 12, OUTDOOR_THEME_REF_TRAIL, 90, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 13 * 4, y - MAP_UNIT + 12, OUTDOOR_THEME_REF_TRAIL_TURN, 270, false, false );
+	scourgeGame.getMission().addOutdoorTexture( x + MAP_UNIT + 13 * 4, y - MAP_UNIT + 16, OUTDOOR_THEME_REF_TRAIL_END, 180, false, false );
 }

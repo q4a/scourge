@@ -734,7 +734,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		// show party
 		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
-				getParty()->getParty( r )->findPlaceBounded( 210, 190, 220, 200 );
+				getParty()->getParty( r )->findPlaceBounded( 435, 85, 460, 108 );
 			}		
 		}
 
