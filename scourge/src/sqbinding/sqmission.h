@@ -112,6 +112,8 @@ public:
 	static int _removeRug( HSQUIRRELVM vm ); 	
 	
 	static int _addOutdoorTexture( HSQUIRRELVM vm );
+
+	static int _mt_rand( HSQUIRRELVM vm );
 };
 
 #endif

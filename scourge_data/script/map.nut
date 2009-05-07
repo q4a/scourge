@@ -105,7 +105,7 @@ function decideAction( creature ) {
 			
 				// heal self via the conduit
 				scourgeGame.printMessage( _( "Karzul uses his infernal conduit and heals his wounds!" ) );
-				creature.setHp( creature.getHp() + ( rand() * 50.0 / RAND_MAX ).tointeger() );
+				creature.setHp( creature.getHp() + ( scourgeGame.getMission().mt_rand() * 50.0 ).tointeger() );
 				scourgeGame.getMission().setMapEffect( creature.getX(), creature.getY(), 3, // map location 
 				                                       "EFFECT_TELEPORT",  												// effect 
 				                                       4, 4, 																	// base size
@@ -226,17 +226,15 @@ function usePool( x, y, z ) {
     } else {
       helped = true;
       player.setHp( player.getHp() + 
-                    ( rand() * 
-                      ( 2.0 * player.getLevel().tofloat() ) / 
-                      RAND_MAX ).tointeger() + 1 );
+                    ( scourgeGame.getMission().mt_rand() * 
+                      ( 2.0 * player.getLevel().tofloat() ) ).tointeger() + 1 );
       scourgeGame.playSound("pool-helped");
       scourgeGame.printMessage( _( "...and fills your spirit with energy." ) );
     }
   } else if( oppositeDeity == playersDeity ) {
     scourgeGame.printMessage( format( _( "Your presence angers the mighty lord %s!" ), deity ) );
-    player.takeDamage( ( rand() * 
-                         ( 2.0 * player.getLevel().tofloat() ) / 
-                         RAND_MAX ) + 1.0 );
+    player.takeDamage( ( scourgeGame.getMission().mt_rand() * 
+                         ( 2.0 * player.getLevel().tofloat() ) ) + 1.0 );
     scourgeGame.playSound("pool-punished");
     scourgeGame.printMessage( _( "...the deity's wrath scours your flesh!" ) );
   } else {
@@ -273,9 +271,8 @@ function usePool( x, y, z ) {
     break;
     case 4: // Minirmuir, Divine Awareness
     player.setMp( player.getMp() + 
-                  ( rand() * 
-                    ( 2.0 * player.getLevel().tofloat() ) / 
-                    RAND_MAX ).tointeger() + 1 );
+                  ( scourgeGame.getMission().mt_rand() * 
+                    ( 2.0 * player.getLevel().tofloat() ) ).tointeger() + 1 );
     break;
     case 5: // Amod-Rheinur, nature
     player.setThirst( 10 );

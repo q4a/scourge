@@ -155,7 +155,7 @@ function drawEffects() {
 	y <- 0;
 	angle <- 0;
 	for( i = 0; i < 30; i++ ) {
-		angle = ( 360.0 * rand() / RAND_MAX.tofloat() );
+		angle = ( 360.0 * scourgeGame.getMission().mt_rand() );
 		x = 320 + 15.0 * cos( angle );
 		y = 444 + 15.0 * sin( angle );
 		scourgeGame.getMission().setMapEffect( x, y, 4, // map location 
