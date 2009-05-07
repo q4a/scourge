@@ -108,9 +108,8 @@ function actionNaturalHealing( creature ) {
   }
 
   // Heal some points
-  amount <- ( rand() * 
-              ( 5.0 * creature.getLevel().tofloat() ) / 
-              RAND_MAX ).tointeger();
+  amount <- ( scourgeGame.getMission().mt_rand() * 
+              ( 5.0 * creature.getLevel().tofloat() ) ).tointeger();
   if( creature.getHp() + amount > creature.getMaxHp() ) 
     amount = creature.getMaxHp() - creature.getHp();
   

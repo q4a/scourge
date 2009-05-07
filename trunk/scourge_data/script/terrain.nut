@@ -13,31 +13,31 @@ function getVillageNpcType() {
 	// in the future, there should be human towns, dwarven towns, etc.
 	npcs <- [ "Male Vagrant", "Male Traveling Wizard", "Male Knight", "Male Rogue", 
 	          "Female Hobo", "Female Bard", "Female Ranger", "Female Priestess" ];
-	c = ( rand() * npcs.len().tofloat() / RAND_MAX ).tointeger();
+	c = ( scourgeGame.getMission().mt_rand() * npcs.len().tofloat() ).tointeger();
 	return npcs[ c ];
 }
 
 trees <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21" ];
 function getTree() {
-	c <- ( rand() * trees.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * trees.len().tofloat() ).tointeger();
 	return trees[c];
 }
 
 carts <- [ "CART", "CART2" ];
 function getRandomCart() {
-	c <- ( rand() * carts.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * carts.len().tofloat() ).tointeger();
 	return carts[c];
 }
 
 merchant_types <- [ "ARMOR", "FOOD;DRINK", "SCROLL;POTION;WAND;RING;AMULET;STAFF", "SWORD;AXE;BOW;MACE;POLE" ];
 function getRandomMerchantType() {
-	c <- ( rand() * merchant_types.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * merchant_types.len().tofloat() ).tointeger();
 	return merchant_types[c];
 }
 
 magic_schools <- [ "Confrontation", "Ambush Trickery and Deceit", "History and Lore", "Life and Death", "Divine Awareness", "Nature" ];
 function getRandomMagicSchool() {
-	c <- ( rand() * magic_schools.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * magic_schools.len().tofloat() ).tointeger();
 	return magic_schools[c];
 }
 
@@ -50,8 +50,8 @@ function villageShapes() {
 	x <- 0;
 	y <- 0;
 	for( i = 0; i < 20; i++ ) {
-		x = villageX + ( rand() * villageWidth.tofloat() / RAND_MAX ).tointeger();
-		y = villageY + ( rand() * villageHeight.tofloat() / RAND_MAX ).tointeger();
+		x = villageX + ( scourgeGame.getMission().mt_rand() * villageWidth.tofloat() ).tointeger();
+		y = villageY + ( scourgeGame.getMission().mt_rand() * villageHeight.tofloat() ).tointeger();
 		tree <- getTree();
 		if( scourgeGame.getMission().isFreeOutdoors( x, y, 0, tree ) ) {
 			setPosition( x, y, 0, tree, false );
@@ -60,8 +60,8 @@ function villageShapes() {
 }
 
 function addRug( x, y, w, h ) {
-	rx <- ( x ) / MAP_UNIT + ( rand() * w.tofloat() / RAND_MAX ).tointeger();
-	ry <- ( y ) / MAP_UNIT - 1 - ( rand() * h.tofloat() / RAND_MAX ).tointeger();
+	rx <- ( x ) / MAP_UNIT + ( scourgeGame.getMission().mt_rand() * w.tofloat() ).tointeger();
+	ry <- ( y ) / MAP_UNIT - 1 - ( scourgeGame.getMission().mt_rand() * h.tofloat() ).tointeger();
 	scourgeGame.getMission().setRug( rx, ry );
 }
 
@@ -89,7 +89,7 @@ function addItemOnFloorAtWall( x, y, w, h, shape, item_name, shape_width, shape_
 		}
 	}
 	if( obj_pos.len() > 0 ) {
-		p <- ( rand() * obj_pos.len().tofloat() / RAND_MAX ).tointeger();
+		p <- ( scourgeGame.getMission().mt_rand() * obj_pos.len().tofloat() ).tointeger();
 		if( is_item ) {
 			scourgeGame.getMission().addItem( item_name, obj_pos[p][0], obj_pos[p][1], 0, is_container );
 		} else {
@@ -109,7 +109,7 @@ function addItemOnFloor( x, y, w, h, shape, item_name, shape_width, shape_height
 		}
 	}
 	if( obj_pos.len() > 0 ) {
-		p <- ( rand() * obj_pos.len().tofloat() / RAND_MAX ).tointeger();
+		p <- ( scourgeGame.getMission().mt_rand() * obj_pos.len().tofloat() ).tointeger();
 		if( is_item ) {
 			scourgeGame.getMission().addItem( item_name, obj_pos[p][0], obj_pos[p][1], 0, is_container );
 		} else {
@@ -153,7 +153,7 @@ function storage( x, y, w, h ) {
 
 room_functions <- [ bedroom, storage ];
 function furnishArea( x, y, w, h ) {
-	n <- ( rand() * room_functions.len().tofloat() / RAND_MAX ).tointeger();
+	n <- ( scourgeGame.getMission().mt_rand() * room_functions.len().tofloat() ).tointeger();
 	room_functions[ n ].call( this, x, y, w, h );
 }
 
@@ -244,14 +244,14 @@ function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, fu
 
 HOUSE_POSTFIX <- [ "", "_WOOD" ];
 function getHousePostfix() {
-	house_postfix <- HOUSE_POSTFIX[ ( rand() * HOUSE_POSTFIX.len().tofloat() / RAND_MAX ).tointeger() ];
+	house_postfix <- HOUSE_POSTFIX[ ( scourgeGame.getMission().mt_rand() * HOUSE_POSTFIX.len().tofloat() ).tointeger() ];
 	//print( "Using house type: " + house_postfix + "\n" );
 	return house_postfix;
 }
 
 ROOF_POSTFIX <- [ "", "_SLATE", "_RED" ];
 function getRoofPostfix() {
-	roof_postfix <- ROOF_POSTFIX[ ( rand() * ROOF_POSTFIX.len().tofloat() / RAND_MAX ).tointeger() ];
+	roof_postfix <- ROOF_POSTFIX[ ( scourgeGame.getMission().mt_rand() * ROOF_POSTFIX.len().tofloat() ).tointeger() ];
 	//print( "Using roof type: " + roof_postfix + "\n" );
 	return roof_postfix;
 }
@@ -389,25 +389,25 @@ function drawHouseSquare2( x, y, furnish, postfix, roof_postfix ) {
 
 house_functions <- [ drawHouseZ, drawHouseL, drawHouseL2, drawHouseSquare, drawHouseSquare2 ];
 function drawRandomHouse( x, y ) {
-	n <- ( rand() * house_functions.len().tofloat() / RAND_MAX ).tointeger();
+	n <- ( scourgeGame.getMission().mt_rand() * house_functions.len().tofloat() ).tointeger();
 	house_functions[ n ].call( this, x, y, true, null, null );
 }
 
 armor <- [ "Horned helmet", "Leather Work Gloves", "Adventuring Hat", "Wooden Shield" ];
 function getRandomArmorItem() {
-	c <- ( rand() * armor.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * armor.len().tofloat() ).tointeger();
 	return armor[c];
 }
 
 weapon <- [ "Kitchen Knife", "Dagger", "Ornamental officer sword", "Battleaxe", "Smallbow", "Rounded mace" ];
 function getRandomWeaponItem() {
-	c <- ( rand() * weapon.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * weapon.len().tofloat() ).tointeger();
 	return weapon[c];
 }
 
 inn <- [ "Beer barrel", "Wine barrel", "Fine wine bottle", "Wine bottle", "Milk", "Apple", "Bread", "Mutton meat", "Chalice" ];
 function getRandomInnItem() {
-	c <- ( rand() * inn.len().tofloat() / RAND_MAX ).tointeger();
+	c <- ( scourgeGame.getMission().mt_rand() * inn.len().tofloat() ).tointeger();
 	return inn[c];
 }
 
@@ -415,7 +415,7 @@ function createTable( x, y ) {
 	scourgeGame.getMission().addItem( "Table", x, y, 0, false );
 	xx <- mixHouseCoordinates( [ 0, 1, 2 ] );
 	yy <- mixHouseCoordinates( [ 0, 1, 2 ] );
-	n <- ( rand() * 2.0 / RAND_MAX ).tointeger() + 1;
+	n <- ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger() + 1;
 	for( tt <- 0; tt < n; tt++ ) {
 		scourgeGame.getMission().addItem( getRandomInnItem(), x + 1 + xx[tt], y - 1 - yy[tt], 3, false );
 	}
@@ -522,8 +522,8 @@ function drawInn( x, y ) {
 	}
 
 	for( i <- 0; i < 5; i++ ) {
-		scourgeGame.getMission().addCreatureAround( x + MAP_UNIT + 2 + ( rand() * (MAP_UNIT * 2.0 - 4.0) / RAND_MAX ).tointeger(),
-		                                            y + 2 + ( rand() * (MAP_UNIT * 2.0 - 4.0) / RAND_MAX ).tointeger(),
+		scourgeGame.getMission().addCreatureAround( x + MAP_UNIT + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
+		                                            y + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
 		                                            0, getVillageNpcType() );
 	}	
 }
@@ -580,30 +580,30 @@ function drawMarket( x, y ) {
 	
 	mx <- 0;
 	my <- 0;
-	for( mx = 4 + ( rand() * 2.0 / RAND_MAX ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+	for( mx = 4 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger() ) {
 		if( mx < MAP_UNIT + 4 || mx >= MAP_UNIT + 12 ) {
-			my = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			my = ( scourgeGame.getMission().mt_rand() * 4.0 ).tointeger();
 			setPosition( x + mx, y - MAP_UNIT + 8 + my, 0, getRandomCart(), false );
 		}
 	}
 	
-	for( mx = 4 + ( rand() * 2.0 / RAND_MAX ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+	for( mx = 4 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger(); mx < 3 * MAP_UNIT - 8; mx += 8 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger() ) {
 		if( mx < MAP_UNIT + 4 || mx >= MAP_UNIT + 12 ) {
-			my = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			my = ( scourgeGame.getMission().mt_rand() * 4.0 ).tointeger();
 			setPosition( x + mx, y + MAP_UNIT * 2 - ( 4 + my ), 0, getRandomCart(), false );
 		}
 	}
 	
-	for( my = -MAP_UNIT + 10 + ( rand() * 2.0 / RAND_MAX ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+	for( my = -MAP_UNIT + 10 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger() ) {
 		if( my < 4 || my > 12 ) {
-			mx = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			mx = ( scourgeGame.getMission().mt_rand() * 4.0 ).tointeger();
 			setPosition( x + 4 + mx, y + my, 0, getRandomCart() + "_90", false );
 		}
 	}
 	
-	for( my = -MAP_UNIT + 10 + ( rand() * 2.0 / RAND_MAX ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( rand() * 2.0 / RAND_MAX ).tointeger() ) {
+	for( my = -MAP_UNIT + 10 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger(); my < 2 * MAP_UNIT - 8; my += 8 + ( scourgeGame.getMission().mt_rand() * 2.0 ).tointeger() ) {
 		if( my < 4 || my > 12 ) {
-			mx = ( rand() * 4.0 / RAND_MAX ).tointeger();
+			mx = ( scourgeGame.getMission().mt_rand() * 4.0 ).tointeger();
 			setPosition( x + MAP_UNIT * 3 - ( 8 + mx ), y + my, 0, getRandomCart() + "_90", false );
 		}
 	}
@@ -616,8 +616,8 @@ function drawMarket( x, y ) {
 	// add merchants
 	merchant <- null;
 	for( i <- 0; i < 5; i++ ) {
-		merchant = scourgeGame.getMission().addCreatureAround( xp + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
-		                                                       yp - MAP_UNIT + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
+		merchant = scourgeGame.getMission().addCreatureAround( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
+		                                                       yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
 		                                                       0, getVillageNpcType() );
 		if( merchant != null ) {
 			merchant.setNpcInfo( _("the Traveling Merchant"), "merchant", getRandomMerchantType() );
@@ -745,8 +745,8 @@ function drawVillage( x, y, village_width, village_height ) {
 		
 		// add some peeps
 		for( i <- 0; i < 5; i++ ) {
-			scourgeGame.getMission().addCreatureAround( xp + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
-			                                            yp - MAP_UNIT + 5 + ( rand() * (MAP_UNIT * 3.0 - 10.0) / RAND_MAX ).tointeger(),
+			scourgeGame.getMission().addCreatureAround( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
+			                                            yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
 			                                            0, getVillageNpcType() );
 		}		
 	}	
@@ -756,7 +756,7 @@ function mixHouseCoordinates( pos ) {
   tmp <- 0;
   p <- 0;
   for( im <- 0; im < pos.len(); im++ ) {
-  	p = ( rand() * pos.len().tofloat() / RAND_MAX ).tointeger();
+  	p = ( scourgeGame.getMission().mt_rand() * pos.len().tofloat() ).tointeger();
   	tmp = pos[im];
   	pos[im] = pos[p];
   	pos[p] = tmp;
