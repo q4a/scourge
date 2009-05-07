@@ -677,11 +677,11 @@ function drawRoads( x, y, village_width, village_height ) {
 		for ( i <- 0; i < village_width; i++ ) {
 			vx = x + ( i * MAP_UNIT );
 			if ( i == 0 ) {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
 			} else if ( i >= village_width - 1 ) {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
 			} else {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
 			}
 		}
 	}
@@ -690,16 +690,21 @@ function drawRoads( x, y, village_width, village_height ) {
 		for ( i <- 1; i <= village_height; i++ ) {
 			vy = y + ( i * MAP_UNIT );
 			if ( i == 1 ) {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_270, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_270 );
 			} else if ( i % 4 == 0 ) {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS );
 			} else if ( i >= village_height  ) {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_90, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_90 );
 			} else {
-				scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_90, 0, false, false );
+				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_90 );
 			}
 		}
 	}		
+}
+
+function drawRoadTile( x, y, ref ) {
+	scourgeGame.getMission().flattenChunk( x, y - MAP_UNIT );
+	scourgeGame.getMission().addOutdoorTexture( x, y, ref, 0, false, false );
 }
 
 function drawVillage( x, y, village_width, village_height ) {
