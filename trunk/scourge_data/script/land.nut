@@ -35,33 +35,35 @@ function drawHorghh_part1( x, y ) {
 	for( yy <- 0; yy <= 9; yy ++ ) {
 		vy = y + ( yy * MAP_UNIT );
 		if ( yy == 0 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_270, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_270 );
 		} else if ( yy >= 9  ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_90, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_90 );
 		} else if( yy == 3 || yy == 7 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS, 0, false, false );			
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS );			
 		} else {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_90, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_90 );
 		}
 	}
 	vy = y + ( 3 * MAP_UNIT );
 	for( xx <- 4; xx <= 11; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx == 4 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
 		} else if ( xx >= 11 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
 		} else if ( xx != 7 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+
 		}
 	}
 	vy = y + ( 7 * MAP_UNIT );
 	for( xx <- 6; xx <= 11; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx == 6 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
 		} else if ( xx != 7 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+
 		}
 	}
 	
@@ -99,9 +101,9 @@ function drawHorghh_part2( x, y ) {
 	for( xx <- 0; xx <= 5; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx >= 5 ) {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET_END_180, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
 		} else {
-			scourgeGame.getMission().addOutdoorTexture( vx, vy, OUTDOOR_THEME_REF_STREET, 0, false, false );
+			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
 		}
 	}
 }
