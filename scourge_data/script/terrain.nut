@@ -703,7 +703,7 @@ function drawRoads( x, y, village_width, village_height ) {
 }
 
 function drawRoadTile( x, y, ref ) {
-	scourgeGame.getMission().flattenChunk( x, y - MAP_UNIT );
+	scourgeGame.getMission().flattenLandChunk( x, y - MAP_UNIT );
 	scourgeGame.getMission().addOutdoorTexture( x, y, ref, 0, false, false );
 }
 
