@@ -80,6 +80,7 @@ public:
 	static int _removeMapEffect( HSQUIRRELVM vm );
 	static int _removeMapPosition( HSQUIRRELVM vm );
 	static int _flattenChunk( HSQUIRRELVM vm );
+	static int _flattenLandChunk( HSQUIRRELVM vm );
 	static int _getShape( HSQUIRRELVM vm );
 
 	static int _getHeightMap( HSQUIRRELVM vm );
