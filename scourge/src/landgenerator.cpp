@@ -262,23 +262,31 @@ void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
 		r = (unsigned int)image[ i ]; g = (unsigned int)image[ i + 1 ]; b = (unsigned int)image[ i + 2 ];
 		color = ( r << 16 ) + ( g << 8 ) + b ;
 
-		switch( color ) {
-		case 0xff0000:
-			data[ i / BYTES_PER_PIXEL ] = 3;
+		int d = 0;
+		
+		// Check red byte (land elevation)
+		switch( r ) {
+		case 200:
+			d |= 0x08;
 			break;
-		case 0xff00ff:
-			data[ i / BYTES_PER_PIXEL ] = 2;
+		case 150:
+			d |= 0x04;
 			break;
-		case 0xffff00:
-			data[ i / BYTES_PER_PIXEL ] = 1;
+		case 100:
+			d |= 0x02;
 			break;
-		case 0x0000ff:
-			data[ i / BYTES_PER_PIXEL ] = -1;
+		case 50:
+			d |= 0x01;
 			break;
 		default:
-			data[ i / BYTES_PER_PIXEL ] = 0;
+			d |= 0x01;
 			break;
 		}
+	
+	// Black samples are always water.
+	if( !color ) d = 0x00;
+
+	data[ i / BYTES_PER_PIXEL ] = d;
 
 	}
 	//printData();

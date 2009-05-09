@@ -48,10 +48,10 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 			int dy = (int)( y * ( dh / (float)h ) );
 			int d = data[ dy * dw + dx ];
 			
-			node[x][y].elevated = ( d == 1 );
-			node[x][y].high = ( d == 2 );
-			node[x][y].wall = ( d == 3 );
-			node[x][y].water = ( d < 0 );
+			node[x][y].elevated = ( d & 0x02 );
+			node[x][y].high = ( d & 0x04 );
+			node[x][y].wall = ( d & 0x08 );
+			node[x][y].water = ( d == 0x00 );
 			node[x][y].island = false;
 			node[x][y].room = -1;
 		}
@@ -59,7 +59,7 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 	initialized = true;
 	phase = 1;
 	this->roomCounter = 0;
-	this->biggestRoom = 0;	
+	this->biggestRoom = 0;
 }
 
 void CellularAutomaton::generate( bool islandsEnabled,
