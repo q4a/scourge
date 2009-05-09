@@ -396,28 +396,34 @@ bool Util::StringCaseCompare( const std::string sStr1, const std::string sStr2 )
 
 // *** algorithms based on the Mersenne Twister random number generator ***
 
-#define MT_N 624L
-#define MT_M 397L
+#define MT_N 624UL
+#define MT_M 397UL
 
-static unsigned long mt_sequence[MT_N];
-static long mt_index = MT_N + 1;
+#define MT_HIBIT 0x80000000UL
+#define MT_LOBIT 0x00000001UL
+#define MT_LOBITS 0x7fffffffUL
+
+static Uint32 mt_state[MT_N];
+static Uint32 *mt_next;
+static Uint32 mt_left;
+
+static const float mt_tofloat = 1.0 / 4294967295.0;
 
 /// Starts the Mersenne Twister random number generator with a specified seed.
 
-void Util::mt_srand( unsigned long s ) {
-	mt_sequence[0] = s & 0xffffffffUL;
+void Util::mt_srand( Uint32 seed ) {
+	register Uint32 *s = mt_state;
+	register Uint32 *r = mt_state;
+	register int i = 1;
 
-	for ( mt_index = 1; mt_index < MT_N; mt_index++ ) {
-		mt_sequence[mt_index] = ( 1812433253UL * ( mt_sequence[mt_index - 1] ^ ( mt_sequence[mt_index - 1] >> 30 ) ) + mt_index );
-		mt_sequence[mt_index] &= 0xffffffffUL;
+	*s++ = seed & 0xffffffffUL;
+
+	for( ; i < MT_N; ++i )
+	{
+		*s++ = ( 1812433253UL * ( *r ^ (*r >> 30) ) + i ) & 0xffffffffUL;
+		r++;
 	}
 }
-
-#define MT_HI 0x80000000UL
-#define MT_LO 0x7fffffffUL
-
-static unsigned long mag[2] = { 0x0UL, 0x9908b0dfUL };
-static const float multiplier = 1.0 / 4294967296.0;
 
 /// Mersenne Twister random number generator.
 
@@ -425,44 +431,33 @@ static const float multiplier = 1.0 / 4294967296.0;
 /// Multiple times faster than rand() and has a period of (2^19937 - 1).
 
 float Util::mt_rand() {
-	register unsigned long y;
+	if( mt_left == 0 ) {
+		register Uint32 *p = mt_state;
+		register int i;
 
-	if ( mt_index >= MT_N ) {
-		register long k;
+		for( i = MT_N - MT_M; i--; ++p )
+			*p = p[MT_M] ^ ( ( ( p[0] & MT_HIBIT ) | ( p[1] & MT_LOBITS ) ) >> 1 ) ^ ( -( p[1] & MT_LOBIT ) & 0x9908b0dfUL );
 
-		// Seed the generator when not yet done.
-		if ( mt_index == MT_N + 1 ) mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
+		for( i = MT_M; --i; ++p )
+			*p = p[MT_M - MT_N] ^ ( ( ( p[0] & MT_HIBIT ) | ( p[1] & MT_LOBITS ) ) >> 1 ) ^ ( -( p[1] & MT_LOBIT ) & 0x9908b0dfUL );
 
-		for ( k = 0; k < MT_N - MT_M; ++k ) {
-			y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
-			mt_sequence[k] = mt_sequence[k + MT_M] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-		}
+		*p = p[MT_M - MT_N] ^ ( ( ( p[0] & MT_HIBIT ) | ( mt_state[0] & MT_LOBITS ) ) >> 1 ) ^ ( -( mt_state[0] & MT_LOBIT ) & 0x9908b0dfUL );
 
-		for ( ; k < MT_N - 1; ++k ) {
-			y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
-			mt_sequence[k] = mt_sequence[k + ( MT_M - MT_N )] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-		}
-
-		y = ( mt_sequence[MT_N - 1] & MT_HI ) | ( mt_sequence[0] & MT_LO );
-		mt_sequence[MT_N - 1] = mt_sequence[MT_M - 1] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-		mt_index = 0;
+		mt_left = MT_N;
+		mt_next = mt_state;
 	}
 
-	y = mt_sequence[mt_index++];
+	--mt_left;
+		
+	register Uint32 ret;
 
-	/* Tempering */
-	y ^= ( y >> 11 );
-	y ^= ( y << 7 ) & 0x9d2c5680UL;
-	y ^= ( y << 15 ) & 0xefc60000UL;
-	y ^= ( y >> 18 );
+	ret = *mt_next++;
+	ret ^= (ret >> 11);
+	ret ^= (ret <<  7) & 0x9d2c5680UL;
+	ret ^= (ret << 15) & 0xefc60000UL;
+	ret ^= (ret >> 18);
 
-	float ret = ( float )y * multiplier;
-	if ( ret < 0 || ret >= 1 ) {
-		cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << ". Correcting..." << endl;
-		// this happens occasianlly... fall back to rand()
-		ret = rand() / RAND_MAX;
-	}
-	return ret;
+	return ret * mt_tofloat;
 }
 
 /// Returns a random integer from 0 to size - 1.

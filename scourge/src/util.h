@@ -145,7 +145,7 @@ int pickOne( int min, int max ); // random integer from min to max
 
 float roll( float min, float max );  // random float from min to max
 
-void mt_srand( unsigned long s );
+void mt_srand( Uint32 seed );
 float mt_rand();
 
 }
