@@ -61,6 +61,7 @@ void GLShape::commonInit( Texture tex[], Uint32 color, Uint8 shapePalIndex ) {
 	this->iconWidth = this->iconHeight = 0;
 	this->ambient = "";
 	this->ignoreHeightMap = false;
+	this->notFlatten = false;
 	this->noFloor = false;
 
 	this->occurs.rooms_only = false;
