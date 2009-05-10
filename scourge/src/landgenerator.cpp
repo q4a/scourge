@@ -267,29 +267,70 @@ void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
 		// Check red byte (land elevation)
 		switch( r ) {
 		case 200:
-			d |= 0x08;
+			d |= TERRAIN_MOUNTAINS;
 			break;
 		case 150:
-			d |= 0x04;
+			d |= TERRAIN_HIGHLANDS;
 			break;
 		case 100:
-			d |= 0x02;
+			d |= TERRAIN_LOWLANDS;
 			break;
 		case 50:
-			d |= 0x01;
+			d |= TERRAIN_PLAINS;
 			break;
 		default:
-			d |= 0x01;
+			d |= TERRAIN_PLAINS;
 			break;
 		}
 	
+		// Check green byte (vegetation density)
+		switch( g ) {
+		case 200:
+			d |= VEGETATION_DEEPFOREST;
+			break;
+		case 150:
+			d |= VEGETATION_LIGHTFOREST;
+			break;
+		case 100:
+			d |= VEGETATION_GROVES;
+			break;
+		case 50:
+			d |= VEGETATION_BARREN;
+			break;
+		default:
+			d |= VEGETATION_GROVES;
+			break;
+		}
+
+		// Check blue byte (climate zone)
+		switch( b ) {
+		case 250:
+			d |= CLIMATE_TROPICAL;
+			break;
+		case 200:
+			d |= CLIMATE_SUBTROPICAL;
+			break;
+		case 150:
+			d |= CLIMATE_TEMPERATE;
+			break;
+		case 100:
+			d |= CLIMATE_BOREAL;
+			break;
+		case 50:
+			d |= CLIMATE_ALPINE;
+			break;
+		default:
+			d |= CLIMATE_TEMPERATE;
+			break;
+		}
+
 	// Black samples are always water.
-	if( !color ) d = 0x00;
+	if( !color ) d = TERRAIN_WATER;
 
 	data[ i / BYTES_PER_PIXEL ] = d;
 
 	}
-	//printData();
+
 	cellular->initialize( REGION_SIZE, REGION_SIZE, data );
 }
 

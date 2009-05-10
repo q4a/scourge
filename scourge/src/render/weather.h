@@ -88,7 +88,7 @@ public:
 	void thunder();
 
 	/// Generate weather for the given climate zone.
-	int generateWeather( int climate = CLIMATE_TEMPERATE );
+	int generateWeather( int climate = CLIMATE_INDEX_TEMPERATE );
 	void generateRain();
 	void generateSnow();
 	void generateClouds();

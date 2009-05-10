@@ -64,17 +64,17 @@ Weather::Weather( Session *session ) {
 		string id = node->getValueAsString( "id" );
 
 		if ( id == "boreal" ) {
-			climateIndex = CLIMATE_BOREAL;
+			climateIndex = CLIMATE_INDEX_BOREAL;
 		} else if ( id == "alpine" ) {
-			climateIndex = CLIMATE_ALPINE;
+			climateIndex = CLIMATE_INDEX_ALPINE;
 		} else if ( id == "temperate" ) {
-			climateIndex = CLIMATE_TEMPERATE;
+			climateIndex = CLIMATE_INDEX_TEMPERATE;
 		} else if ( id == "subtropical" ) {
-			climateIndex = CLIMATE_SUBTROPICAL;
+			climateIndex = CLIMATE_INDEX_SUBTROPICAL;
 		} else if ( id == "tropical" ) {
-			climateIndex = CLIMATE_TROPICAL;
+			climateIndex = CLIMATE_INDEX_TROPICAL;
 		} else {
-			climateIndex = CLIMATE_TEMPERATE;
+			climateIndex = CLIMATE_INDEX_TEMPERATE;
 		}
 
 		vector<ConfigNode*> *times = node->getChildrenByName( "rain" );
