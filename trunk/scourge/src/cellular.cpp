@@ -52,6 +52,33 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 			node[x][y].high = ( d & TERRAIN_HIGHLANDS );
 			node[x][y].wall = ( d & TERRAIN_MOUNTAINS );
 			node[x][y].water = ( d == TERRAIN_WATER );
+			
+			if ( d & VEGETATION_BARREN ) {
+				node[x][y].vegetation = VEGETATION_INDEX_BARREN;
+			} else if ( d & VEGETATION_GROVES ) {
+				node[x][y].vegetation = VEGETATION_INDEX_GROVES;
+			} else if ( d & VEGETATION_LIGHTFOREST ) {
+				node[x][y].vegetation = VEGETATION_INDEX_LIGHTFOREST;
+			} else if ( d & VEGETATION_DEEPFOREST ) {
+				node[x][y].vegetation = VEGETATION_INDEX_DEEPFOREST;
+			} else {
+				node[x][y].vegetation = VEGETATION_INDEX_GROVES;
+			}
+
+			if ( d & CLIMATE_BOREAL ) {
+				node[x][y].climate = CLIMATE_INDEX_BOREAL;
+			} else if ( d & CLIMATE_ALPINE ) {
+				node[x][y].climate = CLIMATE_INDEX_ALPINE;
+			} else if ( d & CLIMATE_TEMPERATE ) {
+				node[x][y].climate = CLIMATE_INDEX_TEMPERATE;
+			} else if ( d & CLIMATE_SUBTROPICAL ) {
+				node[x][y].climate = CLIMATE_INDEX_SUBTROPICAL;
+			} else if ( d & CLIMATE_TROPICAL ) {
+				node[x][y].climate = CLIMATE_INDEX_TROPICAL;
+			} else {
+				node[x][y].climate = CLIMATE_INDEX_TEMPERATE;
+			}
+
 			node[x][y].island = false;
 			node[x][y].room = -1;
 		}
