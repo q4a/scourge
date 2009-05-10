@@ -55,6 +55,7 @@ protected:
 	float alpha;
 	std::vector<GLShape*> virtualShapes;
 	bool ignoreHeightMap;
+	bool notFlatten;
 	bool noFloor;
 
 	Surface *surfaces[5];
@@ -125,6 +126,13 @@ public:
 	}
 	inline bool getIgnoreHeightMap() {
 		return this->ignoreHeightMap;
+	}
+	
+	inline void setNotFlatten( bool b ) {
+		this->notFlatten = b;
+	}
+	inline bool getNotFlatten() {
+		return this->notFlatten;
 	}
 
 public:

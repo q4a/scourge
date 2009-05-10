@@ -71,6 +71,7 @@ public:
 	int effectX, effectY, effectZ;
 	bool interactive;
 	bool ignoreHeightMap;
+	bool notFlatten;
 	float outdoorsWeight;
 	bool outdoorShadow;
 	bool wind;

@@ -234,7 +234,7 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
-	if( shape->getIgnoreHeightMap() ) SqBinding::sessionRef->getMap()->flattenChunk( x, y - MAP_UNIT ); 
+	if( shape->getIgnoreHeightMap() && !shape->getNotFlatten() ) SqBinding::sessionRef->getMap()->flattenChunk( x, y - MAP_UNIT ); 
 	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
 	return 0;
 }
