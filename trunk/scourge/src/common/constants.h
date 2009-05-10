@@ -682,15 +682,36 @@ public:
 	#define WEATHER_SNOW 0x08
 	#define MAX_WEATHER 0x10
 
-	// Climate zone indices
-	#define CLIMATE_BOREAL 0
-	#define CLIMATE_ALPINE 1
-	#define CLIMATE_TEMPERATE 2
-	#define CLIMATE_SUBTROPICAL 3
-	#define CLIMATE_TROPICAL 4
-	#define CLIMATE_COUNT 5
-
 	#define WEATHER_CHANGE_DURATION 6000
+
+	// Terrain elevations
+	#define TERRAIN_WATER 0x0000
+	#define TERRAIN_PLAINS 0x0001
+	#define TERRAIN_LOWLANDS 0x0002
+	#define TERRAIN_HIGHLANDS 0x0004
+	#define TERRAIN_MOUNTAINS 0x0008
+
+	// Vegetation densities
+	#define VEGETATION_BARREN 0x0010
+	#define VEGETATION_GROVES 0x0020
+	#define VEGETATION_LIGHTFOREST 0x0040
+	#define VEGETATION_DEEPFOREST 0x0080
+
+	// Climate zones
+	#define CLIMATE_BOREAL 0x0100
+	#define CLIMATE_ALPINE 0x0200
+	#define CLIMATE_TEMPERATE 0x0400
+	#define CLIMATE_SUBTROPICAL 0x0800
+	#define CLIMATE_TROPICAL 0x1000
+
+	// Climate zone indices
+	#define CLIMATE_INDEX_BOREAL 0
+	#define CLIMATE_INDEX_ALPINE 1
+	#define CLIMATE_INDEX_TEMPERATE 2
+	#define CLIMATE_INDEX_SUBTROPICAL 3
+	#define CLIMATE_INDEX_TROPICAL 4
+
+	#define CLIMATE_COUNT 5
 
 	// Creature actions
 	enum {

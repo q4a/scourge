@@ -48,10 +48,10 @@ void CellularAutomaton::initialize( int dw, int dh, int *data ) {
 			int dy = (int)( y * ( dh / (float)h ) );
 			int d = data[ dy * dw + dx ];
 			
-			node[x][y].elevated = ( d & 0x02 );
-			node[x][y].high = ( d & 0x04 );
-			node[x][y].wall = ( d & 0x08 );
-			node[x][y].water = ( d == 0x00 );
+			node[x][y].elevated = ( d & TERRAIN_LOWLANDS );
+			node[x][y].high = ( d & TERRAIN_HIGHLANDS );
+			node[x][y].wall = ( d & TERRAIN_MOUNTAINS );
+			node[x][y].water = ( d == TERRAIN_WATER );
 			node[x][y].island = false;
 			node[x][y].room = -1;
 		}
