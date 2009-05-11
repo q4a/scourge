@@ -24,7 +24,6 @@
 #include "render/maprenderhelper.h"
 #include "render/glshape.h"
 #include "render/virtualshape.h"
-#include "cellular.h"
 #include "sqbinding/sqbinding.h"
 #include "rpg/rpglib.h"
 #include "creature.h"

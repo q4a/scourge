@@ -22,6 +22,7 @@
 #include "../sound.h"
 #include "../configlang.h"
 #include "../date.h"
+#include "../creature.h"
 
 using namespace std;
 
@@ -311,7 +312,9 @@ void Weather::drawWeather() {
 		fogIntensity = currentWeather & WEATHER_FOG ? 1.0f : 0.0f;
 
 		if ( ( now - lastWeatherRoll ) > WEATHER_ROLL_INTERVAL ) {
-			if ( Util::roll( 0.0f, 1.0f ) <= WEATHER_ROLL_CHANCE ) changeWeather( generateWeather() );
+			Creature *player = session->getParty()->getPlayer();
+			// TODO: Make sure MAP_UNIT is the correct conversion factor
+			if ( Util::roll( 0.0f, 1.0f ) <= WEATHER_ROLL_CHANCE ) changeWeather( session->getTerrainGenerator()->getClimate( player->getX() / MAP_UNIT, player->getY() / MAP_UNIT ) );
 			lastWeatherRoll = now;
 		}
 	} else {

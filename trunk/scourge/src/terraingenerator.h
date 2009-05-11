@@ -121,6 +121,9 @@ public:
 
 	virtual void addRoom( int x, int y, int w, int h );
 
+	virtual int getVegetation( int x, int y ) = 0;
+	virtual int getClimate( int x, int y ) = 0;
+
 protected:
 
 	virtual inline const char *getGateDownShapeName() {

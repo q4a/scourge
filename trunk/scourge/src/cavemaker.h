@@ -58,6 +58,9 @@ public:
 		strcpy( s, "cave" );
 	}
 
+	inline int getVegetation( int x, int y ) { return VEGETATION_INDEX_GROVES; }
+	inline int getClimate( int x, int y ) { return CLIMATE_INDEX_TEMPERATE; }
+
 protected:
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 	virtual void generate( Map *map, ShapePalette *shapePal );
