@@ -58,6 +58,9 @@ public:
 		strcpy( s, "outdoor" );
 	}
 
+	inline int getVegetation( int x, int y ) { return VEGETATION_INDEX_GROVES; }
+	inline int getClimate( int x, int y ) { return CLIMATE_INDEX_TEMPERATE; }
+
 	void getPartyStartingLocation( int *xx, int *yy );
 	void addVillage( Map *map, ShapePalette *shapePal, int *x, int *y );
 	void addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape );

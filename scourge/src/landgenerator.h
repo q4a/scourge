@@ -23,6 +23,7 @@
 #include <map>
 #include <set>
 #include "terraingenerator.h"
+#include "cellular.h"
 
 class Map;
 class ShapePalette;
@@ -52,7 +53,10 @@ public:
 	inline void getName( char *s ) {
 		strcpy( s, "outdoor" );
 	}
-	
+
+	inline int getVegetation( int x, int y ) { return cellular->getNode( x, y )->vegetation; }
+	inline int getClimate( int x, int y ) { return cellular->getNode( x, y )->climate; }
+
 	inline void setRegion( int x, int y ) { regionX = x; regionY = y; }
 	inline int getRegionX() { return regionX; }
 	inline int getRegionY() { return regionY; }
