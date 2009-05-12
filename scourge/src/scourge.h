@@ -891,6 +891,15 @@ protected:
 	bool loadScoreid( const std::string& dirName, char *p );
 
 	void thunder();
+	
+	/**
+	 * Fill in the array with:
+	 * 0 - map region x
+	 * 1 - map region y
+	 * 2 - player x position in region
+	 * 3 - player y position in region
+	 */
+	void getMapRegionAndPos( int *mapPos ); 
 
 private:
 	TextScroller *descriptionScroller;
@@ -908,6 +917,8 @@ private:
 	bool info_dialog_showing;
 	Board *board;
 	int nextMission;
+	bool inLand;
+	char nextMissionName[300];
 	bool teleportFailure;
 	bool inHq;
 	bool missionWillAwardExpPoints;

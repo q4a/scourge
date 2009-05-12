@@ -24,6 +24,14 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 	return false;
 }
 
+/*
+ * Return the name of the map to load at this position in the land.
+ * If null is returned, a random map is generated.
+ */
+function descend_dungeon( region_x, region_y, offset_x, offset_y ) {
+	return null;
+}
+
 //*************************************************************
 // Horggh
 //

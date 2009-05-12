@@ -220,7 +220,7 @@ private:
 	
 	// world region coordinates
 	int regionX, regionY;
-	
+	bool continuousLandMode;
 
 public:
 	bool useFrustum;
@@ -237,7 +237,8 @@ public:
 	inline void setRegionX( int n ) { this->regionX = n; }
 	inline int getRegionY() { return regionY; }
 	inline void setRegionY( int n ) { this->regionY = n; }
-	
+	inline void setContinuousLandMode( bool b ) { this->continuousLandMode = b; }
+	inline bool getContinuousLandMode() { return this->continuousLandMode; }
 	
 	bool isOnFloorTile( int px, int py );
 
