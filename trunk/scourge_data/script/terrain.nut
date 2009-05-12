@@ -17,7 +17,7 @@ function getVillageNpcType() {
 	return npcs[ c ];
 }
 
-trees <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21" ];
+trees <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21", "birch", "bushtree", "cactus", "deadtree", "fern", "fir", "palm", "palm2" ];
 function getTree() {
 	c <- ( scourgeGame.getMission().mt_rand() * trees.len().tofloat() ).tointeger();
 	return trees[c];
