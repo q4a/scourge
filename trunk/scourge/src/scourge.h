@@ -918,6 +918,7 @@ private:
 	Board *board;
 	int nextMission;
 	bool inLand;
+	int landPos[4]; // region_x, region_y, offset_x, offset_y
 	char nextMissionName[300];
 	bool teleportFailure;
 	bool inHq;

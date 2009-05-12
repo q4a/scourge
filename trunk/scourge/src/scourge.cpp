@@ -140,6 +140,12 @@ Scourge::Scourge( UserConfiguration *config )
 	teleportFailure = false;
 	inLand = true;
 	strcpy( nextMissionName, "" );
+	
+	// start in the garden of HQ
+	landPos[0] = 10 * REGIONS_PER_BITMAP + 1;
+	landPos[1] = 5 * REGIONS_PER_BITMAP + 1;
+	landPos[2] = 160;
+	landPos[3] = 100;
 
 	// in HQ map
 	inHq = true;
@@ -707,17 +713,24 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	
 	// overland
 	if( inLand ) {
+		cerr << "ON LAND: putting party at region " << landPos[0] << "," << landPos[1] << " offset:" << landPos[2] << "," << landPos[3] << endl;
+		
+		getSession()->setCurrentMission( NULL );
+		
 		getMap()->setContinuousLandMode( true );
+		getMap()->setRegionX( landPos[0] );
+		getMap()->setRegionY( landPos[1] );
 		loadOrGenerateLargeMap();
 
 		// show party
-		// fixme: only the first time
 		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
-				getParty()->getParty( r )->findPlaceBounded( 435, 85, 460, 108 );
+				getParty()->getParty( r )->findPlaceBounded( landPos[2] - 10, landPos[3] - 10, 
+				                                             landPos[2] + 10, landPos[2] + 10 );
 			}		
 		}
 	} else {
+		cerr << "UNDERGROUND" << endl;
 		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
 		// hq is also a mission (with no objectives)
 		getMap()->setContinuousLandMode( false );
@@ -730,6 +743,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		int mapPos[4];
 		getMapRegionAndPos( mapPos );		
 		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
+		cerr << "Party on mission: " << getSession()->getCurrentMission()->getMapRegionX() << "," << getSession()->getCurrentMission()->getMapRegionY() << 
+			"," << getSession()->getCurrentMission()->getMapOffsetX() << "," << getSession()->getCurrentMission()->getMapOffsetY() << 
+			" " << getSession()->getCurrentMission()->getName() << endl;
 		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
 
 		// try to load a previously saved, random-generated map level
@@ -3665,6 +3681,7 @@ void Scourge::getMapRegionAndPos( int *mapPos ) {
 }
 
 void Scourge::descendDungeon( Location *pos ) {
+	if( inLand ) getMapRegionAndPos( landPos );
 	inLand = false;
 	
 	strcpy( nextMissionName, "" );
@@ -3700,6 +3717,7 @@ void Scourge::ascendToSurface( Location *pos ) {
 	                                                          toint( session->getParty()->getPlayer()->getY() ), 
 	                                                          toint( session->getParty()->getPlayer()->getZ() ) ) : 
 	                                                          	pos );
+	inLand = 0;
 }
 
 void Scourge::showTextMessage( char *message ) {
