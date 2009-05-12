@@ -100,6 +100,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	// start near Horghh
 	regionX = 10 * REGIONS_PER_BITMAP + 0;
 	regionY = 5 * REGIONS_PER_BITMAP + 1;
+	continuousLandMode = true;
 	
 	startx = starty = 128;
 	cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
@@ -290,6 +291,11 @@ void Map::reset() {
 		mapViewWidth = MVW;
 		mapViewDepth = MVD;
 	}
+	
+	// start near Horghh
+	regionX = 10 * REGIONS_PER_BITMAP + 0;
+	regionY = 5 * REGIONS_PER_BITMAP + 1;
+	continuousLandMode = true;
 
 	creatureMap.clear();
 	creatureEffectMap.clear();
@@ -2498,7 +2504,7 @@ void Map::moveMap( int dir ) {
 }
 
 bool Map::isPartyOnMap( float dx, float dy ) {
-	if( inMapEditor() ) return false;
+	if( inMapEditor() || !continuousLandMode ) return false;
 	
 	float px, py;
 	for ( int t = 0; t < adapter->getPartySize(); t++ ) {

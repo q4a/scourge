@@ -138,6 +138,8 @@ Scourge::Scourge( UserConfiguration *config )
 	movingItem = NULL;
 	nextMission = -1;
 	teleportFailure = false;
+	inLand = true;
+	strcpy( nextMissionName, "" );
 
 	// in HQ map
 	inHq = true;
@@ -701,6 +703,78 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 
 bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	Mission::clearConversations();
+	bool mapCreated = true;
+	
+	// overland
+	if( inLand ) {
+		getMap()->setContinuousLandMode( true );
+		loadOrGenerateLargeMap();
+
+		// show party
+		// fixme: only the first time
+		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+				getParty()->getParty( r )->findPlaceBounded( 435, 85, 460, 108 );
+			}		
+		}
+	} else {
+		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
+		// hq is also a mission (with no objectives)
+		getMap()->setContinuousLandMode( false );
+		
+		TerrainGenerator *dg = NULL;
+		// NOT in HQ map
+		inHq = false;
+		
+		// find or load the next mission
+		int mapPos[4];
+		getMapRegionAndPos( mapPos );		
+		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
+		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
+
+		// try to load a previously saved, random-generated map level
+		string empty( "" );
+		string path = getCurrentMapName( empty );
+		bool loaded = loadMap( path, fromRandomMap, true,
+		                       ( getSession()->getCurrentMission()->isEdited() ?
+		                         getSession()->getCurrentMission()->getMapName() :
+		                         NULL ) );
+
+		if ( !loaded && getSession()->getCurrentMission()->isEdited() ) {
+			// try to load the edited map
+			loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
+			                  fromRandomMap,
+			                  false );
+		}
+
+		// if no edited map is found, make a random map
+		if ( !loaded ) {
+			dg = TerrainGenerator::getGenerator( this, currentStory );
+			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
+			                        goingUp, goingDown );
+			// load the generic conversation
+			string s = rootDir + "/maps/general.map";
+			Mission::loadMapData( this, s );
+		}
+		
+		// fixme: only if mission def says so...
+		// addWanderingHeroes();
+		
+		// delete map
+		delete dg;
+		dg = NULL;
+	}
+	
+	return mapCreated;
+	
+
+	
+	
+	
+	
+	
+	
+	/*
 
 	bool mapCreated = true;
 	TerrainGenerator *dg = NULL;
@@ -728,17 +802,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		getSession()->setCurrentMission( NULL );
 		missionWillAwardExpPoints = false;
 
-#ifdef USE_LARGE_MAP
-		loadOrGenerateLargeMap();
-
-		// show party
-		for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
-			if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
-				getParty()->getParty( r )->findPlaceBounded( 435, 85, 460, 108 );
-			}		
-		}
-
-#else
 		// FIXME: HQ is not loaded b/c there's no currentMission() (fails in loadMap)
 		// try to load a previously saved, random-generated map level
 		// On the other hand, you want HQ "restocked" with npc-s and items so maybe it doesn't
@@ -751,7 +814,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		string result;
 		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );		
 		addWanderingHeroes();
-#endif
 	} else {
 		// NOT in HQ map
 		inHq = false;
@@ -791,6 +853,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	dg = NULL;
 
 	return mapCreated;
+	*/
 }
 
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
@@ -3586,7 +3649,29 @@ void Scourge::handleDismiss( int index ) {
 	dismissHeroDialog->setVisible( true );
 }
 
+void Scourge::getMapRegionAndPos( int *mapPos ) {
+	mapPos[0] = getMap()->getRegionX();
+	mapPos[1] = getMap()->getRegionY();
+	mapPos[2] = toint( getParty()->getPlayer()->getX() );
+	mapPos[3] = toint( getParty()->getPlayer()->getY() );
+	if( mapPos[2] > MAP_WIDTH / 2 ) {
+		mapPos[0]++;
+		mapPos[2] -= MAP_WIDTH / 2;
+	}
+	if( mapPos[3] > MAP_DEPTH / 2 ) {
+		mapPos[1]++;
+		mapPos[3] -= MAP_WIDTH / 2;
+	}
+}
+
 void Scourge::descendDungeon( Location *pos ) {
+	inLand = false;
+	
+	strcpy( nextMissionName, "" );
+	int mapPos[4];
+	getMapRegionAndPos( mapPos );
+	getSession()->getSquirrel()->callIntArgStringReturnMethod( "descend_dungeon", nextMissionName, 4, mapPos );
+	
 	oldStory = currentStory;
 	currentStory++;
 	changingStory = true;
@@ -3598,6 +3683,7 @@ void Scourge::descendDungeon( Location *pos ) {
 void Scourge::ascendDungeon( Location *pos ) {
 	oldStory = currentStory;
 	currentStory--;
+	inLand = currentStory <= 0;
 	changingStory = true;
 	goingDown = false;
 	goingUp = true;

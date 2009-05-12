@@ -115,6 +115,7 @@ private:
 	int missionId;
 	int locationX, locationY;
 	std::string ambientSoundName;
+	int regionX, regionY, offsetX, offsetY;
 
 	static std::vector<std::string> intros;
 	static std::vector<std::string> unknownPhrases;
@@ -159,6 +160,15 @@ public:
 	         char *success, char *failure,
 	         char *mapName, char mapType = 'C' );
 	~Mission();
+	
+	inline void setMapPos( int *mapPos ) { regionX = mapPos[0]; regionY = mapPos[1]; offsetX = mapPos[2]; offsetY = mapPos[3]; }
+	inline int getMapRegionX() { return regionX; }
+	inline int getMapRegionY() { return regionY; }
+	inline int getMapOffsetX() { return offsetX; }
+	inline int getMapOffsetY() { return offsetY; }
+	inline bool compareMapPos( int *mapPos ) { 
+		return regionX == mapPos[0] && regionY == mapPos[1] && offsetX == mapPos[2] && offsetY == mapPos[3];
+	}
 
 	inline int getLocationX() {
 		return locationX;
@@ -427,6 +437,7 @@ public:
 		return session;
 	}
 
+	Mission *findOrCreateMission( int *mapPos, char *nextMissionName );
 	void initMissions();
 	void reset();
 

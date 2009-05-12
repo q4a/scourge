@@ -216,159 +216,213 @@ void Board::removeCompletedMissionsAndItems() {
 	}
 }
 
+Mission *Board::findOrCreateMission( int *mapPos, char *nextMissionName ) {
+	for( unsigned int i = 0; i < availableMissions.size(); i++ ) {
+		if( availableMissions[i]->compareMapPos( mapPos ) ) {
+			return availableMissions[i];
+		}
+	}
+	
+	// look for a named mission
+	Mission *mission = NULL;
+	if( nextMissionName && strlen( nextMissionName ) ) {
+		for( unsigned int i = 0; i < storylineMissions.size(); i++ ) {
+			if( !strcmp( storylineMissions[i]->getName(), nextMissionName ) ) {
+				mission = storylineMissions[i];
+				break;
+			}
+		}
+	}
+	
+	if( !mission ) {
+		// generate a random mission
+		
+		// find the highest and lowest levels in the party
+		int highest = 0;
+		int lowest = -1;
+		int sum = 0;
+		for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+			int n = session->getParty()->getParty( i )->getLevel();
+			if ( n < 1 ) n = 1;
+			if ( highest < n ) {
+				highest = n;
+			} else if ( lowest == -1 || lowest > n ) {
+				lowest = n;
+			}
+			sum += n;
+		}
+		float ave = ( sum == 0 ? 1 : ( static_cast<float>( sum ) / static_cast<float>( session->getParty()->getPartySize() ) / 1.0f ) );
+	
+		int level = static_cast<int>( Util::roll( ave, ave + 4.0f ) ) - 2;
+		if ( level < 1 ) level = 1;
+		int depth =  static_cast<int>( static_cast<float>( level ) / static_cast<float>( MAX_MISSION_DEPTH - 3 ) ) + 1 + Util::dice( 3 );
+		if ( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
+		if ( depth < 1 ) depth = 1;
+		int templateIndex = Util::dice( templates.size() );
+	
+		// Create a new mission.
+		mission = templates[ templateIndex ]->createMission( session, level, depth );
+	}
+	
+	// remember this mission (by map coordinates)
+	mission->setMapPos( mapPos );
+	availableMissions.push_back( mission );
+	return mission;
+}
+
 /// Creates a set of missions.
 
 /// The set contains the current storyline mission and a selection
 /// of random missions that are suited to the party's level.
 
 void Board::initMissions() {
-	// free ui
-	freeListText();
-
-	// find the highest and lowest levels in the party
-	int highest = 0;
-	int lowest = -1;
-	int sum = 0;
-	for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-		int n = session->getParty()->getParty( i )->getLevel();
-		if ( n < 1 ) n = 1;
-		if ( highest < n ) {
-			highest = n;
-		} else if ( lowest == -1 || lowest > n ) {
-			lowest = n;
-		}
-		sum += n;
-	}
-	float ave = ( sum == 0 ? 1 : ( static_cast<float>( sum ) / static_cast<float>( session->getParty()->getPartySize() ) / 1.0f ) );
-
-	// remove the storyline missions
-	// remove missions whose level is too low
-	for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
-		Mission *mission = availableMissions[ i ];
-		if ( mission->isStoryLine() ) {
-			// move the last element over the current storyline element
-			availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
-			availableMissions.pop_back();
-			// re-examine the current element
-			i--;
-		}
-	}
-
-	// maintain a set of missions
-	for ( int counter = 0; availableMissions.size() < 8 && counter < 8; counter++ ) {
-		int level;
-		if ( counter % 2 == 0 ) {
-			// allow for low level mission
-			level = static_cast<int>( Util::roll( 0.0f, ave + 2 ) );
-		} else {
-			// allow for current level missions
-			level = static_cast<int>( Util::roll( ave, ave + 4.0f ) ) - 2;
-		}
-		if ( level < 1 ) level = 1;
-		int depth =  static_cast<int>( static_cast<float>( level ) / static_cast<float>( MAX_MISSION_DEPTH - 3 ) ) + 1 + Util::dice( 3 );
-		if ( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
-		int templateIndex = Util::dice( templates.size() );
-
-		// only outdoor maps can be 1 depth
-		if ( depth == 1 && tolower( templates[ templateIndex ]->getMapType() ) != 'o' ) {
-			depth++;
-		}
-		// Create a new mission but only keep it if there isn't another mission with this name already.
-		// This is because missions are 'found' on load via name, so names have to be unique.
-		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
-		bool found = false;
-		for ( unsigned int i = 0; i < availableMissions.size(); i++ ) {
-			if ( !strcmp( mission->getName(), availableMissions[i]->getName() ) ) {
-				found = true;
-				break;
-			}
-		}
-		if ( !found ) {
-			availableMissions.push_back( mission );
-		}
-	}
-
-
-	// add the current storyline mission at the top of the board
-	if ( storylineIndex >= 0 && storylineIndex < static_cast<int>( storylineMissions.size() ) ) {
-		availableMissions.insert( availableMissions.begin(), storylineMissions[ storylineIndex ] );
-	}
-
-	// append replayable maps at the bottom of the board
-	for ( int i = 0; i < storylineIndex; i++ ) {
-		if ( storylineMissions[ i ]->isReplayable() ) {
-			availableMissions.insert( availableMissions.end(), storylineMissions[ i ] );
-			availableMissions[ availableMissions.size() -1 ]->setDisplayName( storylineMissions[i]->getReplayDisplayName() ) ;
-			availableMissions[ availableMissions.size() -1 ]->setDescription( storylineMissions[i]->getReplayDescription() ) ;
-			availableMissions[ availableMissions.size() -1 ]->setChapter( -1 );
-		}
-	}
-
-
-
-#ifdef DEBUG_MODE
-	// debug missions
-	for ( int i = 1; i <= highest; i++ ) {
-		int templateIndex = Util::dice(  templates.size() );
-		Mission *mission = templates[ templateIndex ]->createMission( session, i, 1 );
-		availableMissions.push_back( mission );
-	}
-#endif
-
-	// init ui
-	if ( !availableMissions.empty() ) {
-		missionListCount = availableMissions.size();
-		missionText = new string[availableMissions.size()];
-		missionColor = new Color[availableMissions.size()];
-		for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
-			char str[20];
-			snprintf( str, 20, _( "L:%d, " ), availableMissions[i]->getLevel() );
-			missionText[i] = str;
-			snprintf( str, 20, _( "S:%d, " ), availableMissions[i]->getDepth() );
-			missionText[i] += str;
-			missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "";
-//  missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : "";
-			missionText[i] += " ";
-			missionText[i] += availableMissions[i]->getDisplayName();
-			if ( availableMissions[i]->isCompleted() && !availableMissions[i]->isReplayable() ) missionText[i] += _( "(completed)" );
-
-			missionColor[i].r = 1.0f;
-			missionColor[i].g = 1.0f;
-			missionColor[i].b = 0.0f;
-			if ( availableMissions[i]->isReplay() ) {
-				missionColor[i].r = 0.0f;
-				missionColor[i].g = 0.75f;
-				missionColor[i].b = 1.0f;
-			} else if ( availableMissions[i]->isCompleted() ) {
-				missionColor[i].r = 0.5f;
-				missionColor[i].g = 0.5f;
-				missionColor[i].b = 0.5f;
-			} else if ( availableMissions[i]->isStoryLine() ) {
-				missionColor[i].r = 1.0f;
-				missionColor[i].g = 0.0f;
-				missionColor[i].b = 1.0f;
-			} else if ( availableMissions[i]->getLevel() < ave ) {
-				missionColor[i].r = 1.0f;
-				missionColor[i].g = 1.0f;
-				missionColor[i].b = 1.0f;
-			} else if ( availableMissions[i]->getLevel() > ave ) {
-				missionColor[i].r = 1.0f;
-				missionColor[i].g = 0.0f;
-				missionColor[i].b = 0.0f;
-			}
-			if ( i == 0 ) {
-				if ( !session->getGameAdapter()->isHeadless() )
-					session->getGameAdapter()->setMissionDescriptionUI( availableMissions[i]->getDescription(),
-					    availableMissions[i]->getMapX(),
-					    availableMissions[i]->getMapY() );
-			}
-		}
-
-		if ( !session->getGameAdapter()->isHeadless() )
-			session->getGameAdapter()->updateBoardUI( availableMissions.size(),
-			    missionText,
-			    missionColor );
-	}
+//	// free ui
+//	freeListText();
+//
+//	// find the highest and lowest levels in the party
+//	int highest = 0;
+//	int lowest = -1;
+//	int sum = 0;
+//	for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+//		int n = session->getParty()->getParty( i )->getLevel();
+//		if ( n < 1 ) n = 1;
+//		if ( highest < n ) {
+//			highest = n;
+//		} else if ( lowest == -1 || lowest > n ) {
+//			lowest = n;
+//		}
+//		sum += n;
+//	}
+//	float ave = ( sum == 0 ? 1 : ( static_cast<float>( sum ) / static_cast<float>( session->getParty()->getPartySize() ) / 1.0f ) );
+//
+//	// remove the storyline missions
+//	// remove missions whose level is too low
+//	for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
+//		Mission *mission = availableMissions[ i ];
+//		if ( mission->isStoryLine() ) {
+//			// move the last element over the current storyline element
+//			availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
+//			availableMissions.pop_back();
+//			// re-examine the current element
+//			i--;
+//		}
+//	}
+//
+//	// maintain a set of missions
+//	for ( int counter = 0; availableMissions.size() < 8 && counter < 8; counter++ ) {
+//		int level;
+//		if ( counter % 2 == 0 ) {
+//			// allow for low level mission
+//			level = static_cast<int>( Util::roll( 0.0f, ave + 2 ) );
+//		} else {
+//			// allow for current level missions
+//			level = static_cast<int>( Util::roll( ave, ave + 4.0f ) ) - 2;
+//		}
+//		if ( level < 1 ) level = 1;
+//		int depth =  static_cast<int>( static_cast<float>( level ) / static_cast<float>( MAX_MISSION_DEPTH - 3 ) ) + 1 + Util::dice( 3 );
+//		if ( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
+//		int templateIndex = Util::dice( templates.size() );
+//
+//		// only outdoor maps can be 1 depth
+//		if ( depth == 1 && tolower( templates[ templateIndex ]->getMapType() ) != 'o' ) {
+//			depth++;
+//		}
+//		// Create a new mission but only keep it if there isn't another mission with this name already.
+//		// This is because missions are 'found' on load via name, so names have to be unique.
+//		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
+//		bool found = false;
+//		for ( unsigned int i = 0; i < availableMissions.size(); i++ ) {
+//			if ( !strcmp( mission->getName(), availableMissions[i]->getName() ) ) {
+//				found = true;
+//				break;
+//			}
+//		}
+//		if ( !found ) {
+//			availableMissions.push_back( mission );
+//		}
+//	}
+//
+//
+//	// add the current storyline mission at the top of the board
+//	if ( storylineIndex >= 0 && storylineIndex < static_cast<int>( storylineMissions.size() ) ) {
+//		availableMissions.insert( availableMissions.begin(), storylineMissions[ storylineIndex ] );
+//	}
+//
+//	// append replayable maps at the bottom of the board
+//	for ( int i = 0; i < storylineIndex; i++ ) {
+//		if ( storylineMissions[ i ]->isReplayable() ) {
+//			availableMissions.insert( availableMissions.end(), storylineMissions[ i ] );
+//			availableMissions[ availableMissions.size() -1 ]->setDisplayName( storylineMissions[i]->getReplayDisplayName() ) ;
+//			availableMissions[ availableMissions.size() -1 ]->setDescription( storylineMissions[i]->getReplayDescription() ) ;
+//			availableMissions[ availableMissions.size() -1 ]->setChapter( -1 );
+//		}
+//	}
+//
+//
+//
+//#ifdef DEBUG_MODE
+//	// debug missions
+//	for ( int i = 1; i <= highest; i++ ) {
+//		int templateIndex = Util::dice(  templates.size() );
+//		Mission *mission = templates[ templateIndex ]->createMission( session, i, 1 );
+//		availableMissions.push_back( mission );
+//	}
+//#endif
+//
+//	// init ui
+//	if ( !availableMissions.empty() ) {
+//		missionListCount = availableMissions.size();
+//		missionText = new string[availableMissions.size()];
+//		missionColor = new Color[availableMissions.size()];
+//		for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
+//			char str[20];
+//			snprintf( str, 20, _( "L:%d, " ), availableMissions[i]->getLevel() );
+//			missionText[i] = str;
+//			snprintf( str, 20, _( "S:%d, " ), availableMissions[i]->getDepth() );
+//			missionText[i] += str;
+//			missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "";
+////  missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : "";
+//			missionText[i] += " ";
+//			missionText[i] += availableMissions[i]->getDisplayName();
+//			if ( availableMissions[i]->isCompleted() && !availableMissions[i]->isReplayable() ) missionText[i] += _( "(completed)" );
+//
+//			missionColor[i].r = 1.0f;
+//			missionColor[i].g = 1.0f;
+//			missionColor[i].b = 0.0f;
+//			if ( availableMissions[i]->isReplay() ) {
+//				missionColor[i].r = 0.0f;
+//				missionColor[i].g = 0.75f;
+//				missionColor[i].b = 1.0f;
+//			} else if ( availableMissions[i]->isCompleted() ) {
+//				missionColor[i].r = 0.5f;
+//				missionColor[i].g = 0.5f;
+//				missionColor[i].b = 0.5f;
+//			} else if ( availableMissions[i]->isStoryLine() ) {
+//				missionColor[i].r = 1.0f;
+//				missionColor[i].g = 0.0f;
+//				missionColor[i].b = 1.0f;
+//			} else if ( availableMissions[i]->getLevel() < ave ) {
+//				missionColor[i].r = 1.0f;
+//				missionColor[i].g = 1.0f;
+//				missionColor[i].b = 1.0f;
+//			} else if ( availableMissions[i]->getLevel() > ave ) {
+//				missionColor[i].r = 1.0f;
+//				missionColor[i].g = 0.0f;
+//				missionColor[i].b = 0.0f;
+//			}
+//			if ( i == 0 ) {
+//				if ( !session->getGameAdapter()->isHeadless() )
+//					session->getGameAdapter()->setMissionDescriptionUI( availableMissions[i]->getDescription(),
+//					    availableMissions[i]->getMapX(),
+//					    availableMissions[i]->getMapY() );
+//			}
+//		}
+//
+//		if ( !session->getGameAdapter()->isHeadless() )
+//			session->getGameAdapter()->updateBoardUI( availableMissions.size(),
+//			    missionText,
+//			    missionColor );
+//	}
 }
 
 /// Sets the storyline index.
