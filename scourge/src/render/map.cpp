@@ -98,8 +98,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hasWater = false;
 
 	// start near Horghh
-	regionX = 10 * REGIONS_PER_BITMAP + 0;
-	regionY = 5 * REGIONS_PER_BITMAP + 1;
+	regionX = regionY = 0;
 	continuousLandMode = true;
 	
 	startx = starty = 128;
