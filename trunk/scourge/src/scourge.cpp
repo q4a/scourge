@@ -873,16 +873,23 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 }
 
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
+	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	loadOrGenerateLargeMap();
 	
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+			cerr << "\tBEFORE: " << getParty()->getParty( r )->getX() << "," << getParty()->getParty( r )->getY() << endl;
 			px = getParty()->getParty( r )->getX() + party_x;
 			py = getParty()->getParty( r )->getY() + party_y;
+			cerr << "\t\tr=" << r << " pos=" << px << "," << py << endl;
 
 			// space for the pc should be clear, but look around just in case...
-			getParty()->getParty( r )->findPlaceBounded( px, py, px + 10, py + 10 );
+			if( !getParty()->getParty( r )->findPlaceBounded( px, py, px + 10, py + 10 ) ) {
+				cerr << "\t\tERROR: couldn't find place for party member on map!!!" << endl;
+			}
+			
+			cerr << "\t\tAFTER" << getParty()->getParty( r )->getX() << "," << getParty()->getParty( r )->getY() << endl;
 			
 			//levelMap->setCreature( toint( px ), toint( py ), 0, getParty()->getParty( r ) );
 			//getParty()->getParty( r )->moveTo( px, py, 0 );
