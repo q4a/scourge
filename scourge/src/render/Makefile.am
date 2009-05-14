@@ -70,6 +70,8 @@ libScourgeRender_a_SOURCES = \
 	3ds.h\
 	3dsshape.cpp\
 	3dsshape.h\
+	weather.cpp\
+	weather.h\
 	virtualshape.cpp\
 	virtualshape.h\
 	texture.cpp\
