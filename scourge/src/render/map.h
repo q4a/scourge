@@ -808,6 +808,7 @@ public:
 	bool isValidPosition( int x, int y, int z );
 	inline MapRender *getRender() { return helper->isIndoors() ? indoor : outdoor; }
 	void flattenChunk( Sint16 mapX, Sint16 mapY, float height = 0 );
+	void flattenChunkWalkable( Sint16 mapX, Sint16 mapY );
 	void startHouse();
 	void endHouse();
 	void clearHouses();

@@ -51,6 +51,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "void", "setMapFloorPosition", SqMission::_setMapFloorPosition, 0, 0, "Set a floor shape at this map position. Shape is given by its name." },
 	{ "void", "flattenChunk", SqMission::_flattenChunk, 0, 0, "Flatten a chunk on an outdoors map." },
+	{ "void", "flattenChunkWalkable", SqMission::_flattenChunkWalkable, 0, 0, "Flatten a chunk on an outdoors map. Not completely flat, but such that pc-s can stand on it." },
 	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
 	{ "void", "removeMapEffect", SqMission::_removeMapEffect, 0, 0, "Remove an effect at this map position." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
@@ -270,6 +271,13 @@ int SqMission::_flattenChunk( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	SqBinding::sessionRef->getMap()->flattenChunk( x, y );
+	return 0;
+}
+
+int SqMission::_flattenChunkWalkable( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getMap()->flattenChunkWalkable( x, y );
 	return 0;
 }
 

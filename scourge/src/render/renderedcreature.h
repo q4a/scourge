@@ -150,6 +150,7 @@ public:
 
 	virtual bool findPlace( int x, int y, int *finalX = NULL, int *finalY = NULL );
 	virtual bool findPlaceBounded( int sx, int sy, int ex, int ey );
+	virtual bool findPlaceBoundedRadial( int startx, int starty, int radius );
 	
 	inline void getPositionFraction( float *xp, float *yp ) {
 		*xp = ( getX() - static_cast<float>( toint( getX() ) ) );

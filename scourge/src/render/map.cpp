@@ -3535,8 +3535,7 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 /// Is it safe to put the shape on this map tile?
 
 bool Map::canFit( int x, int y, Shape *shape ) {
-	if ( x < 0 || x >= MAP_WIDTH ||
-	        y < 0 || y >= MAP_DEPTH ) {
+	if ( x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH ) {
 		return false;
 	}
 	int fx = ( ( x ) / MAP_UNIT ) * MAP_UNIT;
@@ -3545,7 +3544,12 @@ bool Map::canFit( int x, int y, Shape *shape ) {
 		int gx = fx / OUTDOORS_STEP;
 		int gy = fy / OUTDOORS_STEP;
 		if ( ground[ gx ][ gy ] < 10 && ground[ gx ][ gy ] > -10 ) {
-			return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
+			cerr << "checking " << x << "," << y << " ground ok at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
+			bool b = !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false;
+			cerr << "\tb=" << b << endl;
+			return b;
+		} else {
+			cerr << "ground out of range at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
 		}
 	} else {
 		Shape *floor = floorPositions[fx][fy];
@@ -3593,6 +3597,21 @@ void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
 			if( xx >= 0 && xx < MAP_WIDTH / OUTDOORS_STEP && 
 					yy >= 0 && yy < MAP_DEPTH / OUTDOORS_STEP ) {
 				setGroundHeight( xx, yy, height );
+			}
+		}
+	}
+}
+
+void Map::flattenChunkWalkable( Sint16 mapX, Sint16 mapY ) {
+	int chunkX = ( mapX ) / MAP_UNIT;
+	int chunkY = ( mapY ) / MAP_UNIT;
+	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
+		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
+			int xx = ( ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			if( xx >= 0 && xx < MAP_WIDTH / OUTDOORS_STEP && 
+					yy >= 0 && yy < MAP_DEPTH / OUTDOORS_STEP ) {
+				setGroundHeight( xx, yy, Util::roll( 0.0f, 1.5f ) );
 			}
 		}
 	}
