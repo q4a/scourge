@@ -295,10 +295,13 @@ void RenderedLocation::findOccludedSides( bool *sides ) {
 
 	for ( x = this->pos->x; x < this->pos->x + this->pos->shape->getWidth(); x++ ) {
 		for ( y = this->pos->y - this->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= this->pos->y; y++ ) {
-			pos = map->getLocation( x, y, this->pos->z + this->pos->shape->getHeight() );
-			if ( !pos || !pos->shape->isStencil() || ( !map->isLocationInLight( x, y, pos->shape ) && !map->isDoorType( pos->shape ) ) ) {
-				sides[Shape::TOP_SIDE] = true;
-				break;
+			// can't be occluded if it sticks out
+			if (this->pos->z + this->pos->shape->getHeight() < MAP_VIEW_HEIGHT ) {
+				pos = map->getLocation( x, y, this->pos->z + this->pos->shape->getHeight() );
+				if ( !pos || !pos->shape->isStencil() || ( !map->isLocationInLight( x, y, pos->shape ) && !map->isDoorType( pos->shape ) ) ) {
+					sides[Shape::TOP_SIDE] = true;
+					break;
+				}
 			}
 		}
 	}	

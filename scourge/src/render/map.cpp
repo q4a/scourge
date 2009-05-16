@@ -2067,11 +2067,28 @@ Shape *Map::isWall( int x, int y, int z ) {
 /// Is there enough room for the shape at the specified position?
 
 bool Map::shapeFits( Shape *shape, int x, int y, int z ) {
+	if ( z >= MAP_VIEW_HEIGHT ) {
+		//shape is positioned too high
+		cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map height boundary: position (" << 
+			x << "," << y << "," << z << "), dimensions: ( " << 
+			shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
+		return false;
+	}
 	for ( int tx = 0; tx < shape->getWidth(); tx++ ) {
 		for ( int ty = 0; ty < shape->getDepth(); ty++ ) {
 			if ( !shape->isInside( tx, ty ) ) continue;
 			for ( int tz = 0; tz < shape->getHeight(); tz++ ) {
-				if ( getLocation( x + tx, y - ty, z + tz ) ) {
+				// check also map boundaries (not checking height)
+				if ( ( x + tx ) < 0 || ( x + tx ) >= MAP_WIDTH || 
+						( y - ty ) < 0 || ( y - ty ) >= MAP_DEPTH || ( z + tz ) < 0) {
+					//shape does not fit in map
+					cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map boundaries: position (" << 
+						x << "," << y << "," << z << "), dimensions: ( " << 
+						shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
+					return false;
+				}
+				// shape can stick out above MAP_VIEW_HEIGHT
+				if ( ( ( z + tz ) < MAP_VIEW_HEIGHT ) && getLocation( x + tx, y - ty, z + tz ) ) {
 					return false;
 				}
 			}
@@ -3588,15 +3605,16 @@ void Map::refresh() {
 }
 
 void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
-	int chunkX = ( mapX ) / MAP_UNIT;
-	int chunkY = ( mapY ) / MAP_UNIT;
-	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
-		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
-			int xx = ( ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
-			int yy = ( ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
-			if( xx >= 0 && xx < MAP_WIDTH / OUTDOORS_STEP && 
-					yy >= 0 && yy < MAP_DEPTH / OUTDOORS_STEP ) {
-				setGroundHeight( xx, yy, height );
+	int chunkX = mapX / MAP_UNIT;
+	int chunkY = mapY / MAP_UNIT;
+	int chunkWidth = MAP_UNIT / OUTDOORS_STEP;
+	// flatten every outdoor unit of the chunk, but add a border of 1
+	for ( int x = ( chunkX * chunkWidth ) - 1; x <= ( ( chunkX + 1 ) * chunkWidth ) + 1; x++ ) {
+		for ( int y = ( chunkY * chunkWidth ) - 1; y <= ( ( chunkY + 1 ) * chunkWidth ) + 1; y++ ) {
+			// if the border of 1 is outside the map boundaries, ignore it
+			if( x >= 0 && x < MAP_WIDTH / OUTDOORS_STEP && 
+					y >= 0 && y < MAP_DEPTH / OUTDOORS_STEP ) {
+				setGroundHeight( x, y, height );
 			}
 		}
 	}
