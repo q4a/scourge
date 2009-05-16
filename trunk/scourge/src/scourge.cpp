@@ -876,6 +876,8 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	loadOrGenerateLargeMap();
 	
+	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+	cerr << "Looking for space for part." << endl;
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
@@ -883,11 +885,13 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 			py = getParty()->getParty( r )->getY() + party_y;
 
 			// space for the pc should be clear, but look around just in case...
-			if( !getParty()->getParty( r )->findPlaceBounded( px, py, px + 10, py + 10 ) ) {
+			cerr << "Looking for space for " << getParty()->getParty( r )->getName() << " at " << px << "," << py << endl; 
+			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT ) ) {
 				cerr << "\t\tERROR: couldn't find place for party member (" << getParty()->getParty( r )->getName() << ") on map!!!" << endl;
 			}
 		}		
 	}
+	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
 }
 
 void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {

@@ -87,6 +87,15 @@ void RenderedCreature::removeRecentDamage( int i ) {
 	recentDamagesCount--;
 }
 
+bool RenderedCreature::findPlaceBoundedRadial( int startx, int starty, int radius ) {
+	for( int r = 1; r < radius; r++ ) {
+		if( findPlaceBounded( startx - r, starty - r, startx + r, startx + r ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 // use this for small bounded areas
 bool RenderedCreature::findPlaceBounded( int startx, int starty, int endx, int endy ) {
 	for( int x = startx; x < endx; x++ ) {
