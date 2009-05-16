@@ -26,6 +26,7 @@
 #include "location.h"
 #include "maprenderhelper.h"
 #include "renderedlocation.h"
+#include "assert.h"
 
 class CFrustum;
 class RenderedProjectile;
@@ -578,10 +579,12 @@ public:
 	Location *getPosition( Sint16 x, Sint16 y, Sint16 z );
 	/// Returns a position struct for the specified map tile.
 	inline Location *getLocation( Sint16 x, Sint16 y, Sint16 z ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT );
 		return pos[x][y][z];
 	}
 	/// Returns an item position struct for the x,y map tile.
 	inline Location *getItemLocation( Sint16 x, Sint16 y ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		return itemPos[x][y];
 	}
 	/// Gets the shape that is on the floor at x,y.
@@ -743,10 +746,12 @@ public:
 
 	/// Sets the ground height at x,y (outdoors).
 	inline void setGroundHeight( int x, int y, float h ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		this->ground[x][y] = h; refreshGroundPos = true;
 	}
 	/// Gets the ground height at x,y.
 	inline float getGroundHeight( int x, int y ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		return this->ground[x][y];
 	}
 	/// Does this map have an uneven floor (e.g. is it outdoors)?
@@ -767,10 +772,12 @@ public:
 	}
 	/// Sets the ground texture at x,y (outdoors).
 	inline void setGroundTex( int x, int y, Texture tex ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		this->groundTex[x][y] = tex;
 	}
 	/// Returns the ground texture of tile x,y.
 	inline Texture getGroundTex( int x, int y ) {
+		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		return this->groundTex[x][y];
 	}
 
