@@ -3583,15 +3583,17 @@ void Map::refresh() {
 	mapChanged = lightMapChanged = resortShapes = true;
 }
 
-void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height, bool landOnly ) {
+void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
 	int chunkX = ( mapX ) / MAP_UNIT;
 	int chunkY = ( mapY ) / MAP_UNIT;
 	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
 		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
 			int xx = ( ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
 			int yy = ( ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
-			//if ( !landOnly || ( landOnly && ( getGroundHeight( xx, yy ) >= 0 ) ) ) setGroundHeight( xx, yy, height );
-			setGroundHeight( xx, yy, height );
+			if( xx >= 0 && xx < MAP_WIDTH / OUTDOORS_STEP && 
+					yy >= 0 && yy < MAP_DEPTH / OUTDOORS_STEP ) {
+				setGroundHeight( xx, yy, height );
+			}
 		}
 	}
 }

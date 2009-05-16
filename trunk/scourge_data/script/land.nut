@@ -98,13 +98,6 @@ function drawHorghh_part2( x, y ) {
 	// hq building
 	drawHQ( x + 6 * MAP_UNIT, y + 5 * MAP_UNIT );
 	
-	// the isthmus leading to hq
-	for( xx <- x + 3 * MAP_UNIT; xx < x + 12 * MAP_UNIT; xx++ ) {
-		for( i <- vy - 12; i < vy; i++ ) {
-			scourgeGame.getMission().setHeightMap( xx, i, 0 );	
-		}
-	}
-	
 	// the road to hq
 	for( xx <- 0; xx <= 5; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
@@ -113,6 +106,14 @@ function drawHorghh_part2( x, y ) {
 		} else {
 			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
 		}
+	}
+	
+	// the isthmus leading to hq
+	for( xx <- x + 2 * MAP_UNIT + 8; xx < x + 5 * MAP_UNIT; xx++ ) {
+		scourgeGame.getMission().setHeightMap( xx, vy - 20, -10 );
+		scourgeGame.getMission().setHeightMap( xx, vy - 16, -10 );	
+		scourgeGame.getMission().setHeightMap( xx, vy + 2, -10 );
+		scourgeGame.getMission().setHeightMap( xx, vy + 6, -10 );
 	}
 }
 

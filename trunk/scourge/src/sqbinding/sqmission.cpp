@@ -51,7 +51,6 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "void", "setMapFloorPosition", SqMission::_setMapFloorPosition, 0, 0, "Set a floor shape at this map position. Shape is given by its name." },
 	{ "void", "flattenChunk", SqMission::_flattenChunk, 0, 0, "Flatten a chunk on an outdoors map." },
-	{ "void", "flattenLandChunk", SqMission::_flattenLandChunk, 0, 0, "Flatten a chunk on an outdoors map, leave water intact." },
 	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
 	{ "void", "removeMapEffect", SqMission::_removeMapEffect, 0, 0, "Remove an effect at this map position." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
@@ -274,13 +273,6 @@ int SqMission::_flattenChunk( HSQUIRRELVM vm ) {
 	return 0;
 }
 
-int SqMission::_flattenLandChunk( HSQUIRRELVM vm ) {
-	GET_INT( y )
-	GET_INT( x )
-	SqBinding::sessionRef->getMap()->flattenChunk( x, y, 0.0f, true );
-	return 0;
-}
-
 int SqMission::_removeMapEffect( HSQUIRRELVM vm ) {
 	GET_INT( z )
 	GET_INT( y )
@@ -360,7 +352,7 @@ int SqMission::_setHeightMap( HSQUIRRELVM vm ) {
 	GET_FLOAT( h )
 	GET_INT( y )
 	GET_INT( x )
-	if ( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
+	if ( SqBinding::sessionRef->getMap()->isHeightMapEnabled() && x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
 		SqBinding::sessionRef->getMap()->setGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP, h );
 	}
 	return 0;
