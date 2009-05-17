@@ -908,6 +908,9 @@ void Scourge::loadOrGenerateLargeMap() {
 	int orx = levelMap->getRegionX();
 	int ory = levelMap->getRegionY();
 
+	// if landGenerator already exists, it may not be the sessions terrainGenerator (and it needs to be if getClimate is going to work)
+	if ( landGenerator )
+		session->setTerrainGenerator(landGenerator);
 	// for now always generate (later add load/save map regions)
 	generateRegion( orx, ory, 0, 0 );
 	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, QUARTER_WIDTH_IN_NODES, 0 );	
