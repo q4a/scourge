@@ -166,7 +166,6 @@ bool  MapWidget::onDraw( Widget* ) {
 	glDisable( GL_TEXTURE_2D );
 	
 	if( showRegions ) {
-		cerr << "!!! " << tx << "," << ty << endl;
 		glPushMatrix();
 		glTranslatef( -tx, -ty, 0 );
 		
