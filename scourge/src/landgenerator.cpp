@@ -96,25 +96,35 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 	
 	// event handler for custom map processing
-	int params[4];
+	int params[6];
 	params[0] = regionX;
 	params[1] = regionY;
 	params[2] = mapPosX * OUTDOORS_STEP;
 	params[3] = mapPosY * OUTDOORS_STEP;
 	bool ret = shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_land", 4, params );
 	
+	cerr << "*** generate_land returned: " << ret << endl;
+	
 	if( !ret ) {
 		// add trees
 		for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 			for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
-				if ( cellular->getNode( x, y )->island && !cellular->getNode( x, y )->water ) {
+				if ( !cellular->getNode( x, y )->water ) {
+					
 					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
 					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
 					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
-	
-					// don't put them on roads and in houses
-					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
-						map->setPosition( xx, yy, 0, shape );
+					
+					if( !map->isRoad( xx, yy ) ) {
+						
+						params[4] = x * OUTDOORS_STEP;
+						params[5] = y * OUTDOORS_STEP;
+						shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 6, params );
+		
+		//					// don't put them on roads and in houses
+		//					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
+		//						map->setPosition( xx, yy, 0, shape );
+		//					}
 					}
 				}
 			}
@@ -345,10 +355,12 @@ void LandGenerator::createGround() {
 	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 			if ( cellular->getNode( x, y )->elevated || cellular->getNode( x, y )->high ) {
+				// smooth hills
 				b = 2.0f;
 				a = Util::roll( 2.75f, 3.0f );
-				f = 5.0f;
+				f = 8.0f;
 			} else {
+				// flatland with variations
 				b = 1.0f;
 				a = Util::roll( 0.25f, 1.0f );
 				f = 40.0f / 2 + Util::roll( 0.25f, 40.0f / 2 );
@@ -361,8 +373,8 @@ void LandGenerator::createGround() {
 			if ( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}
-	
-	
+		
+	// add some random mountains
 	for ( int x = 1; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 		for ( int y = 1; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 			if ( ( cellular->getNode( x, y )->high && Util::dice( 150 ) < 2 ) || 

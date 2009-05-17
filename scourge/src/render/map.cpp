@@ -1392,6 +1392,17 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 	return false;
 }
 
+bool Map::hasOutdoorTexture( int x, int y, int width, int height, int z ) {
+	for ( int xx = x; xx < x + width; xx++ ) {
+		for ( int yy = y - height - 1; yy <= y; yy++ ) {
+			int tx = x / OUTDOORS_STEP;
+			int ty = y / OUTDOORS_STEP;
+			if ( outdoorTex[tx][ty][z].outdoorThemeRef != -1 ) return true;
+		}
+	}
+	return false;
+}
+
 /// Sets the outdoor ground texture for a given map position (detailed version).
 
 void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref,
@@ -3656,6 +3667,10 @@ void Map::endHouse() {
 
 void Map::clearHouses() {
 	houses.clear();
+}
+
+bool Map::isRoad( int mapx, int mapy ) {
+	hasOutdoorTexture( mapx, mapy + 1, OUTDOORS_STEP, OUTDOORS_STEP, ROAD_LAYER );
 }
 
 void Map::addOutdoorTexture( int mapx, int mapy, int ref, float angle, bool horiz, bool vert ) {
