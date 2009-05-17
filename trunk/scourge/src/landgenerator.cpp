@@ -89,10 +89,6 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 14.0f, 20.0f ) );
 			} else if ( cellular->getNode( x, y )->water ) {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, -Util::roll( 14.0f, 20.0f )	 );
-			} else if ( cellular->getNode( x, y )->elevated ) {
-				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 1.0f, 3.0f ) + ground[x][y] * 2 );
-			} else if ( cellular->getNode( x, y )->high ) {
-				map->setGroundHeight( mapPosX + x, mapPosY + y, Util::roll( 4.0f, 7.0f ) + ground[x][y] * 3 );
 			} else {
 				map->setGroundHeight( mapPosX + x, mapPosY + y, ground[x][y] );
 			}
@@ -345,19 +341,37 @@ void LandGenerator::generate( Map *map, ShapePalette *shapePal ) {
 
 void LandGenerator::createGround() {
 	// create the undulating ground
-	float amp = 1.0f;
-	float freq = 40.0f;
+	float a,b,f;
 	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
-			// fixme: use a more sinoid function here
-			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
-			float a = Util::roll( 0.25f, amp );
-			float f = freq / 2 + Util::roll( 0.25f, freq / 2 );
-			ground[x][y] = a +
+			if ( cellular->getNode( x, y )->elevated || cellular->getNode( x, y )->high ) {
+				b = 2.0f;
+				a = Util::roll( 2.75f, 3.0f );
+				f = 5.0f;
+			} else {
+				b = 1.0f;
+				a = Util::roll( 0.25f, 1.0f );
+				f = 40.0f / 2 + Util::roll( 0.25f, 40.0f / 2 );
+			}
+			
+			ground[x][y] = b +
 			               ( a *
 			                 sin( PI / ( 180.0f / static_cast<float>( x * OUTDOORS_STEP * f ) ) ) *
 			                 cos( PI / ( 180.0f / static_cast<float>( y * OUTDOORS_STEP  * f ) ) ) );
 			if ( ground[x][y] < 0 ) ground[x][y] = 0;
+		}
+	}
+	
+	
+	for ( int x = 1; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+		for ( int y = 1; y < QUARTER_DEPTH_IN_NODES; y++ ) {
+			if ( ( cellular->getNode( x, y )->high && Util::dice( 150 ) < 2 ) || 
+					( cellular->getNode( x, y )->elevated && Util::dice( 300 ) < 2 ) ) {
+				ground[x][y] = Util::roll( 14.0f, 20.0f );
+				ground[x - 1][y] = Util::roll( 14.0f, 20.0f );
+				ground[x][y - 1] = Util::roll( 14.0f, 20.0f );
+				ground[x - 1][y - 1] = Util::roll( 14.0f, 20.0f );
+			}
 		}
 	}
 }
