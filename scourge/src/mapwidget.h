@@ -41,11 +41,15 @@ private:
 	int gx, gy, tx, ty;
 	bool dragging;
 	bool editable;
+	bool showRegions;
 
 public:
 
 	MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable = true );
 	~MapWidget();
+	
+	inline void setShowRegions( bool b ) { this->showRegions = b; }
+	inline bool getShowRegions() { return this->showRegions; }
 
 	inline void getSelection( int *x, int *y ) {
 		*x = markedX; *y = markedY;

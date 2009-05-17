@@ -38,6 +38,7 @@ MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, in
 	markedX = markedY = oldSelX = oldSelY = selX = selY = 0;
 	oldx = oldy = 0;
 	dragging = false;
+	showRegions = false;
 	attach( Widget::Draw, &MapWidget::onDraw, this );
 	calculateValues();
 }
@@ -163,6 +164,28 @@ bool  MapWidget::onDraw( Widget* ) {
 		}
 	}
 	glDisable( GL_TEXTURE_2D );
+	
+	if( showRegions ) {
+		cerr << "!!! " << tx << "," << ty << endl;
+		glPushMatrix();
+		glTranslatef( -tx, -ty, 0 );
+		
+		glColor4f( 1, 1, 1, 1 );
+		for( int lx = 0; lx < canvas->getWidth() + Constants::MAP_GRID_TILE_PIXEL_WIDTH; lx += REGION_SIZE ) {
+			glBegin( GL_LINES );
+			glVertex2i( lx, 0 );
+			glVertex2i( lx, canvas->getHeight() + Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glEnd();
+		}
+		for( int ly = 0; ly < canvas->getHeight() + Constants::MAP_GRID_TILE_PIXEL_HEIGHT; ly += REGION_SIZE ) {
+			glBegin( GL_LINES );
+			glVertex2i( canvas->getWidth() + Constants::MAP_GRID_TILE_PIXEL_WIDTH, ly );
+			glVertex2i( 0, ly );
+			glEnd();
+		}
+		
+		glPopMatrix();
+	}
 
 	int shadowSize = 10;
 	glEnable( GL_BLEND );

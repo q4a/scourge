@@ -314,6 +314,7 @@ void MapEditor::createNewMapDialog() {
 
 	newMapWin->createLabel( startx, 160, _( "Select map location: (click on map, drag to move)" ) );
 	mapWidget = new MapWidget( scourge, newMapWin, startx, 170, nw - startx, 335 );
+	mapWidget->setShowRegions( true );
 	newMapWin->addWidget( mapWidget->getCanvas() );
 
 	int bw = nw / 6;
@@ -415,11 +416,13 @@ bool MapEditor::handleEvent( SDL_Event *event ) {
 	for ( int gx = 0; gx < scourge->getMap()->cursorWidth; gx++ ) {
 		for ( int gy = 0; gy < scourge->getMap()->cursorDepth; gy++ ) {
 			for ( int i = MAP_VIEW_HEIGHT - 1; i >= 0; i-- ) {
-				Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX() + gx,
-				                scourge->getMap()->getCursorFlatMapY() - gy,
-				                i );
-				if ( pos && pos->shape && !( ( GLShape* )pos->shape )->hasVirtualShapes() && !pos->shape->isRoof() && maxz < i + 1 ) {
-					maxz = i + 1;
+				int px = scourge->getMap()->getCursorFlatMapX() + gx;
+				int py = scourge->getMap()->getCursorFlatMapY() - gy;
+				if( px >= 0 && px < MAP_WIDTH && py >=0 && py < MAP_DEPTH ) {
+					Location *pos = scourge->getMap()->getLocation( px, py, i );
+					if ( pos && pos->shape && !( ( GLShape* )pos->shape )->hasVirtualShapes() && !pos->shape->isRoof() && maxz < i + 1 ) {
+						maxz = i + 1;
+					}
 				}
 			}
 		}
@@ -553,12 +556,34 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 			} else if ( landMapButton->isSelected() ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
 				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
-				// todo: this should not be hard-coded (could come from map in dialog)
-				scourge->getMap()->setRegionX( 9 * REGIONS_PER_BITMAP + 2 );
-				scourge->getMap()->setRegionY( 5 * REGIONS_PER_BITMAP );
-				og->setRegion( 10 * REGIONS_PER_BITMAP + 1, 5 * REGIONS_PER_BITMAP + 1 );
+				int mx, my;
+				mapWidget->getSelection( &mx, &my );
+				cerr << "map selection: " << mx << "," << my << endl;
+				int rx = mx / REGION_SIZE;
+				if( rx >= REGIONS_PER_ROW - 1 ) rx = REGIONS_PER_ROW - 2;
+				int ry = my / REGION_SIZE;
+				if( ry >= REGIONS_PER_COL - 1 ) ry = REGIONS_PER_COL - 2;
+				cerr << "region selection: " << rx << "," << ry << endl;
+//				scourge->getMap()->setRegionX( 9 * REGIONS_PER_BITMAP + 2 );
+//				scourge->getMap()->setRegionY( 5 * REGIONS_PER_BITMAP );
+				scourge->getMap()->setRegionX( rx );
+				scourge->getMap()->setRegionY( ry );
+				og->setRegion( rx, ry );
 				og->setMapPosition( 0, 0 );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				
+				og->setRegion( rx + 1, ry );
+				og->setMapPosition( QUARTER_WIDTH_IN_NODES, 0 );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				
+				og->setRegion( rx, ry + 1 );
+				og->setMapPosition( 0, QUARTER_DEPTH_IN_NODES );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				
+				og->setRegion( rx + 1, ry + 1 );
+				og->setMapPosition( QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				
 				scourge->getMap()->getRender()->initOutdoorsGroundTexture();
 				delete og;
 				raiseButton->setEnabled( true );
