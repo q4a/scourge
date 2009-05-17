@@ -16,10 +16,31 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 		drawHouseTower( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 	} else if( region_x == 40 && region_y == 21 ) {
 		drawHorghh_part1( offset_x + 6 * MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT );
-		return true;
 	} else if( region_x == 41 && region_y == 21 ) {
 		drawHorghh_part2( offset_x, offset_y + MAP_UNIT + MAP_UNIT );
-		return true;
+	}
+	return false;
+}
+
+function generate_tree( region_x, region_y, offset_x, offset_y, x, y ) {
+	if( in_excluded_area( region_x, region_y, x, y ) ) return;
+	
+	tree <- getTree();
+	xp <- offset_x + x;
+	yp <- offset_y + y;
+	if( scourgeGame.getMission().isFreeOutdoors( xp, yp, 0, tree ) ) {
+		setPosition( xp, yp, 0, tree, false );
+	}
+}
+
+/**
+ * Areas to not cover with trees (towns, roads, etc.)
+ */
+function in_excluded_area( region_x, region_y, x, y ) {
+	if( region_x == 40 && region_y == 21 ) {
+		return x >= 163 && x < 275 && y >= 20 && y < 200; // horghh
+	} else if( region_x == 41 && region_y == 21 ) {
+		return x > 55; // hq
 	}
 	return false;
 }

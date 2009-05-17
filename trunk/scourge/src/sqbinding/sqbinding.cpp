@@ -607,7 +607,7 @@ bool SqBinding::callIntArgMethod( const char *name, int argc, int *args ) {
 		for ( int i = 0; i < argc; i++ ) {
 			sq_pushinteger( vm, args[ i ] );
 		}
-		sq_call( vm, 1 + argc, 0 ); //calls the function
+		sq_call( vm, 1 + argc, 1 ); //calls the function
 		//ret = true;
 		SQBool sqres;
 		sq_getbool( vm, -1, &sqres );
@@ -631,7 +631,7 @@ bool SqBinding::callIntArgStringReturnMethod( const char *name, char *answer, in
 		for ( int i = 0; i < argc; i++ ) {
 			sq_pushinteger( vm, args[ i ] );
 		}
-		sq_call( vm, 1 + argc, 0 ); //calls the function
+		sq_call( vm, 1 + argc, 1 ); //calls the function
 		const SQChar *sqres = NULL;
 		sq_getstring( vm, -1, &sqres );
 		if ( sqres ) {
