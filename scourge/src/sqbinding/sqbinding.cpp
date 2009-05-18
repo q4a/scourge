@@ -121,6 +121,8 @@ SqBinding::SqBinding( Session *session ) {
 	// terrain generation
 	s =  rootDir + "/script/shapes.nut";
 	registerScript( s );
+	s =  rootDir + "/script/climate.nut";
+	registerScript( s );
 	s =  rootDir + "/script/terrain.nut";
 	registerScript( s );
 	s =  rootDir + "/script/land.nut";

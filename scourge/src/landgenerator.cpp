@@ -96,14 +96,12 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 	
 	// event handler for custom map processing
-	int params[6];
+	int params[8];
 	params[0] = regionX;
 	params[1] = regionY;
 	params[2] = mapPosX * OUTDOORS_STEP;
 	params[3] = mapPosY * OUTDOORS_STEP;
 	bool ret = shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_land", 4, params );
-	
-	cerr << "*** generate_land returned: " << ret << endl;
 	
 	if( !ret ) {
 		// add trees
@@ -119,7 +117,9 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 						
 						params[4] = x * OUTDOORS_STEP;
 						params[5] = y * OUTDOORS_STEP;
-						shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 6, params );
+						params[6] = cellular->getNode( x, y )->climate;
+						params[7] = cellular->getNode( x, y )->vegetation;
+						shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 8, params );
 		
 		//					// don't put them on roads and in houses
 		//					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
@@ -161,6 +161,8 @@ MapRenderHelper* LandGenerator::getMapRenderHelper() {
 
 // a 16x16 block of data (in four 8x8 sections, one per cellular section)
 int data[ REGION_SIZE * REGION_SIZE ];
+int climate[ REGION_SIZE * REGION_SIZE ];
+int vegetation[ REGION_SIZE * REGION_SIZE ];
 
 void printData() {
 	cerr << "-----------------------------------" << endl;
@@ -287,56 +289,17 @@ void LandGenerator::packMapData( std::vector<GLubyte> &image ) {
 			d |= TERRAIN_PLAINS;
 			break;
 		}
+
+		// Black samples are always water.
+		if( !color ) d = TERRAIN_WATER;
 	
-		// Check green byte (vegetation density)
-		switch( g ) {
-		case 200:
-			d |= VEGETATION_DEEPFOREST;
-			break;
-		case 150:
-			d |= VEGETATION_LIGHTFOREST;
-			break;
-		case 100:
-			d |= VEGETATION_GROVES;
-			break;
-		case 50:
-			d |= VEGETATION_BARREN;
-			break;
-		default:
-			d |= VEGETATION_GROVES;
-			break;
-		}
+		data[ i / BYTES_PER_PIXEL ] = d;
 
-		// Check blue byte (climate zone)
-		switch( b ) {
-		case 250:
-			d |= CLIMATE_TROPICAL;
-			break;
-		case 200:
-			d |= CLIMATE_SUBTROPICAL;
-			break;
-		case 150:
-			d |= CLIMATE_TEMPERATE;
-			break;
-		case 100:
-			d |= CLIMATE_BOREAL;
-			break;
-		case 50:
-			d |= CLIMATE_ALPINE;
-			break;
-		default:
-			d |= CLIMATE_TEMPERATE;
-			break;
-		}
-
-	// Black samples are always water.
-	if( !color ) d = TERRAIN_WATER;
-
-	data[ i / BYTES_PER_PIXEL ] = d;
-
+		vegetation[ i / BYTES_PER_PIXEL ] = g;
+		climate[ i / BYTES_PER_PIXEL ] = b;
 	}
 
-	cellular->initialize( REGION_SIZE, REGION_SIZE, data );
+	cellular->initialize( REGION_SIZE, REGION_SIZE, data, vegetation, climate );
 }
 
 void LandGenerator::generate( Map *map, ShapePalette *shapePal ) {
