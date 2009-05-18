@@ -58,7 +58,7 @@ public:
 	CellularAutomaton( int w, int h );
 	virtual ~CellularAutomaton();
 	
-	void initialize( int dw, int dh, int *data );
+	void initialize( int dw, int dh, int *data, int *vegetation, int *climate );
 
 	void generate( bool islandsEnabled = false,
 	               bool removeSinglesEnabled = false,

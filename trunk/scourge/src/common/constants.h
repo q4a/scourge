@@ -691,12 +691,6 @@ public:
 	#define TERRAIN_HIGHLANDS 0x0004
 	#define TERRAIN_MOUNTAINS 0x0008
 
-	// Vegetation densities
-	#define VEGETATION_BARREN 0x0010
-	#define VEGETATION_GROVES 0x0020
-	#define VEGETATION_LIGHTFOREST 0x0040
-	#define VEGETATION_DEEPFOREST 0x0080
-
 	// Vegetation densities indices
 	#define VEGETATION_INDEX_BARREN 0
 	#define VEGETATION_INDEX_GROVES 1
@@ -704,13 +698,6 @@ public:
 	#define VEGETATION_INDEX_DEEPFOREST 3
 
 	#define VEGETATION_COUNT 4
-
-	// Climate zones
-	#define CLIMATE_BOREAL 0x0100
-	#define CLIMATE_ALPINE 0x0200
-	#define CLIMATE_TEMPERATE 0x0400
-	#define CLIMATE_SUBTROPICAL 0x0800
-	#define CLIMATE_TROPICAL 0x1000
 
 	// Climate zone indices
 	#define CLIMATE_INDEX_BOREAL 0

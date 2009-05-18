@@ -22,10 +22,13 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 	return false;
 }
 
-function generate_tree( region_x, region_y, offset_x, offset_y, x, y ) {
+function generate_tree( region_x, region_y, offset_x, offset_y, x, y, climate_value, vegetation_value ) {
+	climate <- getClimate( climate_value );
+	if( climate == null ) return;
+		
 	if( in_excluded_area( region_x, region_y, x, y ) ) return;
 	
-	tree <- getTree();
+	tree <- getTreeForClimate(climate);
 	xp <- offset_x + x;
 	yp <- offset_y + y;
 	if( scourgeGame.getMission().isFreeOutdoors( xp, yp, 0, tree ) ) {

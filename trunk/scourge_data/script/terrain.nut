@@ -941,7 +941,7 @@ function drawTrail( x_start, y_start, path ) {
 			ref = OUTDOOR_THEME_REF_TRAIL_TURN;
 		}
 		angle = path[i].slice(1).tointeger();
-		print( "ref=" + ref.tostring() + " angle=" + angle.tostring() + " " + tx.tostring() + "," + ty.tostring() + "\n" );
+		//print( "ref=" + ref.tostring() + " angle=" + angle.tostring() + " " + tx.tostring() + "," + ty.tostring() + "\n" );
 		scourgeGame.getMission().addOutdoorTexture( tx, ty, ref, angle, false, false );
 		
 		// change direction: this is likely incorrect but works ok for now
