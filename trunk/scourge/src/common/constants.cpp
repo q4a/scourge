@@ -719,6 +719,148 @@ string Constants::findLocalResources( const string& appPath ) {
 	return dir;
 }
 
+/// This is the game's OpenGL state manager, shamelessly ripped from the Q3A source.
+
+/// This function is meant to be used instead of glEnable() ... glDisable().
+/// It keeps track of what states are set and avoids unnecessary toggling.
+
+void setGLState( Uint32 stateBits ) {
+	Uint32 diff = stateBits ^ glStateBits;
+	if ( !diff ) return;
+	
+	if ( diff & GLS_TEXTURE_2D ) {
+		if ( stateBits & GLS_TEXTURE_2D ) {
+			glEnable( GL_TEXTURE_2D );
+		} else {
+			glDisable( GL_TEXTURE_2D );
+		}
+	}
+
+	if ( diff & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) {
+		GLenum srcBlend, dstBlend;
+
+		if ( stateBits & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) {
+			switch ( stateBits & GLS_SRCBLEND_BITS ) {
+			case GLS_SRCBLEND_ZERO:
+				srcBlend = GL_ZERO;
+				break;
+			case GLS_SRCBLEND_ONE:
+				srcBlend = GL_ONE;
+				break;
+			case GLS_SRCBLEND_DST_COLOR:
+				srcBlend = GL_DST_COLOR;
+				break;
+			case GLS_SRCBLEND_ONE_MINUS_DST_COLOR:
+				srcBlend = GL_ONE_MINUS_DST_COLOR;
+				break;
+			case GLS_SRCBLEND_SRC_ALPHA:
+				srcBlend = GL_SRC_ALPHA;
+				break;
+			case GLS_SRCBLEND_ONE_MINUS_SRC_ALPHA:
+				srcBlend = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case GLS_SRCBLEND_DST_ALPHA:
+				srcBlend = GL_DST_ALPHA;
+				break;
+			case GLS_SRCBLEND_ONE_MINUS_DST_ALPHA:
+				srcBlend = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			case GLS_SRCBLEND_SRC_COLOR:
+				srcBlend = GL_SRC_COLOR;
+				break;
+			default:
+				srcBlend = GL_SRC_ALPHA;
+				break;
+			}
+
+			switch ( stateBits & GLS_DSTBLEND_BITS ) {
+			case GLS_DSTBLEND_ZERO:
+				dstBlend = GL_ZERO;
+				break;
+			case GLS_DSTBLEND_ONE:
+				dstBlend = GL_ONE;
+				break;
+			case GLS_DSTBLEND_SRC_COLOR:
+				dstBlend = GL_SRC_COLOR;
+				break;
+			case GLS_DSTBLEND_ONE_MINUS_SRC_COLOR:
+				dstBlend = GL_ONE_MINUS_SRC_COLOR;
+				break;
+			case GLS_DSTBLEND_SRC_ALPHA:
+				dstBlend = GL_SRC_ALPHA;
+				break;
+			case GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA:
+				dstBlend = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case GLS_DSTBLEND_DST_COLOR:
+				dstBlend = GL_DST_COLOR;
+				break;
+			case GLS_DSTBLEND_ONE_MINUS_DST_ALPHA:
+				dstBlend = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			default:
+				dstBlend = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			}
+
+			glEnable( GL_BLEND );
+			glBlendFunc( srcBlend, dstBlend );
+		} else {
+			glDisable( GL_BLEND );
+		}
+	}
+
+	if ( diff & GLS_NO_DEPTH_TEST ) {
+		if ( stateBits & GLS_NO_DEPTH_TEST ) {
+			glDisable( GL_DEPTH_TEST );
+		} else {
+			glEnable( GL_DEPTH_TEST );
+		}
+	}
+
+	if ( diff & GLS_NO_DEPTH_MASK ) {
+		if ( stateBits & GLS_NO_DEPTH_MASK ) {
+			glDepthMask( GL_FALSE );
+		} else {
+			glDepthMask( GL_TRUE );
+		}
+	}
+
+	if ( diff & GLS_NO_CULL_FACE ) {
+		if ( stateBits & GLS_NO_CULL_FACE ) {
+			glDisable( GL_CULL_FACE );
+		} else {
+			glEnable( GL_CULL_FACE );
+		}
+	}
+
+	if ( diff & GLS_ALPHA_TEST ) {
+		if ( stateBits & GLS_ALPHA_TEST ) {
+			glEnable( GL_ALPHA_TEST );
+		} else {
+			glDisable( GL_ALPHA_TEST );
+		}
+	}
+
+	if ( diff & GLS_STENCIL_TEST ) {
+		if ( stateBits & GLS_STENCIL_TEST ) {
+			glEnable( GL_STENCIL_TEST );
+		} else {
+			glDisable( GL_STENCIL_TEST );
+		}
+	}
+
+	if ( diff & GLS_SCISSOR_TEST ) {
+		if ( stateBits & GLS_SCISSOR_TEST ) {
+			glEnable( GL_SCISSOR_TEST );
+		} else {
+			glDisable( GL_SCISSOR_TEST );
+		}
+	}
+
+	glStateBits = stateBits;
+}
+
 string GetDataPath( const string& file ) {
 	return rootDir + file;
 }

@@ -847,6 +847,39 @@ private:
 	static std::string findLocalResources( const std::string& appPath );
 };
 
+//Render state manager.
+#define GLS_SRCBLEND_ZERO					0x00000001
+#define GLS_SRCBLEND_ONE					0x00000002
+#define GLS_SRCBLEND_DST_COLOR				0x00000003
+#define GLS_SRCBLEND_ONE_MINUS_DST_COLOR	0x00000004
+#define GLS_SRCBLEND_SRC_ALPHA				0x00000005
+#define GLS_SRCBLEND_ONE_MINUS_SRC_ALPHA	0x00000006
+#define GLS_SRCBLEND_DST_ALPHA				0x00000007
+#define GLS_SRCBLEND_ONE_MINUS_DST_ALPHA	0x00000008
+#define GLS_SRCBLEND_SRC_COLOR				0x00000009
+#define GLS_SRCBLEND_BITS					0x0000000f
+
+#define GLS_DSTBLEND_ZERO					0x00000010
+#define GLS_DSTBLEND_ONE					0x00000020
+#define GLS_DSTBLEND_SRC_COLOR				0x00000030
+#define GLS_DSTBLEND_ONE_MINUS_SRC_COLOR	0x00000040
+#define GLS_DSTBLEND_SRC_ALPHA				0x00000050
+#define GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA	0x00000060
+#define GLS_DSTBLEND_DST_COLOR				0x00000070
+#define GLS_DSTBLEND_ONE_MINUS_DST_ALPHA	0x00000080
+#define GLS_DSTBLEND_BITS					0x000000f0
+
+#define GLS_TEXTURE_2D						0x00000100
+#define GLS_NO_DEPTH_TEST					0x00001000
+#define GLS_NO_DEPTH_MASK					0x00002000
+#define GLS_NO_CULL_FACE					0x00010000
+#define GLS_ALPHA_TEST						0x00100000
+#define GLS_STENCIL_TEST					0x01000000
+#define GLS_SCISSOR_TEST					0x10000000
+
+Uint32 glStateBits;
+void setGLState( Uint32 stateBits );
+
 std::string GetDataPath( const std::string& file );
 
 /// A 3D point with texture coordinates and color.
