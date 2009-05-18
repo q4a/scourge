@@ -724,6 +724,8 @@ string Constants::findLocalResources( const string& appPath ) {
 /// This function is meant to be used instead of glEnable() ... glDisable().
 /// It keeps track of what states are set and avoids unnecessary toggling.
 
+static Uint32 glStateBits;
+
 void setGLState( Uint32 stateBits ) {
 	Uint32 diff = stateBits ^ glStateBits;
 	if ( !diff ) return;
