@@ -877,7 +877,6 @@ private:
 #define GLS_STENCIL_TEST					0x01000000
 #define GLS_SCISSOR_TEST					0x10000000
 
-Uint32 glStateBits;
 void setGLState( Uint32 stateBits );
 
 std::string GetDataPath( const std::string& file );
