@@ -918,7 +918,8 @@ void Scourge::loadOrGenerateLargeMap() {
 	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 
                   QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
 	
-	levelMap->getRender()->initOutdoorsGroundTexture();
+	// when done, set up the ground textures
+	landGenerator->initOutdoorsGroundTexture( levelMap );
 }
 
 bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
