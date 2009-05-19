@@ -2080,9 +2080,9 @@ Shape *Map::isWall( int x, int y, int z ) {
 bool Map::shapeFits( Shape *shape, int x, int y, int z ) {
 	if ( z >= MAP_VIEW_HEIGHT ) {
 		//shape is positioned too high
-		cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map height boundary: position (" << 
-			x << "," << y << "," << z << "), dimensions: ( " << 
-			shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
+//		cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map height boundary: position (" << 
+//			x << "," << y << "," << z << "), dimensions: ( " << 
+//			shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
 		return false;
 	}
 	for ( int tx = 0; tx < shape->getWidth(); tx++ ) {
@@ -2093,9 +2093,9 @@ bool Map::shapeFits( Shape *shape, int x, int y, int z ) {
 				if ( ( x + tx ) < 0 || ( x + tx ) >= MAP_WIDTH || 
 						( y - ty ) < 0 || ( y - ty ) >= MAP_DEPTH || ( z + tz ) < 0) {
 					//shape does not fit in map
-					cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map boundaries: position (" << 
-						x << "," << y << "," << z << "), dimensions: ( " << 
-						shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
+//					cerr << "WARNING: Shape " << shape->getName() << " doesn't fit, it's outside map boundaries: position (" << 
+//						x << "," << y << "," << z << "), dimensions: ( " << 
+//						shape->getWidth() << "," << shape->getDepth() << "," << shape->getHeight() << " )." << endl;
 					return false;
 				}
 				// shape can stick out above MAP_VIEW_HEIGHT
@@ -3010,9 +3010,9 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
 	}
 
-	if ( heightMapEnabled ) {
-		outdoor->initOutdoorsGroundTexture();
-	}
+//	if ( heightMapEnabled ) {
+//		outdoor->initOutdoorsGroundTexture();
+//	}
 
 	setHasWater( info->hasWater == 1 ? true : false );
 
@@ -3670,7 +3670,7 @@ void Map::clearHouses() {
 }
 
 bool Map::isRoad( int mapx, int mapy ) {
-	hasOutdoorTexture( mapx, mapy + 1, OUTDOORS_STEP, OUTDOORS_STEP, ROAD_LAYER );
+	return hasOutdoorTexture( mapx, mapy + 1, OUTDOORS_STEP, OUTDOORS_STEP, ROAD_LAYER );
 }
 
 void Map::addOutdoorTexture( int mapx, int mapy, int ref, float angle, bool horiz, bool vert ) {

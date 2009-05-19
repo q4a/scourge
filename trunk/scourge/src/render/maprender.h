@@ -50,7 +50,6 @@ public:
 	virtual inline void drawWaterPosition( int posX, int posY,
 	                                       float xpos2, float ypos2,
 	                                       Shape *shape ) {}
-	virtual inline void initOutdoorsGroundTexture() {}
 	virtual void createGroundMap();
 
 	virtual inline void setupLightBlending() {

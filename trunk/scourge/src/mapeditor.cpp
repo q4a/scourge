@@ -308,7 +308,6 @@ void MapEditor::createNewMapDialog() {
 	themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), themeNames );
 
 	newMapWin->createLabel( startx, 135, _( "Map Type:" ) );
-	outdoorMapButton = newMapWin->createButton( startx + 100, 120, startx + 200, 140, "Outdoors", true );
 	dungeonMapButton = newMapWin->createButton( startx + 210, 120, startx + 310, 140, "Dungeon", true );
 	landMapButton = newMapWin->createButton( startx + 320, 120, startx + 420, 140, "Land", true );
 
@@ -493,14 +492,9 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	}
 
 	string result;
-	if( widget == outdoorMapButton && outdoorMapButton->isSelected() ) {
-		dungeonMapButton->setSelected( !outdoorMapButton->isSelected() );
-		landMapButton->setSelected( !outdoorMapButton->isSelected() );
-	} else if( widget == dungeonMapButton && dungeonMapButton->isSelected() ) {
-		outdoorMapButton->setSelected( !dungeonMapButton->isSelected() );
+	if( widget == dungeonMapButton && dungeonMapButton->isSelected() ) {
 		landMapButton->setSelected( !dungeonMapButton->isSelected() ); 
 	} else if( widget == landMapButton && landMapButton->isSelected() ) {
-		outdoorMapButton->setSelected( !landMapButton->isSelected() );
 		dungeonMapButton->setSelected( !landMapButton->isSelected() );		
 	} else if ( widget == roofButton ) {
 		scourge->getMap()->setRoofShowing( roofButton->isSelected() );
@@ -541,19 +535,11 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 			if ( line > -1 ) {
 				string str = themeNames[ line ];
 				int pos = str.rfind( "(S)" );
-				if ( pos == str.size() - 3 ) str.erase( pos );
+				if ( pos == (int)str.size() - 3 ) str.erase( pos );
 				scourge->getShapePalette()->loadTheme( str.c_str() );
 			}
 
-			if ( outdoorMapButton->isSelected() ) {
-				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
-				OutdoorGenerator *og = new OutdoorGenerator( scourge, level, depth, 1, false, false, NULL );
-				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
-				delete og;
-				raiseButton->setEnabled( true );
-				lowerButton->setEnabled( true );
-				outdoorTexturesButton->setEnabled( true );
-			} else if ( landMapButton->isSelected() ) {
+			if ( landMapButton->isSelected() ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
 				LandGenerator *og = new LandGenerator( scourge, level, depth, 1, false, false, NULL );
 				int mx, my;
@@ -584,7 +570,7 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 				og->setMapPosition( QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				
-				scourge->getMap()->getRender()->initOutdoorsGroundTexture();
+				og->initOutdoorsGroundTexture( scourge->getMap() );
 				delete og;
 				raiseButton->setEnabled( true );
 				lowerButton->setEnabled( true );

@@ -82,7 +82,6 @@ private:
 	Button *cancelButton;
 	Button *okButton;
 	Button *applyButton;
-	Button *outdoorMapButton;
 	Button *dungeonMapButton;
 	Button *landMapButton;
 	TextField *levelText, *depthText;

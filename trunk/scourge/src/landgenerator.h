@@ -31,6 +31,7 @@ class Scourge;
 class Mission;
 class GLShape;
 class CellularAutomaton;
+class Texture;
 
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
@@ -67,6 +68,17 @@ public:
 	
 	inline void setWillAddParty( bool b ) { willAddParty = b; }
 	inline bool getWillAddParty() { return willAddParty; }
+	
+	void initOutdoorsGroundTexture( Map *map );
+	
+private:	
+	void applyGrassEdges( Map *map, int x, int y, bool w, bool e, bool s, bool n );
+	Texture getThemeTex( Map *map, int ref );
+	void addHighVariation( Map *map, int ref, int z );
+	bool isRockTexture( Map *map, int x, int y );
+	bool isLakebedTexture( Map *map, int x, int y );
+	bool isAllHigh( Map *map, int x, int y, int w, int h );
+	
 	
 protected:
 	void loadMapGridBitmap();

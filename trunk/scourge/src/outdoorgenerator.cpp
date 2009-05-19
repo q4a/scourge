@@ -187,7 +187,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 
-	map->getRender()->initOutdoorsGroundTexture();
+//	map->getRender()->initOutdoorsGroundTexture();
 
 	// create a set of rooms for outdoor items
 	doorCount = 0;
