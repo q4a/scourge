@@ -1,9 +1,66 @@
-VEGETATION_BARREN <- 0x0010;
-VEGETATION_GROVES <- 0x0020;
-VEGETATION_LIGHTFOREST <- 0x0040;
-VEGETATION_DEEPFOREST <- 0x0080;
+// -----------------------------------------------------------------
+// vegetations
+//
+class BaseVegetation {
+}
 
-class BaseClimate {	
+class BarrenVegetation extends BaseVegetation {
+	function getPixelValue() {
+		return 50;
+	}
+	
+	function getTreeRate() {
+		return 2;
+	}
+}
+
+class GroveVegetation extends BaseVegetation {
+	function getPixelValue() {
+		return 100;
+	}
+	
+	function getTreeRate() {
+		return 15;
+	}	
+}
+
+class LightForestVegetation extends BaseVegetation {
+	function getPixelValue() {
+		return 150;
+	}
+	
+	function getTreeRate() {
+		return 50;
+	}	
+}
+
+class DeepForestVegetation extends BaseVegetation {
+	function getPixelValue() {
+		return 200;
+	}
+	
+	function getTreeRate() {
+		return 80;
+	}	
+}
+
+vegetations <- [ BarrenVegetation(), GroveVegetation(), LightForestVegetation(), DeepForestVegetation() ];
+
+function getVegetation( value ) {
+	for( i <- 0; i < vegetations.len(); i++ ) {
+		if( vegetations[i].getPixelValue() == value ) {
+			return vegetations[i];
+		}
+	}
+	if( value != 0 ) print( "Can't find vegetation for value=" + value.tostring() + "\n" );
+	return null;
+}
+
+
+// -----------------------------------------------------------------
+// climates
+//
+class BaseClimate {
 }
 
 class AlpineClimate extends BaseClimate {

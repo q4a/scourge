@@ -25,13 +25,16 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 function generate_tree( region_x, region_y, offset_x, offset_y, x, y, climate_value, vegetation_value ) {
 	climate <- getClimate( climate_value );
 	if( climate == null ) return;
+	vegetation <- getVegetation( vegetation_value );
+	if( vegetation == null ) return;
 		
 	if( in_excluded_area( region_x, region_y, x, y ) ) return;
 	
 	tree <- getTreeForClimate(climate);
 	xp <- offset_x + x;
 	yp <- offset_y + y;
-	if( scourgeGame.getMission().isFreeOutdoors( xp, yp, 0, tree ) ) {
+	rate <- ( scourgeGame.getMission().mt_rand() * 100.0 ).tointeger();
+	if( rate < vegetation.getTreeRate() && scourgeGame.getMission().isFreeOutdoors( xp, yp, 0, tree ) ) {
 		setPosition( xp, yp, 0, tree, false );
 	}
 }
