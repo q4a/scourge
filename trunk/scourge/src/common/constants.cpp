@@ -730,13 +730,15 @@ void setGLState( Uint32 stateBits ) {
 	Uint32 diff = stateBits ^ glStateBits;
 	if ( !diff ) return;
 	
-	if ( diff & GLS_TEXTURE_2D ) {
-		if ( stateBits & GLS_TEXTURE_2D ) {
-			glEnable( GL_TEXTURE_2D );
-		} else {
+	if ( diff & GLS_NO_TEXTURE_2D ) {
+		if ( stateBits & GLS_NO_TEXTURE_2D ) {
 			glDisable( GL_TEXTURE_2D );
+		} else {
+			glEnable( GL_TEXTURE_2D );
 		}
 	}
+
+return;
 
 	if ( diff & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) {
 		GLenum srcBlend, dstBlend;
