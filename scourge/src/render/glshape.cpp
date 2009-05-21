@@ -316,10 +316,6 @@ GLShape::~GLShape() {
 }
 
 void GLShape::drawShadow() {
-	// cull back faces
-	glEnable( GL_CULL_FACE );
-	glCullFace( GL_BACK );
-
 	glCallList( displayListStart );
 
 	// reset shadow flag
@@ -347,9 +343,6 @@ void GLShape::draw() {
 		return;
 	}
 
-	// cull back faces
-	glEnable( GL_CULL_FACE );
-	glCullFace( GL_BACK );
 	if( isShade() ) {
 		glDisable( GL_TEXTURE_2D );
 	} else {
@@ -435,29 +428,20 @@ void GLShape::outline( float r, float g, float b ) {
 	glLineWidth( 4 );
 	glEnable( GL_CULL_FACE );
 	glCullFace( GL_BACK );
-	//glEnable( GL_DEPTH_TEST );
-	//GLint df;
-	//glGetIntegerv( GL_DEPTH_FUNC, &df );
-	//glDepthFunc( GL_GEQUAL );
 	glColor3f( r, g, b );
 	glCallList( displayListStart );
 	glLineWidth( 1 );
-	//glDepthFunc( df );
-	//glCullFace( GL_BACK );
 	glDisable( GL_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
 	glDisable( GL_BLEND );
 	glEnable( GL_TEXTURE_2D );
 	useShadow = false;
-	//glColor4f(1, 1, 1, 0.9f);
 
 	glColor4fv( colors );
 }
 
 void GLShape::setupBlending() {
 	glBlendFunc( GL_ONE, GL_ONE );
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//Scourge::setBlendFunc();
 }
 
 void GLShape::createDarkTexture( WallTheme *theme ) {
