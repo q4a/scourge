@@ -104,6 +104,10 @@ void ScourgeView::drawView() {
 		scourge->getSession()->getCutscene()->updateCameraPosition();
 	}
 
+	// cull back faces
+	glEnable( GL_CULL_FACE );
+	glCullFace( GL_BACK );
+
 	scourge->getMap()->draw();
 	
 	drawMapInfos();

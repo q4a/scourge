@@ -85,10 +85,6 @@ void MD3Shape::draw() {
 	// rotate to movement angle
 	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
-	// To make our model render somewhat faster, we do some front back culling.
-	// It seems that Quake2 orders their polygons clock-wise.
-	glEnable( GL_CULL_FACE );
-	glCullFace( GL_BACK );
 	if( isShade() ) {
 		glDisable( GL_TEXTURE_2D );
 	} else {
@@ -104,7 +100,7 @@ void MD3Shape::draw() {
 	} else {
 		glDisable( GL_TEXTURE_2D );
 	}
-	glDisable( GL_CULL_FACE );
+
 	glPopMatrix();
 }
 
