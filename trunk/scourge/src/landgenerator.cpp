@@ -373,20 +373,21 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	int ex = MAP_TILES_X;
 	int ey = MAP_TILES_Y;
 	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
-	int refs[MAP_WIDTH][MAP_DEPTH];
+	GroundTexture *refs[MAP_WIDTH][MAP_DEPTH];
 	for ( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			bool high = isRockTexture( map, x, y );
 			bool low = isLakebedTexture( map, x, y );
 			// if it's both high and low, make rock texture. Otherwise mountain sides will be drawn with lakebed texture.
-			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK :
-			        ( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED :
-			          WallTheme::OUTDOOR_THEME_REF_GRASS );
-			Texture tex = getThemeTex( map, r );
-			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
-				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					refs[x + xx][y + yy] = r;
-					map->setGroundTex( x + xx, y + yy, tex );
+			string name = high ? "rock" : ( low ? "lakebed" : "grass" );
+			GroundTexture *gt = map->getShapes()->getGroundTexture( name );
+			if( gt ) {
+				Texture tex = gt->getRandomTexture();
+				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
+					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+						refs[x + xx][y + yy] = gt;
+						map->setGroundTex( x + xx, y + yy, tex );
+					}
 				}
 			}
 		}
@@ -394,14 +395,12 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 
 	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			if ( refs[x][y] != WallTheme::OUTDOOR_THEME_REF_GRASS ) {
-				bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-				bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-				bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-				bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-				if ( !( w && e && s && n ) ) {
-					applyGrassEdges( map, x, y, w, e, s, n );
-				}
+			bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+			bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+			bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+			bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+			if ( !( w && e && s && n ) ) {
+				applyGrassEdges( map, x, y, w, e, s, n );
 			}
 		}
 	}

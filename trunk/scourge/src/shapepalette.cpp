@@ -258,7 +258,7 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		ConfigNode *node = ( *v )[i];
 		string name = node->getValueAsString( "name" );
 		string value = node->getValueAsString( "value" );
-		bool grayscale = node->getValueAsBool( "grayscale" );
+		//bool grayscale = node->getValueAsBool( "grayscale" );
 		bool outdoors = node->getValueAsBool( "outdoors" );
 		if ( outdoors ) {
 			NamedOutdoorTexture ot;
@@ -524,6 +524,29 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			themes[ themeCount++ ] = theme;
 		}
 		allThemes[ allThemeCount++ ] = theme;
+	}
+	
+	// load the outdoor textures info
+	char line[3000];
+	v = config->getDocument()->getChildrenByName( "outdoor_textures" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, v->size() );
+		
+		for( map<string, ConfigValue*>::iterator i = node->getValues()->begin(); i != node->getValues()->end(); ++i ) {
+			string name = i->first;
+			strcpy( line, node->getValueAsString( name ) );
+			char *p = strtok( line, "," );
+			int w = atoi( p );
+			int h = atoi( strtok( NULL, "," ) );
+			GroundTexture *gt = new GroundTexture( name, w, h );
+			while( ( p = strtok( NULL, "," ) ) ) {
+				string texture_path = p;
+				gt->addTexture( texture_path );
+			}
+			groundTextures[ name ] = gt;
+		}
 	}
 }
 

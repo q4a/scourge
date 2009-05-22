@@ -36,6 +36,36 @@ class GLTorch;
 class Shapes;
 class Session;
 
+class GroundTexture {
+private:
+	int w, h;
+	std::string name;
+	std::map<std::string, Texture> textures;
+	
+public:
+	GroundTexture( std::string name, int w, int h ) {
+		this->name = name;
+		this->w = w;
+		this->h = h;
+	}
+	
+	~GroundTexture() {
+	}
+	
+	inline int getWidth() { return this->w; }
+
+	inline int getHeight() { return this->h; }
+	
+	inline std::string getName() { return this->name; }
+	
+	inline void addTexture( std::string name ) { 
+		Texture tex;
+		textures[ name ] = tex;
+	}
+	
+	Texture getRandomTexture();
+};
+
 /// Defines where a static shape can occur.
 struct Occurs {
 	bool rooms_only;
@@ -329,6 +359,8 @@ protected:
 	GLShape *shapes[512];
 	std::map<std::string, GLShape *> shapeMap;
 	int shapeCount;
+	
+	std::map<std::string, GroundTexture*> groundTextures;
 
 	// TODO: can be probably replaced by Texture class itself
 	struct ExtraTexture {
@@ -525,6 +557,16 @@ public:
 	// unused: GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
 
 	void loadAllShapes();
+	
+	inline std::map<std::string, GroundTexture*> *getGroundTextures() { return &(this->groundTextures); }
+	inline GroundTexture *getGroundTexture( std::string name ) {
+		if( groundTextures.find( name ) == groundTextures.end() ) {
+			std::cerr << "*** Error: can't find ground texture " << name << std::endl;
+			return NULL;
+		} else {
+			return groundTextures[name];
+		}
+	}
 
 protected:
 	static Shapes *instance;

@@ -954,5 +954,18 @@ Texture const& Shapes::getCursorTexture( int cursorMode ) {
 	return cursorTexture[ cursorMode ];
 }
 
-
+Texture GroundTexture::getRandomTexture() {
+	int n = (int)( Util::mt_rand() * textures.size() );
+	map<string, Texture>::iterator iter = textures.begin();
+	// can I just do i += n ?
+	for( int i = 0; i < n; i++ ) iter++;
+	string filename = iter->first;
+	Texture tex = iter->second;
+	cerr << "name=" << name << " n=" << n << " file=" << filename << " tex=" << (&tex) << endl;
+	
+	if( !tex.isSpecified() ) {
+		tex.load( filename );
+	}
+	return tex;
+}
 
