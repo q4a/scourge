@@ -39,6 +39,14 @@ function generate_tree( region_x, region_y, offset_x, offset_y, x, y, climate_va
 	}
 }
 
+function get_ground_texture( climate_value, vegetation_value ) {
+	climate <- getClimate( climate_value );
+	if( climate == null ) return "grass";
+	//vegetation <- getVegetation( vegetation_value );
+	//if( vegetation == null ) return "grass";
+	return climate.getGroundTexture();
+}
+
 /**
  * Areas to not cover with trees (towns, roads, etc.)
  */

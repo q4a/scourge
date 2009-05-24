@@ -121,6 +121,9 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 						params[6] = cellular->getNode( x, y )->climate;
 						params[7] = cellular->getNode( x, y )->vegetation;
 						shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 8, params );
+						
+						map->setClimate( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->climate );
+						map->setVegetation( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->vegetation );
 		
 		//					// don't put them on roads and in houses
 		//					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
@@ -308,7 +311,7 @@ void LandGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	
 	cellular->generate( true, true, 4, true, false );
 	cellular->makeMinSpace( 4 );
-	cellular->print();
+	//cellular->print();
 	
 	createGround();
 }
@@ -369,7 +372,10 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	// set ground texture
 
 	std::map<int, int> texturesUsed;
-
+	
+	int params[2];
+	char answer[255];
+	string name;
 	int ex = MAP_TILES_X;
 	int ey = MAP_TILES_Y;
 	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
@@ -379,7 +385,16 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 			bool high = isRockTexture( map, x, y );
 			bool low = isLakebedTexture( map, x, y );
 			// if it's both high and low, make rock texture. Otherwise mountain sides will be drawn with lakebed texture.
-			string name = high ? "rock" : ( low ? "lakebed" : "grass" );
+			if( high ) {
+				name = "rock";
+			} else if( low ) {
+				name = "lakebed";
+			} else {
+				params[0] = map->getClimate( mapPosX + x, mapPosY + y );
+				params[1] = map->getVegetation( mapPosX + x, mapPosY + y );
+				bool ret = map->getShapes()->getSession()->getSquirrel()->callIntArgStringReturnMethod( "get_ground_texture", answer, 2, params );
+				name = ret ? answer : "grass";
+			}
 			GroundTexture *gt = map->getShapes()->getGroundTexture( name );
 			if( gt ) {
 				Texture tex = gt->getRandomTexture();

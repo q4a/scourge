@@ -131,6 +131,8 @@ private:
 	Location *itemPos[MAP_WIDTH][MAP_DEPTH];
 	EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
 	Location *posCache[MAX_POS_CACHE];
+	int climate[MAP_TILES_X][MAP_TILES_Y];
+	int vegetation[MAP_TILES_X][MAP_TILES_Y];
 	signed int nbPosCache;
 	Rug rugPos[MAP_CHUNKS_X][MAP_CHUNKS_Y];
 	Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
@@ -240,6 +242,10 @@ public:
 	inline void setRegionY( int n ) { this->regionY = n; }
 	inline void setContinuousLandMode( bool b ) { this->continuousLandMode = b; }
 	inline bool getContinuousLandMode() { return this->continuousLandMode; }
+	inline void setClimate( int x, int y, int n ) { this->climate[x][y] = n; }
+	inline int getClimate( int x, int y ) { return this->climate[x][y]; }
+	inline void setVegetation( int x, int y, int n ) { this->vegetation[x][y] = n; }
+	inline int getVegetation( int x, int y ) { return this->vegetation[x][y]; }
 	
 	bool isOnFloorTile( int px, int py );
 
