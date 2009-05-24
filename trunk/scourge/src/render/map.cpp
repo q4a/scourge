@@ -198,6 +198,12 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 			lightMap[x][y] = ( LIGHTMAP_ENABLED ? 0 : 1 );
 		}
 	}
+	
+	for( int x = 0; x < MAP_TILES_X; x++) {
+		for( int x = 0; x < MAP_TILES_X; x++) {
+			climate[x][y] = vegetation[x][y] = 0;
+		}
+	}
 
 	lightMapChanged = true;
 	selectedDropTarget = NULL;
@@ -290,6 +296,12 @@ void Map::reset() {
 		mapViewWidth = MVW;
 		mapViewDepth = MVD;
 	}
+	
+	for( int x = 0; x < MAP_TILES_X; x++) {
+		for( int x = 0; x < MAP_TILES_X; x++) {
+			climate[x][y] = vegetation[x][y] = 0;
+		}
+	}	
 	
 	// Do not reset these: when on the overland map, reset() is called during region transitions.
 	// The values of these variables are set in Scourge::createLevelMap().

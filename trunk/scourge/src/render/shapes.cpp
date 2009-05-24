@@ -961,7 +961,6 @@ Texture GroundTexture::getRandomTexture() {
 	for( int i = 0; i < n; i++ ) iter++;
 	string filename = iter->first;
 	Texture tex = iter->second;
-	cerr << "name=" << name << " n=" << n << " file=" << filename << " tex=" << (&tex) << endl;
 	
 	if( !tex.isSpecified() ) {
 		tex.load( filename );

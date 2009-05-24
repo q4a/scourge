@@ -71,6 +71,10 @@ class AlpineClimate extends BaseClimate {
 	function getTreeList() {
 		return ["tree18", "birch", "deadtree", "fir"];
 	}
+	
+	function getGroundTexture() {
+		return "grass_alpine";
+	}
 }
 
 class BorealClimate extends BaseClimate {
@@ -81,6 +85,10 @@ class BorealClimate extends BaseClimate {
 	function getTreeList() {
 		return ["tree01", "tree14", "tree16", "tree20", "birch", "fern", "fir"];
 	}
+	
+	function getGroundTexture() {
+		return "grass_boreal";
+	}	
 }
 
 class TemperateClimate extends BaseClimate {
@@ -90,6 +98,10 @@ class TemperateClimate extends BaseClimate {
 	
 	function getTreeList() {
 		return ["tree01", "tree02", "tree03", "tree06", "tree10", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21", "birch"];
+	}	
+	
+	function getGroundTexture() {
+		return "grass_temperate";
 	}	
 }
 
@@ -101,6 +113,10 @@ class SubtropicalClimate extends BaseClimate {
 	function getTreeList() {
 		return ["tree05", "tree09", "tree11", "tree18", "tree19", "bushtree", "cactus", "deadtree", "palm", "palm2"];
 	}		
+	
+	function getGroundTexture() {
+		return "grass_subtropical";
+	}	
 }
 
 class TropicalClimate extends BaseClimate {
@@ -110,6 +126,10 @@ class TropicalClimate extends BaseClimate {
 
 	function getTreeList() {
 		return ["tree03", "tree19", "bushtree", "fern", "palm", "palm2"];
+	}	
+
+	function getGroundTexture() {
+		return "grass_tropical";
 	}	
 }
 
