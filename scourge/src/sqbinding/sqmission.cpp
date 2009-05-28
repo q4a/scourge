@@ -494,10 +494,11 @@ int SqMission::_addOutdoorTexture( HSQUIRRELVM vm ) {
 	GET_BOOL( vert )
 	GET_BOOL( horiz )
 	GET_FLOAT( angle )
-	GET_INT( ref )
+	GET_STRING( groundTextureName, 255 )
 	GET_INT( mapy )
 	GET_INT( mapx )
-	SqBinding::sessionRef->getMap()->addOutdoorTexture( mapx, mapy, ref, angle, horiz, vert );	
+	string s = groundTextureName;
+	SqBinding::sessionRef->getMap()->addOutdoorTexture( mapx, mapy, s, angle, horiz, vert );	
 	return 0;
 }
 

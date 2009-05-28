@@ -78,24 +78,24 @@ function drawHorghh_part1( x, y ) {
 	for( yy <- 0; yy <= 9; yy ++ ) {
 		vy = y + ( yy * MAP_UNIT );
 		if ( yy == 0 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_270 );
+			drawRoadTile( vx, vy, "street_end_270" );
 		} else if ( yy >= 9  ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_90 );
+			drawRoadTile( vx, vy, "street_end_90" );
 		} else if( yy == 3 || yy == 7 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS );			
+			drawRoadTile( vx, vy, "street_cross" );			
 		} else {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_90 );
+			drawRoadTile( vx, vy, "street_90" );
 		}
 	}
 	vy = y + ( 3 * MAP_UNIT );
 	for( xx <- 4; xx <= 11; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx == 4 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
+			drawRoadTile( vx, vy, "street_end" );
 		} else if ( xx >= 11 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
+			drawRoadTile( vx, vy, "street_end_180" );
 		} else if ( xx != 7 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+			drawRoadTile( vx, vy, "street" );
 
 		}
 	}
@@ -103,9 +103,9 @@ function drawHorghh_part1( x, y ) {
 	for( xx <- 6; xx <= 11; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx == 6 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
+			drawRoadTile( vx, vy, "street_end" );
 		} else if ( xx != 7 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+			drawRoadTile( vx, vy, "street" );
 
 		}
 	}
@@ -137,9 +137,9 @@ function drawHorghh_part2( x, y ) {
 	for( xx <- 0; xx <= 5; xx ++ ) {
 		vx = x + ( xx * MAP_UNIT );
 		if ( xx >= 5 ) {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
+			drawRoadTile( vx, vy, "street_end_180" );
 		} else {
-			drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+			drawRoadTile( vx, vy, "street" );
 		}
 	}
 	

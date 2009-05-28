@@ -349,11 +349,11 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 		for ( int i = 0; i < VILLAGE_WIDTH; i++ ) {
 			int vx = x + ( i * MAP_UNIT );
 			if ( i == 0 ) {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END );
+				map->addOutdoorTexture( vx, vy, "street_end" );
 			} else if ( i >= VILLAGE_WIDTH - 1 ) {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
+				map->addOutdoorTexture( vx, vy, "street_end_180", 0 );
 			} else {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET );
+				map->addOutdoorTexture( vx, vy, "street" );
 			}
 		}
 	}
@@ -363,9 +363,9 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 		for ( int i = 1; i <= VILLAGE_HEIGHT; i++ ) {
 			int vy = y + ( i * MAP_UNIT );
 			if ( i == 1 ) {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270 );
+				map->addOutdoorTexture( vx, vy, "street_end_270" );
 			} else if ( i % 4 == 0 ) {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_CROSS );
+				map->addOutdoorTexture( vx, vy, "street_cross" );
 				if( !foundCrossRoad ) {
 					// needed for party start location
 					roadX = vx + MAP_UNIT / 2;
@@ -373,9 +373,9 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 					foundCrossRoad = true;
 				}
 			} else if ( i >= VILLAGE_HEIGHT  ) {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
+				map->addOutdoorTexture( vx, vy, "street_end_90", 0 );
 			} else {
-				map->addOutdoorTexture( vx, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90 );
+				map->addOutdoorTexture( vx, vy, "street_90" );
 			}
 		}
 	}	

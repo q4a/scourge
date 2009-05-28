@@ -261,9 +261,10 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	yy += 79;
 
 	count = 0;
-	outdoorTextureNames = new string[ WallTheme::OUTDOOR_THEME_REF_COUNT ];
-	for ( int i = 0; i < WallTheme::OUTDOOR_THEME_REF_COUNT; i++ ) {
-		outdoorTextureNames[ count++ ] = WallTheme::outdoorThemeRefName[ i ];
+	outdoorTextureNames = new string[ scourge->getShapePalette()->getGroundTextures()->size() ];
+	for( map<std::string, GroundTexture*>::iterator i = scourge->getShapePalette()->getGroundTextures()->begin(); 
+		i != scourge->getShapePalette()->getGroundTextures()->end(); ++i ) {
+		outdoorTextureNames[ count++ ] = i->first;
 	}
 	outdoorTexturesList->setLines( count, outdoorTextureNames );
 
@@ -398,8 +399,9 @@ bool MapEditor::handleEvent( SDL_Event *event ) {
 	scourge->getMap()->cursorHeight = MAP_WALL_HEIGHT;
 	if ( outdoorTexturesButton->isSelected() ) {
 		int ref = outdoorTexturesList->getSelectedLine();
-		scourge->getMap()->cursorWidth = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-		scourge->getMap()->cursorDepth = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref );
+		GroundTexture *gt = scourge->getShapePalette()->getGroundTexture( outdoorTextureNames[ ref ] );
+		scourge->getMap()->cursorWidth = gt->getWidth();
+		scourge->getMap()->cursorDepth = gt->getHeight();
 		scourge->getMap()->cursorHeight = 1;
 	} else {
 		GLShape *shape;
@@ -735,23 +737,13 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 		if ( button == SDL_BUTTON_LEFT ) {
 			if ( outdoorTexturesButton->isSelected() ) {
 				if ( outdoorTexturesList->getSelectedLine() > -1 ) {
-					//string s = outdoorTextureNames[ outdoorTexturesList->getSelectedLine() ];
-					//NamedOutdoorTexture *ot = scourge->getShapePalette()->getOutdoorNamedTexture( s );
 					int ref = outdoorTexturesList->getSelectedLine();
-					int faceCount = scourge->getShapePalette()->getCurrentTheme()->getOutdoorFaceCount( ref );
-					if ( faceCount == 0 ) {
-						cerr << "Map Editor Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
-						return;
-					}
-//      int w = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-//      int h = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref );
-					scourge->getMap()->setOutdoorTexture( xx, yy + 1,
-					    0, 0,
-					    ref,
-					    outdoorTextureAngle,
-					    outdoorTextureHorizFlip,
-					    outdoorTextureVertFlip,
-					    ROAD_LAYER );
+					scourge->getMap()->setOutdoorTexture( xx, yy + 1, 0, 0,
+					                                      outdoorTextureNames[ ref ],
+					                                      outdoorTextureAngle,	
+					                                      outdoorTextureHorizFlip,
+					                                      outdoorTextureVertFlip,
+					                                      ROAD_LAYER );
 				}
 				return;
 			} else {
@@ -779,7 +771,8 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 		} else if ( button == SDL_BUTTON_RIGHT ) {
 			if ( outdoorTexturesButton->isSelected() ) {
 				int ref = outdoorTexturesList->getSelectedLine();
-				scourge->getMap()->removeOutdoorTexture( xx, yy + 1, scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref ), scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref ), ROAD_LAYER );
+				GroundTexture *gt = scourge->getShapePalette()->getGroundTexture( outdoorTextureNames[ ref ] );
+				scourge->getMap()->removeOutdoorTexture( xx, yy + 1, gt->getWidth(), gt->getHeight(), ROAD_LAYER );
 			} else if ( getShape( &shape ) ) {
 				for ( int sx = 0; sx < shape->getWidth(); sx++ ) {
 					for ( int sy = 0; sy < shape->getDepth(); sy++ ) {

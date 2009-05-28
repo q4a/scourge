@@ -550,8 +550,9 @@ public:
 	bool hasOutdoorTexture( int x, int y, int width, int height, int z );
 
 	void setOutdoorTexture( int x, int y, float offsetX, float offsetY,
-	                        int ref, float angle, bool horizFlip,
-	                        bool vertFlip, int z );
+	                        std::string groundTextureName, float angle, bool horizFlip,
+	                        bool vertFlip, int z,
+	                        std::string *parts = NULL);
 	void removeOutdoorTexture( int x, int y, float width, float height, int z );
 
 	Shape *removeItemPosition( Sint16 x, Sint16 y );
@@ -826,7 +827,7 @@ public:
 	void startHouse();
 	void endHouse();
 	void clearHouses();
-	void addOutdoorTexture( int mapx, int mapy, int ref, float angle = 0.0f, bool horiz = false, bool vert = false );
+	void addOutdoorTexture( int mapx, int mapy, std::string groundTextureName, float angle = 0.0f, bool horiz = false, bool vert = false );
 	bool isRoad( int mapx, int mapy );
 	void flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
 
