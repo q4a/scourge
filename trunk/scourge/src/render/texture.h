@@ -26,6 +26,8 @@ public:
 		INVALID = 0,
 		INPROGRESS = ~0,
 	};
+	
+	std::string group_name;
 
 	// construction / destruction / copying
 	Texture();
@@ -50,9 +52,11 @@ public:
 	// loading / unloading
 	bool load( const string& filename, bool absolutePath = false, bool isSprite = true, bool anisotropy = false );
 	bool createAlpha(  Texture const& alpha, Texture const& sample, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
+	bool createAlphaQuad(  Texture const& alpha, Texture samples[], int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
 	bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
 	bool loadShot( const string& dirName );
 	void clear();
+	bool createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north );
 
 	// OpenGL operations
 	void glBind() const {
@@ -112,8 +116,9 @@ private:
 		~Actual();
 		// members
 		bool load( const string& path, bool isSprite, bool anisotropy );
+		bool createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north );
 		bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
-		bool createAlpha( Actual* alpha, Actual* sample, int textureSizeW, int textureSizeH, int width, int height );
+		bool createAlpha( Actual* alpha, Actual* sample[], int sampleCount, int textureSizeW, int textureSizeH, int width, int height );
 		bool loadShot( const string& dirName );
 		GLint width();
 		GLint height();

@@ -460,7 +460,7 @@ public:
 // Number of tiles on an outdoor map
 #define MAP_TILES_X MAP_WIDTH / OUTDOORS_STEP
 #define MAP_TILES_Y MAP_DEPTH / OUTDOORS_STEP
-
+	
 // The max value of a skill under normal circumstances.
 #define MAX_SKILL 100
 

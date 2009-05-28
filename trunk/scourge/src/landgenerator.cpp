@@ -114,7 +114,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
 					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
 					
-					if( !map->isRoad( xx, yy ) ) {
+					//if( !map->isRoad( xx, yy ) ) {
 						
 						params[4] = x * OUTDOORS_STEP;
 						params[5] = y * OUTDOORS_STEP;
@@ -129,7 +129,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		//					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
 		//						map->setPosition( xx, yy, 0, shape );
 		//					}
-					}
+					//}
 				}
 			}
 		}
@@ -415,13 +415,24 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 			bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
 			bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
 			if ( !( w && e && s && n ) ) {
-				applyGrassEdges( map, x, y, w, e, s, n );
+				// get or create a new texture that is the blend of the four edges
+				Texture tex;
+				tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
+				                     refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+				                     refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+				                     refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+				                     refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture() );
+				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
+					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+						map->setGroundTex( x + xx, y + yy, tex );
+					}
+				}
 			}
 		}
 	}
 
-	addHighVariation( map, WallTheme::OUTDOOR_THEME_REF_SNOW, GROUND_LAYER );
-	addHighVariation( map, WallTheme::OUTDOOR_THEME_REF_SNOW_BIG, GROUND_LAYER );
+	addHighVariation( map, "snow", GROUND_LAYER );
+	addHighVariation( map, "snow_big", GROUND_LAYER );
 
 }
 
@@ -430,69 +441,61 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 /// It takes a couple of parameters: The x,y map position and four parameters
 /// that specify in which direction(s) to apply the blending.
 
-void LandGenerator::applyGrassEdges( Map *map, int x, int y, bool w, bool e, bool s, bool n ) {
-	int angle = 0;
+void LandGenerator::applyGrassEdges( Map *map, int x, int y, bool w, bool e, bool s, bool n, string *parts ) {	
+	int angle = -1;
 	int sx = x;
 	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
-	int ref = -1;
+	string ref;
 	if ( !w && !s && !e ) {
-		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !s && !n ) {
-		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !n && !w ) {
 		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !w && !n && !s ) {
+		ref = "grass_tip";
+	} else if ( !e && !s && !n ) {
 		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+		ref = "grass_tip";
+	} else if ( !e && !n && !w ) {
+		angle = 180;
+		ref = "grass_tip";
+	} else if ( !w && !n && !s ) {
+		angle = 270;
+		ref = "grass_tip";
 
 	} else if ( !w && !e ) {
 		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+		ref = "grass_narrow";
 	} else if ( !n && !s ) {
 		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+		ref = "grass_narrow";
 
 	} else if ( !w && !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !e && !s ) {
-		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !e && !n ) {
-		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if ( !w && !n ) {
 		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+		ref = "grass_corner";
+	} else if ( !e && !s ) {
+		angle = 90;
+		ref = "grass_corner";
+	} else if ( !e && !n ) {
+		angle = 180;
+		ref = "grass_corner";
+	} else if ( !w && !n ) {
+		angle = 270;
+		ref = "grass_corner";
 
 	} else if ( !e ) {
 		angle = 180;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+		ref = "grass_edge";
 	} else if ( !w ) {
 		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+		ref = "grass_edge";
 	} else if ( !n ) {
 		angle = 270;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+		ref = "grass_edge";
 	} else if ( !s ) {
 		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+		ref = "grass_edge";
 	}
 
-	if ( ref > -1 ) {
+	if ( angle != -1 ) {
 		map->setOutdoorTexture( sx * OUTDOORS_STEP, sy * OUTDOORS_STEP, 0, 0, ref, angle, false, false, GROUND_LAYER );
 	}
-}
-
-/// Returns a random variation of the outdoor texture specified by ref.
-
-Texture LandGenerator::getThemeTex( Map *map, int ref ) {
-	int faceCount = map->getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	Texture* textureGroup = map->getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
-	return textureGroup[ Util::dice( faceCount ) ];
 }
 
 /// Adds semi-random height variation to an outdoor map.
@@ -500,9 +503,10 @@ Texture LandGenerator::getThemeTex( Map *map, int ref ) {
 /// Higher parts of the map are randomly selected, their height value
 /// set to z and textured with the referenced theme specific texture.
 
-void LandGenerator::addHighVariation( Map *map, int ref, int z ) {
-	int width = map->getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-	int height = map->getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
+void LandGenerator::addHighVariation( Map *map, std::string ref, int z ) {
+	GroundTexture *gt = map->getShapes()->getGroundTexture( ref );
+	int width = gt->getWidth();
+	int height = gt->getHeight();
 	int outdoor_w = width / OUTDOORS_STEP;
 	int outdoor_h = height / OUTDOORS_STEP;
 	int ex = MAP_TILES_X;

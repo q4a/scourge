@@ -42,6 +42,8 @@ private:
 	std::string name;
 	std::map<std::string, Texture> textures;
 	
+	static std::map<std::string, Texture> blendedTextures;
+	
 public:
 	GroundTexture( std::string name, int w, int h ) {
 		this->name = name;
@@ -64,6 +66,8 @@ public:
 	}
 	
 	Texture getRandomTexture();
+	
+	Texture getBlendedTexture( string *parts, Shapes *shapes );
 };
 
 /// Defines where a static shape can occur.

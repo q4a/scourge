@@ -17,7 +17,7 @@ function getVillageNpcType() {
 	return npcs[ c ];
 }
 
-trees <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21", "birch", "bushtree", "cactus", "deadtree", "fern", "fir", "palm", "palm2" ];
+trees <- [ "tree01", "tree02", "tree03", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21", "birch", "bushtree", "cactus", "deadtree", "fern", "fir", "palm", "palm2" ];
 function getTree() {
 	c <- ( scourgeGame.getMission().mt_rand() * trees.len().tofloat() ).tointeger();
 	return trees[c];
@@ -677,11 +677,11 @@ function drawRoads( x, y, village_width, village_height ) {
 		for ( i <- 0; i < village_width; i++ ) {
 			vx = x + ( i * MAP_UNIT );
 			if ( i == 0 ) {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END );
+				drawRoadTile( vx, vy, "street_end" );
 			} else if ( i >= village_width - 1 ) {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_180 );
+				drawRoadTile( vx, vy, "stret_end_180" );
 			} else {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET );
+				drawRoadTile( vx, vy, "street" );
 			}
 		}
 	}
@@ -690,13 +690,13 @@ function drawRoads( x, y, village_width, village_height ) {
 		for ( i <- 1; i <= village_height; i++ ) {
 			vy = y + ( i * MAP_UNIT );
 			if ( i == 1 ) {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_270 );
+				drawRoadTile( vx, vy, "street_end_270" );
 			} else if ( i % 4 == 0 ) {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_CROSS );
+				drawRoadTile( vx, vy, "street_cross" );
 			} else if ( i >= village_height  ) {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_END_90 );
+				drawRoadTile( vx, vy, "street_end_90" );
 			} else {
-				drawRoadTile( vx, vy, OUTDOOR_THEME_REF_STREET_90 );
+				drawRoadTile( vx, vy, "street_90" );
 			}
 		}
 	}		
@@ -930,15 +930,15 @@ function setPosition( x, y, z, shape, force ) {
 function drawTrail( x_start, y_start, path ) {
 	tx <- x_start;
 	ty <- y_start;
-	ref <- OUTDOOR_THEME_REF_TRAIL_END;
+	ref <- "trail_end";
 	angle <- 0;
 	for( i <- 0; i < path.len(); i++ ) {
 		if( path[i].slice(0, 1) == "e" ) {
-			ref = OUTDOOR_THEME_REF_TRAIL_END;
+			ref = "trail_end";
 		} else if( path[i].slice(0, 1) == "p" ) {
-			ref = OUTDOOR_THEME_REF_TRAIL;
+			ref = "trail";
 		} else if( path[i].slice(0, 1) == "t" ) {
-			ref = OUTDOOR_THEME_REF_TRAIL_TURN;
+			ref = "trail_turn";
 		}
 		angle = path[i].slice(1).tointeger();
 		//print( "ref=" + ref.tostring() + " angle=" + angle.tostring() + " " + tx.tostring() + "," + ty.tostring() + "\n" );

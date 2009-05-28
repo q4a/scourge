@@ -25,7 +25,6 @@ Texture::NodeVec Texture::mainList;
 Texture::Actual Texture::emptyNode;
 Texture Texture::empty;
 
-
 Texture::Actual::Actual()
 		: _id( INVALID )
 		, _cntr( 0 )
@@ -106,7 +105,6 @@ bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy )
 
 	return true;
 }
-		
 
 bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
 	// debug checks
@@ -167,11 +165,176 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 	return true;
 }
 
+
+bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north ) {
+	// debug checks
+	if ( original == NULL || !original->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing original texture." << endl;
+		return false;
+	}
+	if ( west == NULL || !west->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing west texture." << endl;
+		return false;
+	}
+	if ( east == NULL || !east->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing east texture." << endl;
+		return false;
+	}
+	if ( south == NULL || !south->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing south texture." << endl;
+		return false;
+	}
+	if ( north == NULL || !north->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing north texture." << endl;
+		return false;
+	}
+	
+	_filename = path;
+	
+	Preferences *prefs = Session::instance->getPreferences();
+	int textureSizeW = 256;
+	int textureSizeH = 256;
+	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
+
+	cerr << "creating blended edge: " << _filename << endl;
+
+	_width = textureSizeW;
+	_height = textureSizeH;
+	_isSprite = original->_isSprite;
+	_wantsAnisotropy = original->_wantsAnisotropy;	
+	_hasAlpha = original->_hasAlpha;
+
+	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
+	
+	//glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	glGenTextures( 1, &_id );
+	glBindTexture( GL_TEXTURE_2D, _id );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, prefs->getBpp() > 16 ? GL_LINEAR : GL_NEAREST );
+	
+	// Enable anisotropic filtering if requested, mipmapping is enabled
+	// and the hardware supports it.
+	if ( _wantsAnisotropy && !_hasAlpha
+	        && strstr( ( char* )glGetString( GL_EXTENSIONS ), "GL_EXT_texture_filter_anisotropic" )
+	        && prefs->getAnisoFilter() ) {
+		float maxAnisotropy;
+		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
+	} else {
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
+	}	
+	
+	gluBuild2DMipmaps( GL_TEXTURE_2D, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
+//	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
+	
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+
+	glPushMatrix();
+	glLoadIdentity();
+	
+	// draw the grass
+	glBindTexture( GL_TEXTURE_2D, original->_id );
+	glColor4f( 1, 1, 1, 1 );
+
+	glBegin( GL_TRIANGLE_STRIP );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( _width, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, _height );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( _width, _height );
+	glEnd();
+
+//	for( int i = 0; i < sampleCount; i++ ) {
+//		glBindTexture( GL_TEXTURE_2D, sample[i]->_id );
+//		glColor4f( 1, 1, 1, 1 );
+//	
+//		glBegin( GL_TRIANGLE_STRIP );
+//		glTexCoord2i( 0, 0 );
+//		glVertex2i( 0, 0 );
+//		glTexCoord2i( 1, 0 );
+//		glVertex2i( width, 0 );
+//		glTexCoord2i( 0, 1 );
+//		glVertex2i( 0, height );
+//		glTexCoord2i( 1, 1 );
+//		glVertex2i( width, height );
+//		glEnd();
+//	}
+//
+//	glDisable( GL_TEXTURE_2D );
+//
+//	// draw the alpha pixels only
+//	glDisable( GL_CULL_FACE );
+//	glDisable( GL_DEPTH_TEST );
+//	glEnable( GL_TEXTURE_2D );
+//	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
+//	glColor4f( 1, 1, 1, 1 );
+//
+//	glBindTexture( GL_TEXTURE_2D, alpha->_id );
+////  glNormal3f( 0, 0, 1 );
+//	glBegin( GL_TRIANGLE_STRIP );
+//	glTexCoord2i( 0, 0 );
+//	glVertex2i( 0, 0 );
+//	glTexCoord2i( 1, 0 );
+//	glVertex2i( width, 0 );
+//	glTexCoord2i( 0, 1 );
+//	glVertex2i( 0, height );
+//	glTexCoord2i( 1, 1 );
+//	glVertex2i( width, height );
+//	glEnd();
+//
+//	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
+	// Copy to a texture
+	//glLoadIdentity();
+	//glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, _id );
+	glCopyTexSubImage2D( GL_TEXTURE_2D,
+	                     0,      // MIPMAP level
+	                     0,      // x texture offset
+	                     0,      // y texture offset
+	                     0,              // x window coordinates
+	                     Session::instance->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
+	                     textureSizeW,    // width
+	                     textureSizeH     // height
+	                   );
+
+	// cover with the original
+//	glBindTexture( GL_TEXTURE_2D, background );
+//	glBegin( GL_TRIANGLE_STRIP );
+//	glTexCoord2i( 0, 0 );
+//	glVertex2i( 0, 0 );
+//	glTexCoord2i( 1, 0 );
+//	glVertex2i( _width, 0 );
+//	glTexCoord2i( 0, 1 );
+//	glVertex2i( 0, _height );
+//	glTexCoord2i( 1, 1 );
+//	glVertex2i( _width, _height );
+//	glEnd();	
+	glPopMatrix();
+	glDeleteTextures( 1, &background );
+
+	glDisable( GL_BLEND );
+	glEnable( GL_CULL_FACE );
+	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_TEXTURE_2D );
+
+	assert( _id != INVALID && _id != INPROGRESS );  
+	_isComplete = true;
+	return true;
+
+}
+
 /// Adds the alpha channel of the alpha texture to the sample texture.
 /// @return true on success.
 /// used to be Shapes::createAlphaTexture()
 
-bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSizeW, int textureSizeH, int width, int height ) {
+bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCount, int textureSizeW, int textureSizeH, int width, int height ) {
 	// debug checks
 	if ( _filename.compare( "" ) != 0 ) {
 		cerr << "*** Texture::Actual::createAlpha() over (" << _filename << ") refused." << endl;
@@ -181,16 +344,26 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 		cerr << "*** Texture::Actual::createAlpha() with missing alpha texture." << endl;
 		return false;
 	}
-	if ( sample == NULL || !sample->letsToBind() ) {
-		cerr << "*** Texture::Actual::createAlpha() with missing sample texture." << endl;
-		return false;
+	for( int i = 0; i < sampleCount; i++ ) {
+		if ( sample[i] == NULL || !sample[i]->letsToBind() ) {
+			cerr << "*** Texture::Actual::createAlpha() with missing sample texture. i=" << i << endl;
+			return false;
+		}
 	}
 	
 	Preferences *prefs = Session::instance->getPreferences();
 	
 	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
 
-	_filename = sample->_filename + " with added alpha";
+	cerr << "*** samples=" << sampleCount << endl;
+	_filename = "";
+	for( int i = 0; i < sampleCount; i++ ) {
+		if( i > 0 ) _filename += ",";
+		_filename += sample[i]->_filename;
+	}
+	_filename += " with added alpha";
+	cerr << "creating alpha: " << _filename << endl;
+	
 	_width = width; 
 	_height = height;
 	_hasAlpha = true;
@@ -237,21 +410,23 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	//glAlphaFunc( GL_EQUAL, 0xff );
 	glEnable( GL_TEXTURE_2D );
 
-	//    glTranslatef( x, y, 0 );
-	glBindTexture( GL_TEXTURE_2D, sample->_id );
-	glColor4f( 1, 1, 1, 1 );
-//  glNormal3f( 0, 0, 1 );
-
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
-	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
-	glVertex2i( width, 0 );
-	glTexCoord2i( 0, 1 );
-	glVertex2i( 0, height );
-	glTexCoord2i( 1, 1 );
-	glVertex2i( width, height );
-	glEnd();
+	for( int i = 0; i < sampleCount; i++ ) {
+		//    glTranslatef( x, y, 0 );
+		glBindTexture( GL_TEXTURE_2D, sample[i]->_id );
+		glColor4f( 1, 1, 1, 1 );
+	//  glNormal3f( 0, 0, 1 );
+	
+		glBegin( GL_TRIANGLE_STRIP );
+		glTexCoord2i( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2i( 1, 0 );
+		glVertex2i( width, 0 );
+		glTexCoord2i( 0, 1 );
+		glVertex2i( 0, height );
+		glTexCoord2i( 1, 1 );
+		glVertex2i( width, height );
+		glEnd();
+	}
 
 	//glDisable( GL_ALPHA_TEST );
 	glDisable( GL_TEXTURE_2D );
@@ -480,17 +655,17 @@ void Texture::Actual::prioritize( GLclampf pri ) {
 /// Texture construction
 
 Texture::Texture()
-		: _ref( &emptyNode ) {
+		: _ref( &emptyNode ), group_name("") {
 	++( _ref->_cntr );
 }
 
 Texture::Texture( Texture const& that )
-		: _ref( that._ref ) {
+		: _ref( that._ref ), group_name("") {
 	++( _ref->_cntr );
 }
 
 Texture::Texture( Actual* node )
-		: _ref( node ) {
+		: _ref( node ), group_name( "" ) {
 	++( _ref->_cntr );
 }
 
@@ -595,7 +770,22 @@ bool Texture::createTile( SDL_Surface const* surface, int tileX, int tileY, int 
 bool Texture::createAlpha( Texture const& alpha, Texture const& sample, int textureSizeW, int textureSizeH, int width, int height ) {
 	// this one adds new node always
 	Actual* node = new Actual;
-	node->createAlpha( alpha._ref, sample._ref, textureSizeW, textureSizeH, width, height );
+	Actual* refs[1];
+	refs[0] = sample._ref;
+	node->createAlpha( alpha._ref, refs, 1, textureSizeW, textureSizeH, width, height );
+	Texture tmp( node );
+	swap( tmp );
+	return isSpecified();
+}
+
+bool Texture::createAlphaQuad( Texture const& alpha, Texture samples[], int textureSizeW, int textureSizeH, int width, int height ) {
+	// this one adds new node always
+	Actual* node = new Actual;
+	Actual* refs[4];
+	for( int i = 0; i < 4; i++ ) {
+		refs[i] = samples[i]._ref;
+	}
+	node->createAlpha( alpha._ref, refs, 4, textureSizeW, textureSizeH, width, height );
 	Texture tmp( node );
 	swap( tmp );
 	return isSpecified();
@@ -656,4 +846,36 @@ GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
 	                     h     // height
 	                   );
 	return background;
+}
+
+bool Texture::createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north ) {
+	// search for existing with the path
+	std::string path = original.group_name + "_" + 
+		west.group_name + "_" + 
+		east.group_name + "_" + 
+		south.group_name + "_" + 
+		north.group_name;
+	cerr << "+++ looking for blend: " << path << endl;
+	NodeVec::iterator it = search( path );
+	// not found?
+	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
+		cerr << "\t+++ creating it" << endl;
+		Actual* node = new Actual;
+		// not loadable? refuse
+		if ( !node->createEdgeBlended( path, original._ref, west._ref, east._ref, south._ref, north._ref ) ) {
+			cerr << "\t\t+++ failed" << endl;
+			delete node;
+			return false;
+		} else {
+			cerr << "\t\t+++ success: id=" << node->_id << endl;
+		}
+		// create
+		it = mainList.insert( it, node );
+	} else {
+		cerr << "\t+++ found it" << endl;
+	}
+	// found it or created it ... now swap it out and done
+	Texture tmp( *it );
+	swap( tmp );
+	return isSpecified();	
 }

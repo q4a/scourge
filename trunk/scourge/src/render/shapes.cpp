@@ -43,6 +43,7 @@ using namespace std;
 
 #define ALWAYS_RELOAD_THEME 1
 
+std::map<std::string, Texture> GroundTexture::blendedTextures;  
 bool Shapes::debugFileLoad = false;
 
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
@@ -102,10 +103,10 @@ void WallTheme::load() {
 			}
 		}
 		// create edge textures
-		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_CORNER );
-		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_EDGE );
-		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_NARROW );
-		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_TIP );
+//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_CORNER );
+//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_EDGE );
+//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_NARROW );
+//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_TIP );
 	}
 }
 
@@ -964,7 +965,32 @@ Texture GroundTexture::getRandomTexture() {
 	
 	if( !tex.isSpecified() ) {
 		tex.load( filename );
+		tex.group_name = this->name;
 	}
 	return tex;
 }
 
+Texture GroundTexture::getBlendedTexture( string *parts, Shapes *shapes ) {
+	// have we loaded one yet?
+	string name = getName();
+	for( int i = 0; i < 4; i++ ) {
+		name += "," + parts[i];
+	}
+	if( blendedTextures.find( name ) != blendedTextures.end() ) {
+		return blendedTextures[ name ];
+	} else {
+		Texture tex;
+		Texture samples[4];
+		cerr << "--- loading blended shape:" << endl;
+		for( int i = 0; i < 4; i++ ) {
+			cerr << "--- part:" << parts[i] << endl;
+			GroundTexture *gt = shapes->getGroundTexture( parts[i] );
+			samples[i] = gt->getRandomTexture();
+		}
+		tex.createAlphaQuad( getRandomTexture(), samples );
+		GLclampf pri = 0.9f;
+		tex.glPrioritize( pri );
+		blendedTextures[ name ] = tex;
+		return tex;
+	}
+}

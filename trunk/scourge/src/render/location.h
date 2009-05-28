@@ -74,7 +74,7 @@ public:
 	float angle;
 	bool horizFlip, vertFlip;
 	Texture texture;
-	int outdoorThemeRef;
+	std::string groundTextureName;
 
 	OutdoorTexture()
 			: offsetX( 0 )
@@ -85,7 +85,7 @@ public:
 			, horizFlip( false )
 			, vertFlip( false )
 			, texture()
-			, outdoorThemeRef( -1 ) {
+			, groundTextureName( "" ) {
 	}
 };
 

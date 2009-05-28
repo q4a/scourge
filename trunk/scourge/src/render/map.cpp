@@ -365,7 +365,7 @@ void Map::reset() {
 	//cerr << "reset 5" << endl;
 	zoom = 1.0f;
 	zoomIn = zoomOut = false;
-	x = y = 0;
+	this->x = this->y = 0;
 	mapx = mapy = 0.0f;
 	floorOnly = false;
 	//alwaysCenter = true;
@@ -1397,7 +1397,7 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 			int tx = x / OUTDOORS_STEP;
 			int ty = y / OUTDOORS_STEP;
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-				if ( outdoorTex[tx][ty][z].outdoorThemeRef != -1 ) return true;
+				if ( outdoorTex[tx][ty][z].texture.isSpecified() ) return true;
 			}
 		}
 	}
@@ -1409,7 +1409,7 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height, int z ) {
 		for ( int yy = y - height - 1; yy <= y; yy++ ) {
 			int tx = x / OUTDOORS_STEP;
 			int ty = y / OUTDOORS_STEP;
-			if ( outdoorTex[tx][ty][z].outdoorThemeRef != -1 ) return true;
+			if ( outdoorTex[tx][ty][z].texture.isSpecified() ) return true;
 		}
 	}
 	return false;
@@ -1417,17 +1417,12 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height, int z ) {
 
 /// Sets the outdoor ground texture for a given map position (detailed version).
 
-void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref,
-                             float angle, bool horizFlip, bool vertFlip, int z ) {
-	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	if ( faceCount == 0 ) {
-		//cerr << "Map Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
-		return;
-	}
-	Texture* textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
-	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
-
+void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, string groundTextureName,
+                             float angle, bool horizFlip, bool vertFlip, int z, string *parts ) {
+	GroundTexture *gt = shapes->getGroundTexture( groundTextureName );
+	int width = gt->getWidth();
+	int height = gt->getHeight();
+	
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
 	int tw = static_cast<int>( width / OUTDOORS_STEP );
@@ -1437,12 +1432,12 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
 	outdoorTex[tx][ty][z].angle = angle;
 	outdoorTex[tx][ty][z].horizFlip = horizFlip;
 	outdoorTex[tx][ty][z].vertFlip = vertFlip;
-	outdoorTex[tx][ty][z].outdoorThemeRef = ref;
+	outdoorTex[tx][ty][z].groundTextureName = groundTextureName;
 
 	// computed values
 	outdoorTex[tx][ty][z].width = tw;
 	outdoorTex[tx][ty][z].height = th;
-	outdoorTex[tx][ty][z].texture = textureGroup[ Util::dice( faceCount ) ];
+	outdoorTex[tx][ty][z].texture = ( parts ? gt->getBlendedTexture( parts, shapes ) : gt->getRandomTexture() );
 	mapChanged = true;
 }
 
@@ -1451,7 +1446,7 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
 void Map::removeOutdoorTexture( int x, int y, float width, float height, int z ) {
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
-	outdoorTex[tx][ty][z].outdoorThemeRef = -1;
+	outdoorTex[tx][ty][z].groundTextureName = "";
 	outdoorTex[tx][ty][z].texture.clear();
 	mapChanged = true;
 }
@@ -2868,20 +2863,20 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 			info->ground[ gx ][ gy ] = ( Uint32 )( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				if ( outdoorTex[ gx ][ gy ][ z ].texture.isSpecified() ) {
-					OutdoorTextureInfo *oti = new OutdoorTextureInfo;
-					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
-					int mx = gx * OUTDOORS_STEP;
-					int my = gy * OUTDOORS_STEP + height + 1;
-					oti->x = mx;
-					oti->y = my;
-					oti->angle = outdoorTex[ gx ][ gy ][z].angle * 1000;
-					oti->horizFlip = outdoorTex[ gx ][ gy ][z].horizFlip;
-					oti->vertFlip = outdoorTex[ gx ][ gy ][z].vertFlip;
-					oti->offsetX = outdoorTex[ gx ][ gy ][z].offsetX * 1000;
-					oti->offsetY = outdoorTex[ gx ][ gy ][z].offsetY * 1000;
-					oti->outdoorThemeRef = outdoorTex[ gx ][ gy ][z].outdoorThemeRef;
-					oti->z = z;
-					info->outdoorTexture[ info->outdoorTextureInfoCount++ ] = oti;
+//					OutdoorTextureInfo *oti = new OutdoorTextureInfo;
+//					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
+//					int mx = gx * OUTDOORS_STEP;
+//					int my = gy * OUTDOORS_STEP + height + 1;
+//					oti->x = mx;
+//					oti->y = my;
+//					oti->angle = outdoorTex[ gx ][ gy ][z].angle * 1000;
+//					oti->horizFlip = outdoorTex[ gx ][ gy ][z].horizFlip;
+//					oti->vertFlip = outdoorTex[ gx ][ gy ][z].vertFlip;
+//					oti->offsetX = outdoorTex[ gx ][ gy ][z].offsetX * 1000;
+//					oti->offsetY = outdoorTex[ gx ][ gy ][z].offsetY * 1000;
+//					oti->outdoorThemeRef = outdoorTex[ gx ][ gy ][z].outdoorThemeRef;
+//					oti->z = z;
+//					info->outdoorTexture[ info->outdoorTextureInfoCount++ ] = oti;
 				}
 			}
 		}
@@ -3014,13 +3009,13 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		}
 	}
 
-	for ( int i = 0; i < ( int )info->outdoorTextureInfoCount; i++ ) {
-		OutdoorTextureInfo *oti = info->outdoorTexture[i];
-		setOutdoorTexture( oti->x, oti->y,
-		                   oti->offsetX / 1000.0f, oti->offsetY / 1000.0f,
-		                   oti->outdoorThemeRef, oti->angle / 1000.0f,
-		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
-	}
+//	for ( int i = 0; i < ( int )info->outdoorTextureInfoCount; i++ ) {
+//		OutdoorTextureInfo *oti = info->outdoorTexture[i];
+//		setOutdoorTexture( oti->x, oti->y,
+//		                   oti->offsetX / 1000.0f, oti->offsetY / 1000.0f,
+//		                   oti->outdoorThemeRef, oti->angle / 1000.0f,
+//		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
+//	}
 
 //	if ( heightMapEnabled ) {
 //		outdoor->initOutdoorsGroundTexture();
@@ -3685,17 +3680,10 @@ bool Map::isRoad( int mapx, int mapy ) {
 	return hasOutdoorTexture( mapx, mapy + 1, OUTDOORS_STEP, OUTDOORS_STEP, ROAD_LAYER );
 }
 
-void Map::addOutdoorTexture( int mapx, int mapy, int ref, float angle, bool horiz, bool vert ) {
-	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	if ( faceCount == 0 ) {
-		cerr << "no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
-		return;
-	}
-	int w = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
-	int h = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
-
-	setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert, ROAD_LAYER );
-	flattenChunkWithLimits( mapx, mapy, w, h, 0, 1 );
+void Map::addOutdoorTexture( int mapx, int mapy, std::string groundTextureName, float angle, bool horiz, bool vert ) {
+	GroundTexture *gt = shapes->getGroundTexture( groundTextureName );
+	setOutdoorTexture( mapx, mapy + 1, 0, 0, groundTextureName, angle, horiz, vert, ROAD_LAYER );
+	flattenChunkWithLimits( mapx, mapy, gt->getWidth(), gt->getHeight(), 0, 1 );
 }
 
 void Map::flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit ) {
