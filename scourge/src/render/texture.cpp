@@ -189,6 +189,10 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		return false;
 	}
 	
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	glEnable( GL_TEXTURE_2D );
+
 	_filename = path;
 	
 	Preferences *prefs = Session::instance->getPreferences();
@@ -206,11 +210,15 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 
 	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
 	
+	glEnable( GL_BLEND );
 	//glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 	glGenTextures( 1, &_id );
 	glBindTexture( GL_TEXTURE_2D, _id );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, prefs->getBpp() > 16 ? GL_LINEAR : GL_NEAREST );
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 	
 	// Enable anisotropic filtering if requested, mipmapping is enabled
 	// and the hardware supports it.
@@ -224,14 +232,8 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
 	}	
 	
-	gluBuild2DMipmaps( GL_TEXTURE_2D, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
-//	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
+	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
 	
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_BLEND );
-	glEnable( GL_TEXTURE_2D );
-
 	glPushMatrix();
 	glLoadIdentity();
 	
@@ -322,7 +324,6 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	glDisable( GL_BLEND );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;
@@ -371,6 +372,10 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
 	//GLuint tex[1];
 
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	glEnable( GL_TEXTURE_2D );
+
 	glGenTextures( 1, &_id );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
@@ -386,9 +391,6 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
 	//if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-
 	glPushMatrix();
 	glLoadIdentity();
 
@@ -402,19 +404,14 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glVertex2i( textureSizeW, textureSizeH );
 	glEnd();
 
-	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 
 	// draw the grass
-	//glEnable( GL_ALPHA_TEST );
-	//glAlphaFunc( GL_EQUAL, 0xff );
 	glEnable( GL_TEXTURE_2D );
 
 	for( int i = 0; i < sampleCount; i++ ) {
-		//    glTranslatef( x, y, 0 );
 		glBindTexture( GL_TEXTURE_2D, sample[i]->_id );
 		glColor4f( 1, 1, 1, 1 );
-	//  glNormal3f( 0, 0, 1 );
 	
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
@@ -428,18 +425,11 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 		glEnd();
 	}
 
-	//glDisable( GL_ALPHA_TEST );
-	glDisable( GL_TEXTURE_2D );
-
 	// draw the alpha pixels only
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
 	glColor4f( 1, 1, 1, 1 );
 
 	glBindTexture( GL_TEXTURE_2D, alpha->_id );
-//  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -472,7 +462,6 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	//glDisable( GL_TEXTURE_2D );	
 	//glColor4f( 0, 0, 0, 0 );
 	glBindTexture( GL_TEXTURE_2D, background );
-//  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -486,10 +475,8 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
 
-	glDisable( GL_BLEND );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;
@@ -594,7 +581,7 @@ bool Texture::Actual::letsToBind() {
 	if ( _hasAlpha ) {
 		srcFormat = GL_RGBA;
 		destFormat = ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 );
-		minFilter = ( _isSprite ? GL_LINEAR : GL_NEAREST_MIPMAP_NEAREST );
+		minFilter = ( _isSprite ? GL_LINEAR : ( prefs->getBpp() > 16 ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST ) );
 		magFilter = GL_LINEAR;
 	} else {
 		srcFormat = GL_RGB;
