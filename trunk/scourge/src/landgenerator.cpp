@@ -407,6 +407,11 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 			}
 		}
 	}
+	
+	Texture edge = map->getShapes()->getGroundTexture( "grass_edge" )->getRandomTexture(); // 1 side
+	Texture corner = map->getShapes()->getGroundTexture( "grass_corner" )->getRandomTexture(); // 2 sides
+	Texture tip = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 3 sides
+	Texture hole = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 4 sides; fixme: use diff. png
 
 	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
@@ -421,7 +426,8 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 				                     refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
 				                     refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
 				                     refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-				                     refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture() );
+				                     refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+				                     edge, corner, tip, hole );
 				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
 					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
 						map->setGroundTex( x + xx, y + yy, tex );

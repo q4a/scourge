@@ -166,7 +166,8 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 }
 
 
-bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north ) {
+bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north,
+                                         Actual* edge, Actual* corner, Actual* tip, Actual* hole ) {
 	// debug checks
 	if ( original == NULL || !original->letsToBind() ) {
 		cerr << "*** Texture::Actual::createEdgeBlended() with missing original texture." << endl;
@@ -188,17 +189,28 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		cerr << "*** Texture::Actual::createEdgeBlended() with missing north texture." << endl;
 		return false;
 	}
+	if ( edge == NULL || !edge->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing edge texture." << endl;
+		return false;
+	}
+	if ( corner == NULL || !corner->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing corner texture." << endl;
+		return false;
+	}
+	if ( tip == NULL || !tip->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing tip texture." << endl;
+		return false;
+	}
+	if ( hole == NULL || !hole->letsToBind() ) {
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing hole texture." << endl;
+		return false;
+	}
 	
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
-
 	_filename = path;
 	
 	Preferences *prefs = Session::instance->getPreferences();
 	int textureSizeW = 256;
 	int textureSizeH = 256;
-	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
 
 	cerr << "creating blended edge: " << _filename << endl;
 
@@ -206,95 +218,54 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	_height = textureSizeH;
 	_isSprite = original->_isSprite;
 	_wantsAnisotropy = original->_wantsAnisotropy;	
-	_hasAlpha = original->_hasAlpha;
-
-	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
+	_hasAlpha = true;
 	
-	glEnable( GL_BLEND );
-	//glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
+			
 	glGenTextures( 1, &_id );
 	glBindTexture( GL_TEXTURE_2D, _id );
-
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-	
-	// Enable anisotropic filtering if requested, mipmapping is enabled
-	// and the hardware supports it.
-	if ( _wantsAnisotropy && !_hasAlpha
-	        && strstr( ( char* )glGetString( GL_EXTENSIONS ), "GL_EXT_texture_filter_anisotropic" )
-	        && prefs->getAnisoFilter() ) {
-		float maxAnisotropy;
-		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
-	} else {
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
-	}	
 	
 	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
 	
+
 	glPushMatrix();
+	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
+
+	// create a tmp alpha texture
+	Actual *tmp = new Actual;
+	tmp->createAlpha( tip, &north, 1, _width, _height, _width, _height );	
+	
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	glEnable( GL_TEXTURE_2D );
+	glDisable( GL_BLEND );
+	
+	
 	glLoadIdentity();
 	
-	// draw the grass
-	glBindTexture( GL_TEXTURE_2D, original->_id );
 	glColor4f( 1, 1, 1, 1 );
+	
+	// draw the original
+	drawQuad( original->_id, _width, _height );
+	
+	
+	// blend in the tmp
+	glDepthMask( GL_FALSE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
-	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
-	glVertex2i( _width, 0 );
-	glTexCoord2i( 0, 1 );
-	glVertex2i( 0, _height );
-	glTexCoord2i( 1, 1 );
-	glVertex2i( _width, _height );
-	glEnd();
-
-//	for( int i = 0; i < sampleCount; i++ ) {
-//		glBindTexture( GL_TEXTURE_2D, sample[i]->_id );
-//		glColor4f( 1, 1, 1, 1 );
-//	
-//		glBegin( GL_TRIANGLE_STRIP );
-//		glTexCoord2i( 0, 0 );
-//		glVertex2i( 0, 0 );
-//		glTexCoord2i( 1, 0 );
-//		glVertex2i( width, 0 );
-//		glTexCoord2i( 0, 1 );
-//		glVertex2i( 0, height );
-//		glTexCoord2i( 1, 1 );
-//		glVertex2i( width, height );
-//		glEnd();
-//	}
-//
-//	glDisable( GL_TEXTURE_2D );
-//
-//	// draw the alpha pixels only
-//	glDisable( GL_CULL_FACE );
-//	glDisable( GL_DEPTH_TEST );
-//	glEnable( GL_TEXTURE_2D );
-//	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
-//	glColor4f( 1, 1, 1, 1 );
-//
-//	glBindTexture( GL_TEXTURE_2D, alpha->_id );
-////  glNormal3f( 0, 0, 1 );
-//	glBegin( GL_TRIANGLE_STRIP );
-//	glTexCoord2i( 0, 0 );
-//	glVertex2i( 0, 0 );
-//	glTexCoord2i( 1, 0 );
-//	glVertex2i( width, 0 );
-//	glTexCoord2i( 0, 1 );
-//	glVertex2i( 0, height );
-//	glTexCoord2i( 1, 1 );
-//	glVertex2i( width, height );
-//	glEnd();
-//
-//	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-
+	drawQuad( tmp->_id, _width, _height );
+	
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
+	
 	// Copy to a texture
-	//glLoadIdentity();
-	//glEnable( GL_TEXTURE_2D );
+	glLoadIdentity();
+	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
@@ -305,19 +276,12 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	                     textureSizeW,    // width
 	                     textureSizeH     // height
 	                   );
+	
+	// delete the tmps
+	delete tmp;
 
 	// cover with the original
-//	glBindTexture( GL_TEXTURE_2D, background );
-//	glBegin( GL_TRIANGLE_STRIP );
-//	glTexCoord2i( 0, 0 );
-//	glVertex2i( 0, 0 );
-//	glTexCoord2i( 1, 0 );
-//	glVertex2i( _width, 0 );
-//	glTexCoord2i( 0, 1 );
-//	glVertex2i( 0, _height );
-//	glTexCoord2i( 1, 1 );
-//	glVertex2i( _width, _height );
-//	glEnd();	
+	drawQuad( background, _width, _height );
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
 
@@ -329,6 +293,20 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	_isComplete = true;
 	return true;
 
+}
+
+void Texture::Actual::drawQuad( GLuint id, int width, int height ) {
+	glBindTexture( GL_TEXTURE_2D, id );
+	glBegin( GL_TRIANGLE_STRIP );
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( width, 0 );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, height );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( width, height );
+	glEnd();	
 }
 
 /// Adds the alpha channel of the alpha texture to the sample texture.
@@ -410,37 +388,14 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glEnable( GL_TEXTURE_2D );
 
 	for( int i = 0; i < sampleCount; i++ ) {
-		glBindTexture( GL_TEXTURE_2D, sample[i]->_id );
 		glColor4f( 1, 1, 1, 1 );
-	
-		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2i( 0, 0 );
-		glVertex2i( 0, 0 );
-		glTexCoord2i( 1, 0 );
-		glVertex2i( width, 0 );
-		glTexCoord2i( 0, 1 );
-		glVertex2i( 0, height );
-		glTexCoord2i( 1, 1 );
-		glVertex2i( width, height );
-		glEnd();
+		drawQuad( sample[i]->_id, width, height );
 	}
 
 	// draw the alpha pixels only
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
 	glColor4f( 1, 1, 1, 1 );
-
-	glBindTexture( GL_TEXTURE_2D, alpha->_id );
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
-	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
-	glVertex2i( width, 0 );
-	glTexCoord2i( 0, 1 );
-	glVertex2i( 0, height );
-	glTexCoord2i( 1, 1 );
-	glVertex2i( width, height );
-	glEnd();
-
+	drawQuad( alpha->_id, width, height );
 	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 
 	// Copy to a texture
@@ -458,23 +413,11 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	                   );
 
 	// cover with the original
-	// todo: this should be the original background, not black
-	//glDisable( GL_TEXTURE_2D );	
-	//glColor4f( 0, 0, 0, 0 );
-	glBindTexture( GL_TEXTURE_2D, background );
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
-	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
-	glVertex2i( width, 0 );
-	glTexCoord2i( 0, 1 );
-	glVertex2i( 0, height );
-	glTexCoord2i( 1, 1 );
-	glVertex2i( width, height );
-	glEnd();	
+	drawQuad( background, width, height );
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
 
+	glDisable( GL_BLEND );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
 
@@ -835,7 +778,8 @@ GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
 	return background;
 }
 
-bool Texture::createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north ) {
+bool Texture::createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north,
+                               Texture const& edge, Texture const& corner, Texture const& tip, Texture const& hole ) {
 	// search for existing with the path
 	std::string path = original.group_name + "_" + 
 		west.group_name + "_" + 
@@ -849,7 +793,8 @@ bool Texture::createEdgeBlend( Texture const& original, Texture const& west, Tex
 		cerr << "\t+++ creating it" << endl;
 		Actual* node = new Actual;
 		// not loadable? refuse
-		if ( !node->createEdgeBlended( path, original._ref, west._ref, east._ref, south._ref, north._ref ) ) {
+		if ( !node->createEdgeBlended( path, original._ref, west._ref, east._ref, south._ref, north._ref,
+		                               edge._ref, corner._ref, tip._ref, hole._ref ) ) {
 			cerr << "\t\t+++ failed" << endl;
 			delete node;
 			return false;

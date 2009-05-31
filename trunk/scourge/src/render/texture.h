@@ -56,7 +56,8 @@ public:
 	bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
 	bool loadShot( const string& dirName );
 	void clear();
-	bool createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north );
+	bool createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north,
+	                      Texture const& edge, Texture const& corner, Texture const& tip, Texture const& hole );
 
 	// OpenGL operations
 	void glBind() const {
@@ -116,7 +117,8 @@ private:
 		~Actual();
 		// members
 		bool load( const string& path, bool isSprite, bool anisotropy );
-		bool createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north );
+		bool createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north,
+		                        Actual *edge, Actual *corner, Actual *tip, Actual *hole );
 		bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
 		bool createAlpha( Actual* alpha, Actual* sample[], int sampleCount, int textureSizeW, int textureSizeH, int width, int height );
 		bool loadShot( const string& dirName );
@@ -131,6 +133,7 @@ private:
 		// undefined default copying 
 		Actual( Actual const& that ); // copy construction
 		Actual& operator=( Actual const& that ); // copy assignment
+		void drawQuad( GLuint id, int width, int height );
 		DECLARE_NOISY_OPENGL_SUPPORT();
 	};
 
