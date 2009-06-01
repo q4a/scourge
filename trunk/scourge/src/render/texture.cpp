@@ -36,6 +36,7 @@ Texture::Actual::Actual()
 		, _priority( -1.0F )
 		, _isComplete( false )
 		, _wantsAnisotropy( false )
+		, _group_name( "" )
 		// TODO: think through member/polymorphing candidates here:
 		//, _wantsMipmapping( false )
 		//, _isMipmapped( false )
@@ -166,7 +167,10 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 }
 
 bool Texture::Actual::matches( Actual *other ) {
-	return( this->_id != INVALID && other->_id != INVALID && this->_id == other->_id );
+	return( this->_id != INVALID && 
+					other->_id != INVALID && 
+					( this->_id == other->_id || this->_group_name == other->_group_name )
+				);
 }
 
 bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, Actual* west, Actual* east, Actual* south, Actual* north,
@@ -205,7 +209,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		return false;
 	}
 	if ( hole == NULL || !hole->letsToBind() ) {
-		cerr << "*** Texture::Actual::createEdgeBlended() with missing hole texture." << endl;
+		cerr << "*** Texture::Actual::createEdgeBlended() with missing hole texture:" << hole->_filename << endl;
 		return false;
 	}
 	
@@ -215,7 +219,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	int textureSizeW = 256;
 	int textureSizeH = 256;
 
-	cerr << "creating blended edge: " << _filename << endl;
+//	cerr << "creating blended edge: " << _filename << endl;
 
 	_width = textureSizeW;
 	_height = textureSizeH;
@@ -229,7 +233,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 	
 	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
@@ -241,136 +245,112 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	// create a tmp alpha texture
 	vector<float> angles;
 	vector<Actual*> tmps;
+
+//	cerr << "n=" << north->_id << " w=" << west->_id << " e=" << east->_id << " s=" << south->_id << endl;
 	
-	if( !north->matches( original ) && north->matches( east ) ) {
+	bool n = false;
+	bool w = false;
+	bool e = false;
+	bool s = false;
+	if( !north->matches( original ) && north->matches( east ) && north->matches( south ) && north->matches( west ) ) {
 		Actual *tmp2 = new Actual;
-		tmp2->createAlpha( corner, &north, 1, _width, _height, _width, _height );
-		tmps.push_back( tmp2 );
-		angles.push_back( 180.0f );
-	}
-	if( !east->matches( original ) && east->matches( south ) ) {
-		Actual *tmp2 = new Actual;
-		tmp2->createAlpha( corner, &east, 1, _width, _height, _width, _height );
-		tmps.push_back( tmp2 );
-		angles.push_back( 90.0f );
-	}
-	if( !south->matches( original ) && south->matches( west ) ) {
-		Actual *tmp2 = new Actual;
-		tmp2->createAlpha( corner, &south, 1, _width, _height, _width, _height );
+		tmp2->createAlpha( hole, &north, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 0.0f );
-	}	
-	if( !west->matches( original ) && west->matches( north ) ) {
+		n = e = s = w = true;
+//		cerr << "\thole" << endl;
+	} else if( !north->matches( original ) && north->matches( east ) && north->matches( south ) ) {
 		Actual *tmp2 = new Actual;
-		tmp2->createAlpha( corner, &west, 1, _width, _height, _width, _height );
+		tmp2->createAlpha( tip, &north, 1, _width, _height, _width, _height );
+		tmps.push_back( tmp2 );
+		angles.push_back( 90.0f );
+		n = e = s = true;
+//		cerr << "\ttip 1" << endl;
+	} else if( !east->matches( original ) && east->matches( south ) && east->matches( west ) ) {
+		Actual *tmp2 = new Actual;
+		tmp2->createAlpha( tip, &east, 1, _width, _height, _width, _height );
+		tmps.push_back( tmp2 );
+		angles.push_back( 0.0f );
+		e = s = w = true;
+//		cerr << "\ttip 2" << endl;
+	} else if( !south->matches( original ) && south->matches( west ) && south->matches( north ) ) {
+		Actual *tmp2 = new Actual;
+		tmp2->createAlpha( tip, &south, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 270.0f );
-	}	
+		s = w = n = true;
+//		cerr << "\ttip 3" << endl;
+	} else if( !west->matches( original ) && west->matches( north ) && west->matches( east ) ) {
+		Actual *tmp2 = new Actual;
+		tmp2->createAlpha( tip, &west, 1, _width, _height, _width, _height );
+		tmps.push_back( tmp2 );
+		angles.push_back( 180.0f );
+		w = n = e = true;
+//		cerr << "\ttip 4" << endl;
+	} else {
+		if( !north->matches( original ) && north->matches( east ) ) {
+			Actual *tmp2 = new Actual;
+			tmp2->createAlpha( corner, &north, 1, _width, _height, _width, _height );
+			tmps.push_back( tmp2 );
+			angles.push_back( 180.0f );
+			n = e = true;
+//			cerr << "\tcorner 1" << endl;
+		}
+		if( !east->matches( original ) && east->matches( south ) ) {
+			Actual *tmp2 = new Actual;
+			tmp2->createAlpha( corner, &east, 1, _width, _height, _width, _height );
+			tmps.push_back( tmp2 );
+			angles.push_back( 90.0f );
+			e = s = true;
+//			cerr << "\tcorner 2" << endl;
+		}
+		if( !south->matches( original ) && south->matches( west ) ) {
+			Actual *tmp2 = new Actual;
+			tmp2->createAlpha( corner, &south, 1, _width, _height, _width, _height );
+			tmps.push_back( tmp2 );
+			angles.push_back( 0.0f );
+			s = w = true;
+//			cerr << "\tcorner 3" << endl;
+		}	
+		if( !west->matches( original ) && west->matches( north ) ) {
+			Actual *tmp2 = new Actual;
+			tmp2->createAlpha( corner, &west, 1, _width, _height, _width, _height );
+			tmps.push_back( tmp2 );
+			angles.push_back( 270.0f );
+			w = n = true;
+//			cerr << "\tcorner 4" << endl;
+		}	
+	}
 	
-	if( !north->matches( original ) && north->_id != INVALID ) {
+	if( !n && !north->matches( original ) && north->_id != INVALID ) {
 		Actual *tmp2 = new Actual;
 		tmp2->createAlpha( edge, &north, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 270.0f );
+//		cerr << "\tedge 1" << endl;
 	}
-	if( !west->matches( original ) && west->_id != INVALID ) {
+	if( !w && !west->matches( original ) && west->_id != INVALID ) {
 		Actual *tmp2 = new Actual;
 		tmp2->createAlpha( edge, &west, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 0.0f );
+//		cerr << "\tedge 2" << endl;
 	}
-	if( !east->matches( original ) && east->_id != INVALID ) {
+	if( !e && !east->matches( original ) && east->_id != INVALID ) {
 		Actual *tmp2 = new Actual;
 		tmp2->createAlpha( edge, &east, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 180.0f );
+//		cerr << "\tedge 3" << endl;
 	}	
-	if( !south->matches( original ) && south->_id != INVALID ) {
+	if( !s && !south->matches( original ) && south->_id != INVALID ) {
 		Actual *tmp2 = new Actual;
 		tmp2->createAlpha( edge, &south, 1, _width, _height, _width, _height );
 		tmps.push_back( tmp2 );
 		angles.push_back( 90.0f );
+//		cerr << "\tedge 4" << endl;
 	}		
-	
-//	// four sides match (disabled for now)
-//	if( north->matches( east ) && east->matches( south ) && south->matches( west ) && west->matches( north ) ) {
-////		Actual *tmp = new Actual;
-////		tmp->createAlpha( hole, &north, 1, _width, _height, _width, _height );
-////		tmps.push_back( tmp );
-////		angles.push_back( 0.0f );
-//	} else if( !west->matches( original ) && west->matches( north ) && north->matches( east ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( tip, &west, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 180.0f );
-//		
-//		if( south->_id != INVALID && south->_id != original->_id ) {
-//			Actual *tmp2 = new Actual;
-//			tmp2->createAlpha( edge, &south, 1, _width, _height, _width, _height );
-//			tmps.push_back( tmp2 );
-//			angles.push_back( 270.0f );			
-//		}
-//	} else if( !north->matches( original ) && north->matches( east ) && east->matches( south ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( tip, &north, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 90.0f );
-//		
-//		if( west->_id != INVALID && west->_id != original->_id ) {
-//			Actual *tmp2 = new Actual;
-//			tmp2->createAlpha( edge, &west, 1, _width, _height, _width, _height );
-//			tmps.push_back( tmp2 );
-//			angles.push_back( 0.0f );			
-//		}
-//	} else if( !east->matches( original ) && east->matches( south ) && south->matches( west ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( tip, &east, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 0.0f );
-//		
-//		if( north->_id != INVALID && north->_id != original->_id ) {
-//			Actual *tmp2 = new Actual;
-//			tmp2->createAlpha( edge, &north, 1, _width, _height, _width, _height );
-//			tmps.push_back( tmp2 );
-//			angles.push_back( 90.0f );			
-//		}		
-//	} else if( !south->matches( original ) && south->matches( west ) && west->matches( north ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( tip, &south, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 270.0f );
-//		
-//		if( east->_id != INVALID && east->_id != original->_id ) {
-//			Actual *tmp2 = new Actual;
-//			tmp2->createAlpha( edge, &east, 1, _width, _height, _width, _height );
-//			tmps.push_back( tmp2 );
-//			angles.push_back( 180.0f );
-//		}		
-//	}
-	
-//	// 2 sides match
-//	if( west->matches( north ) && !north->matches( east ) && !east->matches( south ) && !south->matches( west ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( corner, &west, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 270.0f );
-//	} else if( !west->matches( north ) && north->matches( east ) && !east->matches( south ) && !south->matches( west ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( corner, &north, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 180.0f );
-//	} else if( !west->matches( north ) && !north->matches( east ) && east->matches( south ) && !south->matches( west ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( corner, &east, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 90.0f );
-//	} else if( !west->matches( north ) && !north->matches( east ) && !east->matches( south ) && south->matches( west ) ) {
-//		Actual *tmp = new Actual;
-//		tmp->createAlpha( corner, &east, 1, _width, _height, _width, _height );
-//		tmps.push_back( tmp );
-//		angles.push_back( 0.0f );
-//	}
-	
+		
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_DEPTH_TEST );
 	glEnable( GL_TEXTURE_2D );
@@ -476,14 +456,12 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	
 	GLuint background = saveAreaUnder( 0, 0, textureSizeW, textureSizeH );
 
-	cerr << "*** samples=" << sampleCount << endl;
 	_filename = "";
 	for( int i = 0; i < sampleCount; i++ ) {
 		if( i > 0 ) _filename += ",";
 		_filename += sample[i]->_filename;
 	}
 	_filename += " with added alpha";
-	cerr << "creating alpha: " << _filename << endl;
 	
 	_width = width; 
 	_height = height;
@@ -727,17 +705,17 @@ void Texture::Actual::prioritize( GLclampf pri ) {
 /// Texture construction
 
 Texture::Texture()
-		: _ref( &emptyNode ), group_name("") {
+		: _ref( &emptyNode ) {
 	++( _ref->_cntr );
 }
 
 Texture::Texture( Texture const& that )
-		: _ref( that._ref ), group_name("") {
+		: _ref( that._ref ) {
 	++( _ref->_cntr );
 }
 
 Texture::Texture( Actual* node )
-		: _ref( node ), group_name( "" ) {
+		: _ref( node ) {
 	++( _ref->_cntr );
 }
 
@@ -923,30 +901,23 @@ GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
 bool Texture::createEdgeBlend( Texture const& original, Texture const& west, Texture const& east, Texture const& south, Texture const& north,
                                Texture const& edge, Texture const& corner, Texture const& tip, Texture const& hole ) {
 	// search for existing with the path
-	std::string path = original.group_name + "_" + 
-		west.group_name + "_" + 
-		east.group_name + "_" + 
-		south.group_name + "_" + 
-		north.group_name;
-	cerr << "+++ looking for blend: " << path << endl;
+	std::string path = original._ref->_group_name + "_" + 
+		west._ref->_group_name + "_" + 
+		east._ref->_group_name + "_" + 
+		south._ref->_group_name + "_" + 
+		north._ref->_group_name;
 	NodeVec::iterator it = search( path );
 	// not found?
 	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
-		cerr << "\t+++ creating it" << endl;
 		Actual* node = new Actual;
 		// not loadable? refuse
 		if ( !node->createEdgeBlended( path, original._ref, west._ref, east._ref, south._ref, north._ref,
 		                               edge._ref, corner._ref, tip._ref, hole._ref ) ) {
-			cerr << "\t\t+++ failed" << endl;
 			delete node;
 			return false;
-		} else {
-			cerr << "\t\t+++ success: id=" << node->_id << endl;
 		}
 		// create
 		it = mainList.insert( it, node );
-	} else {
-		cerr << "\t+++ found it" << endl;
 	}
 	// found it or created it ... now swap it out and done
 	Texture tmp( *it );

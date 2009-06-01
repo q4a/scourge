@@ -27,8 +27,6 @@ public:
 		INPROGRESS = ~0,
 	};
 	
-	std::string group_name;
-
 	// construction / destruction / copying
 	Texture();
 	Texture( Texture const& that );
@@ -90,6 +88,14 @@ public:
 		return empty;
 	}
 	
+	void setGroupName( std::string s ) {
+		_ref->_group_name = s;
+	}
+	
+	std::string getGroupName() {
+		return _ref->_group_name;
+	}
+	
 	static GLuint saveAreaUnder( int x, int y, int w, int h, GLuint *tex = NULL );
 
 private:
@@ -111,6 +117,7 @@ private:
 		// bool _isMipmapped;
 		// unsigned char* _pixels;
 		SDL_Surface* _surface;
+		std::string _group_name;
 
 		// construction / destruction
 		Actual();
