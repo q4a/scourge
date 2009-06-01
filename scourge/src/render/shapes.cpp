@@ -966,7 +966,8 @@ Texture GroundTexture::getRandomTexture() {
 	if( !tex.isSpecified() ) {
 		tex.load( filename );
 		tex.goDiligent();
-		tex.group_name = this->name;
+		string s = this->name;
+		tex.setGroupName( s );
 	}
 	return tex;
 }

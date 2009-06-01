@@ -72,7 +72,6 @@ public:
 	void initOutdoorsGroundTexture( Map *map );
 	
 private:	
-	void applyGrassEdges( Map *map, int x, int y, bool w, bool e, bool s, bool n, std::string *parts );
 	void addHighVariation( Map *map, std::string ref, int z );
 	bool isRockTexture( Map *map, int x, int y );
 	bool isLakebedTexture( Map *map, int x, int y );

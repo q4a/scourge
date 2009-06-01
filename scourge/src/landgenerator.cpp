@@ -111,8 +111,8 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				if ( !cellular->getNode( x, y )->water ) {
 					
 					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
-					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
-					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
+//					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
+//					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
 					
 					//if( !map->isRoad( xx, yy ) ) {
 						
@@ -413,105 +413,55 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 		}
 	}
 	
+	vector<int> px, py;
+	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			px.push_back( x );
+			py.push_back( y );
+		}
+	}
+	
 	Texture edge = map->getShapes()->getGroundTexture( "grass_edge" )->getRandomTexture(); // 1 side
 	Texture corner = map->getShapes()->getGroundTexture( "grass_corner" )->getRandomTexture(); // 2 sides
 	Texture tip = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 3 sides
-	Texture hole = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 4 sides; fixme: use diff. png
+	Texture hole = map->getShapes()->getGroundTexture( "grass_hole" )->getRandomTexture(); // 4 sides
 	Texture empty;
-	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-			bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-			bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-			bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-			if ( !( w && e && s && n ) ) {
-				// get or create a new texture that is the blend of the four edges
-				Texture tex;
-				tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
-				                     keep[x][y][Constants::WEST] ? empty : refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-                             keep[x][y][Constants::EAST] ? empty : refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-                             keep[x][y][Constants::SOUTH] ? empty : refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-                             keep[x][y][Constants::NORTH] ? empty : refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-				                     edge, corner, tip, hole );
-				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
-					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-						map->setGroundTex( x + xx, y + yy, tex );
-					}
+	while( px.size() > 0 ) {
+		int index = (int)( (float)( px.size() ) * Util::mt_rand() );
+		int x = px[index];
+		int y = py[index];
+		px.erase( px.begin() + index );
+		py.erase( py.begin() + index );
+
+		bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+		bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+		bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+		bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+		if ( !( w && e && s && n ) ) {
+			// get or create a new texture that is the blend of the four edges
+			Texture tex;
+			tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
+			                     keep[x][y][Constants::WEST] ? empty : refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+                           keep[x][y][Constants::EAST] ? empty : refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+                           keep[x][y][Constants::SOUTH] ? empty : refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+                           keep[x][y][Constants::NORTH] ? empty : refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+			                     edge, corner, tip, hole );
+			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
+				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+					map->setGroundTex( x + xx, y + yy, tex );
 				}
-				
-				keep[x - OUTDOOR_FLOOR_TEX_SIZE][y][Constants::EAST] = 
-					keep[x + OUTDOOR_FLOOR_TEX_SIZE][y][Constants::WEST] = 
-					keep[x][y + OUTDOOR_FLOOR_TEX_SIZE][Constants::NORTH] = 
-					keep[x][y - OUTDOOR_FLOOR_TEX_SIZE][Constants::SOUTH] = true;				
 			}
+			
+			keep[x - OUTDOOR_FLOOR_TEX_SIZE][y][Constants::EAST] = 
+				keep[x + OUTDOOR_FLOOR_TEX_SIZE][y][Constants::WEST] = 
+				keep[x][y + OUTDOOR_FLOOR_TEX_SIZE][Constants::NORTH] = 
+				keep[x][y - OUTDOOR_FLOOR_TEX_SIZE][Constants::SOUTH] = true;				
 		}
 	}
 
 	addHighVariation( map, "snow", GROUND_LAYER );
 	addHighVariation( map, "snow_big", GROUND_LAYER );
 
-}
-
-/// Sets up a smoothly blended grass edge.
-
-/// It takes a couple of parameters: The x,y map position and four parameters
-/// that specify in which direction(s) to apply the blending.
-
-void LandGenerator::applyGrassEdges( Map *map, int x, int y, bool w, bool e, bool s, bool n, string *parts ) {	
-	int angle = -1;
-	int sx = x;
-	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
-	string ref;
-	if ( !w && !s && !e ) {
-		angle = 0;
-		ref = "grass_tip";
-	} else if ( !e && !s && !n ) {
-		angle = 90;
-		ref = "grass_tip";
-	} else if ( !e && !n && !w ) {
-		angle = 180;
-		ref = "grass_tip";
-	} else if ( !w && !n && !s ) {
-		angle = 270;
-		ref = "grass_tip";
-
-	} else if ( !w && !e ) {
-		angle = 0;
-		ref = "grass_narrow";
-	} else if ( !n && !s ) {
-		angle = 90;
-		ref = "grass_narrow";
-
-	} else if ( !w && !s ) {
-		angle = 0;
-		ref = "grass_corner";
-	} else if ( !e && !s ) {
-		angle = 90;
-		ref = "grass_corner";
-	} else if ( !e && !n ) {
-		angle = 180;
-		ref = "grass_corner";
-	} else if ( !w && !n ) {
-		angle = 270;
-		ref = "grass_corner";
-
-	} else if ( !e ) {
-		angle = 180;
-		ref = "grass_edge";
-	} else if ( !w ) {
-		angle = 0;
-		ref = "grass_edge";
-	} else if ( !n ) {
-		angle = 270;
-		ref = "grass_edge";
-	} else if ( !s ) {
-		angle = 90;
-		ref = "grass_edge";
-	}
-
-	if ( angle != -1 ) {
-		map->setOutdoorTexture( sx * OUTDOORS_STEP, sy * OUTDOORS_STEP, 0, 0, ref, angle, false, false, GROUND_LAYER );
-	}
 }
 
 /// Adds semi-random height variation to an outdoor map.
