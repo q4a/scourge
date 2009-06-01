@@ -380,6 +380,7 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	int ey = MAP_TILES_Y;
 	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
 	GroundTexture *refs[MAP_WIDTH][MAP_DEPTH];
+	bool keep[MAP_WIDTH][MAP_DEPTH][4];
 	for ( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			bool high = isRockTexture( map, x, y );
@@ -397,6 +398,10 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 			}
 			GroundTexture *gt = map->getShapes()->getGroundTexture( name );
 			if( gt ) {
+				keep[x][y][Constants::NORTH] = 
+					keep[x][y][Constants::EAST] = 
+					keep[x][y][Constants::WEST] = 
+					keep[x][y][Constants::SOUTH] = false;
 				Texture tex = gt->getRandomTexture();
 				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
 					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
@@ -412,7 +417,7 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	Texture corner = map->getShapes()->getGroundTexture( "grass_corner" )->getRandomTexture(); // 2 sides
 	Texture tip = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 3 sides
 	Texture hole = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 4 sides; fixme: use diff. png
-
+	Texture empty;
 	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
@@ -423,16 +428,21 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 				// get or create a new texture that is the blend of the four edges
 				Texture tex;
 				tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
-				                     refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-				                     refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-				                     refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-				                     refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+				                     keep[x][y][Constants::WEST] ? empty : refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+                             keep[x][y][Constants::EAST] ? empty : refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+                             keep[x][y][Constants::SOUTH] ? empty : refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+                             keep[x][y][Constants::NORTH] ? empty : refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
 				                     edge, corner, tip, hole );
 				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
 					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
 						map->setGroundTex( x + xx, y + yy, tex );
 					}
 				}
+				
+				keep[x - OUTDOOR_FLOOR_TEX_SIZE][y][Constants::EAST] = 
+					keep[x + OUTDOOR_FLOOR_TEX_SIZE][y][Constants::WEST] = 
+					keep[x][y + OUTDOOR_FLOOR_TEX_SIZE][Constants::NORTH] = 
+					keep[x][y - OUTDOOR_FLOOR_TEX_SIZE][Constants::SOUTH] = true;				
 			}
 		}
 	}
