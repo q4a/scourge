@@ -29,6 +29,7 @@
 #include "creature.h"
 #include "render/texture.h"
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -110,7 +111,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 				if ( !cellular->getNode( x, y )->water ) {
 					
-					GLShape *shape = shapePal->getRandomTreeShape( shapePal );
+					//GLShape *shape = shapePal->getRandomTreeShape( shapePal );
 //					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
 //					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
 					
@@ -413,11 +414,29 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 		}
 	}
 	
-	vector<int> px, py;
+	// do all the blending for a given type of ground cover in one step
+	std::map<string, vector<int>*> px;
+	std::map<string, vector<int>*> py;
 	for ( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for ( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			px.push_back( x );
-			py.push_back( y );
+			string s = refs[x][y]->getName();
+			vector<int> *vx;
+			if( px.find( s ) == px.end() ) {
+				vx = new vector<int>();
+				px[ s ] = vx;
+			} else {
+				vx = px[ s ];
+			}
+			vx->push_back( x );
+			
+			vector<int> *vy;
+			if( py.find( s ) == py.end() ) {
+				vy = new vector<int>();
+				py[ s ] = vy;
+			} else {
+				vy = py[ s ];
+			}
+			vy->push_back( y );
 		}
 	}
 	
@@ -426,37 +445,46 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	Texture tip = map->getShapes()->getGroundTexture( "grass_tip" )->getRandomTexture(); // 3 sides
 	Texture hole = map->getShapes()->getGroundTexture( "grass_hole" )->getRandomTexture(); // 4 sides
 	Texture empty;
-	while( px.size() > 0 ) {
-		int index = (int)( (float)( px.size() ) * Util::mt_rand() );
-		int x = px[index];
-		int y = py[index];
-		px.erase( px.begin() + index );
-		py.erase( py.begin() + index );
-
-		bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-		bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
-		bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-		bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
-		if ( !( w && e && s && n ) ) {
-			// get or create a new texture that is the blend of the four edges
-			Texture tex;
-			tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
-			                     keep[x][y][Constants::WEST] ? empty : refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-                           keep[x][y][Constants::EAST] ? empty : refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
-                           keep[x][y][Constants::SOUTH] ? empty : refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-                           keep[x][y][Constants::NORTH] ? empty : refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
-			                     edge, corner, tip, hole );
-			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
-				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					map->setGroundTex( x + xx, y + yy, tex );
+	
+	for ( std::map<string, vector<int>*>::iterator i = px.begin(); i != px.end(); ++i ) {
+		string s = i->first;
+		vector<int> *vx = px[s];
+		vector<int> *vy = py[s];
+		while( vx->size() > 0 ) {
+			// select a location randomly to avoid predicatable edges
+			int index = (int)( (float)( vx->size() ) * Util::mt_rand() );
+			int x = vx->at( index );
+			int y = vy->at( index );
+			vx->erase( vx->begin() + index );
+			vy->erase( vy->begin() + index );
+	
+			bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+			bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+			bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+			bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+			if ( !( w && e && s && n ) ) {
+				// get or create a new texture that is the blend of the four edges
+				Texture tex;
+				tex.createEdgeBlend( refs[x][y]->getRandomTexture(),
+				                     keep[x][y][Constants::WEST] ? empty : refs[x - OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+	                           keep[x][y][Constants::EAST] ? empty : refs[x + OUTDOOR_FLOOR_TEX_SIZE][y]->getRandomTexture(),
+	                           keep[x][y][Constants::SOUTH] ? empty : refs[x][y + OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+	                           keep[x][y][Constants::NORTH] ? empty : refs[x][y - OUTDOOR_FLOOR_TEX_SIZE]->getRandomTexture(),
+				                     edge, corner, tip, hole );
+				for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
+					for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+						map->setGroundTex( x + xx, y + yy, tex );
+					}
 				}
+				
+				keep[x - OUTDOOR_FLOOR_TEX_SIZE][y][Constants::EAST] = 
+					keep[x + OUTDOOR_FLOOR_TEX_SIZE][y][Constants::WEST] = 
+					keep[x][y + OUTDOOR_FLOOR_TEX_SIZE][Constants::NORTH] = 
+					keep[x][y - OUTDOOR_FLOOR_TEX_SIZE][Constants::SOUTH] = true;				
 			}
-			
-			keep[x - OUTDOOR_FLOOR_TEX_SIZE][y][Constants::EAST] = 
-				keep[x + OUTDOOR_FLOOR_TEX_SIZE][y][Constants::WEST] = 
-				keep[x][y + OUTDOOR_FLOOR_TEX_SIZE][Constants::NORTH] = 
-				keep[x][y - OUTDOOR_FLOOR_TEX_SIZE][Constants::SOUTH] = true;				
 		}
+		delete vx;
+		delete vy;
 	}
 
 	addHighVariation( map, "snow", GROUND_LAYER );
