@@ -134,6 +134,7 @@ private:
 		Actual( Actual const& that ); // copy construction
 		Actual& operator=( Actual const& that ); // copy assignment
 		void drawQuad( GLuint id, int width, int height );
+		bool matches( Actual *other );
 		DECLARE_NOISY_OPENGL_SUPPORT();
 	};
 
