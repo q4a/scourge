@@ -32,10 +32,11 @@ class CVectorTex;
 
 class Outdoor : public MapRender {
 private:
+	Texture waterTexture;
 	
 public:
-	Outdoor( Map *map ) : MapRender( map ) { useDisplayList = false; hasDisplayList = false; }
-	virtual ~Outdoor() {}
+	Outdoor( Map *map );
+	virtual ~Outdoor();
 	
 	virtual void drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape );
 	virtual void createGroundMap();

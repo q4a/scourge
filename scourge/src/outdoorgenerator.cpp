@@ -114,8 +114,8 @@ int OutdoorGenerator::getMountainSize( int x, int y, Map *map, AroundMapLooker& 
 bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	updateStatus( _( "Loading theme" ) );
-	if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-	else shapePal->loadRandomOutdoorTheme();
+	//if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
+	//else shapePal->loadRandomOutdoorTheme();
 
 	map->setHeightMapEnabled( true );
 

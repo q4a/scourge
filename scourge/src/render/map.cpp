@@ -376,6 +376,7 @@ void Map::reset() {
 	lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
 	floorTexWidth = floorTexHeight = 0;
 	floorTex.clear();
+	floorTex = Texture();
 	mapCenterCreature = NULL;
 	secretDoors.clear();
 	currentHouse = NULL;
@@ -402,6 +403,7 @@ void Map::reset() {
 	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
 		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
 			rugPos[x][y].texture.clear();
+			rugPos[x][y].texture = Texture();
 		}
 	}
 
@@ -442,10 +444,12 @@ void Map::reset() {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
 			groundTex[x][y].clear();
+			groundTex[x][y] = Texture();
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				int tx = x / OUTDOORS_STEP;
 				int ty = y / OUTDOORS_STEP;
 				outdoorTex[tx][ty][z].texture.clear();
+				outdoorTex[tx][ty][z].texture = Texture();
 			}
 		}
 	}
