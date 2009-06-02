@@ -56,23 +56,12 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
 	"headboard",
 };
 
-char WallTheme::outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40] = {
-	"grass", "street", "street_cross", "street_end", "trail", "trail_turn", "trail_end",
-	"water", "rock", "grass_edge", "grass_corner", "grass_tip", "grass_narrow", "snow",
-	"snow_big", "lakebed", "extra", "street_90", "street_end_90", "street_end_180", "street_end_270"
-};
-
 WallTheme::WallTheme( char const* name, Shapes *shapePal ) {
 	strcpy( this->name, name );
 	this->shapePal = shapePal;
-	this->hasOutdoor = false;
 	for ( int i = 0; i < THEME_REF_COUNT; i++ ) {
 		themeRefMap[ themeRefName[i] ] = i;
 		faceCount[ i ] = 0;
-	}
-	for ( int i = 0; i < OUTDOOR_THEME_REF_COUNT; i++ ) {
-		outdoorThemeRefMap[ outdoorThemeRefName[ i ] ] = i;
-		outdoorFaceCount[ i ] = 0;
 	}
 }
 
@@ -92,34 +81,9 @@ void WallTheme::load() {
 			loadTextureGroup( ref, face, textureNames[ ref ][ face ] );
 		}
 	}
-	if ( getHasOutdoor() ) {
-		for ( int ref = 0; ref < OUTDOOR_THEME_REF_COUNT; ref++ ) {
-			if ( outdoorFaceCount[ ref ] == 0 ) {
-				cerr << "No textures defined for outdoor theme. Ref=" << outdoorThemeRefName[ ref ] << endl;
-				continue;
-			}
-			for ( int face = 0; face < outdoorFaceCount[ ref ]; face++ ) {
-				loadTextureGroup( ref, face, outdoorTextures[ ref ][ face ], true );
-			}
-		}
-		// create edge textures
-//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_CORNER );
-//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_EDGE );
-//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_NARROW );
-//		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_TIP );
-	}
 }
 
-// Overlay the current 'grass' texture on the alpha-blended edge texture to create a theme-specific blend.
-void WallTheme::createOutdoorEdgeTexture( int ref ) {
-	Texture tex;
-	tex.createAlpha( outdoorTextureGroup[ ref ][ 0 ], outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
-	GLclampf pri = 0.9f;
-	tex.glPrioritize( pri );
-	outdoorTextureGroup[ ref ][ 0 ] = tex;
-}
-
-void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor ) {
+void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 	//cerr << "Loading theme texture. Theme: " << getName() << " ref=" << ( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << " face=" << face << " texture=" << texture << endl;
 	string path;
 	Texture id;
@@ -157,11 +121,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			id = loadedTextures[s];
 		}
 	}
-	if ( outdoor ) {
-		outdoorTextureGroup[ref][face] = id;
-	} else {
-		textureGroup[ref][face] = id;
-	}
+	textureGroup[ref][face] = id;
 }
 
 void WallTheme::unload() {
@@ -192,11 +152,6 @@ Texture* WallTheme::getTextureGroup( string themeRefName ) {
 int WallTheme::getFaceCount( string themeRefName ) {
 	int ref = themeRefMap[ themeRefName ];
 	return faceCount[ ref ];
-}
-
-int WallTheme::getOutdoorFaceCount( string themeRefName ) {
-	int ref = outdoorThemeRefMap[ themeRefName ];
-	return outdoorFaceCount[ ref ];
 }
 
 void WallTheme::debug() {
@@ -378,10 +333,6 @@ void Shapes::loadCaveTheme( char *name ) {
 
 void Shapes::loadRandomTheme() {
 	loadTheme( themes[ Util::dice( themeCount ) ] );
-}
-
-void Shapes::loadRandomOutdoorTheme() {
-	loadTheme( outdoorThemes[ Util::dice( outdoorThemes.size() ) ] );
 }
 
 void Shapes::loadTheme( const char *themeName ) {

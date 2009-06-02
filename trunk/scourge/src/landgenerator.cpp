@@ -78,9 +78,9 @@ LandGenerator::~LandGenerator() {
 
 
 bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
-	updateStatus( _( "Loading theme" ) );
-	if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-	else shapePal->loadTheme( "outdoor" );
+//	updateStatus( _( "Loading theme" ) );
+//	if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
+//	else shapePal->loadTheme( "outdoor" );
 
 	map->setHeightMapEnabled( true );
 
@@ -451,7 +451,7 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 		vector<int> *vx = px[s];
 		vector<int> *vy = py[s];
 		while( vx->size() > 0 ) {
-			// select a location randomly to avoid predicatable edges
+			// select a location randomly to avoid predictable edges
 			int index = (int)( (float)( vx->size() ) * Util::mt_rand() );
 			int x = vx->at( index );
 			int y = vy->at( index );

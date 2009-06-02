@@ -45,7 +45,18 @@ using namespace std;
 Uint32 waterMoveTick = 0;
 #define WATER_MOVE_DELTA 0.005f
 GLfloat waterTexX = 0;
-GLfloat waterTexY = 0;  
+GLfloat waterTexY = 0;
+
+Outdoor::Outdoor( Map *map ) : MapRender( map ) { 
+	useDisplayList = false; 
+	hasDisplayList = false;
+	GroundTexture *gt = map->getShapes()->getGroundTexture( "water" );
+	waterTexture = gt->getRandomTexture();
+}
+
+Outdoor::~Outdoor() {
+	waterTexture.clear();
+}
 
 /// Renders the 3D view for outdoor levels.
 
@@ -494,7 +505,7 @@ void Outdoor::drawWaterLevel() {
 	}
 
 	glEnable( GL_TEXTURE_2D );
-	map->getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0].glBind();
+	waterTexture.glBind();
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;

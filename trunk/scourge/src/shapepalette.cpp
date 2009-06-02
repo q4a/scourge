@@ -482,31 +482,6 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
 		}
 
-		// read the outdoor theme info
-		vector<ConfigNode*> *outv = node->getChildrenByName( "outdoors" );
-		if ( outv && outv->size() ) {
-			theme->setHasOutdoor( true );
-			ConfigNode *outnode = ( *outv )[0];
-			for ( int ref = 0; ref < WallTheme::OUTDOOR_THEME_REF_COUNT; ref++ ) {
-				if ( !outnode->hasValue( WallTheme::outdoorThemeRefName[ ref ] ) ) {
-					cerr << "Error: can't find outdoor line for ref=" << WallTheme::outdoorThemeRefName[ ref ] << endl;
-					continue;
-				}
-				strcpy( line, outnode->getValueAsString( WallTheme::outdoorThemeRefName[ ref ] ) );
-				char *p = strtok( line, "," );
-				int w = atoi( p );
-				int h = atoi( strtok( NULL, "," ) );
-				theme->setOutdoorTextureDimensions( ref, w, h );
-				p = strtok( NULL, "," );
-				int face;
-				for ( face = 0; face < MAX_TEXTURE_COUNT && p; face++ ) {
-					theme->addOutdoorTextureName( ref, face, p );
-					p = strtok( NULL, "," );
-				}
-				theme->setOutdoorFaceCount( ref, face );
-			}
-		}
-
 		if ( node->hasValue( "alt_walls" ) ) {
 			strcpy( line, node->getValueAsString( "alt_walls" ) );
 			char *p = strtok( line, "," );
@@ -516,9 +491,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			}
 		}
 
-		if ( theme->getHasOutdoor() ) {
-			outdoorThemes.push_back( theme );
-		} else if ( cave ) {
+		if ( cave ) {
 			caveThemes[ caveThemeCount++ ] = theme;
 		} else if ( !special ) {
 			themes[ themeCount++ ] = theme;

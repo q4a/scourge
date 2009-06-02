@@ -153,35 +153,6 @@ public:
 	};
 	static char themeRefName[THEME_REF_COUNT][40];
 
-	// outdoor theme sections
-	enum {
-		OUTDOOR_THEME_REF_GRASS,
-		OUTDOOR_THEME_REF_STREET,
-		OUTDOOR_THEME_REF_STREET_CROSS,
-		OUTDOOR_THEME_REF_STREET_END,
-		OUTDOOR_THEME_REF_TRAIL,
-		OUTDOOR_THEME_REF_TRAIL_TURN,
-		OUTDOOR_THEME_REF_TRAIL_END,
-		OUTDOOR_THEME_REF_WATER,
-		OUTDOOR_THEME_REF_ROCK,
-		OUTDOOR_THEME_REF_GRASS_EDGE,
-		OUTDOOR_THEME_REF_GRASS_CORNER,
-		OUTDOOR_THEME_REF_GRASS_TIP,
-		OUTDOOR_THEME_REF_GRASS_NARROW,
-		OUTDOOR_THEME_REF_SNOW,
-		OUTDOOR_THEME_REF_SNOW_BIG,
-		OUTDOOR_THEME_REF_LAKEBED,
-		OUTDOOR_THEME_REF_EXTRA,
-		OUTDOOR_THEME_REF_STREET_90,
-		OUTDOOR_THEME_REF_STREET_END_90,
-		OUTDOOR_THEME_REF_STREET_END_180,
-		OUTDOOR_THEME_REF_STREET_END_270,
-
-		// must be the last one
-		OUTDOOR_THEME_REF_COUNT
-	};
-	static char outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40];
-
 	static const int MULTI_TEX_COUNT = 2;
 
 private:
@@ -199,13 +170,6 @@ private:
 	bool cave;
 	// unused: TextureData lavaData;
 	TextureData floorData;
-	bool hasOutdoor;
-	int outdoorTextureWidth[OUTDOOR_THEME_REF_COUNT];
-	int outdoorTextureHeight[OUTDOOR_THEME_REF_COUNT];
-	char outdoorTextures[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH];
-	Texture outdoorTextureGroup[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT];
-	int outdoorFaceCount[OUTDOOR_THEME_REF_COUNT];
-	std::map<std::string, int> outdoorThemeRefMap;
 	std::vector<std::string> altWallThemes;
 
 public:
@@ -253,50 +217,6 @@ public:
 		}
 	}
 
-	inline void addOutdoorTextureName( int outdoorThemeRef, int face, const char *name ) {
-		if ( outdoorThemeRef < 0 || outdoorThemeRef > OUTDOOR_THEME_REF_COUNT ) {
-			std::cerr << "*** Error: outdoor theme ref is out of bounds: theme=" << getName() << std::endl;
-		} else {
-			strncpy( outdoorTextures[outdoorThemeRef][face], name, NAME_LENGTH - 1 );
-			outdoorTextures[outdoorThemeRef][face][NAME_LENGTH - 1] = '\0';
-		}
-	}
-
-	inline void setOutdoorTextureDimensions( int outdoorThemeRef, int w, int h ) {
-		if ( outdoorThemeRef < 0 || outdoorThemeRef > OUTDOOR_THEME_REF_COUNT ) {
-			std::cerr << "*** Error: outdoor theme ref is out of bounds: theme=" << getName() << std::endl;
-		} else {
-			outdoorTextureWidth[outdoorThemeRef] = w;
-			outdoorTextureHeight[outdoorThemeRef] = h;
-		}
-	}
-
-	inline int getOutdoorTextureWidth( int ref ) {
-		return outdoorTextureWidth[ ref ];
-	}
-
-	inline int getOutdoorTextureHeight( int ref ) {
-		return outdoorTextureHeight[ ref ];
-	}
-
-	Texture* getOutdoorTextureGroup( int ref ) {
-		return outdoorTextureGroup[ ref ];
-	}
-
-	inline void setOutdoorFaceCount( int themeRef, int value ) {
-		outdoorFaceCount[ themeRef ] = value;
-	}
-	int getOutdoorFaceCount( std::string themeRefName );
-	inline int getOutdoorFaceCount( int ref ) {
-		return outdoorFaceCount[ ref ];
-	}
-	inline void setHasOutdoor( bool b ) {
-		this->hasOutdoor = b;
-	}
-	inline bool getHasOutdoor() {
-		return this->hasOutdoor;
-	}
-
 	inline void setMultiTexRed( int index, GLfloat value ) {
 		r[index] = value;
 	}
@@ -337,8 +257,7 @@ public:
 	void unload();
 
 protected:
-	void loadTextureGroup( int ref, int face, char *texture, bool outdoor = false );
-	void createOutdoorEdgeTexture( int ref );
+	void loadTextureGroup( int ref, int face, char *texture );
 	void debug();
 };
 
@@ -402,7 +321,6 @@ protected:
 	std::vector<CharacterModelInfo*> character_models[2];
 
 	WallTheme *themes[100], *caveThemes[100];
-	std::vector<WallTheme*> outdoorThemes;
 	WallTheme *allThemes[100];
 	int themeCount, allThemeCount, caveThemeCount;
 	WallTheme *currentTheme;
@@ -496,7 +414,6 @@ public:
 	void loadTheme( WallTheme *theme );
 	void loadTheme( const char *name );
 	void loadRandomTheme();
-	void loadRandomOutdoorTheme();
 	void loadRandomCaveTheme();
 	void loadCaveTheme( char *name );
 	void loadDebugTheme();
