@@ -79,8 +79,8 @@ LandGenerator::~LandGenerator() {
 
 bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 //	updateStatus( _( "Loading theme" ) );
-//	if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-//	else shapePal->loadTheme( "outdoor" );
+	if ( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
+	else shapePal->loadTheme( "Gurrea2" );
 
 	map->setHeightMapEnabled( true );
 
