@@ -53,7 +53,6 @@
 #include "upload.h"
 #include "pcui.h"
 #include "textscroller.h"
-#include "outdoorgenerator.h"
 #include "containerview.h"
 #include "landgenerator.h"
 

@@ -26,7 +26,6 @@
 #include "item.h"
 #include "creature.h"
 #include "shapepalette.h"
-#include "outdoorgenerator.h"
 #include "dungeongenerator.h"
 #include "landgenerator.h"
 
