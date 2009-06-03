@@ -89,7 +89,8 @@ void RenderedCreature::removeRecentDamage( int i ) {
 
 bool RenderedCreature::findPlaceBoundedRadial( int startx, int starty, int radius ) {
 	for( int r = 1; r < radius; r++ ) {
-		if( findPlaceBounded( startx - r, starty - r, startx + r, startx + r ) ) {
+		//cerr << "+++ radius=" << r << " pos=" << (startx - r) << "," << (starty - r) << endl;
+		if( findPlaceBounded( startx - r, starty - r, startx + r, starty + r ) ) {
 			return true;
 		}
 	}
@@ -98,8 +99,10 @@ bool RenderedCreature::findPlaceBoundedRadial( int startx, int starty, int radiu
 
 // use this for small bounded areas
 bool RenderedCreature::findPlaceBounded( int startx, int starty, int endx, int endy ) {
+	//cerr << "--- findPlaceBounded: " << startx << "," << starty << " " << endx << "," << endy << endl;
 	for( int x = startx; x < endx; x++ ) {
 		for( int y = starty; y < endy; y++ ) {
+			//cerr << "--- checking: " << x << "," << y << endl;
 			if ( levelMap->canFit( x, y, getShape() ) ) {
 				moveTo( x, y, 0 );
 				setSelXY( x, y );
