@@ -875,22 +875,34 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	loadOrGenerateLargeMap();
 	
-	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-	cerr << "Looking for space for part." << endl;
+//	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+//	cerr << "Looking for space for party." << endl;
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
 			px = getParty()->getParty( r )->getX() + party_x;
 			py = getParty()->getParty( r )->getY() + party_y;
+			
+//			cerr << "Looking for space for " << getParty()->getParty( r )->getName() << " at " << px << "," << py << endl;
+			
+//			// what is there now?
+//			Location *pos = getMap()->getLocation( toint( px ), toint( py ), 0 );
+//			if( pos ) {
+//				cerr << "* location: shape=" << ( pos->shape ? pos->shape->getName() : "" ) <<
+//					" item=" << ( pos->item ? pos->item->getType() : "" ) <<
+//					" creature=" << ( pos->creature ? pos->creature->getName() : "" ) <<
+//					endl;
+//			} else {
+//				cerr << "* location is empty" << endl;
+//			}
 
 			// space for the pc should be clear, but look around just in case...
-			cerr << "Looking for space for " << getParty()->getParty( r )->getName() << " at " << px << "," << py << endl; 
 			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT ) ) {
 				cerr << "\t\tERROR: couldn't find place for party member (" << getParty()->getParty( r )->getName() << ") on map!!!" << endl;
 			}
 		}		
 	}
-	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+//	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
 }
 
 void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {

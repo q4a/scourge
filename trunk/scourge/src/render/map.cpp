@@ -3575,27 +3575,31 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 
 bool Map::canFit( int x, int y, Shape *shape ) {
 	if ( x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH ) {
+//		cerr << "out of bounds: " << x << "," << y << endl;
 		return false;
 	}
-	int fx = ( ( x ) / MAP_UNIT ) * MAP_UNIT;
-	int fy = ( ( y ) / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;
 	if ( isHeightMapEnabled() ) {
-		int gx = fx / OUTDOORS_STEP;
-		int gy = fy / OUTDOORS_STEP;
+//		cerr << "*** using heightmap" << endl;
+		int gx = x / OUTDOORS_STEP;
+		int gy = y / OUTDOORS_STEP;
 		if ( ground[ gx ][ gy ] < 10 && ground[ gx ][ gy ] > -10 ) {
-			cerr << "checking " << x << "," << y << " ground ok at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
+//			cerr << "checking " << x << "," << y << " ground ok at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
 			bool b = !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false;
-			cerr << "\tb=" << b << endl;
+//			cerr << "\tb=" << b << endl;
 			return b;
 		} else {
-			cerr << "ground out of range at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
+//			cerr << "ground out of range at " << gx << "," << gy << " value=" << ground[gx][gy] << endl;
 		}
 	} else {
+//		cerr << "*** no heightmap" << endl;
+		int fx = ( ( x ) / MAP_UNIT ) * MAP_UNIT;
+		int fy = ( ( y ) / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;
 		Shape *floor = floorPositions[fx][fy];
 		if ( floor ) {
 			return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
 		}
 	}
+//	cerr << "-----------------------------" << endl;
 	return false;
 }
 
