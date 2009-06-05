@@ -21,6 +21,7 @@
 
 #include "gui/widgetview.h"
 #include "gui/canvas.h"
+#include <map>
 
 /**
   *@author Gabor Torok
@@ -42,6 +43,7 @@ private:
 	bool dragging;
 	bool editable;
 	bool showRegions;
+	std::map<int, Texture> textures;
 
 public:
 
@@ -79,6 +81,7 @@ public:
 
 protected:
 	void calculateValues();
+	Texture loadTexture( int x, int y );
 };
 
 #endif

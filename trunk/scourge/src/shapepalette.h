@@ -70,7 +70,6 @@ private:
 
 	char aboutText[3000];
 
-	Texture mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
 	std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
 
 	std::map<std::string, Texture> namedTextures;
@@ -92,10 +91,6 @@ public:
 	}
 	inline Texture getProgressHighlightTexture() {
 		return progressHighlightTexture;
-	}
-
-	inline Texture getMapGridTile( int x, int y ) {
-		return mapGrid[ x ][ y ];
 	}
 
 	inline Texture getHandsAttackIcon() {

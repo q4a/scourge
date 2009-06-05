@@ -893,16 +893,6 @@ void ShapePalette::loadNpcPortraits() {
 }
 
 void ShapePalette::initMapGrid() {
-	// load the textures
-	for ( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
-		for ( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
-			char textureName[80];
-			snprintf( textureName, 80, "/mapgrid/map%d-%d.png", x, y );
-			//cerr << "loading: " << textureName << endl;
-			mapGrid[ x ][ y ].load( textureName );
-		}
-	}
-
 	char tmp[200];
 	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
