@@ -368,7 +368,8 @@ bool LandGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp, bo
 }
 
 /// Initializes the outdoor ground textures. Takes height into account.
-
+// todo: it's incorrect to have this function here because it operates over the entire map (not just the quarter)
+// so in this function you should not reference LandGenerator members (like mapPosX, etc.)
 void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 	// set ground texture
 
@@ -392,8 +393,8 @@ void LandGenerator::initOutdoorsGroundTexture( Map *map ) {
 			} else if( low ) {
 				name = "lakebed";
 			} else {
-				params[0] = map->getClimate( mapPosX + x, mapPosY + y );
-				params[1] = map->getVegetation( mapPosX + x, mapPosY + y );
+				params[0] = map->getClimate( x, y );
+				params[1] = map->getVegetation( x, y );
 				bool ret = map->getShapes()->getSession()->getSquirrel()->callIntArgStringReturnMethod( "get_ground_texture", answer, 2, params );
 				name = ret ? answer : "grass";
 			}
