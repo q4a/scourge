@@ -679,7 +679,7 @@ function drawRoads( x, y, village_width, village_height ) {
 			if ( i == 0 ) {
 				drawRoadTile( vx, vy, "street_end" );
 			} else if ( i >= village_width - 1 ) {
-				drawRoadTile( vx, vy, "stret_end_180" );
+				drawRoadTile( vx, vy, "street_end_180" );
 			} else {
 				drawRoadTile( vx, vy, "street" );
 			}
