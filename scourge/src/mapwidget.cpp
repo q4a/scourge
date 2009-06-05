@@ -27,8 +27,11 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
-#define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
+//#define MAP_GRID_HEIGHT ( Constants::MAP_GRID_TILE_HEIGHT * Constants::MAP_GRID_TILE_PIXEL_HEIGHT )
+//#define MAP_GRID_WIDTH ( Constants::MAP_GRID_TILE_WIDTH * Constants::MAP_GRID_TILE_PIXEL_WIDTH )
+
+#define MAP_GRID_HEIGHT ( BITMAP_SIZE * BITMAPS_PER_COL )
+#define MAP_GRID_WIDTH ( BITMAP_SIZE * BITMAPS_PER_ROW )
 
 MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, int y2, bool editable ) 
 		: Canvas( x, y, x2, y2 ) {
@@ -44,6 +47,10 @@ MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, in
 }
 
 MapWidget::~MapWidget() {
+	for( map<int, Texture>::iterator e = textures.begin(); e != textures.end(); ++e ) {
+		Texture tex = e->second;
+		tex.clear();
+	}	
 }
 
 bool MapWidget::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
@@ -119,10 +126,10 @@ void MapWidget::calculateValues() {
 		ey = MAP_GRID_HEIGHT;
 	}
 
-	gx = sx / Constants::MAP_GRID_TILE_PIXEL_WIDTH;
-	gy = sy / Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
-	tx = sx % Constants::MAP_GRID_TILE_PIXEL_WIDTH;
-	ty = sy % Constants::MAP_GRID_TILE_PIXEL_HEIGHT;
+	gx = sx / BITMAP_SIZE;
+	gy = sy / BITMAP_SIZE;
+	tx = sx % BITMAP_SIZE;
+	ty = sy % BITMAP_SIZE;
 
 	/*
 	cerr << "pixel=" << sx << "-" << ex << " , " << sy << "-" << ey <<
@@ -132,33 +139,51 @@ void MapWidget::calculateValues() {
 	*/
 }
 
+Texture MapWidget::loadTexture( int x, int y ) {
+	int bitmapIndex = y * BITMAPS_PER_ROW + x;
+	
+	if( textures.find( bitmapIndex ) == textures.end() ) {
+		char bitmapName[3000];
+		sprintf( bitmapName, "/mapgrid/map_%02d.png", bitmapIndex );
+		cerr << "Loading bitmap=" << bitmapName << " pos=" << x << "," << y << endl;
+		
+		Texture texture;
+		string filename = bitmapName;
+		texture.load( filename );
+		
+		textures[ bitmapIndex ] = texture;
+	}
+	
+	return textures[ bitmapIndex ];
+}
+
 bool  MapWidget::onDraw( Widget* ) {
 	Canvas *canvas = this;
 
 
 	glEnable( GL_TEXTURE_2D );
-	for ( int xx = 0; xx < canvas->getWidth() / Constants::MAP_GRID_TILE_PIXEL_WIDTH + 2; xx++ ) {
-		if ( gx + xx >= Constants::MAP_GRID_TILE_WIDTH ) continue;
-		for ( int yy = 0; yy < canvas->getHeight() / Constants::MAP_GRID_TILE_PIXEL_HEIGHT + 2; yy++ ) {
-			if ( gy + yy >= Constants::MAP_GRID_TILE_HEIGHT ) continue;
+	for ( int xx = 0; xx < canvas->getWidth() / BITMAP_SIZE + 2; xx++ ) {
+		if ( gx + xx >= BITMAP_SIZE ) continue;
+		for ( int yy = 0; yy < canvas->getHeight() / BITMAP_SIZE + 2; yy++ ) {
+			if ( gy + yy >= BITMAP_SIZE ) continue;
 			glPushMatrix();
-			int xp = xx * Constants::MAP_GRID_TILE_PIXEL_WIDTH - tx;
-			int yp = yy * Constants::MAP_GRID_TILE_PIXEL_HEIGHT - ty;
+			int xp = xx * BITMAP_SIZE - tx;
+			int yp = yy * BITMAP_SIZE - ty;
 			glTranslatef( xp, yp, 0 );
 //      cerr << "\txx=" << xx << " yy=" << yy <<
 //        " gird=" << ( gx + xx ) << "," << ( gy + yy ) << endl;
-			scourge->getShapePalette()->getMapGridTile( gx + xx, gy + yy ).glBind();
+			loadTexture( gx + xx, gy + yy ).glBind();
 			glColor4f( 1, 1, 1, 1 );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
 			glVertex2i( 0, 0 );
 			glTexCoord2i( 1, 0 );
-			glVertex2i( Constants::MAP_GRID_TILE_PIXEL_WIDTH, 0 );
+			glVertex2i( BITMAP_SIZE, 0 );
 			glTexCoord2i( 0, 1 );
-			glVertex2i( 0, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glVertex2i( 0, BITMAP_SIZE );
 			glTexCoord2i( 1, 1 );
-			glVertex2i( Constants::MAP_GRID_TILE_PIXEL_WIDTH, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
 			glEnd();
 			glPopMatrix();
 		}
@@ -166,24 +191,27 @@ bool  MapWidget::onDraw( Widget* ) {
 	glDisable( GL_TEXTURE_2D );
 	
 	if( showRegions ) {
+		glEnable( GL_BLEND );
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPushMatrix();
 		glTranslatef( -tx, -ty, 0 );
 		
-		glColor4f( 1, 1, 1, 1 );
-		for( int lx = 0; lx < canvas->getWidth() + Constants::MAP_GRID_TILE_PIXEL_WIDTH; lx += REGION_SIZE ) {
+		glColor4f( 1, 1, 1, 0.3f );
+		for( int lx = 0; lx < canvas->getWidth() + BITMAP_SIZE; lx += REGION_SIZE ) {
 			glBegin( GL_LINES );
 			glVertex2i( lx, 0 );
-			glVertex2i( lx, canvas->getHeight() + Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
+			glVertex2i( lx, canvas->getHeight() + BITMAP_SIZE );
 			glEnd();
 		}
-		for( int ly = 0; ly < canvas->getHeight() + Constants::MAP_GRID_TILE_PIXEL_HEIGHT; ly += REGION_SIZE ) {
+		for( int ly = 0; ly < canvas->getHeight() + BITMAP_SIZE; ly += REGION_SIZE ) {
 			glBegin( GL_LINES );
-			glVertex2i( canvas->getWidth() + Constants::MAP_GRID_TILE_PIXEL_WIDTH, ly );
+			glVertex2i( canvas->getWidth() + BITMAP_SIZE, ly );
 			glVertex2i( 0, ly );
 			glEnd();
 		}
 		
 		glPopMatrix();
+		glDisable( GL_BLEND );
 	}
 
 	int shadowSize = 10;
@@ -211,8 +239,8 @@ bool  MapWidget::onDraw( Widget* ) {
 	glDisable( GL_BLEND );
 
 	glPushMatrix();
-	glTranslatef( markedX - ( gx * Constants::MAP_GRID_TILE_PIXEL_WIDTH + tx ),
-	              markedY - ( gy * Constants::MAP_GRID_TILE_PIXEL_HEIGHT + ty ),
+	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ),
+	              markedY - ( gy * BITMAP_SIZE + ty ),
 	              0 );
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 1, 0, 0, 0 );
