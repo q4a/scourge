@@ -22,6 +22,8 @@
 #include "../creature.h"
 #include "../rpg/rpglib.h"
 #include "../render/glshape.h"
+#include "../conversation.h"
+
 
 using namespace std;
 
@@ -94,6 +96,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
 	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
 	{ "void", "setNpc", SqCreature::_setNpc, 0, 0, "Toggle if this creature is an npc or a monster." },
+	{ "void", "setConversation", SqCreature::_setConversation, 0, 0, "Use this file for conversation data." },
 	{ "void", "setNpcInfo", SqCreature::_setNpcInfo, 0, 0, "Make an existing creature into a specific type of npc. Params are name-suffix, profession and subtype as they appear in the maps/*.cfg files." },
 	{ "void", "setOffset", SqCreature::_setOffset, 0, 0, "Set the creature's offset on the map." },
 	
@@ -584,7 +587,8 @@ int SqCreature::_getBackpackContentsCount( HSQUIRRELVM vm ) {
 int SqCreature::_setIntro( HSQUIRRELVM vm ) {
 	GET_STRING( keyphrase, 80 )
 	GET_OBJECT( Creature* )
-	if ( !Mission::setIntro( object, keyphrase ) ) {
+	Conversation *conversation = object->getConversation();
+	if ( conversation && !conversation->setIntro( object, keyphrase ) ) {
 		return sq_throwerror( vm, "Error trying to set intro text." );
 	}
 	return 0;
@@ -641,6 +645,14 @@ int SqCreature::_setNpcInfo( HSQUIRRELVM vm ) {
 	snprintf( name, 3000, "%s %s", Rpg::createName().c_str(), name_suffix );
 	NpcInfo *npcInfo = new NpcInfo( toint( object->getX() ), toint( object->getY() ), name, object->getLevel(), profession, subtype );
 	object->setNpcInfo( npcInfo );
+	return 0;
+}
+
+int SqCreature::_setConversation( HSQUIRRELVM vm ) {
+	GET_STRING( conversation_file, 255 )
+	GET_OBJECT( Creature* )
+	string s = conversation_file;
+	object->setConversation( s );
 	return 0;
 }
 

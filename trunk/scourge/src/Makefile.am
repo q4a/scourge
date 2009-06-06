@@ -117,6 +117,8 @@ scourge_SOURCES = \
 	userconfiguration.h\
 	board.cpp\
 	board.h\
+	conversation.cpp\
+	conversation.h\
 	battle.cpp\
 	battle.h\
 	party.cpp\

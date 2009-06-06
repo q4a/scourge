@@ -41,23 +41,6 @@ struct NpcInfoInfo;
   *@author Gabor Torok
   */
 
-/// An NPC conversation flow.
-class NpcConversation {
-public:
-
-	NpcConversation() {
-	}
-
-	~NpcConversation() {
-	}
-
-	std::vector<std::string> npc_intros;
-	std::vector<std::string> npc_unknownPhrases;
-	std::map<std::string, int> npc_conversations;
-	std::map<std::string, std::string> npc_firstKeyPhrase;
-	std::vector<std::string> npc_answers;
-};
-
 /// Extra info associated with npc-s on an edited level.
 
 class NpcInfo {
@@ -117,27 +100,11 @@ private:
 	std::string ambientSoundName;
 	int regionX, regionY, offsetX, offsetY;
 
-	static std::vector<std::string> intros;
-	static std::vector<std::string> unknownPhrases;
-	static std::map<std::string, int> conversations;
-	static std::map<std::string, std::string> firstKeyPhrase;
-	static std::vector<std::string> answers;
-	static std::map<std::string, NpcConversation*> npcConversations;
 	static std::map<std::string, NpcInfo*> npcInfos;
 
 public:
 
-#define INTRO_PHRASE "_INTRO_"
-#define UNKNOWN_PHRASE "_UNKNOWN_"
 
-
-	static char const* getIntro();
-	static char const* getAnswer( char const* keyphrase );
-	static char const* getFirstKeyPhrase( char const* keyphrase );
-	static char const* getIntro( char const* npc );
-	static bool setIntro( Creature *creature, char const* keyphrase );
-	static char const* getAnswer( char const* npc, char const* keyphrase );
-	static char const* getFirstKeyPhrase( char const* npc, char const* keyphrase );
 	/**
 	 * Load extra data from text file alongside an edited map.
 	 * "fileName" in this case is the name of the .map binary file
@@ -346,23 +313,12 @@ public:
 	static NpcInfo *addNpcInfo( int x, int y, char *npcName, int level, char *npcType, char *npcSubType );
 	static NpcInfo *addNpcInfo( NpcInfo *info );
 	static void createTypedNpc( Creature *creature, int level, int fx, int fy );
-	static void clearConversations();
 
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
 	static void loadMapDataFile( GameAdapter *adapter, const std::string& filename, bool generalOnly = false );
 	static std::string getMapConfigFile( const std::string& filename );
-	static void initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly );
 	static void initNpcs( ConfigLang *config, GameAdapter *adapter );
-	static void setGeneralConversationLine( std::string keyphrase, std::string answer );
-	static void setConversationLine( std::string npc, std::string keyphrase, std::string answer );
-	static void storeConversationLine( std::string keyphrase,
-	                                   std::string answer,
-	                                   std::vector<std::string> *intros,
-	                                   std::vector<std::string> *unknownPhrases,
-	                                   std::map<std::string, int> *conversations,
-	                                   std::map<std::string, std::string> *firstKeyPhrase,
-	                                   std::vector<std::string> *answers );
 	static NpcInfo *getNpcInfo( int x, int y );
 	static std::string getNpcInfoKey( int x, int y );
 

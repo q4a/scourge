@@ -49,7 +49,7 @@ class RenderedItem;
 class NpcInfo;
 class RenderedProjectile;
 class Trap;
-
+class Conversation;
 
 /**
   *@author Gabor Torok
@@ -164,7 +164,9 @@ private:
 	Uint32 lastDecision;
 	Creature *summoner;
 	std::vector<Creature *> summoned;
-
+	
+	Conversation *conversation;
+	
 public:
 	static const int DIAMOND_FORMATION = 0;
 	static const int STAGGERED_FORMATION = 1;
@@ -1022,7 +1024,8 @@ public:
 	inline std::vector<Creature*> *getSummoned() { return &summoned; }
 	inline Creature *getSummoner() { return summoner; }
 	void dismissSummonedCreatures();
-
+	Conversation *setConversation( std::string filename );
+	inline Conversation *getConversation() { return conversation; }
 
 protected:
 

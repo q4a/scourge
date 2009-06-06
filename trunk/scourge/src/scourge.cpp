@@ -707,7 +707,7 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 #define USE_LARGE_MAP 1
 
 bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
-	Mission::clearConversations();
+	//Mission::clearConversations();
 	bool mapCreated = true;
 	
 	// overland

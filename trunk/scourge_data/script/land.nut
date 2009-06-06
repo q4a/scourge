@@ -192,5 +192,23 @@ function drawHQ( x, y ) {
 	             "p90", "p90", "p90", "p90", "p90", "p90", "p90", "p90",
 	             "t270", "p0", "p0", "p0", "t90",
 	             "p90", "p90", "p90", "t270", "e180" ] );
+	
+	// add some npc-s
+	uzudil <- scourgeGame.getMission().addCreature( 88, 75, 0, "Uzudil the Hand");
+	uzudil.setNpcInfo( _("Uzudil the Hand"), "sage", "" );
+	uzudil.setLevel( 4 );
+	uzudil.setConversation( "hq" );
+	melathor <- scourgeGame.getMission().addCreature( 180, 58, 0, "Melathor of Allovium");
+	melathor.setNpcInfo( _("Melathor of Allovium"), "trainer", "Magician" );
+	melathor.setLevel( 15 );
+	melathor.setConversation( "hq" );
+
+	npc <- null
+	for( i <- 0; i < 10; i++ ) {
+		npc = scourgeGame.getMission().addCreatureAround( 85 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 8.0) ).tointeger(),
+		                                                  70 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 8.0) ).tointeger(),
+		                                                  0, getVillageNpcType() );
+		npc.setConversation( "hq" );
+	}	
 }
 

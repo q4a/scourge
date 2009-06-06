@@ -29,6 +29,7 @@
 #include "sqbinding/sqbinding.h"
 #include "debug.h"
 #include "sound.h"
+#include "conversation.h"
 
 using namespace std;
 
@@ -195,6 +196,8 @@ void Creature::commonInit() {
 
 	evalSpecialSkills();
 
+	// ref the default conversation
+	this->conversation = Conversation::ref( this, "general", session->getGameAdapter() );
 }
 
 Creature::~Creature() {
@@ -221,7 +224,12 @@ Creature::~Creature() {
 		BackpackInfo *info = e->second;
 		delete info;
 	}
-	delete backpack;	
+	delete backpack;
+	
+	if( conversation ) {
+		Conversation::unref( this, conversation );
+		conversation = NULL;
+	}
 }
 
 /// Changes a character-type creature's profession, and applies the effects.
@@ -3958,4 +3966,13 @@ float Creature::getAlignment() {
   }
 
   return ( ( -chaoticness + lawfulness ) + 1 ) / 2;
+}
+
+Conversation *Creature::setConversation( string filename ) {
+	if( conversation ) {
+		Conversation::unref( this, conversation );
+		conversation = NULL;
+	}
+	conversation = Conversation::ref( this, filename, getSession()->getGameAdapter() );
+	return conversation;
 }
