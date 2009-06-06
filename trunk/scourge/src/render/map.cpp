@@ -200,7 +200,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	}
 	
 	for( int x = 0; x < MAP_TILES_X; x++) {
-		for( int x = 0; x < MAP_TILES_X; x++) {
+		for( int y = 0; y < MAP_TILES_Y; y++) {
 			climate[x][y] = vegetation[x][y] = 0;
 		}
 	}
@@ -298,7 +298,7 @@ void Map::reset() {
 	}
 	
 	for( int x = 0; x < MAP_TILES_X; x++) {
-		for( int x = 0; x < MAP_TILES_X; x++) {
+		for( int y = 0; y < MAP_TILES_Y; y++) {
 			climate[x][y] = vegetation[x][y] = 0;
 		}
 	}	
@@ -731,7 +731,7 @@ bool Map::checkUnderRoof() {
 bool Map::isOnFloorTile( int px, int py ) {
 	int fx = ( px / MAP_UNIT ) * MAP_UNIT;
 	int fy = ( py / MAP_UNIT ) * MAP_UNIT + MAP_UNIT;		
-	return getFloorPosition( fx, fy );
+	return getFloorPosition( fx, fy ) != NULL;
 }
 
 /// Sets up a map location and checks whether it is visible/accessible.

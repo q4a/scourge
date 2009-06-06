@@ -26,7 +26,7 @@ class Surface;
 class Location;
 struct DrawLater;
 class Shape;
-struct Rug;
+class Rug;
 class RenderedLocation;
 
 class MapRender {

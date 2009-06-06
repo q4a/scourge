@@ -80,7 +80,19 @@ public:
 
 /// A nice, fluffy rug.
 
-struct Rug {
+class Rug {
+public:
+	Rug() 
+		: texture()
+		, isHorizontal( false )
+		, angle() {
+	}
+
+	~Rug() {
+	}
+	// using default Rug& operator=( Rug const& that ); is harmless
+	// using default Rug( Rug const& that ); constructor is harmless
+
 	Texture texture;
 	bool isHorizontal;
 	float angle;
