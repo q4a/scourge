@@ -711,11 +711,13 @@ Texture::Texture()
 
 Texture::Texture( Texture const& that )
 		: _ref( that._ref ) {
+	assert( _ref != NULL );
 	++( _ref->_cntr );
 }
 
 Texture::Texture( Actual* node )
 		: _ref( node ) {
+	assert( node != NULL );
 	++( _ref->_cntr );
 }
 
@@ -726,22 +728,31 @@ Texture::~Texture() {
 	}
 }
 
-Texture& Texture::operator=( Texture const & that ) {
-	Texture tmp( that );
-	swap( tmp );
+Texture& Texture::operator=( Texture const& that ) {
+	if ( &that != this ) {
+		Texture tmp( that );
+		swap( tmp );
+	}
+	else {
+		assert( false && "Texture was assigned to itself, probably bug" );
+	}
+	assert( _ref != NULL );
 	return *this;
 }
 
 
 void Texture::clear() {
+	assert( _ref != NULL );
 	if ( _ref != &emptyNode ) { // if not already clear
-		Texture tmp( &emptyNode );
+		Texture tmp;
 		swap( tmp );
 	}
 }
 
 
 void Texture::swap( Texture& that ) {
+	assert( _ref != NULL );
+	assert( that._ref != NULL );
 	Actual* tmp( that._ref );
 	that._ref = _ref;
 	_ref = tmp;

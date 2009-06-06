@@ -27,7 +27,7 @@ class Surface;
 class Location;
 struct DrawLater;
 class Shape;
-struct Rug;
+class Rug;
 class CVectorTex;
 
 class Outdoor : public MapRender {
