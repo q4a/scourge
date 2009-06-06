@@ -27,6 +27,7 @@
 #include "configlang.h"
 #include "sound.h"
 #include "persist.h"
+#include "conversation.h"
 
 using namespace std;
 // ###### MS Visual C++ specific ###### 
@@ -36,14 +37,7 @@ using namespace std;
   static char THIS_FILE[] = __FILE__;
 #endif 
 
-vector<string> Mission::intros;
-vector<string> Mission::unknownPhrases;
-map<string, int> Mission::conversations;
-map<string, string> Mission::firstKeyPhrase;
-vector<string> Mission::answers;
-
-map<string, NpcConversation*> Mission::npcConversations;
-map<string, NpcInfo*> Mission::npcInfos;
+map<string, NpcInfo*> Mission::npcInfos;  
 
 //#define DEBUG_MODE 1
 
@@ -276,153 +270,6 @@ Mission *Board::findOrCreateMission( int *mapPos, char *nextMissionName ) {
 /// of random missions that are suited to the party's level.
 
 void Board::initMissions() {
-//	// free ui
-//	freeListText();
-//
-//	// find the highest and lowest levels in the party
-//	int highest = 0;
-//	int lowest = -1;
-//	int sum = 0;
-//	for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-//		int n = session->getParty()->getParty( i )->getLevel();
-//		if ( n < 1 ) n = 1;
-//		if ( highest < n ) {
-//			highest = n;
-//		} else if ( lowest == -1 || lowest > n ) {
-//			lowest = n;
-//		}
-//		sum += n;
-//	}
-//	float ave = ( sum == 0 ? 1 : ( static_cast<float>( sum ) / static_cast<float>( session->getParty()->getPartySize() ) / 1.0f ) );
-//
-//	// remove the storyline missions
-//	// remove missions whose level is too low
-//	for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
-//		Mission *mission = availableMissions[ i ];
-//		if ( mission->isStoryLine() ) {
-//			// move the last element over the current storyline element
-//			availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
-//			availableMissions.pop_back();
-//			// re-examine the current element
-//			i--;
-//		}
-//	}
-//
-//	// maintain a set of missions
-//	for ( int counter = 0; availableMissions.size() < 8 && counter < 8; counter++ ) {
-//		int level;
-//		if ( counter % 2 == 0 ) {
-//			// allow for low level mission
-//			level = static_cast<int>( Util::roll( 0.0f, ave + 2 ) );
-//		} else {
-//			// allow for current level missions
-//			level = static_cast<int>( Util::roll( ave, ave + 4.0f ) ) - 2;
-//		}
-//		if ( level < 1 ) level = 1;
-//		int depth =  static_cast<int>( static_cast<float>( level ) / static_cast<float>( MAX_MISSION_DEPTH - 3 ) ) + 1 + Util::dice( 3 );
-//		if ( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
-//		int templateIndex = Util::dice( templates.size() );
-//
-//		// only outdoor maps can be 1 depth
-//		if ( depth == 1 && tolower( templates[ templateIndex ]->getMapType() ) != 'o' ) {
-//			depth++;
-//		}
-//		// Create a new mission but only keep it if there isn't another mission with this name already.
-//		// This is because missions are 'found' on load via name, so names have to be unique.
-//		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
-//		bool found = false;
-//		for ( unsigned int i = 0; i < availableMissions.size(); i++ ) {
-//			if ( !strcmp( mission->getName(), availableMissions[i]->getName() ) ) {
-//				found = true;
-//				break;
-//			}
-//		}
-//		if ( !found ) {
-//			availableMissions.push_back( mission );
-//		}
-//	}
-//
-//
-//	// add the current storyline mission at the top of the board
-//	if ( storylineIndex >= 0 && storylineIndex < static_cast<int>( storylineMissions.size() ) ) {
-//		availableMissions.insert( availableMissions.begin(), storylineMissions[ storylineIndex ] );
-//	}
-//
-//	// append replayable maps at the bottom of the board
-//	for ( int i = 0; i < storylineIndex; i++ ) {
-//		if ( storylineMissions[ i ]->isReplayable() ) {
-//			availableMissions.insert( availableMissions.end(), storylineMissions[ i ] );
-//			availableMissions[ availableMissions.size() -1 ]->setDisplayName( storylineMissions[i]->getReplayDisplayName() ) ;
-//			availableMissions[ availableMissions.size() -1 ]->setDescription( storylineMissions[i]->getReplayDescription() ) ;
-//			availableMissions[ availableMissions.size() -1 ]->setChapter( -1 );
-//		}
-//	}
-//
-//
-//
-//#ifdef DEBUG_MODE
-//	// debug missions
-//	for ( int i = 1; i <= highest; i++ ) {
-//		int templateIndex = Util::dice(  templates.size() );
-//		Mission *mission = templates[ templateIndex ]->createMission( session, i, 1 );
-//		availableMissions.push_back( mission );
-//	}
-//#endif
-//
-//	// init ui
-//	if ( !availableMissions.empty() ) {
-//		missionListCount = availableMissions.size();
-//		missionText = new string[availableMissions.size()];
-//		missionColor = new Color[availableMissions.size()];
-//		for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
-//			char str[20];
-//			snprintf( str, 20, _( "L:%d, " ), availableMissions[i]->getLevel() );
-//			missionText[i] = str;
-//			snprintf( str, 20, _( "S:%d, " ), availableMissions[i]->getDepth() );
-//			missionText[i] += str;
-//			missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "";
-////  missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : "";
-//			missionText[i] += " ";
-//			missionText[i] += availableMissions[i]->getDisplayName();
-//			if ( availableMissions[i]->isCompleted() && !availableMissions[i]->isReplayable() ) missionText[i] += _( "(completed)" );
-//
-//			missionColor[i].r = 1.0f;
-//			missionColor[i].g = 1.0f;
-//			missionColor[i].b = 0.0f;
-//			if ( availableMissions[i]->isReplay() ) {
-//				missionColor[i].r = 0.0f;
-//				missionColor[i].g = 0.75f;
-//				missionColor[i].b = 1.0f;
-//			} else if ( availableMissions[i]->isCompleted() ) {
-//				missionColor[i].r = 0.5f;
-//				missionColor[i].g = 0.5f;
-//				missionColor[i].b = 0.5f;
-//			} else if ( availableMissions[i]->isStoryLine() ) {
-//				missionColor[i].r = 1.0f;
-//				missionColor[i].g = 0.0f;
-//				missionColor[i].b = 1.0f;
-//			} else if ( availableMissions[i]->getLevel() < ave ) {
-//				missionColor[i].r = 1.0f;
-//				missionColor[i].g = 1.0f;
-//				missionColor[i].b = 1.0f;
-//			} else if ( availableMissions[i]->getLevel() > ave ) {
-//				missionColor[i].r = 1.0f;
-//				missionColor[i].g = 0.0f;
-//				missionColor[i].b = 0.0f;
-//			}
-//			if ( i == 0 ) {
-//				if ( !session->getGameAdapter()->isHeadless() )
-//					session->getGameAdapter()->setMissionDescriptionUI( availableMissions[i]->getDescription(),
-//					    availableMissions[i]->getMapX(),
-//					    availableMissions[i]->getMapY() );
-//			}
-//		}
-//
-//		if ( !session->getGameAdapter()->isHeadless() )
-//			session->getGameAdapter()->updateBoardUI( availableMissions.size(),
-//			    missionText,
-//			    missionColor );
-//	}
 }
 
 /// Sets the storyline index.
@@ -768,132 +615,6 @@ void Mission::removeMissionItems() {
 	}
 }
 
-char const* Mission::getIntro() {
-	if ( !intros.empty() ) {
-		return intros[ Util::dice( intros.size() ) ].c_str();
-	} else {
-		cerr << "Error: Mission has 0 intros" << endl;
-		return "";
-	}
-}
-
-char const* Mission::getAnswer( char const* keyphrase ) {
-	string ks = keyphrase;
-	if ( conversations.find( ks ) != conversations.end() ) {
-		return  answers[ conversations[ ks ] ].c_str();
-	} else {
-		cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-		return unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str();
-	}
-}
-
-char const* Mission::getFirstKeyPhrase( char const* keyphrase ) {
-	string ks = keyphrase;
-	if ( firstKeyPhrase.find( ks ) != firstKeyPhrase.end() ) {
-		return firstKeyPhrase[ ks ].c_str();
-	} else {
-		cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-		return unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str();
-	}
-}
-
-char const* Mission::getIntro( char const* npc ) {
-	string s = npc;
-	if ( npcConversations.find( s ) == npcConversations.end() ) {
-		//cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
-		return NULL;
-	}
-	NpcConversation *nc = npcConversations[ s ];
-	return nc->npc_intros[ Util::dice( nc->npc_intros.size() ) ].c_str();
-}
-
-bool Mission::setIntro( Creature *s, char const* keyphrase ) {
-	NpcConversation *nc = NULL;
-	string npc = s->getMonster()->getType();
-	if ( npcConversations.find( npc ) != npcConversations.end() ) {
-		nc = npcConversations[ npc ];
-	}
-	if ( !nc ) {
-		npc = npc = s->getName();
-		if ( npcConversations.find( npc ) != npcConversations.end() ) {
-			nc = npcConversations[ npc ];
-		}
-	}
-	if ( !nc ) {
-		cerr << "*** Error: can't find conversation with: " << s << endl;
-		return false;
-	}
-
-	string ks = keyphrase;
-	Util::toLowerCase( ks );
-	if ( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
-		nc->npc_intros.clear();
-		nc->npc_intros.push_back( nc->npc_answers[ nc->npc_conversations[ ks ] ] );
-	} else {
-		cerr << "------------------------------------" << endl;
-		for ( map<string, int>::iterator i = nc->npc_conversations.begin(); i != nc->npc_conversations.end(); ++i ) {
-			cerr << i->first << "=" << i->second << endl;
-		}
-		cerr << "------------------------------------" << endl;
-		cerr << "Can't find " << keyphrase << " in npc conversation for creature: " << s->getName() << endl;
-		return false;
-	}
-	return true;
-}
-
-char const* Mission::getAnswer( char const* npc, char const* keyphrase ) {
-	string s( npc );
-	if ( npcConversations.find( s ) == npcConversations.end() ) {
-		//cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
-		return NULL;
-	}
-	NpcConversation *nc = npcConversations[ s ];
-
-	string ks = keyphrase;
-	if ( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
-		return  nc->npc_answers[ nc->npc_conversations[ ks ] ].c_str();
-	} else {
-		cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-		return nc->npc_unknownPhrases[ Util::dice( nc->npc_unknownPhrases.size() ) ].c_str();
-	}
-}
-
-char const* Mission::getFirstKeyPhrase( char const* npc, char const* keyphrase ) {
-	string s( npc );
-	if ( npcConversations.find( s ) == npcConversations.end() ) {
-		cerr << "Can't find npc conversation for creature: " << npc << endl;
-		return NULL;
-	}
-	NpcConversation *nc = npcConversations[ s ];
-
-	string ks = keyphrase;
-	if ( nc->npc_firstKeyPhrase.find( ks ) != nc->npc_firstKeyPhrase.end() ) {
-		return nc->npc_firstKeyPhrase[ ks ].c_str();
-	} else {
-		cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-		return NULL;
-	}
-}
-
-void Mission::clearConversations() {
-	// clean up
-	for ( map<string, NpcInfo*>::iterator i = npcInfos.begin(); i != npcInfos.end(); ++i ) {
-		NpcInfo *npcInfo = i->second;
-		delete npcInfo;
-	}
-	npcInfos.clear();
-	intros.clear();
-	unknownPhrases.clear();
-	conversations.clear();
-	firstKeyPhrase.clear();
-	answers.clear();
-	for ( map<string, NpcConversation*>::iterator i = npcConversations.begin(); i != npcConversations.end(); ++i ) {
-		NpcConversation *npcConversation = i->second;
-		delete npcConversation;
-	}
-	npcConversations.clear();
-}
-
 //TODO: this will segfault if filename starts with a .
 void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
 	// read general conversation from level 0.
@@ -926,12 +647,6 @@ void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
 
 	// read the level's data
 	loadMapDataFile( adapter, filename );
-
-	// if nothing was read read from hq.cfg
-	if ( intros.size() == 0 ) {
-		string s = rootDir + "/maps/general.map";
-		loadMapDataFile( adapter, s, true );
-	}
 }
 
 /**
@@ -939,184 +654,9 @@ void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
  * (possibly generated) map.
  */
 void Mission::loadMapConfig( GameAdapter *adapter, const string& filename ) {
-	clearConversations();
+	//clearConversations();
 	string path = rootDir + filename;
 	loadMapDataFile( adapter, path );
-}
-
-string getKeyValue( string key ) {
-	string::size_type n = key.find( "." );
-	if ( n == string::npos ) {
-		cerr << "Bad answer string name: " << key << endl;
-		return "";
-	} else {
-		string k;
-		string::size_type m = key.find( ".", n + 1 );
-		return( m == string::npos ? key.substr( n + 1 ) : key.substr( n + 1, m - n - 1 ) );
-	}
-}
-
-void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly ) {
-	map<string, string> keyphrases;
-	map<string, map<string, vector<string>*>*> answers;
-
-	char const* currentNpc;
-	vector<ConfigNode*> *v = config->getDocument()->
-	                         getChildrenByName( "conversation" );
-	for ( unsigned int i = 0; v && i < v->size(); i++ ) {
-		ConfigNode *node = ( *v )[i];
-
-		char const* name = node->getValueAsString( "name" );
-
-		// if it's NOT general
-		currentNpc = NULL;
-		if ( strcmp( name, "general" ) ) {
-
-			if ( generalOnly ) continue;
-
-			Monster *m = Monster::getMonsterByName( name );
-			if ( m ) {
-				currentNpc = m->getType();
-			} else {
-				Creature *c = adapter->getSession()->getCreatureByName( name );
-				if ( c ) currentNpc = c->getName();
-				else {
-					cerr << "*** Error: can't find creature named: " << name << endl;
-				}
-			}
-		}
-
-		for ( map<string, ConfigValue*>::iterator e = node->getValues()->begin();
-		        e != node->getValues()->end(); ++e ) {
-			string key = e->first;
-			ConfigValue *value = e->second;
-
-			if ( key == "name" ) {
-				// do nothing
-			} else if ( key.substr( 0, 3 ) == "key" ) {
-				string k = getKeyValue( key );
-				if ( k != "" ) {
-					keyphrases[k] = value->getAsString();
-				}
-			} else {
-				string k = getKeyValue( key );
-				if ( k != "" ) {
-					string currentName = ( currentNpc == NULL ? "general" : currentNpc );
-					map<string, vector<string>*> *m;
-					if ( answers.find( currentName ) == answers.end() ) {
-						m = new map<string, vector<string>*>();
-						answers[currentName] = m;
-					} else {
-						m = answers[currentName];
-					}
-					vector<string>* v;
-					if ( m->find( k ) == m->end() ) {
-						v = new vector<string>();
-						( *m )[k] = v;
-					} else {
-						v = ( *m )[k];
-					}
-					v->push_back( value->getAsString() );
-				}
-			}
-		}
-	}
-
-	for ( map<string, map<string, vector<string>*>*>::iterator e = answers.begin();
-	        e != answers.end(); ++e ) {
-		string phase = e->first;
-		map<string, vector<string>*>* m = e->second;
-
-		for ( map<string, vector<string>*>::iterator e2 = m->begin();
-		        e2 != m->end(); ++e2 ) {
-			string key = e2->first;
-			vector<string> *v = e2->second;
-			if ( keyphrases.find( key ) == keyphrases.end() ) {
-				cerr << "*** Error: can't find conversation keyphrase id=" << key << endl;
-			} else {
-				string keyphrase = keyphrases[ key ];
-				for ( unsigned int i = 0; i < v->size(); i++ ) {
-					string answer = ( *v )[i];
-					if ( phase == "general" ) {
-						setGeneralConversationLine( keyphrase, answer );
-					} else {
-						setConversationLine( phase, keyphrase, answer );
-					}
-				}
-			}
-		}
-	}
-
-	// cleanup
-	for ( map<string, map<string, vector<string>*>*>::iterator e = answers.begin();
-	        e != answers.end(); ++e ) {
-		//string phase = e->first;
-		map<string, vector<string>*>* m = e->second;
-		for ( map<string, vector<string>*>::iterator e2 = m->begin();
-		        e2 != m->end(); ++e2 ) {
-			//string key = e2->first;
-			vector<string> *v = e2->second;
-			delete v;
-		}
-		delete m;
-	}
-}
-
-void Mission::setGeneralConversationLine( string keyphrase, string answer ) {
-	storeConversationLine( keyphrase,
-	                       answer,
-	                       &Mission::intros,
-	                       &Mission::unknownPhrases,
-	                       &Mission::conversations,
-	                       &Mission::firstKeyPhrase,
-	                       &Mission::answers );
-}
-
-void Mission::setConversationLine( string npc, string keyphrase, string answer ) {
-	NpcConversation *npcConv;
-	if ( Mission::npcConversations.find( npc ) == Mission::npcConversations.end() ) {
-		npcConv = new NpcConversation();
-		Mission::npcConversations[ npc ] = npcConv;
-	} else {
-		npcConv = Mission::npcConversations[ npc ];
-	}
-
-	storeConversationLine( keyphrase,
-	                       answer,
-	                       &npcConv->npc_intros,
-	                       &npcConv->npc_unknownPhrases,
-	                       &npcConv->npc_conversations,
-	                       &npcConv->npc_firstKeyPhrase,
-	                       &npcConv->npc_answers );
-}
-
-void Mission::storeConversationLine( string keyphrase,
-    string answer,
-    vector<string> *intros,
-    vector<string> *unknownPhrases,
-    map<string, int> *conversations,
-    map<string, string> *firstKeyPhrase,
-    vector<string> *answers ) {
-	if ( keyphrase == INTRO_PHRASE ) {
-		intros->push_back( answer );
-	} else if ( keyphrase == UNKNOWN_PHRASE ) {
-		unknownPhrases->push_back( answer );
-	} else {
-		char line[300];
-		strcpy( line, keyphrase.c_str() );
-
-		char tmp[80];
-		char *p = strtok( line, "," );
-		string first = p;
-		while ( p ) {
-			strcpy( tmp, p );
-			string lower = Util::toLowerCase( tmp );
-			( *firstKeyPhrase )[ lower ] = first;
-			( *conversations )[ lower ] = answers->size();
-			p = strtok( NULL, "," );
-		}
-		answers->push_back( answer );
-	}
 }
 
 void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
@@ -1173,7 +713,7 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const string& filename, boo
 	ConfigLang *config = ConfigLang::load( tmp, true );
 	if ( config ) {
 		if ( !generalOnly ) initNpcs( config, adapter );
-		initConversations( config, adapter, generalOnly );
+		//initConversations( config, adapter, generalOnly );
 		delete config;
 	}
 }
@@ -1227,7 +767,7 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
 			// ConfigValue *value = e->second;
 			if ( key == "name" ) {
 			} else {
-				string k = getKeyValue( key );
+				string k = Conversation::decodeKeyValue( key );
 				int n = atoi( k.c_str() );
 				if ( n > maxKey ) maxKey = n;
 			}
