@@ -489,20 +489,6 @@ void Map::setViewArea( int x, int y, int w, int h ) {
 	refresh();
 }
 
-/// Centers view on map position x,y.
-
-void Map::center( Sint16 x, Sint16 y, bool force ) {
-	Sint16 nx = x - mapViewWidth / 2;
-	Sint16 ny = y - mapViewDepth / 2;
-	if ( preferences->getAlwaysCenterMap() || force ) {
-		// relocate
-		this->x = nx;
-		this->y = ny;
-		this->mapx = nx;
-		this->mapy = ny;
-	}
-}
-
 /// Removes effects that are done playing.
 
 void Map::removeCurrentEffects() {
@@ -2461,86 +2447,103 @@ void Map::moveMap( int dir ) {
 				mapy += delta * -Constants::sinFromAngle( z );
 			}
 		}
-
-		// cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
-		int newRegionX = regionX;
-		int newRegionY = regionY;				
-		bool reloadRegions = false;
-		float party_x = 0.0f;
-		float party_y = 0.0f;
-		if ( mapy > MAP_DEPTH - mapViewDepth ) {
-			party_y = -MAP_DEPTH / 2;
-			if( isPartyOnMap( party_x, party_y ) ) {
-				newRegionY = regionY + 1; 
-				if( newRegionY >= REGIONS_PER_COL ) newRegionY = 0; 
-				reloadRegions = true;
-				mapy -= MAP_DEPTH / 2;
-			} else {
-				mapy = MAP_DEPTH - mapViewDepth;
-			}
-		}
-		if ( mapy < 0 ) {
-			party_y = MAP_DEPTH / 2;
-			if( isPartyOnMap( party_x, party_y ) ) {
-				newRegionY = regionY - 1;
-				if( newRegionY < 0 ) newRegionY = REGIONS_PER_COL - 1;
-				reloadRegions = true;
-				mapy += MAP_DEPTH / 2;
-			} else {
-				mapy = 0;
-			}
-		}
-		if ( mapx > MAP_WIDTH - mapViewWidth ) {
-			party_x = -MAP_WIDTH / 2;
-			if( isPartyOnMap( party_x, party_y ) ) {
-				newRegionX = regionX + 1;
-				if( newRegionX >= REGIONS_PER_ROW ) newRegionX = 0;
-				reloadRegions = true;
-				mapx -= MAP_WIDTH / 2;
-			} else {
-				mapx = MAP_WIDTH - mapViewWidth;
-			}
-		}
-		if ( mapx < 0 ) {
-			party_x = MAP_WIDTH / 2;
-			if( isPartyOnMap( party_x, party_y ) ) {
-				newRegionX = regionX - 1;
-				if( newRegionX < 0 ) newRegionX = REGIONS_PER_ROW - 1;
-				reloadRegions = true;
-				mapx += MAP_WIDTH / 2;
-			} else {
-				mapx = 0;
-			}
-		}
-		if( reloadRegions ) {
-			//saveMapRegions();
-			
-			regionX = newRegionX;
-			regionY = newRegionY;
-			cerr << "switching to map region: " << regionX << "," << regionY << endl;
-			float old_zoom = zoom;
-			float old_xrot = xrot;
-			float old_yrot = yrot;
-			float old_zrot = zrot;
-			float old_mapx = mapx;
-			float old_mapy = mapy;
-			reset();
-			adapter->mapRegionsChanged( party_x, party_y );
-			zoom = old_zoom;
-			xrot = old_xrot;
-			yrot = old_yrot;
-			zrot = old_zrot;
-			mapx = old_mapx;
-			mapy = old_mapy;
-			refresh();
-		}
-		// cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
-
-		x = static_cast<int>( rint( mapx ) );
-		y = static_cast<int>( rint( mapy ) );
-		// cerr << "FINAL: x=" << x << " y=" << y << endl;
-
+		adjustMapCoordinatesNearEdges();
 	}
+}
+
+/// Centers view on map position x,y.
+
+void Map::center( Sint16 x, Sint16 y, bool force ) {
+	Sint16 nx = x - mapViewWidth / 2;
+	Sint16 ny = y - mapViewDepth / 2;
+	if ( preferences->getAlwaysCenterMap() || force ) {
+		// relocate
+		this->x = nx;
+		this->y = ny;
+		this->mapx = nx;
+		this->mapy = ny;
+		adjustMapCoordinatesNearEdges();
+	}
+}
+
+void Map::adjustMapCoordinatesNearEdges() {
+	// cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
+	int newRegionX = regionX;
+	int newRegionY = regionY;				
+	bool reloadRegions = false;
+	float party_x = 0.0f;
+	float party_y = 0.0f;
+	if ( mapy > MAP_DEPTH - mapViewDepth ) {
+		party_y = -MAP_DEPTH / 2;
+		if( isPartyOnMap( party_x, party_y ) ) {
+			newRegionY = regionY + 1; 
+			if( newRegionY >= REGIONS_PER_COL ) newRegionY = 0; 
+			reloadRegions = true;
+			mapy -= MAP_DEPTH / 2;
+		} else {
+			mapy = MAP_DEPTH - mapViewDepth;
+		}
+	}
+	if ( mapy < 0 ) {
+		party_y = MAP_DEPTH / 2;
+		if( isPartyOnMap( party_x, party_y ) ) {
+			newRegionY = regionY - 1;
+			if( newRegionY < 0 ) newRegionY = REGIONS_PER_COL - 1;
+			reloadRegions = true;
+			mapy += MAP_DEPTH / 2;
+		} else {
+			mapy = 0;
+		}
+	}
+	if ( mapx > MAP_WIDTH - mapViewWidth ) {
+		party_x = -MAP_WIDTH / 2;
+		if( isPartyOnMap( party_x, party_y ) ) {
+			newRegionX = regionX + 1;
+			if( newRegionX >= REGIONS_PER_ROW ) newRegionX = 0;
+			reloadRegions = true;
+			mapx -= MAP_WIDTH / 2;
+		} else {
+			mapx = MAP_WIDTH - mapViewWidth;
+		}
+	}
+	if ( mapx < 0 ) {
+		party_x = MAP_WIDTH / 2;
+		if( isPartyOnMap( party_x, party_y ) ) {
+			newRegionX = regionX - 1;
+			if( newRegionX < 0 ) newRegionX = REGIONS_PER_ROW - 1;
+			reloadRegions = true;
+			mapx += MAP_WIDTH / 2;
+		} else {
+			mapx = 0;
+		}
+	}
+	if( reloadRegions ) {
+		//saveMapRegions();
+		
+		regionX = newRegionX;
+		regionY = newRegionY;
+		cerr << "switching to map region: " << regionX << "," << regionY << endl;
+		float old_zoom = zoom;
+		float old_xrot = xrot;
+		float old_yrot = yrot;
+		float old_zrot = zrot;
+		float old_mapx = mapx;
+		float old_mapy = mapy;
+		reset();
+		adapter->mapRegionsChanged( party_x, party_y );
+		zoom = old_zoom;
+		xrot = old_xrot;
+		yrot = old_yrot;
+		zrot = old_zrot;
+		mapx = old_mapx;
+		mapy = old_mapy;
+		refresh();
+	}
+	// cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
+
+	x = static_cast<int>( rint( mapx ) );
+	y = static_cast<int>( rint( mapy ) );
+	// cerr << "FINAL: x=" << x << " y=" << y << endl;
 }
 
 bool Map::isPartyOnMap( float dx, float dy ) {
