@@ -873,6 +873,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
+	
+	session->deleteCreaturesAndItems( true );
+	
 	loadOrGenerateLargeMap();
 	
 //	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;

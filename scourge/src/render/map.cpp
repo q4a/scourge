@@ -911,8 +911,8 @@ void Map::postDraw() {
 }
 
 bool Map::isValidPosition( int x, int y, int z ) {
-	return x >= 0 && x <= MAP_WIDTH &&
-		y >= 0 && y <= MAP_DEPTH &&
+	return x >= 0 && x < MAP_WIDTH &&
+		y >= 0 && y < MAP_DEPTH &&
 		z >= 0 && z < MAP_VIEW_HEIGHT;
 }
 

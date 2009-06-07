@@ -424,6 +424,9 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
         return true;
       }
 
+      if( !map->isValidPosition( x + sx, y - sy, 0 ) ) {
+      	return true;
+      }
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
       if( loc ) {
         //if we are ignoring our party and there is a party member there, no problem.
