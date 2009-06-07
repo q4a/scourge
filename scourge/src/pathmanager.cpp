@@ -156,7 +156,7 @@ Uint16 PathManager::addNextLocation( int cx, int cy, Uint16 direction, Creature*
 	for ( Uint16 i = 0; i < 8; i++ ) {
 		x = nextX( cx, dir );
 		y = nextY( cy, dir );
-		if ( !AStar::isBlocked( x, y, owner, player, map, false ) ) {
+		if ( x >= 0 && x < MAP_WIDTH && y >=0 && y < MAP_DEPTH && !AStar::isBlocked( x, y, owner, player, map, false ) ) {
 			canTurn = canTurn | mask;
 			totalProbability += turnProbabilities[i];
 		}

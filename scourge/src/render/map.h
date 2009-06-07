@@ -982,6 +982,8 @@ protected:
 	
 	void doQuake();
 	
+	void adjustMapCoordinatesNearEdges();
+	
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
