@@ -599,6 +599,9 @@ public:
 	Location *getPosition( Sint16 x, Sint16 y, Sint16 z );
 	/// Returns a position struct for the specified map tile.
 	inline Location *getLocation( Sint16 x, Sint16 y, Sint16 z ) {
+		if( !( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT ) ) {
+			std::cerr << "getLocation error for pos: " << x << "," << y << "," << z << std::endl;
+		}
 		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT );
 		return pos[x][y][z];
 	}
@@ -766,11 +769,17 @@ public:
 
 	/// Sets the ground height at x,y (outdoors).
 	inline void setGroundHeight( int x, int y, float h ) {
+		if( !( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) ) {
+			std::cerr << "setGroundHeight error for pos: " << x << "," << y << std::endl;
+		}		
 		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		this->ground[x][y] = h; refreshGroundPos = true;
 	}
 	/// Gets the ground height at x,y.
 	inline float getGroundHeight( int x, int y ) {
+		if( !( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) ) {
+			std::cerr << "getGroundHeight error for pos: " << x << "," << y << std::endl;
+		}		
 		assert( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH );
 		return this->ground[x][y];
 	}

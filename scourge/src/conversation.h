@@ -40,7 +40,7 @@ private:
 	std::map<std::string, int> conversations;
 	std::map<std::string, std::string> firstKeyPhrase;
 	std::vector<std::string> answers;
-	std::map<std::string, Conversation::NpcConversation*> npcConversations;
+	std::map<std::string, NpcConversation*> npcConversations;
 	
 	static std::map<std::string, Conversation*> cachedConversations;
 	static std::map<Conversation*, std::set<Creature*>*> conversationRefs;
@@ -67,7 +67,7 @@ public:
 	
 private:
 	void initConversations( ConfigLang *config );
-	void Conversation::setGeneralConversationLine( std::string keyphrase, std::string answer );
+	void setGeneralConversationLine( std::string keyphrase, std::string answer );
 	void setConversationLine( std::string npc, std::string keyphrase, std::string answer );
 	void storeConversationLine( std::string keyphrase, 
 	                            std::string answer, 
