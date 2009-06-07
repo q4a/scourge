@@ -285,26 +285,28 @@ void PathManager::moveNPCsOffPath( Creature* player, Map* map ) {
 	set<Location, LocationComparitor>::iterator setItr = allPathLocations.begin();
 	while ( setItr != allPathLocations.end() ) {
 		Location loc = *setItr;
-		Location* mapLoc = map->getLocation( loc.x, loc.y, 0 );
-		if ( mapLoc && mapLoc->creature && mapLoc->creature != owner && mapLoc->creature != player && !mapLoc->creature->isMonster() ) {
-			Creature* blocker = ( Creature* )mapLoc->creature;
-#if PATH_DEBUG
-			cout << blocker->getName() << " is in the way.\n";
-#endif
-			blocker->setMotion( Constants::MOTION_CLEAR_PATH ); //make sure monsters do the move too
-
-			bool inTheWay = blocker->getPathManager()->atEndOfPath();
-			if ( !inTheWay ) {
-				//now check to make sure that their path does actually get out of the way
-				Location end = blocker->getPathManager()->getEndOfPath();
-				inTheWay = isBlockingPath( blocker, end.x, end.y );
-			}
-			//it's some other NPC who isn't moving! Get OUT of the WAY!
-			if ( inTheWay ) {
-				blocker->getPathManager()->findPathOffLocations( &allPathLocations, player, map );
-#if PATH_DEBUG
-				cout << "blocker is getting out of the way, current: " << toint( blocker->getX() ) << "," << toint( blocker->getY() ) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";
-#endif
+		if( loc.x >= 0 && loc.x < MAP_WIDTH && loc.y >= 0 && loc.y < MAP_DEPTH ) {
+			Location* mapLoc = map->getLocation( loc.x, loc.y, 0 );
+			if ( mapLoc && mapLoc->creature && mapLoc->creature != owner && mapLoc->creature != player && !mapLoc->creature->isMonster() ) {
+				Creature* blocker = ( Creature* )mapLoc->creature;
+	#if PATH_DEBUG
+				cout << blocker->getName() << " is in the way.\n";
+	#endif
+				blocker->setMotion( Constants::MOTION_CLEAR_PATH ); //make sure monsters do the move too
+	
+				bool inTheWay = blocker->getPathManager()->atEndOfPath();
+				if ( !inTheWay ) {
+					//now check to make sure that their path does actually get out of the way
+					Location end = blocker->getPathManager()->getEndOfPath();
+					inTheWay = isBlockingPath( blocker, end.x, end.y );
+				}
+				//it's some other NPC who isn't moving! Get OUT of the WAY!
+				if ( inTheWay ) {
+					blocker->getPathManager()->findPathOffLocations( &allPathLocations, player, map );
+	#if PATH_DEBUG
+					cout << "blocker is getting out of the way, current: " << toint( blocker->getX() ) << "," << toint( blocker->getY() ) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";
+	#endif
+				}
 			}
 		}
 		setItr++;
