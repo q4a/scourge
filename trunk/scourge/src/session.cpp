@@ -294,6 +294,29 @@ Item *Session::addItemFromScript( char *name, int x, int y, int z, bool isContai
 	return item;
 }
 
+Creature *Session::addWanderingHeroFromScript( int level, int cx, int cy, int cz ) {
+	Creature *creature = (Creature*)SqBinding::sessionRef->getGameAdapter()->createWanderingHero( level );
+
+	// register with squirrel
+	getSquirrel()->registerCreature( creature );
+	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
+		getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+	}
+
+//	if ( fx && fy ) {
+		int fx, fy;
+		creature->findPlace( cx, cy, &fx, &fy );
+//	} else {
+//		//int ffx, ffy;
+//		//replacement->findPlace( cx, cy, &ffx, &ffy );
+//		creature->moveTo( cx, cy, 0 );
+//		getMap()->setCreature( cx, cy, 0, creature );
+//	}
+	creature->cancelTarget();
+
+	return creature;
+}
+
 Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, int *fx, int *fy ) {
 	Monster *monster = Monster::getMonsterByName( creatureType );
 	if ( !monster ) {

@@ -217,6 +217,15 @@ function drawHQ( x, y ) {
 		                                                  y - 7 * MAP_UNIT + 70 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 8.0) ).tointeger(),
 		                                                  0, getVillageNpcType() );
 		npc.setConversation( "hq" );
-	}	
+	}
+	
+	// add some wandering heros
+	for( i <- 0; i < 10; i++ ) {
+		scourgeGame.getMission().addWanderingHero( x - 6 * MAP_UNIT + 85 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 8.0) ).tointeger(),
+		                                           y - 7 * MAP_UNIT + 70 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 8.0) ).tointeger(),
+		                                           0, 
+		                                           1 );
+	}
+	
 }
 
