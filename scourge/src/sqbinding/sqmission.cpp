@@ -78,6 +78,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "removeRug", SqMission::_removeRug, 0, 0, "Remove a rug from the map." },
 	{ "void", "addOutdoorTexture", SqMission::_addOutdoorTexture, 0, 0, "Set an outdoor texture (like a road)." },
 	{ "float", "mt_rand", SqMission::_mt_rand, 0, 0, "Return a random float between 0 and 1." },
+	{ "Creature", "addWanderingHero", SqMission::_addWanderingHero, 0, 0, "Create a wandering hero." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -117,6 +118,16 @@ int SqMission::_getCreature( HSQUIRRELVM vm ) {
 
 	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ SqBinding::sessionRef->getCreature( index ) ] ) );
 	//sq_pushobject( vm, *( SqBinding::binding->refCreature[index] ) );
+	return 1;
+}
+
+int SqMission::_addWanderingHero( HSQUIRRELVM vm ) {
+	GET_INT( level )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	Creature *c = SqBinding::sessionRef->addWanderingHeroFromScript( level, x, y, z );
+	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
 	return 1;
 }
 

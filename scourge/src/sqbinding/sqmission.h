@@ -59,6 +59,7 @@ public:
 	static int _replaceCreature( HSQUIRRELVM vm );
 	static int _addCreature( HSQUIRRELVM vm );
 	static int _addCreatureAround( HSQUIRRELVM vm );
+	static int _addWanderingHero( HSQUIRRELVM vm );
 
 	static int _getItemCount( HSQUIRRELVM vm );
 	static int _getItem( HSQUIRRELVM vm );

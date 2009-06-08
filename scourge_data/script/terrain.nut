@@ -525,7 +525,16 @@ function drawInn( x, y ) {
 		scourgeGame.getMission().addCreatureAround( x + MAP_UNIT + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
 		                                            y + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
 		                                            0, getVillageNpcType() );
-	}	
+	}
+	
+	hero_count <- ( scourgeGame.getMission().mt_rand() * 3 ).tointeger();
+	print("Adding wandering heros to inn: " + hero_count.tointeger() + "\n");
+	for( i <- 0; i < hero_count; i++ ) {
+		scourgeGame.getMission().addWanderingHero( x + MAP_UNIT + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
+				                                       y + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
+				                                       0, 
+				                                       1 );		
+	}
 }
 
 function drawChurch( x, y ) {
