@@ -728,72 +728,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 				                                             landPos[2] + 10, landPos[2] + 10 );
 			}		
 		}
-	} else {
-		cerr << "UNDERGROUND" << endl;
-		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
-		// hq is also a mission (with no objectives)
-		getMap()->setContinuousLandMode( false );
-		
-		TerrainGenerator *dg = NULL;
-		// NOT in HQ map
-		inHq = false;
-		
-		// find or load the next mission
-		int mapPos[4];
-		getMapRegionAndPos( mapPos );		
-		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
-		cerr << "Party on mission: " << getSession()->getCurrentMission()->getMapRegionX() << "," << getSession()->getCurrentMission()->getMapRegionY() << 
-			"," << getSession()->getCurrentMission()->getMapOffsetX() << "," << getSession()->getCurrentMission()->getMapOffsetY() << 
-			" " << getSession()->getCurrentMission()->getName() << endl;
-		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
-
-		// try to load a previously saved, random-generated map level
-		string empty( "" );
-		string path = getCurrentMapName( empty );
-		bool loaded = loadMap( path, fromRandomMap, true,
-		                       ( getSession()->getCurrentMission()->isEdited() ?
-		                         getSession()->getCurrentMission()->getMapName() :
-		                         NULL ) );
-
-		if ( !loaded && getSession()->getCurrentMission()->isEdited() ) {
-			// try to load the edited map
-			loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
-			                  fromRandomMap,
-			                  false );
-		}
-
-		// if no edited map is found, make a random map
-		if ( !loaded ) {
-			dg = TerrainGenerator::getGenerator( this, currentStory );
-			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
-			                        goingUp, goingDown );
-			// load the generic conversation
-			string s = rootDir + "/maps/general.map";
-			Mission::loadMapData( this, s );
-		}
-		
-		// fixme: only if mission def says so...
-		// addWanderingHeroes();
-		
-		// delete map
-		delete dg;
-		dg = NULL;
-	}
-	
-	return mapCreated;
-	
-
-	
-	
-	
-	
-	
-	
-	/*
-
-	bool mapCreated = true;
-	TerrainGenerator *dg = NULL;
-	if ( nextMission == -1 ) {
+	} else if( !strcmp( nextMissionName, "hq" ) ) {
+		cerr << "HQ UNDERGROUND" << endl;
 		// IN HQ
 		missionWillAwardExpPoints = false;
 
@@ -828,13 +764,23 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//if( !loaded )
 		string result;
 		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );		
-		addWanderingHeroes();
+		//addWanderingHeroes();
 	} else {
+		cerr << "UNDERGROUND" << endl;
+		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
+		// hq is also a mission (with no objectives)
+		getMap()->setContinuousLandMode( false );
+		
 		// NOT in HQ map
 		inHq = false;
-
-		// Initialize the map with a random dungeon
-		getSession()->setCurrentMission( board->getMission( nextMission ) );
+		
+		// find or load the next mission
+		int mapPos[4];
+		getMapRegionAndPos( mapPos );		
+		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
+		cerr << "Party on mission: " << getSession()->getCurrentMission()->getMapRegionX() << "," << getSession()->getCurrentMission()->getMapRegionY() << 
+			"," << getSession()->getCurrentMission()->getMapOffsetX() << "," << getSession()->getCurrentMission()->getMapOffsetY() << 
+			" " << getSession()->getCurrentMission()->getName() << endl;
 		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
 
 		// try to load a previously saved, random-generated map level
@@ -854,21 +800,20 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 
 		// if no edited map is found, make a random map
 		if ( !loaded ) {
-			dg = TerrainGenerator::getGenerator( this, currentStory );
+			TerrainGenerator *dg = TerrainGenerator::getGenerator( this, currentStory );
 			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
 			                        goingUp, goingDown );
 			// load the generic conversation
 			string s = rootDir + "/maps/general.map";
 			Mission::loadMapData( this, s );
+			delete dg;
 		}
+		
+		// fixme: only if mission def says so...
+		// addWanderingHeroes();
 	}
-
-	// delete map
-	delete dg;
-	dg = NULL;
-
+	levelMap->refresh();
 	return mapCreated;
-	*/
 }
 
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
