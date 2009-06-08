@@ -131,6 +131,7 @@ private:
 	Preferences *preferences;
 	Shapes *shapes;
 	static MapMemoryManager mapMemoryManager;
+	bool refreshGround;
 	bool mapChanged;
 	bool resortShapes;
 	float zoom;

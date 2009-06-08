@@ -64,6 +64,10 @@ function in_excluded_area( region_x, region_y, x, y ) {
  * If null is returned, a random map is generated.
  */
 function descend_dungeon( region_x, region_y, offset_x, offset_y ) {
+	print( "descending in region: " + region_x.tostring() + "," + region_y.tostring() + " offset: " + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
+	if( region_x == 41 && region_y == 21 ) {
+		return "hq";
+	}
 	return null;
 }
 
@@ -159,9 +163,13 @@ function drawHQ( x, y ) {
 		}
 	}
 	drawHouse2x2Corner( x - MAP_UNIT, y - MAP_UNIT, 90 )
+	furnishArea( x - MAP_UNIT, y - MAP_UNIT, 2, 2 );
 	drawHouse2x2Corner( x, y + 4 * MAP_UNIT, 180 )
+	furnishArea( x, y + 4 * MAP_UNIT, 2, 2 );
 	drawHouse2x2Corner( x + 4 * MAP_UNIT, y - 2 * MAP_UNIT, 0 )
+	furnishArea( x + 4 * MAP_UNIT, y - 2 * MAP_UNIT, 2, 2 );	
 	drawHouse2x2Corner( x + 5 * MAP_UNIT, y + 3 * MAP_UNIT, 270 )
+	furnishArea( x + 5 * MAP_UNIT, y + 3 * MAP_UNIT, 2, 2 );
 	
 	drawHouse1x3Open( x, y + 2 * MAP_UNIT, 0 );
 	furnishArea( x, y + 2 * MAP_UNIT, 1, 3 );

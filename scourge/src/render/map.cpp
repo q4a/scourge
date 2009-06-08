@@ -139,6 +139,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	debugX = debugY = debugZ = -1;
 
+	refreshGround = true;
 	mapChanged = true;
 	resortShapes = true;
 	groundVisible = true;
@@ -370,6 +371,7 @@ void Map::reset() {
 	floorOnly = false;
 	//alwaysCenter = true;
 	debugX = debugY = debugZ = -1;
+	refreshGround = true;
 	mapChanged = true;
 	groundVisible = true;
 	resortShapes = true;
@@ -3630,7 +3632,7 @@ void Map::setRoofShowing( bool b ) {
 /// Forces a refresh of the map state.
 
 void Map::refresh() {
-	mapChanged = lightMapChanged = resortShapes = true;
+	mapChanged = lightMapChanged = resortShapes = refreshGround = true;
 }
 
 void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {

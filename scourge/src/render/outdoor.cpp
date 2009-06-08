@@ -291,7 +291,8 @@ void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, 
 }
 
 void Outdoor::doRenderFloor() {
-	( map->isViewChanging() || map->getAdapter()->isInMovieMode() || map->getPreferences()->getAlwaysCenterMap() ) ? useDisplayList = false : useDisplayList = true;
+	( map->isViewChanging() || map->getAdapter()->isInMovieMode() || map->getPreferences()->getAlwaysCenterMap() || map->refreshGround ) ? useDisplayList = false : useDisplayList = true;
+	map->refreshGround = false;
 
 	if ( map->groundVisible || map->settings->isGridShowing() ) {
 
