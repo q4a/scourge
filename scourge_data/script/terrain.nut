@@ -399,10 +399,10 @@ function getRandomArmorItem() {
 	return armor[c];
 }
 
-weapon <- [ "Kitchen Knife", "Dagger", "Ornamental officer sword", "Battleaxe", "Smallbow", "Rounded mace" ];
+weapon_list <- [ "Kitchen Knife", "Dagger", "Ornamental officer sword", "Battleaxe", "Smallbow", "Rounded mace" ];
 function getRandomWeaponItem() {
-	c <- ( scourgeGame.getMission().mt_rand() * weapon.len().tofloat() ).tointeger();
-	return weapon[c];
+	c <- ( scourgeGame.getMission().mt_rand() * weapon_list.len().tofloat() ).tointeger();
+	return weapon_list[c];
 }
 
 inn <- [ "Beer barrel", "Wine barrel", "Fine wine bottle", "Wine bottle", "Milk", "Apple", "Bread", "Mutton meat", "Chalice" ];
