@@ -164,7 +164,8 @@ void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 		}
 		
 		// don't draw the player
-		if( map->isCurrentlyUnderRoof || !( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
+		if( map->isCurrentlyUnderRoof || !map->other[i].pos->creature || map->other[i].pos->creature != map->getAdapter()->getPlayer() ) { 
+//				!( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
 			// only draw inside of houses when under roof
 			int px = map->other[i].pos->x + map->other[i].pos->shape->getWidth() / 2;
 			int py = map->other[i].pos->y - 1 - map->other[i].pos->shape->getDepth() / 2;
