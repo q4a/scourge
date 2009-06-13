@@ -98,7 +98,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hasWater = false;
 
 	// start near Horghh
-	regionX = regionY = 0;
+	regionX = regionY = -1;
 	continuousLandMode = true;
 	
 	startx = starty = 128;
@@ -2469,6 +2469,9 @@ void Map::center( Sint16 x, Sint16 y, bool force ) {
 }
 
 void Map::adjustMapCoordinatesNearEdges() {
+	// are we booting?
+	if(regionX < 0 || regionY < 0) return;
+	
 	// cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
 	int newRegionX = regionX;
 	int newRegionY = regionY;				
