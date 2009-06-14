@@ -131,11 +131,13 @@ void Fog::hideDeadParty() {
 
 int Fog::getVisibility( int xp, int yp, Shape *shape ) {
 	int v = FOG_UNVISITED;
-	for ( int x = 0; x < shape->getWidth(); x++ ) {
-		for ( int y = 0; y < shape->getDepth(); y++ ) {
-			int vv = getValue( xp + x, yp - y );
-			if ( vv == FOG_CLEAR ) return FOG_CLEAR;
-			else if ( vv == FOG_VISITED ) v = vv;
+	if( shape ) {
+		for ( int x = 0; x < shape->getWidth(); x++ ) {
+			for ( int y = 0; y < shape->getDepth(); y++ ) {
+				int vv = getValue( xp + x, yp - y );
+				if ( vv == FOG_CLEAR ) return FOG_CLEAR;
+				else if ( vv == FOG_VISITED ) v = vv;
+			}
 		}
 	}
 	return v;
