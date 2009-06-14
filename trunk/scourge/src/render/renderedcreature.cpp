@@ -88,7 +88,7 @@ void RenderedCreature::removeRecentDamage( int i ) {
 }
 
 bool RenderedCreature::findPlaceBoundedRadial( int startx, int starty, int radius ) {
-	for( int r = 1; r < radius; r++ ) {
+	for( int r = 0; r < radius; r++ ) {
 		//cerr << "+++ radius=" << r << " pos=" << (startx - r) << "," << (starty - r) << endl;
 		if( findPlaceBounded( startx - r, starty - r, startx + r, starty + r ) ) {
 			return true;
@@ -195,8 +195,7 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 
 
 bool RenderedCreature::isEmptyUnSeenPlace( int x, int y, set<int> *seen ) {
-	return levelMap->isEmpty( x, y )
-	       && seen->find( x + y * MAP_WIDTH ) == seen->end();
+	return levelMap->isEmpty( x, y ) && seen->find( x + y * MAP_WIDTH ) == seen->end();
 }
 
 bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *finalY, set<int> *seen ) {

@@ -88,7 +88,7 @@ void MiniMap::drawMap() {
 		glAlphaFunc( GL_NOTEQUAL, 0 );
 		glEnable( GL_TEXTURE_2D );
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -113,7 +113,7 @@ void MiniMap::drawMap() {
 		glEnable( GL_BLEND );
 		glEnable( GL_TEXTURE_2D );
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
-		glColor4f( 0, 0, 0, 0.5f );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -137,12 +137,12 @@ void MiniMap::drawMap() {
 		glVertex2i( 0, 30 );
 		glEnd();
 		glPushMatrix();
-		glRotatef( -45, 0, 0, 1 );
-		glTranslatef( -7, 20, 0 );
+		glRotatef( -45.0f, 0.0f, 0.0f, 1.0f );
+		glTranslatef( -7.0f, 20.0f, 0.0f );
 		glScalef( 1.5f, 1.5f, 1.5f );
-		glColor4f( 1, 1, 1, 0.5f );
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 		scourge->getSDLHandler()->texPrint( 0, 0, "N" );
-		glScalef( 1, 1, 1 );
+		glScalef( 1.0f, 1.0f, 1.0f );
 		glPopMatrix();
 
 		// outline
@@ -158,28 +158,86 @@ void MiniMap::drawMap() {
 	// Draw the surrounding objects into the map. Naive method: draw each block.
 	for ( int x = sx; x < ex; x++ ) {
 		if ( x < 0 || x >= MAP_WIDTH ) continue;
+
 		for ( int y = sy; y < ey; y++ ) {
 			if ( y < 0 || y >= MAP_DEPTH ) continue;
-			Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
 
+			Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
+			Location *floorPos = scourge->getSession()->getMap()->getItemLocation( x, y );
+
+			int xp = ( x - sx ) * MINI_MAP_BLOCK;
+			int yp = ( y - sy ) * MINI_MAP_BLOCK;
+
+			// Draw the floor (indoors)
+			if ( !scourge->getSession()->getMap()->isHeightMapEnabled() && scourge->getSession()->getMap()->isOnFloorTile( x, y ) ) {
+				glColor4f( 1.0f, 1.0f, 1.0f, 0.2f );
+
+				glBegin( GL_TRIANGLE_STRIP );
+				glVertex2i( xp, yp );
+				glVertex2i( xp + MINI_MAP_BLOCK, yp );
+				glVertex2i( xp, yp + MINI_MAP_BLOCK );
+				glVertex2i( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
+				glEnd();
+			}
+
+			// Draw items laying on the ground
+			if ( floorPos ) {
+				RenderedItem *item = floorPos->item;
+
+				if ( item ) {
+
+					if ( item->isSpecial() ) {
+						glColor4f( 1.0f, 0.0f, 0.5f, 0.8f );
+					} else if ( item->isMagicItem() ) {
+						glColor4f( 0.5f, 0.0f, 1.0f, 0.8f );
+					} else {
+						glColor4f( 0.5f, 0.0f, 1.0f, 0.5f );
+					}
+
+					glBegin( GL_TRIANGLE_STRIP );
+					glVertex2i( xp, yp );
+					glVertex2i( xp + MINI_MAP_BLOCK, yp );
+					glVertex2i( xp, yp + MINI_MAP_BLOCK );
+					glVertex2i( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
+					glEnd();
+
+				}
+
+			}
+
+			// Draw other objects
 			if ( pos ) {
 
-				if ( pos->shape ) {
+			RenderedCreature *creature = pos->creature;
+			Shape *shape = pos->shape;
+			RenderedItem *item = pos->item;
+			
+				// Don't draw trees and scenery objects in the outdoors
+				if ( shape && ( shape->getOutdoorWeight() == 0 ) ) {
 
-					if ( !pos->creature ) {
+					if ( !creature ) {
 
-						if ( pos->item ) {
-							glColor4f( 0, 0, 1, 0.5f );
-						} else {
-							if ( !pos->shape->isInteractive() ) {
-								glColor4f( 1, 1, 1, 0.5f );
+						// Draw items
+						if ( item ) {
+
+							if ( item->getContainsMagicItem() ) {
+								glColor4f( 0.0f, 0.0f, 1.0f, 0.8f );
 							} else {
-								glColor4f( 1, 0.7f, 0, 0.5f );
+								glColor4f( 0.0f, 0.0f, 1.0f, 0.5f );
 							}
-						}
 
-						int xp = ( x - sx ) * MINI_MAP_BLOCK;
-						int yp = ( y - sy ) * MINI_MAP_BLOCK;
+						// Draw shapes
+						} else {
+
+							// A wall or something
+							if ( !shape->isInteractive() ) {
+								glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+							// A door or stairway
+							} else {
+								glColor4f( 1.0f, 0.7f, 0.0f, 0.5f );
+							}
+
+						}
 
 						glBegin( GL_TRIANGLE_STRIP );
 						glVertex2i( xp, yp );
@@ -188,33 +246,54 @@ void MiniMap::drawMap() {
 						glVertex2i( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
 						glEnd();
 
+					// Draw creatures
 					} else {
 
-						if ( pos->creature->isMonster() ) {
-							glColor4f( 1, 0, 0, 0.5f );
-						} else if ( pos->creature->isNpc() ) {
-							glColor4f( 0.8f, 0.8f, 0, 0.5f );
-						} else {
-							if ( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
-								glColor4f( 0, 1, 0, 0.5f );
+						// Monsters
+						if ( creature->isMonster() ) {
+
+							if ( creature->isBoss() ) {
+								glColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
 							} else {
-								glColor4f( 0, 0.8f, 0.8f, 0.5f );
+								glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
+							}
+
+						// NPCs
+						} else if ( creature->isNpc() ) {
+							glColor4f( 0.8f, 0.8f, 0.0f, 0.5f );
+
+						// Characters
+						} else {
+
+							// Active PC
+							if ( creature == scourge->getSession()->getParty()->getPlayer() ) {
+								glColor4f( 0.0f, 1.0f, 0.0f, 0.5f );
+
+							} else {
+
+								// Wandering heroes
+								glColor4f( 0.0f, 0.8f, 0.8f, 0.5f );
+								// Other party members
 								for ( int c = 0; c < scourge->getParty()->getPartySize(); c++ ) {
-									if ( pos->creature == scourge->getSession()->getParty()->getParty( c ) ) {
-										glColor4f( 0, 0.8f, 0, 0.5f );
+
+									if ( creature == scourge->getSession()->getParty()->getParty( c ) ) {
+										glColor4f( 0.0f, 0.8f, 0.0f, 0.5f );
 										break;
 									}
+
 								}
+
 							}
+
 						}
 
-						int width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
-						float cx =  ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width;
-						float cy = ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width;
+						int width = creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
+						float cx =  ( creature->getX() - sx ) * MINI_MAP_BLOCK + width;
+						float cy = ( creature->getY() - sy ) * MINI_MAP_BLOCK - width;
 
 						glPushMatrix();
-						glTranslatef( cx, cy, 0 );
-						glRotatef( ( ( AnimatedShape* )pos->creature->getShape() )->getAngle(), 0, 0, 1 );
+						glTranslatef( cx, cy, 0.0f );
+						glRotatef( ( ( AnimatedShape* )creature->getShape() )->getAngle(), 0.0f, 0.0f, 1.0f );
 						glBegin( GL_TRIANGLES );
 						glVertex2i( width, width );
 						glVertex2i( -width, width );
@@ -229,6 +308,7 @@ void MiniMap::drawMap() {
 			}
 
 		}
+
 	}
 
 	// Draw the minimap frame.

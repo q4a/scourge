@@ -845,7 +845,7 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 //			}
 
 			// space for the pc should be clear, but look around just in case...
-			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT ) ) {
+			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT * MAP_CHUNKS_X ) ) {
 				cerr << "\t\tERROR: couldn't find place for party member (" << getParty()->getParty( r )->getName() << ") on map!!!" << endl;
 			}
 		}		
