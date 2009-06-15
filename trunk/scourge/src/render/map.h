@@ -853,6 +853,10 @@ public:
 	bool isRoad( int mapx, int mapy );
 	void flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
 
+	inline float distance( Location *pos1, Location *pos2 ) {
+		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 
+		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );
+	}
 
 protected:
 	bool isPartyOnMap( float dx, float dy );
@@ -976,11 +980,6 @@ protected:
 	void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
 	void getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos );
 		
-	inline float distance( Location *pos1, Location *pos2 ) {
-		return Constants::distance( pos1->x, pos1->y - 1 - pos1->shape->getDepth(), pos1->shape->getWidth(), pos1->shape->getDepth(), 
-		                            pos2->x, pos2->y - 1 - pos2->shape->getDepth(), pos2->shape->getWidth(), pos2->shape->getDepth() );
-	}
-	
 	void doQuake();
 	
 	void adjustMapCoordinatesNearEdges();

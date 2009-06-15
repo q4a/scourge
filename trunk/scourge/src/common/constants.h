@@ -1054,6 +1054,9 @@ extern void CreateTexture( GLuint textureArray[], char *strFileName, int texture
 extern void swap( unsigned char & a, unsigned char & b );
 extern void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal );
 
+inline float signum( float v ) { return( (v > 0) - (v < 0) ); }
+inline int signum( int v ) { return( (v > 0) - (v < 0) ); }
+
 // just easy way to get rid of malloc/free/strdup 
 // comment these out if you really need one of them 
 #define malloc please_avoid_malloc_in_cpp
