@@ -199,7 +199,7 @@ void LandGenerator::loadMapGridBitmap() {
 		" bitmap: " << bitmapX << "," << bitmapY << endl;
 	
 	if( this->bitmapIndex != bitmapIndex ) {
-		char bitmapName[3000];
+		char bitmapName[255];
 		sprintf( bitmapName, "/mapgrid/world/map_%02d.png", bitmapIndex );
 		cerr << "Needs bitmap " << bitmapName << endl;
 		

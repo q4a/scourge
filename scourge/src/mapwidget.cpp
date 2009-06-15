@@ -143,7 +143,7 @@ Texture MapWidget::loadTexture( int x, int y ) {
 	int bitmapIndex = y * BITMAPS_PER_ROW + x;
 	
 	if( textures.find( bitmapIndex ) == textures.end() ) {
-		char bitmapName[3000];
+		char bitmapName[255];
 		sprintf( bitmapName, "/mapgrid/map_%02d.png", bitmapIndex );
 		cerr << "Loading bitmap=" << bitmapName << " pos=" << x << "," << y << endl;
 		

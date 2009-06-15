@@ -917,6 +917,22 @@ void ShapePalette::initMapGrid() {
 		mapGridLocationByType[ loc->type ]->push_back( loc );
 	}
 	delete config;
+
+	for ( int y = 0; y < BITMAPS_PER_COL; y++ ) {
+		for ( int x = 0; x < BITMAPS_PER_ROW; x++ ) {
+			int bitmapIndex = y * BITMAPS_PER_ROW + x;
+			config->setUpdate( _( "Loading Travel Map" ), bitmapIndex, BITMAPS_PER_ROW * BITMAPS_PER_COL );
+
+			char bitmapName[255];
+			sprintf( bitmapName, "/mapgrid/map_%02d.png", bitmapIndex );
+		
+			Texture texture;
+			string filename = bitmapName;
+			texture.load( filename );
+		
+			travelMap[x][y] = texture;
+		}
+	}
 }
 
 /**

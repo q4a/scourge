@@ -134,7 +134,6 @@ public:
 		return hungerIcon;
 	}
 
-	// cursor
 	SDL_Surface *tiles, *spells;
 	Texture tilesTex[20][20];
 	Texture spellsTex[20][20];
@@ -153,6 +152,8 @@ public:
 	Texture raindropTexture;
 	Texture fogCloudTexture;
 	Texture snowFlakeTexture;
+	
+	Texture travelMap[BITMAPS_PER_ROW][BITMAPS_PER_COL];
 
 	inline Texture const& getGuiTexture() {
 		return gui_texture;

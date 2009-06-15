@@ -56,6 +56,9 @@ private:
 	// Texture that will hold the minimap
 	int textureSizeH, textureSizeW;
 
+	float currentTravelMapAlpha, targetTravelMapAlpha;
+	Uint32 lastAlphaCheck;
+
 public:
 	MiniMap();
 	~MiniMap();

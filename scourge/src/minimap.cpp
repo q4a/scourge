@@ -40,6 +40,8 @@ MiniMap :: MiniMap( Scourge *scourge ) {
 	this->scourge = scourge;
 	showMiniMap = true;
 	textureSizeH = textureSizeW = 512;
+	currentTravelMapAlpha = targetTravelMapAlpha = 1.0f;
+	lastAlphaCheck = SDL_GetTicks();
 }
 
 MiniMap :: ~MiniMap() {
@@ -52,9 +54,11 @@ void MiniMap::drawMap() {
 	  ( scourge->getPreferences()->getStencilbuf() &&
 	    scourge->getPreferences()->getStencilBufInitialized() );
 
-	int sx = scourge->getSession()->getMap()->getX() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
+	Map *map = scourge->getMap();
+
+	int sx = map->getX() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
 	if ( sx < 0 ) sx = 0;
-	int sy = scourge->getSession()->getMap()->getY() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
+	int sy = map->getY() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
 	if ( sy < 0 ) sy = 0;
 	int ex = sx + MINI_MAP_SIZE;
 	if ( ex > textureSizeW ) ex = textureSizeW;
@@ -70,7 +74,7 @@ void MiniMap::drawMap() {
 	glLoadIdentity();
 	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0 );
 	glTranslatef( MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
-	glRotatef( scourge->getSession()->getMap()->getZRot(), 0, 0, 1 );
+	glRotatef( map->getZRot(), 0, 0, 1 );
 	glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
 
 	// Create the stencil from the minimap mask texture.
@@ -155,6 +159,16 @@ void MiniMap::drawMap() {
 		glEnd();
 	}
 
+	Creature *player;
+	Location *playerPos;
+
+	if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
+		player = scourge->getSession()->getParty()->getPlayer();
+		playerPos = map->getLocation( player->getX(), player->getY(), player->getZ() );
+	}
+
+	float targetAlpha = 1.0f;
+
 	// Draw the surrounding objects into the map. Naive method: draw each block.
 	for ( int x = sx; x < ex; x++ ) {
 		if ( x < 0 || x >= MAP_WIDTH ) continue;
@@ -162,16 +176,17 @@ void MiniMap::drawMap() {
 		for ( int y = sy; y < ey; y++ ) {
 			if ( y < 0 || y >= MAP_DEPTH ) continue;
 
-			Location *pos = scourge->getSession()->getMap()->getLocation( x, y, 0 );
-			Location *floorPos = scourge->getSession()->getMap()->getItemLocation( x, y );
+			Location *pos = map->getLocation( x, y, 0 );
+			Location *floorPos = map->getItemLocation( x, y );
 
 			int xp = ( x - sx ) * MINI_MAP_BLOCK;
 			int yp = ( y - sy ) * MINI_MAP_BLOCK;
 
 			bool visible = scourge->getSession()->getMap()->isLocationInLight( x, y, NULL );
 
-			// Draw the floor (indoors)
-			if ( !scourge->getSession()->getMap()->isHeightMapEnabled() && scourge->getSession()->getMap()->isOnFloorTile( x, y ) && visible ) {
+			// Draw the floor (indoors) resp. roads (outdoors)
+			// FIXME: The big non-path roads are not displayed correctly.
+			if ( ( ( !map->isHeightMapEnabled() && map->isOnFloorTile( x, y ) ) || ( map->isHeightMapEnabled() && map->isRoad( x, y ) ) ) && visible ) {
 				glColor4f( 1.0f, 1.0f, 1.0f, 0.2f );
 
 				glBegin( GL_TRIANGLE_STRIP );
@@ -182,11 +197,12 @@ void MiniMap::drawMap() {
 				glEnd();
 			}
 
-			// Draw items laying on the ground
+			// Draw items lying on the ground
 			if ( floorPos && visible) {
 				RenderedItem *item = floorPos->item;
 
 				if ( item ) {
+					if ( playerPos && ( map->distance( playerPos, floorPos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.4f ) targetAlpha = 0.4f;
 
 					if ( item->isSpecial() ) {
 						glColor4f( 1.0f, 0.0f, 0.5f, 0.8f );
@@ -217,8 +233,9 @@ void MiniMap::drawMap() {
 
 					if ( !creature ) {
 
-						// Draw items
+						// Draw items (mostly containers)
 						if ( item ) {
+							if ( playerPos && ( map->distance( playerPos, pos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.5f ) targetAlpha = 0.5f;
 
 							if ( item->getContainsMagicItem() ) {
 								glColor4f( 0.0f, 0.0f, 1.0f, 0.8f );
@@ -231,9 +248,11 @@ void MiniMap::drawMap() {
 
 							// A wall or something
 							if ( !shape->isInteractive() ) {
+								if ( playerPos && ( map->distance( playerPos, pos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.6f ) targetAlpha = 0.6f;
 								glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 							// A door or stairway
 							} else {
+								if ( playerPos && ( map->distance( playerPos, pos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.4f ) targetAlpha = 0.4f;
 								glColor4f( 1.0f, 0.7f, 0.0f, 0.5f );
 							}
 
@@ -251,6 +270,7 @@ void MiniMap::drawMap() {
 
 						// Monsters
 						if ( creature->isMonster() ) {
+							if ( playerPos && ( map->distance( playerPos, pos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.0f ) targetAlpha = 0.0f;
 
 							if ( creature->isBoss() ) {
 								glColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
@@ -260,6 +280,7 @@ void MiniMap::drawMap() {
 
 						// NPCs
 						} else if ( creature->isNpc() ) {
+							if ( playerPos && ( map->distance( playerPos, pos ) <= CREATURE_SIGHT_RADIUS ) ) if ( targetAlpha > 0.5f ) targetAlpha = 0.5f;
 							glColor4f( 0.8f, 0.8f, 0.0f, 0.5f );
 
 						// Characters
@@ -311,6 +332,91 @@ void MiniMap::drawMap() {
 
 	}
 
+	// Draw the travel map
+
+	// Calculate a few coordinates first
+
+	// The region we are in
+	int rx = map->getRegionX();
+	int ry = map->getRegionY();
+
+	// The center bitmap we need
+	int bx = rx / REGIONS_PER_BITMAP;
+	int by = ry / REGIONS_PER_BITMAP;
+
+	// Region at top left of bitmap
+	int rleft = bx * REGIONS_PER_BITMAP;
+	int rtop = by * REGIONS_PER_BITMAP;
+
+	// Offset of our region into the center bitmap
+	int roffsx = ( rx - rleft ) * REGION_SIZE;
+	int roffsy = ( ry - rtop ) * REGION_SIZE;
+
+	// Our position within the region
+	int px = ( map->getMapX() / (float)MAP_WIDTH ) * (float)REGION_SIZE;
+	int py = ( map->getMapY() / (float)MAP_DEPTH ) * (float)REGION_SIZE;
+
+	// Center coordinate of minimap
+	int mmcenter = MINI_MAP_SIZE * MINI_MAP_BLOCK / 2;
+	
+	// Where to draw the center bitmap
+	int x = mmcenter - roffsx - px;
+	int y = mmcenter - roffsy - py;
+	
+	// Variables for the bitmaps to draw
+	int bitmapX, bitmapY;
+
+	// Calculate alpha for the superimposed travel map
+
+	#define CHANGE_PER_SECOND 0.1f
+
+	targetTravelMapAlpha = targetAlpha;
+
+	Uint32 now = SDL_GetTicks();
+	Uint32 elapsed = now - lastAlphaCheck;
+	lastAlphaCheck = now;
+
+	float oldAlpha = currentTravelMapAlpha;
+	currentTravelMapAlpha += signum( (float)(targetTravelMapAlpha - currentTravelMapAlpha) ) * ( (float)elapsed / 1000 * CHANGE_PER_SECOND );
+
+	// Do some clipping so the alpha doesn't oscillate around the target value
+	if ( ( ( oldAlpha < targetTravelMapAlpha ) && ( currentTravelMapAlpha > targetTravelMapAlpha ) ) || ( ( oldAlpha > targetTravelMapAlpha ) && ( currentTravelMapAlpha < targetTravelMapAlpha ) ) ) currentTravelMapAlpha = targetTravelMapAlpha;
+
+	// Start drawing
+	glEnable( GL_TEXTURE_2D );
+	glColor4f( 1.0f, 1.0f, 1.0f, currentTravelMapAlpha );
+	
+	for ( int ty = -1; ty < 2; ty++ ) {
+		for ( int tx = -1; tx < 2; tx++ ) {
+
+			if ( ( ( bx + tx ) > -1 ) && ( ( bx + tx ) < BITMAPS_PER_ROW ) && ( ( by + ty ) > -1 ) && ( ( by + ty ) < BITMAPS_PER_COL ) ) {
+				bitmapX = bx + tx;
+				bitmapY = by + ty;
+			} else {
+				// Map edge? Just use the water tile from 0,0 :-)
+				bitmapX = bitmapY = 0;
+			}
+
+			glPushMatrix();
+			scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
+			glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0 );
+			glBegin( GL_TRIANGLE_STRIP );
+			glTexCoord2i( 0, 0 );
+			glVertex2i( 0, 0 );
+			glTexCoord2i( 1, 0 );
+			glVertex2i( BITMAP_SIZE, 0 );
+			glTexCoord2i( 0, 1 );
+			glVertex2i( 0, BITMAP_SIZE );
+			glTexCoord2i( 1, 1 );
+			glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
+			glEnd();
+			glPopMatrix();
+
+		}
+	}
+
+	glDisable( GL_TEXTURE_2D );
+
 	// Draw the minimap frame.
 	if ( useStencil ) {
 		glDepthMask( GL_TRUE );
@@ -321,7 +427,7 @@ void MiniMap::drawMap() {
 		glAlphaFunc( GL_ALWAYS, 0 );
 		glEnable( GL_TEXTURE_2D );
 		scourge->getShapePalette()->getMinimapTexture().glBind();
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -338,8 +444,8 @@ void MiniMap::drawMap() {
 
 		// draw pointers for gates and teleporters
 		if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
-			drawPointers( scourge->getSession()->getMap()->getGates(), Color( 1, 0, 0, 1 ) );
-			drawPointers( scourge->getSession()->getMap()->getTeleporters(), Color( 0, 0, 1, 1 ) );
+			drawPointers( map->getGates(), Color( 1, 0, 0, 1 ) );
+			drawPointers( map->getTeleporters(), Color( 0, 0, 1, 1 ) );
 		}
 	}
 
