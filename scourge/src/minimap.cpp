@@ -168,8 +168,10 @@ void MiniMap::drawMap() {
 			int xp = ( x - sx ) * MINI_MAP_BLOCK;
 			int yp = ( y - sy ) * MINI_MAP_BLOCK;
 
+			bool visible = scourge->getSession()->getMap()->isLocationInLight( x, y, NULL );
+
 			// Draw the floor (indoors)
-			if ( !scourge->getSession()->getMap()->isHeightMapEnabled() && scourge->getSession()->getMap()->isOnFloorTile( x, y ) ) {
+			if ( !scourge->getSession()->getMap()->isHeightMapEnabled() && scourge->getSession()->getMap()->isOnFloorTile( x, y ) && visible ) {
 				glColor4f( 1.0f, 1.0f, 1.0f, 0.2f );
 
 				glBegin( GL_TRIANGLE_STRIP );
@@ -181,7 +183,7 @@ void MiniMap::drawMap() {
 			}
 
 			// Draw items laying on the ground
-			if ( floorPos ) {
+			if ( floorPos && visible) {
 				RenderedItem *item = floorPos->item;
 
 				if ( item ) {
@@ -203,10 +205,8 @@ void MiniMap::drawMap() {
 
 				}
 
-			}
-
 			// Draw other objects
-			if ( pos ) {
+			} else if ( pos && visible ) {
 
 			RenderedCreature *creature = pos->creature;
 			Shape *shape = pos->shape;

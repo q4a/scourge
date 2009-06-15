@@ -139,6 +139,8 @@ int Fog::getVisibility( int xp, int yp, Shape *shape ) {
 				else if ( vv == FOG_VISITED ) v = vv;
 			}
 		}
+	} else {
+		v = getValue( xp, yp );
 	}
 	return v;
 }
