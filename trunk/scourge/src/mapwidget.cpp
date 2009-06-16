@@ -46,12 +46,7 @@ MapWidget::MapWidget( Scourge* scourge, Window* parent, int x, int y, int x2, in
 	calculateValues();
 }
 
-MapWidget::~MapWidget() {
-	for( map<int, Texture>::iterator e = textures.begin(); e != textures.end(); ++e ) {
-		Texture tex = e->second;
-		tex.clear();
-	}	
-}
+MapWidget::~MapWidget() {}
 
 bool MapWidget::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 	switch ( event->type ) {
@@ -131,37 +126,16 @@ void MapWidget::calculateValues() {
 	tx = sx % BITMAP_SIZE;
 	ty = sy % BITMAP_SIZE;
 
-	/*
-	cerr << "pixel=" << sx << "-" << ex << " , " << sy << "-" << ey <<
-	  " out of " << MAP_GRID_WIDTH << "," << MAP_GRID_HEIGHT <<
-	  " starting tile=" << gx << "," << gy <<
-	  " starting offset=-1 * (" << tx << "," << ty << ")" << endl;
-	*/
-}
-
-Texture MapWidget::loadTexture( int x, int y ) {
-	int bitmapIndex = y * BITMAPS_PER_ROW + x;
-	
-	if( textures.find( bitmapIndex ) == textures.end() ) {
-		char bitmapName[255];
-		sprintf( bitmapName, "/mapgrid/map_%02d.png", bitmapIndex );
-		cerr << "Loading bitmap=" << bitmapName << " pos=" << x << "," << y << endl;
-		
-		Texture texture;
-		string filename = bitmapName;
-		texture.load( filename );
-		
-		textures[ bitmapIndex ] = texture;
-	}
-	
-	return textures[ bitmapIndex ];
 }
 
 bool  MapWidget::onDraw( Widget* ) {
 	Canvas *canvas = this;
 
+	int bitmapX, bitmapY;
 
 	glEnable( GL_TEXTURE_2D );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	for ( int xx = 0; xx < canvas->getWidth() / BITMAP_SIZE + 2; xx++ ) {
 		if ( gx + xx >= BITMAP_SIZE ) continue;
 		for ( int yy = 0; yy < canvas->getHeight() / BITMAP_SIZE + 2; yy++ ) {
@@ -169,11 +143,17 @@ bool  MapWidget::onDraw( Widget* ) {
 			glPushMatrix();
 			int xp = xx * BITMAP_SIZE - tx;
 			int yp = yy * BITMAP_SIZE - ty;
-			glTranslatef( xp, yp, 0 );
-//      cerr << "\txx=" << xx << " yy=" << yy <<
-//        " gird=" << ( gx + xx ) << "," << ( gy + yy ) << endl;
-			loadTexture( gx + xx, gy + yy ).glBind();
-			glColor4f( 1, 1, 1, 1 );
+			glTranslatef( xp, yp, 0.0f );
+
+			if ( ( ( gx + xx ) > -1 ) && ( ( gx + xx ) < BITMAPS_PER_ROW ) && ( ( gy + yy ) > -1 ) && ( ( gy + yy ) < BITMAPS_PER_COL ) ) {
+				bitmapX = gx + xx;
+				bitmapY = gy + yy;
+			} else {
+				// Map edge? Just use the water tile from 0,0 :-)
+				bitmapX = bitmapY = 0;
+			}
+
+			scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -188,6 +168,7 @@ bool  MapWidget::onDraw( Widget* ) {
 			glPopMatrix();
 		}
 	}
+
 	glDisable( GL_TEXTURE_2D );
 	
 	if( showRegions ) {
@@ -215,50 +196,55 @@ bool  MapWidget::onDraw( Widget* ) {
 	}
 
 	int shadowSize = 10;
+
 	glEnable( GL_BLEND );
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 
 	glBegin( GL_QUADS );
-	glColor4f( 0, 0, 0, 0.75f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 	glVertex2i( 0, 0 );
 	glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
 	glVertex2i( getWidth(), 0 );
 	glVertex2i( getWidth(), shadowSize );
-	glColor4f( 0, 0, 0, 0.75f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 	glVertex2i( 0, shadowSize );
 
-	glColor4f( 0, 0, 0, 0.75f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 	glVertex2i( 0, shadowSize );
 	glVertex2i( shadowSize, shadowSize );
 	glColor4f( 0.4f, 0.4f, 0.4f, 0.5f );
 	glVertex2i( shadowSize, getHeight() );
-	glColor4f( 0, 0, 0, 0.75f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 	glVertex2i( 0, getHeight() );
 	glEnd();
+
 	glDisable( GL_BLEND );
 
 	glPushMatrix();
 	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ),
 	              markedY - ( gy * BITMAP_SIZE + ty ),
-	              0 );
+	              0.0f );
 	glDisable( GL_TEXTURE_2D );
-	glColor4f( 1, 0, 0, 0 );
+
+	glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 10, 0 );
 	glVertex2i( 0, 10 );
 	glVertex2i( 10, 10 );
 	glEnd();
-	glColor4f( 0, 0, 0, 0 );
+
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 	glBegin( GL_LINE_LOOP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 10, 0 );
 	glVertex2i( 10, 10 );
 	glVertex2i( 0, 10 );
 	glEnd();
+
 	glEnable( GL_TEXTURE_2D );
 	glPopMatrix();
+
 	return true;
 }
 
