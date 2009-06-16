@@ -144,7 +144,7 @@ public:
 
 	Texture cloud, candle, highlight;
 	Texture border, border2, gargoyle;
-	Texture minimap, minimapMask, dismiss, exitTexture, options, group, backpack;
+	Texture minimap, minimap2, minimapMask, dismiss, exitTexture, options, group, backpack;
 	Texture waitTexture, startTexture, realTimeTexture, pausedTexture;
 	Texture systemTexture;
 	Texture ioTexture;
@@ -179,6 +179,9 @@ public:
 	}
 	inline Texture getMinimapTexture() {
 		return minimap;
+	}
+	inline Texture getMinimap2Texture() {
+		return minimap2;
 	}
 	inline Texture getMinimapMaskTexture() {
 		return minimapMask;
