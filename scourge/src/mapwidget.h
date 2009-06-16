@@ -43,7 +43,6 @@ private:
 	bool dragging;
 	bool editable;
 	bool showRegions;
-	std::map<int, Texture> textures;
 
 public:
 
@@ -81,7 +80,6 @@ public:
 
 protected:
 	void calculateValues();
-	Texture loadTexture( int x, int y );
 };
 
 #endif
