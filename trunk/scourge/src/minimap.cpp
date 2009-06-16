@@ -65,6 +65,39 @@ void MiniMap::drawMap() {
 	int ey = sy + MINI_MAP_SIZE;
 	if ( ey > textureSizeH ) ey = textureSizeW;
 
+	Creature *player;
+	Location *playerPos;
+
+	int monstersClose = false;
+	int creatureCount = scourge->getSession()->getCreatureCount();
+
+	// Check whether the party is on the map
+	if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
+		player = scourge->getSession()->getParty()->getPlayer();
+		playerPos = map->getLocation( player->getX(), player->getY(), player->getZ() );
+
+		if ( playerPos ) {
+
+			// Check whether monsters are close (visible or not)
+			for ( int i = 0; i < creatureCount ; i++ ) {
+				Creature *creature = scourge->getSession()->getCreature( i ) ;
+
+				if ( !creature->getStateMod( StateMod::dead ) && !creature->getStateMod( StateMod::possessed ) && creature->isMonster() ) {
+					float dist = Constants::distance( player->getX() , player->getY(), player->getShape()->getWidth(), player->getShape()->getDepth(), creature->getX(), creature->getY(), creature->getShape()->getWidth(), creature->getShape()->getDepth() );
+
+					if ( dist <= CREATURE_SIGHT_RADIUS ) {
+						monstersClose = true;
+						break;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -157,14 +190,6 @@ void MiniMap::drawMap() {
 		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
 		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
 		glEnd();
-	}
-
-	Creature *player;
-	Location *playerPos;
-
-	if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
-		player = scourge->getSession()->getParty()->getPlayer();
-		playerPos = map->getLocation( player->getX(), player->getY(), player->getZ() );
 	}
 
 	float targetAlpha = 1.0f;
@@ -426,7 +451,7 @@ void MiniMap::drawMap() {
 		glEnable( GL_ALPHA_TEST );
 		glAlphaFunc( GL_ALWAYS, 0 );
 		glEnable( GL_TEXTURE_2D );
-		scourge->getShapePalette()->getMinimapTexture().glBind();
+		!monstersClose ? scourge->getShapePalette()->getMinimapTexture().glBind() : scourge->getShapePalette()->getMinimap2Texture().glBind();
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
@@ -472,17 +497,17 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
 		glColor4f( color.r, color.g, color.b, color.a );
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2f( nx, ny );
-		glVertex2f( nx + 4, ny );
-		glVertex2f( nx, ny + 4 );
-		glVertex2f( nx + 4, ny + 4 );
+		glVertex2f( nx + 4.0f, ny );
+		glVertex2f( nx, ny + 4.0f );
+		glVertex2f( nx + 4.0f, ny + 4.0f );
 		glEnd();
-		glColor4f( 0, 0, 0, 1 );
+		glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
 		glBegin( GL_LINE_LOOP );
-		glVertex2f( nx - 1, ny + 6 );
-		glVertex2f( nx + 6, ny + 6 );
-		glVertex2f( nx + 6, ny - 1 );
-		glVertex2f( nx - 1, ny - 1 );
+		glVertex2f( nx - 1.0f, ny + 6.0f );
+		glVertex2f( nx + 6.0f, ny + 6.0f );
+		glVertex2f( nx + 6.0f, ny - 1.0f );
+		glVertex2f( nx - 1.0f, ny - 1.0f );
 		glEnd();
 	}
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }

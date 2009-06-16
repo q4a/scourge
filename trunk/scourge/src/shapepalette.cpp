@@ -117,6 +117,9 @@ void ShapePalette::initialize() {
 	minimap.load( "/textures/minimap.png" );
 	GLclampf pri = 0.9f; minimap.glPrioritize( pri );
 
+	minimap2.load( "/textures/minimap2.png" );
+	pri = 0.9f; minimap2.glPrioritize( pri );
+
 	minimapMask.load( "/textures/minimask.png" );
 	pri = 0.9f; minimapMask.glPrioritize( pri );
 
