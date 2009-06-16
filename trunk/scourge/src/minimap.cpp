@@ -56,6 +56,14 @@ void MiniMap::drawMap() {
 
 	Map *map = scourge->getMap();
 
+	bool outdoors = map->isHeightMapEnabled();
+
+	// Onscreen pixel size of minimap
+	int mmsize = MINI_MAP_SIZE * MINI_MAP_BLOCK;
+
+	// Center coordinate of minimap
+	int mmcenter = mmsize / 2;
+
 	int sx = map->getX() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
 	if ( sx < 0 ) sx = 0;
 	int sy = map->getY() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
@@ -105,10 +113,10 @@ void MiniMap::drawMap() {
 	// Set rotation/translation for all following drawing operations.
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0 );
-	glTranslatef( MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
-	glRotatef( map->getZRot(), 0, 0, 1 );
-	glTranslatef( -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, -MINI_MAP_SIZE * MINI_MAP_BLOCK / 2, 0 );
+	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0.0f );
+	glTranslatef( mmcenter, mmcenter, 0.0f );
+	glRotatef( map->getZRot(), 0.0f, 0.0f, 1.0f );
+	glTranslatef( -mmcenter, -mmcenter, 0.0f );
 
 	// Create the stencil from the minimap mask texture.
 	if ( useStencil ) {
@@ -130,11 +138,11 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
 		glTexCoord2i( 1, 0 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glVertex2i( mmsize, 0 );
 		glTexCoord2i( 0, 1 );
-		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( 0, mmsize );
 		glTexCoord2i( 1, 1 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( mmsize, mmsize );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_ALPHA_TEST );
@@ -155,11 +163,11 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
 		glTexCoord2i( 1, 0 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glVertex2i( mmsize, 0 );
 		glTexCoord2i( 0, 1 );
-		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( 0, mmsize );
 		glTexCoord2i( 1, 1 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( mmsize, mmsize );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glPopMatrix();
@@ -186,9 +194,9 @@ void MiniMap::drawMap() {
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( 0, 0 );
-		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glVertex2i( 0, mmsize );
+		glVertex2i( mmsize, mmsize );
+		glVertex2i( mmsize, 0 );
 		glEnd();
 	}
 
@@ -211,7 +219,7 @@ void MiniMap::drawMap() {
 
 			// Draw the floor (indoors) resp. roads (outdoors)
 			// FIXME: The big non-path roads are not displayed correctly.
-			if ( ( ( !map->isHeightMapEnabled() && map->isOnFloorTile( x, y ) ) || ( map->isHeightMapEnabled() && map->isRoad( x, y ) ) ) && visible ) {
+			if ( ( ( !outdoors && map->isOnFloorTile( x, y ) ) || ( outdoors && map->isRoad( x, y ) ) ) && visible ) {
 				glColor4f( 1.0f, 1.0f, 1.0f, 0.2f );
 
 				glBegin( GL_TRIANGLE_STRIP );
@@ -357,90 +365,91 @@ void MiniMap::drawMap() {
 
 	}
 
+	glEnable( GL_TEXTURE_2D );
+
 	// Draw the travel map
 
-	// Calculate a few coordinates first
+	if ( outdoors ) {
 
-	// The region we are in
-	int rx = map->getRegionX();
-	int ry = map->getRegionY();
+		// Calculate a few coordinates first
 
-	// The center bitmap we need
-	int bx = rx / REGIONS_PER_BITMAP;
-	int by = ry / REGIONS_PER_BITMAP;
+		// The region we are in
+		int rx = map->getRegionX();
+		int ry = map->getRegionY();
 
-	// Region at top left of bitmap
-	int rleft = bx * REGIONS_PER_BITMAP;
-	int rtop = by * REGIONS_PER_BITMAP;
+		// The center bitmap we need
+		int bx = rx / REGIONS_PER_BITMAP;
+		int by = ry / REGIONS_PER_BITMAP;
 
-	// Offset of our region into the center bitmap
-	int roffsx = ( rx - rleft ) * REGION_SIZE;
-	int roffsy = ( ry - rtop ) * REGION_SIZE;
+		// Region at top left of bitmap
+		int rleft = bx * REGIONS_PER_BITMAP;
+		int rtop = by * REGIONS_PER_BITMAP;
 
-	// Our position within the region
-	int px = ( map->getMapX() / (float)MAP_WIDTH ) * (float)REGION_SIZE;
-	int py = ( map->getMapY() / (float)MAP_DEPTH ) * (float)REGION_SIZE;
+		// Offset of our region into the center bitmap
+		int roffsx = ( rx - rleft ) * REGION_SIZE;
+		int roffsy = ( ry - rtop ) * REGION_SIZE;
 
-	// Center coordinate of minimap
-	int mmcenter = MINI_MAP_SIZE * MINI_MAP_BLOCK / 2;
-	
-	// Where to draw the center bitmap
-	int x = mmcenter - roffsx - px;
-	int y = mmcenter - roffsy - py;
-	
-	// Variables for the bitmaps to draw
-	int bitmapX, bitmapY;
+		// Our position within the region
+		int px = ( map->getMapX() / (float)MAP_WIDTH ) * (float)REGION_SIZE;
+		int py = ( map->getMapY() / (float)MAP_DEPTH ) * (float)REGION_SIZE;
 
-	// Calculate alpha for the superimposed travel map
+		// Where to draw the center bitmap
+		int x = mmcenter - roffsx - px;
+		int y = mmcenter - roffsy - py;
+		
+		// Variables for the bitmaps to draw
+		int bitmapX, bitmapY;
 
-	#define CHANGE_PER_SECOND 0.1f
+		// Calculate alpha for the superimposed travel map
 
-	targetTravelMapAlpha = targetAlpha;
+		#define CHANGE_PER_SECOND 0.1f
 
-	Uint32 now = SDL_GetTicks();
-	Uint32 elapsed = now - lastAlphaCheck;
-	lastAlphaCheck = now;
+		targetTravelMapAlpha = targetAlpha;
 
-	float oldAlpha = currentTravelMapAlpha;
-	currentTravelMapAlpha += signum( (float)(targetTravelMapAlpha - currentTravelMapAlpha) ) * ( (float)elapsed / 1000 * CHANGE_PER_SECOND );
+		Uint32 now = SDL_GetTicks();
+		Uint32 elapsed = now - lastAlphaCheck;
+		lastAlphaCheck = now;
 
-	// Do some clipping so the alpha doesn't oscillate around the target value
-	if ( ( ( oldAlpha < targetTravelMapAlpha ) && ( currentTravelMapAlpha > targetTravelMapAlpha ) ) || ( ( oldAlpha > targetTravelMapAlpha ) && ( currentTravelMapAlpha < targetTravelMapAlpha ) ) ) currentTravelMapAlpha = targetTravelMapAlpha;
+		float oldAlpha = currentTravelMapAlpha;
+		currentTravelMapAlpha += signum( (float)(targetTravelMapAlpha - currentTravelMapAlpha) ) * ( (float)elapsed / 1000 * CHANGE_PER_SECOND );
 
-	// Start drawing
-	glEnable( GL_TEXTURE_2D );
-	glColor4f( 1.0f, 1.0f, 1.0f, currentTravelMapAlpha );
-	
-	for ( int ty = -1; ty < 2; ty++ ) {
-		for ( int tx = -1; tx < 2; tx++ ) {
+		// Do some clipping so the alpha doesn't oscillate around the target value
+		if ( ( ( oldAlpha < targetTravelMapAlpha ) && ( currentTravelMapAlpha > targetTravelMapAlpha ) ) || ( ( oldAlpha > targetTravelMapAlpha ) && ( currentTravelMapAlpha < targetTravelMapAlpha ) ) ) currentTravelMapAlpha = targetTravelMapAlpha;
 
-			if ( ( ( bx + tx ) > -1 ) && ( ( bx + tx ) < BITMAPS_PER_ROW ) && ( ( by + ty ) > -1 ) && ( ( by + ty ) < BITMAPS_PER_COL ) ) {
-				bitmapX = bx + tx;
-				bitmapY = by + ty;
-			} else {
-				// Map edge? Just use the water tile from 0,0 :-)
-				bitmapX = bitmapY = 0;
+		// Start drawing
+		glColor4f( 1.0f, 1.0f, 1.0f, currentTravelMapAlpha );
+		
+		for ( int ty = -1; ty < 2; ty++ ) {
+			for ( int tx = -1; tx < 2; tx++ ) {
+
+				if ( ( ( bx + tx ) > -1 ) && ( ( bx + tx ) < BITMAPS_PER_ROW ) && ( ( by + ty ) > -1 ) && ( ( by + ty ) < BITMAPS_PER_COL ) ) {
+					bitmapX = bx + tx;
+					bitmapY = by + ty;
+				} else {
+					// Map edge? Just use the water tile from 0,0 :-)
+					bitmapX = bitmapY = 0;
+				}
+
+				glPushMatrix();
+				scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
+				glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0 );
+				glBegin( GL_TRIANGLE_STRIP );
+				glTexCoord2i( 0, 0 );
+				glVertex2i( 0, 0 );
+				glTexCoord2i( 1, 0 );
+				glVertex2i( BITMAP_SIZE, 0 );
+				glTexCoord2i( 0, 1 );
+				glVertex2i( 0, BITMAP_SIZE );
+				glTexCoord2i( 1, 1 );
+				glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
+				glEnd();
+				glPopMatrix();
+
 			}
 
-			glPushMatrix();
-			scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
-			glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0 );
-			glBegin( GL_TRIANGLE_STRIP );
-			glTexCoord2i( 0, 0 );
-			glVertex2i( 0, 0 );
-			glTexCoord2i( 1, 0 );
-			glVertex2i( BITMAP_SIZE, 0 );
-			glTexCoord2i( 0, 1 );
-			glVertex2i( 0, BITMAP_SIZE );
-			glTexCoord2i( 1, 1 );
-			glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
-			glEnd();
-			glPopMatrix();
-
 		}
-	}
 
-	glDisable( GL_TEXTURE_2D );
+	}
 
 	// Draw the minimap frame.
 	if ( useStencil ) {
@@ -450,18 +459,17 @@ void MiniMap::drawMap() {
 		glPushMatrix();
 		glEnable( GL_ALPHA_TEST );
 		glAlphaFunc( GL_ALWAYS, 0 );
-		glEnable( GL_TEXTURE_2D );
 		!monstersClose ? scourge->getShapePalette()->getMinimapTexture().glBind() : scourge->getShapePalette()->getMinimap2Texture().glBind();
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
 		glTexCoord2i( 1, 0 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 );
+		glVertex2i( mmsize, 0 );
 		glTexCoord2i( 0, 1 );
-		glVertex2i( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( 0, mmsize );
 		glTexCoord2i( 1, 1 );
-		glVertex2i( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK );
+		glVertex2i( mmsize, mmsize );
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_ALPHA_TEST );
@@ -469,12 +477,34 @@ void MiniMap::drawMap() {
 
 		// draw pointers for gates and teleporters
 		if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
-			drawPointers( map->getGates(), Color( 1, 0, 0, 1 ) );
-			drawPointers( map->getTeleporters(), Color( 0, 0, 1, 1 ) );
+			drawPointers( map->getGates(), Color( 1.0f, 0.0f, 0.0f, 1.0f ) );
+			drawPointers( map->getTeleporters(), Color( 0.0f, 0.0f, 1.0f, 1.0f ) );
 		}
 	}
 
+	// Draw the crosshair marking player's position
+
+	if ( outdoors && player ) {
+		// Offset of the crosshair from minimap center in regard to player vs. camera location
+		int ox = ( ( player->getX() - map->getMapX() ) / (float)MAP_WIDTH ) * (float)REGION_SIZE;
+		int oy = ( ( player->getY() - map->getMapY() ) / (float)MAP_DEPTH ) * (float)REGION_SIZE;
+
+		glColor4f( 1.0f, 0.0f, 0.0f, currentTravelMapAlpha );
+		glTranslatef( mmcenter + ox, mmcenter + oy, 0.0f );
+		glRotatef( -map->getZRot(), 0.0f, 0.0f, 1.0f );
+
+		glBegin( GL_LINES );
+		glVertex2i( -3, -3);
+		glVertex2i( 3, 3 );
+		glVertex2i( -3, 3 );
+		glVertex2i( 3, -3 );
+		glEnd();
+
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+
 	glPopMatrix();
+
 	glDisable( GL_BLEND );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
@@ -491,17 +521,21 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
 
 	for ( set<Location*>::iterator e = p->begin(); e != p->end(); ++e ) {
 		Location *pos = *e;
-		float angle = Util::getAngle( px, py, 0, 0, ( float )pos->x, ( float )pos->y, 0, 0 );
+		float angle = Util::getAngle( px, py, 0.0f, 0.0f, ( float )pos->x, ( float )pos->y, 0.0f, 0.0f );
 		float nx = r + ( r - 10 ) * Constants::cosFromAngle( angle ) - 5;
 		float ny = r + ( r - 10 ) * Constants::sinFromAngle( angle );
+
 		glColor4f( color.r, color.g, color.b, color.a );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2f( nx, ny );
 		glVertex2f( nx + 4.0f, ny );
 		glVertex2f( nx, ny + 4.0f );
 		glVertex2f( nx + 4.0f, ny + 4.0f );
 		glEnd();
+
 		glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2f( nx - 1.0f, ny + 6.0f );
 		glVertex2f( nx + 6.0f, ny + 6.0f );
@@ -509,5 +543,6 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
 		glVertex2f( nx - 1.0f, ny - 1.0f );
 		glEnd();
 	}
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
