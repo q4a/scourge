@@ -200,7 +200,7 @@ void SDLHandler::setOrthoView() {
 /* general OpenGL initialization function */
 void SDLHandler::initGL() {
 	/* Enable Texture Mapping */
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	/* Enable smooth shading */
 	glShadeModel( GL_SMOOTH );
@@ -232,7 +232,7 @@ void SDLHandler::initGL() {
 	if ( stencilBufferUsed ) glClearStencil( 0 ); // Clear The Stencil Buffer To 0
 
 	/* Enables Depth Testing */
-	glEnable( GL_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_TEST );
 
 	/* The Type Of Depth Test To Do */
 	glDepthFunc( GL_LEQUAL );
@@ -698,13 +698,13 @@ bool SDLHandler::processEvents( bool *isActive ) {
 
 void SDLHandler::drawCursor() {
 	// for cursor: do alpha bit testing
-	//  glEnable( GL_ALPHA_TEST );
+	//  glsEnable( GLS_ALPHA_TEST );
 	//  glAlphaFunc( GL_NOTEQUAL, 0 ); // this works better for people with the reverse alpha problem (see forums)
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_CULL_FACE );
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
@@ -723,9 +723,9 @@ void SDLHandler::drawCursor() {
 	glEnd();
 	glPopMatrix();
 
-	//  glDisable( GL_ALPHA_TEST );
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	//  glsDisable( GLS_ALPHA_TEST );
+	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
 
 #ifdef DEBUG_MOUSE_FOCUS
 	// cursor focus
@@ -742,8 +742,8 @@ void SDLHandler::drawCursor() {
 	glPopMatrix();
 #endif
 
-	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_CULL_FACE );
+	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_CULL_FACE );
 }
 
 void SDLHandler::processEventsAndRepaint() {
@@ -872,9 +872,9 @@ void SDLHandler::calculateFps() {
 
 void SDLHandler::drawDebugInfo() {
 	glPushMatrix();
-	glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_MASK );
+	glsDisable( GLS_CULL_FACE );
 	glLoadIdentity();
 	glColor3f( 0, 0, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -883,20 +883,20 @@ void SDLHandler::drawDebugInfo() {
 	glVertex2i( 400, 12 );
 	glVertex2i( screen->w, 12 );
 	glEnd();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
 	texPrint( 400, 10, "FPS: %g %s", getFPS(), ( debugStr ? debugStr : "" ) );
-	glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
+	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_MASK );
 	glPopMatrix();
 }
 
 void SDLHandler::drawFadeout() {
 	glPushMatrix();
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_DEPTH_TEST );
 
 	if ( fadeoutStartAlpha < fadeoutEndAlpha ) {
 		glColor4f( 0, 0, 0, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) *
@@ -913,9 +913,9 @@ void SDLHandler::drawFadeout() {
 	glVertex2i( screen->w, screen->h );
 	glEnd();
 
-	glEnable( GL_DEPTH_TEST );
-	glDisable( GL_BLEND );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_DEPTH_TEST );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
 	glPopMatrix();
 
 
@@ -1100,9 +1100,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 
 	glScalef( zoom, zoom, zoom );
 
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_BLEND );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_CULL_FACE );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	//glColor4f( 0, 0.15f, 0.05f, 0.5 );
@@ -1124,7 +1124,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 		glVertex2i( x + 5, y + h );
 	}
 	glEnd();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 
 	//glColor4f( 0, 0.4f, 0.15f, 0.5 );
 	for ( int i = 0; i < 2; i++ ) {

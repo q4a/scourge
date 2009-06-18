@@ -106,8 +106,7 @@ void MiniMap::drawMap() {
 
 	}
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// Set rotation/translation for all following drawing operations.
@@ -122,16 +121,12 @@ void MiniMap::drawMap() {
 	if ( useStencil ) {
 		glClear( GL_STENCIL_BUFFER_BIT );
 		glColorMask( 0, 0, 0, 0 );
-		glEnable( GL_STENCIL_TEST );
+		glsEnable( GLS_STENCIL_TEST | GLS_ALPHA_TEST | GLS_TEXTURE_2D );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
 
 		glPushMatrix();
-		glDisable( GL_BLEND );
-		glEnable( GL_ALPHA_TEST );
-		//glAlphaFunc( GL_EQUAL, 0xff );
-		glAlphaFunc( GL_NOTEQUAL, 0 );
-		glEnable( GL_TEXTURE_2D );
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -144,19 +139,17 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
-		glDisable( GL_TEXTURE_2D );
-		glDisable( GL_ALPHA_TEST );
+		glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 		glPopMatrix();
 
 		glColorMask( 1, 1, 1, 1 );
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-		glDepthMask( GL_FALSE );
+		glsDisable( GLS_DEPTH_MASK );
 
 		// Draw the transparent background.
 		glPushMatrix();
-		glEnable( GL_BLEND );
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
 		glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -169,11 +162,11 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glPopMatrix();
 	} else {
 		// Draw north marker and outline for the "simple" non-stencil version.
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		glBegin( GL_TRIANGLES );
@@ -365,7 +358,7 @@ void MiniMap::drawMap() {
 
 	}
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	// Draw the travel map
 
@@ -453,12 +446,11 @@ void MiniMap::drawMap() {
 
 	// Draw the minimap frame.
 	if ( useStencil ) {
-		glDepthMask( GL_TRUE );
-		glDisable( GL_STENCIL_TEST );
+		glsDisable( GLS_STENCIL_TEST );
+		glsEnable( GLS_DEPTH_MASK | GLS_ALPHA_TEST );
+		glAlphaFunc( GL_ALWAYS, 0 );
 
 		glPushMatrix();
-		glEnable( GL_ALPHA_TEST );
-		glAlphaFunc( GL_ALWAYS, 0 );
 		!monstersClose ? scourge->getShapePalette()->getMinimapTexture().glBind() : scourge->getShapePalette()->getMinimap2Texture().glBind();
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -471,8 +463,7 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
-		glDisable( GL_TEXTURE_2D );
-		glDisable( GL_ALPHA_TEST );
+		glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 		glPopMatrix();
 
 		// draw pointers for gates and teleporters
@@ -505,10 +496,8 @@ void MiniMap::drawMap() {
 
 	glPopMatrix();
 
-	glDisable( GL_BLEND );
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_TEXTURE_2D );
 }
 
 void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {

@@ -133,7 +133,7 @@ bool  MapWidget::onDraw( Widget* ) {
 
 	int bitmapX, bitmapY;
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	for ( int xx = 0; xx < canvas->getWidth() / BITMAP_SIZE + 2; xx++ ) {
@@ -169,10 +169,10 @@ bool  MapWidget::onDraw( Widget* ) {
 		}
 	}
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	
 	if( showRegions ) {
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPushMatrix();
 		glTranslatef( -tx, -ty, 0 );
@@ -192,12 +192,12 @@ bool  MapWidget::onDraw( Widget* ) {
 		}
 		
 		glPopMatrix();
-		glDisable( GL_BLEND );
+		glsDisable( GLS_BLEND );
 	}
 
 	int shadowSize = 10;
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 
 	glBegin( GL_QUADS );
@@ -218,13 +218,13 @@ bool  MapWidget::onDraw( Widget* ) {
 	glVertex2i( 0, getHeight() );
 	glEnd();
 
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 
 	glPushMatrix();
 	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ),
 	              markedY - ( gy * BITMAP_SIZE + ty ),
 	              0.0f );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -242,7 +242,7 @@ bool  MapWidget::onDraw( Widget* ) {
 	glVertex2i( 0, 10 );
 	glEnd();
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glPopMatrix();
 
 	return true;

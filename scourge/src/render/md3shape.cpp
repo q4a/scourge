@@ -86,9 +86,9 @@ void MD3Shape::draw() {
 	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
 	if( isShade() ) {
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 	} else {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}
 
 	glScalef( div, div, div );
@@ -96,9 +96,9 @@ void MD3Shape::draw() {
 	md3->DrawModel( this );
 
 	if( isShade() ) {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	} else {
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 	}
 
 	glPopMatrix();
@@ -106,11 +106,11 @@ void MD3Shape::draw() {
 
 void MD3Shape::outline( float r, float g, float b ) {
 	useShadow = true;
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glFrontFace( GL_CCW );
 	glPolygonMode( GL_BACK, GL_LINE );
 	glLineWidth( 4 );
-	glEnable( GL_CULL_FACE );
+	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_FRONT );
 	glColor3f( r, g, b );
 
@@ -132,9 +132,9 @@ void MD3Shape::outline( float r, float g, float b ) {
 	glPopMatrix();
 
 	glLineWidth( 1 );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_BACK, GL_FILL );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }

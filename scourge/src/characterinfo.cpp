@@ -39,7 +39,7 @@ bool CharacterInfoUI::onDrawDetails( Widget* w ) {
 
 	//GuiTheme *theme = win->getTheme();
 	Creature *p = creature;
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 
 	int y = 0;

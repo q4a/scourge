@@ -351,10 +351,10 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 //		cerr << "\tedge 4" << endl;
 	}		
 		
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
 	
 	
 	glLoadIdentity();
@@ -366,8 +366,8 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	
 	
 	// blend in the tmp
-	glDepthMask( GL_FALSE );
-	glEnable( GL_BLEND );
+	glsDisable( GLS_DEPTH_MASK );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	
 	for( unsigned int i = 0; i < tmps.size(); i++ ) {
@@ -380,12 +380,12 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		glPopMatrix();
 	}
 	
-	glDepthMask( GL_TRUE );
-	glDisable( GL_BLEND );
+	glsEnable( GLS_DEPTH_MASK );
+	glsDisable( GLS_BLEND );
 	
 	// Copy to a texture
 	glLoadIdentity();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
@@ -407,9 +407,9 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
 
-	glDisable( GL_BLEND );
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_DEPTH_TEST );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;
@@ -470,9 +470,9 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
 	//GLuint tex[1];
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D );
 
 	glGenTextures( 1, &_id );
 	glBindTexture( GL_TEXTURE_2D, _id );
@@ -492,7 +492,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glPushMatrix();
 	glLoadIdentity();
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glColor4f( 0, 0, 0, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -505,7 +505,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glColor4f( 1, 1, 1, 1 );
 
 	// draw the grass
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	for( int i = 0; i < sampleCount; i++ ) {
 		glColor4f( 1, 1, 1, 1 );
@@ -520,7 +520,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 
 	// Copy to a texture
 	glLoadIdentity();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
@@ -537,9 +537,9 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glPopMatrix();
 	glDeleteTextures( 1, &background );
 
-	glDisable( GL_BLEND );
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_DEPTH_TEST );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;
@@ -880,7 +880,7 @@ bool Texture::loadShot( const string& dirName ) {
 GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
 	// Copy to a texture the original image
 	glLoadIdentity();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	GLuint background;
 	if( !tex || *tex == 0 ) {
 		glGenTextures( 1, &background );

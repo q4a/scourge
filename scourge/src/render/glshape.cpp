@@ -325,10 +325,10 @@ void GLShape::drawShadow() {
 void GLShape::resetMultiTexture() {
 	if ( !isShade() && Constants::multitexture ) {
 		glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		glBindTexture( GL_TEXTURE_2D, 0 );
 		glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}	
 }
 
@@ -344,9 +344,9 @@ void GLShape::draw() {
 	}
 
 	if( isShade() ) {
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 	} else {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}
 	bool isFloorShape = ( height < 1 );
 	bool *sides = getOccludedSides();
@@ -363,10 +363,10 @@ void GLShape::draw() {
 		if ( sides[Shape::N_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[BOTTOM_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				tex[textureIndexFront].glBind();
 				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 			} else {
 				tex[textureIndexFront].glBind();
@@ -377,10 +377,10 @@ void GLShape::draw() {
 		if ( sides[Shape::S_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[FRONT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				tex[textureIndexFront].glBind();
 				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 			} else {
 				tex[textureIndexFront].glBind();
@@ -391,10 +391,10 @@ void GLShape::draw() {
 		if ( sides[Shape::E_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[RIGHT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				tex[textureIndexSide].glBind();
 				glSDLActiveTextureARB( GL_TEXTURE1_ARB );
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				glBindTexture( GL_TEXTURE_2D, lightmap_tex_num2 );
 			} else {
 				tex[textureIndexSide].glBind();
@@ -409,9 +409,9 @@ void GLShape::draw() {
 	}
 
 	if( isShade() ) {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	} else {
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 	}
 }
 
@@ -421,20 +421,20 @@ void GLShape::outline( float r, float g, float b ) {
 	glGetFloatv( GL_CURRENT_COLOR, colors );
 
 	useShadow = true;
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glPolygonMode( GL_FRONT, GL_LINE );
 	glLineWidth( 4 );
-	glEnable( GL_CULL_FACE );
+	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_BACK );
 	glColor3f( r, g, b );
 	glCallList( displayListStart );
 	glLineWidth( 1 );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
-	glDisable( GL_BLEND );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
 
 	glColor4fv( colors );

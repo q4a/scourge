@@ -957,10 +957,10 @@ void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oy
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	glColor4f( 1, 1, 1, 1 );
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 	getItemIconTexture( smallIcon ).glBind();
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( x, y );
@@ -971,7 +971,8 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glTexCoord2i( 1, 1 );
 	glVertex2i( x + w, y + h );
 	glEnd();
-	glDisable( GL_BLEND );
+
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 /// Returns the item's icon texture.
@@ -980,81 +981,6 @@ Texture Item::getItemIconTexture( bool smallIcon ) {
 	return ( !smallIcon && getShape()->getIcon().isSpecified() ? getShape()->getIcon() :
 	         session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
 }
-
-/// Creates an icon texture from a 3D view of the item.
-
-/* unused
-void Item::create3dTex( Scourge *scourge, float w, float h ) {
- if ( textureInMemory ) return;
-
- // clear the error flags
- Util::getOpenGLError();
-
- // Create texture and copy minimap date from backbuffer on it
- unsigned int textureSizeW = 32;
- unsigned int textureSizeH = 32;
- textureInMemory = ( unsigned char * ) malloc( textureSizeW * textureSizeH * 4 );
-
- glPushAttrib( GL_ALL_ATTRIB_BITS );
-
- glDisable( GL_CULL_FACE );
- glEnable( GL_DEPTH_TEST );
- glDepthMask( GL_TRUE );
- glEnable( GL_TEXTURE_2D );
- glDisable( GL_BLEND );
- glDisable( GL_SCISSOR_TEST );
- glDisable( GL_STENCIL_TEST );
-
- glGenTextures( 1, tex3d );
- glBindTexture( GL_TEXTURE_2D, tex3d[0] );
- glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );                                      // filtre appliqu� a la texture
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
- glTexImage2D( GL_TEXTURE_2D, 0, ( scourge->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory );
- fprintf( stderr, "OpenGl result for item(%s) glTexImage2D : %s\n", getName(), Util::getOpenGLError() );
-
- glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
- glClearColor( 0, 0, 0, 0 );
- glClearDepth( 1 );
-
- glScalef( ( this->getShape()->getWidth() ) / w,
-           ( this->getShape()->getHeight() ) / h,
-           1 );
- glPushMatrix();
- glLoadIdentity();
- this->getShape()->rotateIcon();
- glColor4f( 1, 1, 1, 1 );
- this->getShape()->draw();
- glPopMatrix();
- glScalef( 1, 1, 1 );
-
- //SDL_GL_SwapBuffers( );
-
-
- // Copy to a texture
- glPushMatrix();
- glLoadIdentity();
- glBindTexture( GL_TEXTURE_2D, tex3d[0] );
- glCopyTexSubImage2D(
-   GL_TEXTURE_2D,
-   0,      // MIPMAP level
-   0,      // x texture offset
-   0,      // y texture offset
-   0,              // x window coordinates
-   scourge->getScreenHeight() - textureSizeH,   // y window coordinates
-   textureSizeW,    // width
-   textureSizeH     // height
- );
- glPopMatrix();
- fprintf( stderr, "OpenGl result for item(%s) glCopyTexSubImage2D: %s\n", getName(), Util::getOpenGLError() );
-
- glDisable( GL_TEXTURE_2D );
- glPopAttrib();
-}
-*/
 
 void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	Uint32 t = SDL_GetTicks();
@@ -1075,13 +1001,10 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 			iconUnderEffectParticle[i]->life++;
 		}
 	}
-	glEnable( GL_TEXTURE_2D );
-	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ).glBind();
-	glEnable( GL_BLEND );
-	//glBlendFunc( GL_ONE, GL_ONE );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ).glBind();
+
 	for ( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		float a = ( 1 - iconUnderEffectParticle[i]->life / static_cast<float>( iconUnderEffectParticle[i]->maxLife ) ) / 8.0f;
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
@@ -1105,7 +1028,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		glEnd();
 		glPopMatrix();
 	}
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	glColor4f( 1, 1, 1, 1 );
 }
 
@@ -1132,13 +1055,10 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 			iconEffectParticle[i]->life++;
 		}
 	}
-	glEnable( GL_TEXTURE_2D );
-	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ).glBind();
-	glEnable( GL_BLEND );
-	//glBlendFunc( GL_ONE, GL_ONE );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ).glBind();
+
 	for ( int i = 0; i < particleCount; i++ ) {
 		float a = ( iconEffectParticle[i]->life / static_cast<float>( iconEffectParticle[i]->maxLife ) );
 		if ( a >= 0.5 ) a = 1 - a;
@@ -1165,7 +1085,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		glEnd();
 		glPopMatrix();
 	}
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	glColor4f( 1, 1, 1, 1 );
 }
 
@@ -1174,7 +1094,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h ) {
 	if ( isIdentified() ) {
 		/*
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
 		      Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
 		      Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
@@ -1185,7 +1105,7 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 		glVertex2d( x + w - 1, y + 1 );
 		glVertex2d( x + w - 1, y + h - 1 );
 		glEnd();
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		glColor4f( 1, 1, 1, 1 );
 		*/
 	} else {

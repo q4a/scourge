@@ -338,9 +338,8 @@ bool InfoGui::handleEvent( Widget *widget, SDL_Event *event ) {
 
 bool InfoGui::onDrawImage( Widget* w ) {
 	if ( w == image && ( item || spell || skill ) ) {
-		glEnable( GL_BLEND );
+		glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable( GL_TEXTURE_2D );
 		
 		if( hasItem() ) {
 			// glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() );
@@ -369,11 +368,11 @@ bool InfoGui::onDrawImage( Widget* w ) {
 			glTexCoord2i( 1, 1 );
 			glVertex2i( image->getWidth(), image->getHeight() );
 			glEnd();
+
 			glPopMatrix();
 		}
 
-		glDisable( GL_TEXTURE_2D );
-		glDisable( GL_BLEND );
+		glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 		return true;
 	}
 	return false;

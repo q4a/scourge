@@ -350,16 +350,16 @@ void Weather::drawWeather() {
 		}
 	}
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_MASK );
 
-	glEnable( GL_ALPHA_TEST );
+	glsEnable( GLS_ALPHA_TEST );
 	glAlphaFunc( GL_NOTEQUAL, 0 );
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	// Draw the fog
 	if ( shouldDrawWeather && fogIntensity ) {
@@ -382,7 +382,7 @@ void Weather::drawWeather() {
 		session->getSound()->setWeatherVolume( underRoof );
 	}
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	// Draw the snowflakes
 	if ( shouldDrawWeather && snowIntensity ) {
@@ -520,7 +520,7 @@ void Weather::drawWeather() {
 
 	}
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	// Draw the lightning
 	if ( lightningTime < 201 ) {
@@ -605,12 +605,12 @@ void Weather::drawWeather() {
 
 	lastWeatherUpdate = now;
 
-	glDisable( GL_ALPHA_TEST );
+	glsDisable( GLS_ALPHA_TEST );
 
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-	glDisable( GL_BLEND );
+	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_MASK );
+	glsDisable( GLS_BLEND );
 }
 
 /// Determines which type of weather the map will have.

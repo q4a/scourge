@@ -336,12 +336,12 @@ void MapEditor::drawView() {
 	
 	miniMap->drawMap();
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_SCISSOR_TEST );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_SCISSOR_TEST );
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_TEXTURE_2D );
 	glPushMatrix();
 	glColor3f( 1, 0, 0 );
 

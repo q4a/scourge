@@ -178,25 +178,25 @@ void MainMenu::drawView() {
 	if ( ( tickNow - lastMenuTick ) < 15 ) SDL_Delay( 15 - ( tickNow - lastMenuTick ) );
 	lastMenuTick = SDL_GetTicks();
 
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_TEST );
 
 	if ( !slideMode ) {
-		glDisable( GL_CULL_FACE );
+		glsDisable( GLS_CULL_FACE );
 		
 		drawStars();
 
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		drawBackdrop();
 
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 
 		// create a stencil for the water
 		glColorMask( 0, 0, 0, 0 );
 
 		if ( scourge->getUserConfiguration()->getStencilbuf() && scourge->getUserConfiguration()->getStencilBufInitialized() ) {
-			glEnable( GL_STENCIL_TEST );
+			glsEnable( GLS_STENCIL_TEST );
 			glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 			glStencilFunc( GL_ALWAYS, 1, 1 );
 		}
@@ -213,25 +213,25 @@ void MainMenu::drawView() {
 
 		drawClouds( false, true );
 
-		glDisable( GL_STENCIL_TEST );
+		glsDisable( GLS_STENCIL_TEST );
 
 		// draw the blended water
-		glEnable( GL_BLEND );
-		glDepthMask( GL_FALSE );
+		glsEnable( GLS_BLEND );
+		glsDisable( GLS_DEPTH_MASK );
 		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_COLOR );
 		drawWater();
-		glDepthMask( GL_TRUE );
-		glDisable( GL_BLEND );
+		glsEnable( GLS_DEPTH_MASK );
+		glsDisable( GLS_BLEND );
 
 
 		drawClouds( true, false );
 
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		drawScourge();
 
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 
 		drawMenu();
 	}
@@ -244,7 +244,7 @@ void MainMenu::drawView() {
 		//    float TILE_W = 510 / 2.0f;
 		float TILE_W = 256.0f;
 		float TILE_H = 256.0f;
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		Texture const& yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
 
 		glPushMatrix();
@@ -278,7 +278,7 @@ void MainMenu::drawView() {
 		glVertex2i( scourge->getSDLHandler()->getScreen()->w, scourge->getSDLHandler()->getScreen()->h / 2 );
 		glEnd();
 		glPopMatrix();
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 
 		for ( int i = 0; i < 2; i++ ) {
 			glLoadIdentity();
@@ -294,7 +294,7 @@ void MainMenu::drawView() {
 			int w = scourge->getSDLHandler()->getScreen()->w;
 			int h = ( scourge->getSDLHandler()->getScreen()->w / 2 ) - 1;
 
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			//glPushMatrix();
 			glLoadIdentity();
 			glTranslatef( 0, openingTop + 1, 0 );
@@ -310,7 +310,7 @@ void MainMenu::drawView() {
 			glVertex2i( w, h );
 			glEnd();
 			//glPopMatrix();
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 		} else {
 			glLoadIdentity();
 			glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
@@ -364,9 +364,9 @@ void MainMenu::drawAfter() {
 
 		/*
 		glLoadIdentity();
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 0, 0, 0, 0.75f );
 		glBegin( GL_QUADS );
 		glVertex3f( 0, 0, 0 );
@@ -374,8 +374,8 @@ void MainMenu::drawAfter() {
 		glVertex3f( scourge->getScreenWidth(), scourge->getScreenHeight(), 0 );
 		glVertex3f( scourge->getScreenWidth(), 0, 0 );
 		glEnd();
-		glEnable( GL_TEXTURE_2D );
-		glDisable( GL_BLEND );
+		glsEnable( GLS_TEXTURE_2D );
+		glsDisable( GLS_BLEND );
 		*/
 
 		glLoadIdentity();
@@ -428,9 +428,7 @@ void MainMenu::drawMenu() {
 		}
 	}
 
-	glDisable( GL_STENCIL_TEST );
-	glDisable( GL_SCISSOR_TEST );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_STENCIL_TEST | GLS_SCISSOR_TEST | GLS_CULL_FACE );
 
 	for ( int i = 0; i < static_cast<int>( textEffects.size() ); i++ ) {
 		if ( this->scourge->getSession()->getPreferences()->getFlaky() == false ) {
@@ -454,9 +452,8 @@ void MainMenu::drawMenu() {
 
 void MainMenu::drawLogo() {
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 	//Draw the Scourge logo
 	glPushMatrix();
@@ -541,14 +538,13 @@ void MainMenu::drawLogo() {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 /// Draws the stars.
 
 void MainMenu::drawStars() {
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	for ( int i = 0; i < starCount; i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
@@ -565,7 +561,7 @@ void MainMenu::drawStars() {
 		glEnd();
 		glPopMatrix();
 	}
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 }
 
@@ -573,9 +569,8 @@ void MainMenu::drawStars() {
 
 void MainMenu::drawScourge() {
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 	float w = 554; //scourge->getShapePalette()->scourge->w;
 	float h = 600; //scourge->getShapePalette()->scourge->h;
@@ -599,16 +594,14 @@ void MainMenu::drawScourge() {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 /// Draws the mountains in the back.
 
 void MainMenu::drawBackdrop() {
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 //  float w = scourge->getShapePalette()->scourgeBackdrop->w;
 	float w = scourge->getSDLHandler()->getScreen()->w;
@@ -634,8 +627,7 @@ void MainMenu::drawBackdrop() {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 
 }
 
@@ -645,8 +637,7 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	// draw clouds
 	int w, h;
 
-	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 
 	scourge->getShapePalette()->cloud.glBind();
@@ -693,8 +684,8 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 			}
 		}
 	}
-	glDisable( GL_BLEND );
-	glDisable( GL_TEXTURE_2D );
+
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 /// Draws the water.
@@ -707,9 +698,9 @@ void MainMenu::drawWater() {
 	h = WATER_HEIGHT_MAIN_MENU;
 	glLoadIdentity();
 	glTranslatef( 0, top + ( 600 - h ), 0 );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	//  glDisable( GL_LIGHTING );
-	//glEnable( GL_BLEND );
+	//glsEnable( GLS_BLEND );
 	//glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -722,7 +713,7 @@ void MainMenu::drawWater() {
 	glColor4f( 0, 0.1f, 0.4f, 1 );
 	glVertex2i( w, h );
 	glEnd();
-	//glDisable( GL_BLEND );
+	//glsDisable( GLS_BLEND );
 	glPopMatrix();
 }
 

@@ -69,9 +69,9 @@ void ContainerView::convertMousePos( int x, int y, int *invX, int *invY ) {
 bool ContainerView::onDraw( Widget* ) {
 	int w = container->getRpgItem()->getContainerWidth() * GRID_SIZE;
 	int h = container->getRpgItem()->getContainerHeight() * GRID_SIZE;
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glsEnable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+
 	container->getContainerTexture().glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -84,16 +84,15 @@ bool ContainerView::onDraw( Widget* ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
-	glDisable( GL_BLEND );
 	
 	glPushMatrix();
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
+
 	win->setTopWindowBorderColor();
 
-	glEnable( GL_BLEND );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 
 	int colCount = container->getRpgItem()->getContainerWidth();
@@ -125,14 +124,17 @@ bool ContainerView::onDraw( Widget* ) {
 		int py = getSelectedItem()->getBackpackY() * GRID_SIZE - OFFSET_Y;
 		int pw = getSelectedItem()->getBackpackWidth() * GRID_SIZE;
 		int ph = getSelectedItem()->getBackpackHeight() * GRID_SIZE;
+
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glColor4f( 0, 0, 0, 0.5f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( px, py );
 		glVertex2i( px + pw, py );
 		glVertex2i( px, py + ph );
 		glVertex2i( px + pw, py + ph );
 		glEnd();
+
 		win->setTopWindowBorderColor();
 		glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 	}
@@ -155,9 +157,10 @@ bool ContainerView::onDraw( Widget* ) {
 	glVertex2i( colCount * GRID_SIZE - 1, rowCount * GRID_SIZE - 1 );
 	glVertex2i( 0, rowCount * GRID_SIZE - 1 );
 	glEnd();
-	glDisable( GL_BLEND );
 
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+
+	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 
 	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
@@ -175,7 +178,8 @@ bool ContainerView::onDraw( Widget* ) {
 	}
 
 	glPopMatrix();
-	glDisable( GL_TEXTURE_2D );	
+
+	glsDisable( GLS_TEXTURE_2D );
 	return true;
 }
 

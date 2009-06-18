@@ -136,12 +136,12 @@ void RenderedLocation::shade() {
 	glPushMatrix();
 	setupTransforms();
 	//setupColor();
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//drawShape();
 	pos->shape->setShade( true );
 	pos->shape->draw();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 	glPopMatrix();
 	resetAfterDraw();	
 }
@@ -197,7 +197,7 @@ void RenderedLocation::setupTransforms() {
 		( ( GLShape* )pos->shape )->setLocked( map->isLocked( pos->x, pos->y, 0 ) );
 	}
 	
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 }
 
 void RenderedLocation::setupColor() {
@@ -347,8 +347,8 @@ void RenderedLocation::drawCreature() {
 	
 	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
 		glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
-		glEnable( GL_BLEND );
-		//glDepthMask( GL_FALSE );
+		glsEnable( GLS_BLEND );
+		//glsDisable( GLS_DEPTH_MASK );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	} else if ( pos->creature->getStateMod( StateMod::possessed ) ) {
 		glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
@@ -360,8 +360,8 @@ void RenderedLocation::drawCreature() {
 	pos->shape->draw();
 
 	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
-		glDisable( GL_BLEND );
-		//glDepthMask( GL_TRUE );
+		glsDisable( GLS_BLEND );
+		//glsEnable( GLS_DEPTH_MASK );
 	}
 }
 
@@ -417,10 +417,10 @@ void RenderedLocation::drawShape() {
 
 void RenderedLocation::drawMousePosition() {
 	if ( pos && pos->shape && !useShadow && ( pos->item || pos->creature || pos->shape->isInteractive() || pos->shape->isRoof() ) ) {
-		glDisable( GL_DEPTH_TEST );
-		glDepthMask( GL_FALSE );
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_DEPTH_TEST );
+		glsDisable( GLS_DEPTH_MASK );
+		glsDisable( GLS_CULL_FACE );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0, 0, 0 );
@@ -450,8 +450,8 @@ void RenderedLocation::drawMousePosition() {
 		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
 		glEnd();
-		glDepthMask( GL_TRUE );
-		glEnable( GL_DEPTH_TEST );
+		glsEnable( GLS_DEPTH_MASK );
+		glsEnable( GLS_DEPTH_TEST );
 	}
 }
 
@@ -472,7 +472,7 @@ void RenderedLocation::outlineVirtuals() {
 		map->getAdapter()->texPrint( 0, 0, "virtual" );
 		glPopMatrix();
 
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0.0f, 0.0f, z );
 		glVertex3f( 0.0f, dm, z );
@@ -500,7 +500,7 @@ void RenderedLocation::outlineVirtuals() {
 		glVertex3f( wm, dm, z );
 
 		glEnd();
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}	
 }
 

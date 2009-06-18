@@ -3536,14 +3536,10 @@ void Creature::drawMoviePortrait( int width, int height ) {
 		              getMonster()->getPortraitTexture(), 128, 128, width, height );
 	}
 
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
-	//    glTranslatef( x, y, 0 );
-
-	glEnable( GL_BLEND );
-// glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glsDisable( GLS_DEPTH_TEST | GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( Scourge::blendA, Scourge::blendB );
+
 	portrait.glBind();
 	glColor4f( 1, 1, 1, 1 );
 
@@ -3576,31 +3572,26 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_BLEND );
-	glEnable( GL_DEPTH_TEST );
-
-	//glDisable( GL_ALPHA_TEST );
-	//glDisable(GL_TEXTURE_2D);
-	//glEnable( GL_CULL_FACE );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_DEPTH_TEST );
 }
 
 /// Draws the creature's portrait, if it exists, else it draws a little 3D view of the creature.
 
 void Creature::drawPortrait( int width, int height, bool inFrame ) {
 	if ( getCharacter() || ( getMonster() && getMonster()->getPortraitTexture().isSpecified() ) ) {
-		//glEnable( GL_ALPHA_TEST );
-		//glAlphaFunc( GL_EQUAL, 0xff );
-		glEnable( GL_TEXTURE_2D );
+
+		glsEnable( GLS_TEXTURE_2D );
+
 		glPushMatrix();
-		//    glTranslatef( x, y, 0 );
+
 		if (getCharacter() != NULL) {
 			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ).glBind();
 		} else {
 			getMonster()->getPortraitTexture().glBind();
 		}
 
-		glColor4f( 1, 1, 1, 1 );
-
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
@@ -3612,21 +3603,22 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( width, height );
 		glEnd();
+
 		glPopMatrix();
 
-		//glDisable( GL_ALPHA_TEST );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
+
 	} else if ( getMonster() ) {
 		
-		glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT );
-		glEnable( GL_DEPTH_TEST );
+		glsEnable( GLS_DEPTH_TEST | GLS_TEXTURE_2D );
 
 		Texture* textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
 		Texture texture = textureGroup[ GLShape::FRONT_SIDE ];
 
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		glPushMatrix();
-		glEnable( GL_TEXTURE_2D );
-		glColor4f( 1, 1, 1, 1 );
+
 		texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -3639,8 +3631,10 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( 170, 150 );
 		glEnd();
-		glDisable( GL_TEXTURE_2D );
+
 		glPopMatrix();
+
+		glsDisable( GLS_TEXTURE_2D );
 
 		shape = getShape();
 		shape->setCurrentAnimation( MD2_STAND, true );
@@ -3649,16 +3643,17 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		((AnimatedShape*)shape)->setAlpha( 180.0f );
 
 		glPushMatrix();
-		glTranslatef( 135, 190, 100 );
-		glRotatef( 90, 1, 0, 0 );
-		glRotatef( 180, 0, 0, 1 );
+
+		glTranslatef( 135.0f, 190.0f, 100.0f );
+		glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+		glRotatef( 180.0f, 0.0f, 0.0f, 1.0f );
 		glScalef( 2.0f, 2.0f, 2.0f );
-		glColor4f( 1, 1, 1, 1 );
 		shape->draw();
+
 		glPopMatrix();
-		glScalef( 1, 1, 1 );
+
+		glScalef( 1.0f, 1.0f, 1.0f );
 		
-		glPopAttrib();
 	}
 }
 

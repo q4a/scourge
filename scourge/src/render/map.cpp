@@ -897,7 +897,7 @@ void Map::postDraw() {
 		}
 	}	
 
-	glDisable( GL_SCISSOR_TEST );
+	glsDisable( GLS_SCISSOR_TEST );
 
 	// cancel mouse-based map movement (middle button)
 	if ( mouseRot ) {
@@ -942,7 +942,7 @@ bool Map::isOnScreen( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
 
 	int res = gluProject( obj_x, obj_y, obj_z, modelview, projection, viewport, &win_x, &win_y, &win_z );
 
-	glDisable( GL_SCISSOR_TEST );
+	glsDisable( GLS_SCISSOR_TEST );
 	glPopMatrix();
 
 	if ( res ) {
@@ -976,7 +976,7 @@ void Map::getScreenXYAtMapXY( Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 
 
 	int res = gluProject( obj_x, obj_y, obj_z, modelview, projection, viewport, &win_x, &win_y, &win_z );
 
-	glDisable( GL_SCISSOR_TEST );
+	glsDisable( GLS_SCISSOR_TEST );
 	glPopMatrix();
 
 	if ( res ) {
@@ -1029,7 +1029,7 @@ void Map::initMapView( bool ignoreRot ) {
 
 	glTranslatef( viewX, viewY, 0 );
 	glScissor( viewX, adapter->getScreenHeight() - ( viewY + viewHeight ), viewWidth, viewHeight );
-	glEnable( GL_SCISSOR_TEST );
+	glsEnable( GLS_SCISSOR_TEST );
 	// adjust for screen size
 	float adjust = static_cast<float>( viewWidth ) / 800.0f;
 	glScalef( adjust, adjust, adjust );

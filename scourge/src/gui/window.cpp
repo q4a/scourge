@@ -382,7 +382,7 @@ void Window::drawWidget( Window* ) {
 
 		// slide-up scissor
 		//    glScissor(x, sdlHandler->getScreen()->h - (currentY + h), w, h);
-		//    glEnable( GL_SCISSOR_TEST );
+		//    glsEnable( GLS_SCISSOR_TEST );
 		scissorToWindow( false );
 	} else {
 		if ( openHeight < h ) {
@@ -401,7 +401,7 @@ void Window::drawWidget( Window* ) {
 	glLoadIdentity( );
 
 	if ( type != INVISIBLE_WINDOW ) {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		// tile the background
 
 		//  if(isLocked()) {
@@ -422,15 +422,14 @@ void Window::drawWidget( Window* ) {
 		if ( !isModal() ) {
 			if ( theme->getWindowTop() &&
 			        theme->getWindowTop()->color.a < 1.0f ) {
-				glEnable( GL_BLEND );
+				glsEnable( GLS_BLEND );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			}
 		}
 
 		drawBackground( topY, openHeight );
 
-		glDisable( GL_BLEND );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 
 		// draw drop-shadow
 		if ( !isLocked() ) drawDropShadow( topY, openHeight );
@@ -438,15 +437,17 @@ void Window::drawWidget( Window* ) {
 		// top bar
 		if ( title || ( closeButton && !isLocked() ) ) {
 			glColor4f( 0, 0, 0, 0.5f );
-			glEnable( GL_BLEND );
+			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, topY );
 			glVertex2i( getWidth(), topY );
 			glVertex2i( 0, topY + TITLE_HEIGHT );
 			glVertex2i( getWidth(), topY + TITLE_HEIGHT );
 			glEnd();
-			glDisable( GL_BLEND );
+
+			glsDisable( GLS_BLEND );
 		}
 
 		if ( type == BASIC_WINDOW &&
@@ -462,7 +463,7 @@ void Window::drawWidget( Window* ) {
 		// draw the close button
 		if ( closeButton && !isLocked() ) drawCloseButton( topY, openHeight );
 	}
-	glDisable( GL_SCISSOR_TEST );
+	glsDisable( GLS_SCISSOR_TEST );
 
 	// draw widgets
 	bool tmp = isOpening();
@@ -484,7 +485,7 @@ void Window::drawWidget( Window* ) {
 		}
 	}
 	if ( tmp ) {
-		glDisable( GL_SCISSOR_TEST );
+		glsDisable( GLS_SCISSOR_TEST );
 	}
 
 	for ( int i = 0; i < widgetCount; i++ ) {
@@ -493,10 +494,8 @@ void Window::drawWidget( Window* ) {
 		}
 	}
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glPopMatrix();
-
-	//glEnable( GL_DEPTH_TEST );
 }
 
 void Window::drawBackground( int topY, int openHeight ) {
@@ -527,17 +526,11 @@ void Window::drawBackground( int topY, int openHeight ) {
 		glVertex2i ( w, topY + openHeight );
 		glEnd ();
 	} else if ( type == BASIC_WINDOW ) {
-		/*
-		if(!isModal()) {
-		  glEnable( GL_BLEND );
-		  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		}
-		*/
 		if ( theme->getWindowBackground()
 		        && theme->getWindowBackground()->texture.isSpecified() ) {
 			theme->getWindowBackground()->texture.glBind();
 		} else {
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 		}
 
 		//applyBackgroundColor();
@@ -562,7 +555,7 @@ void Window::drawBackground( int topY, int openHeight ) {
 }
 
 void Window::drawDropShadow( int topY, int openHeight ) {
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	//  glBlendFunc( GL_SRC_ALPHA, GL_DST_COLOR );
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 	int n = 10;
@@ -578,7 +571,7 @@ void Window::drawDropShadow( int topY, int openHeight ) {
 	glVertex2i ( w + n, topY + openHeight );
 	glVertex2i ( w + n, topY + n );
 	glEnd();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 void Window::drawCloseButton( int topY, int openHeight ) {
@@ -680,9 +673,8 @@ void Window::drawLineBorder( int topY, int openHeight ) {
 void Window::drawBorder( int topY, int openHeight ) {
 	int n = 16; // FIXME: compute when loading textures
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 	glColor4f( theme->getWindowBorderTexture()->color.r,
 	           theme->getWindowBorderTexture()->color.g,
@@ -826,8 +818,8 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
 }
 
 
@@ -912,7 +904,7 @@ void Window::scissorToWindow( bool insideOnly ) {
 #ifdef DEBUG_SCISSOR
 	glPushMatrix();
 	glTranslatef( -x, -y, 0 );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	if ( insideOnly ) {
 		glColor4f( 1, 1, 1, 1 );
 	} else {
@@ -924,13 +916,13 @@ void Window::scissorToWindow( bool insideOnly ) {
 	glVertex2i( sx + sw, sy  );
 	glVertex2i( sx, sy  );
 	glEnd();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glPopMatrix();
 #endif
 
 	glScissor( sx, scourgeGui->getScreenHeight() - sy, sw, sh );
 
-	glEnable( GL_SCISSOR_TEST );
+	glsEnable( GLS_SCISSOR_TEST );
 }
 
 void Window::setVisible( bool b, bool animate ) {

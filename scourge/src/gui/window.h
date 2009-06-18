@@ -196,7 +196,7 @@ public:
 		return locked;
 	}
 
-	// crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
+	// crop view to window area. Don't forget to call glsDisable( GLS_SCISSOR_TEST ) after!
 	void scissorToWindow( bool insideOnly = true );
 
 	// widget managment functions

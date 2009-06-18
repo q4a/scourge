@@ -69,7 +69,7 @@ void MapRender::draw() {
 /// Draws the floor/ground of the map.
 
 void MapRender::renderFloor() {
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	//glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 	setupShapeColor();
 	if ( map->floorTex.isSpecified() ) map->floorTex.glBind();
@@ -111,11 +111,11 @@ void MapRender::drawProjectiles() {
 
 void MapRender::willDrawGrid() {
 
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_TEXTURE_2D );
 
-	glEnable( GL_BLEND );
-	glDepthMask( GL_FALSE );
+	glsEnable( GLS_BLEND );
+	glsDisable( GLS_DEPTH_MASK );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
 	// draw the starting position
@@ -174,7 +174,7 @@ void MapRender::willDrawGrid() {
 		}
 	}
 
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	int chunkX = ( map->cursorFlatMapX ) / MAP_UNIT;
 	int chunkY = ( map->cursorFlatMapY - 1 ) / MAP_UNIT;
@@ -283,12 +283,12 @@ void MapRender::willDrawGrid() {
 	glEnd();
 	glPopMatrix();
 
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
 
-	glDisable( GL_BLEND );
-	glDepthMask( GL_TRUE );
-	glEnable( GL_DEPTH_TEST );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_DEPTH_MASK );
+	glsEnable( GLS_DEPTH_TEST );
 }
 
 /// Draws the traps.
@@ -299,10 +299,10 @@ void MapRender::drawTraps() {
 
 		if ( trap->discovered || map->settings->isGridShowing() || DEBUG_TRAPS ) {
 
-			glEnable( GL_BLEND );
+			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glDisable( GL_CULL_FACE );
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_CULL_FACE );
+			glsDisable( GLS_TEXTURE_2D );
 
 			// get the color
 			// FIXME: colors should be ref-d from scourgeview.cpp colors
@@ -331,8 +331,8 @@ void MapRender::drawTraps() {
 			}
 			glEnd();
 			glLineWidth( 1 );
-			glEnable( GL_TEXTURE_2D );
-			//glDisable( GL_BLEND );
+			glsEnable( GLS_TEXTURE_2D );
+			//glsDisable( GLS_BLEND );
 		}
 	}
 }
@@ -360,8 +360,8 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 		ex = f - offset * 2;
 	}
 
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
 	setupShapeColor();
 	rug->texture.glBind();
 	glBegin( GL_TRIANGLE_STRIP );
@@ -385,7 +385,7 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 		glVertex2f( ex, ey );
 	}
 	glEnd();
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glPopMatrix();
 }
 
@@ -398,17 +398,17 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 
 void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
 
-	//glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-	glEnable( GL_BLEND );
+	//glsEnable( GLS_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_MASK );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
 	tex.glBind();
 
 	//glColor4f( 1, 0, 0, 1 );
-	//glDepthMask( GL_FALSE );
-	//glDisable( GL_DEPTH_TEST );
+	//glsDisable( GLS_DEPTH_MASK );
+	//glsDisable( GLS_DEPTH_TEST );
 
 	// which ground pos?
 	float sx = ( tx / static_cast<float>( OUTDOORS_STEP ) );
@@ -505,9 +505,9 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-	//glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-	glDisable( GL_BLEND );
+	//glsDisable( GLS_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_MASK );
+	glsDisable( GLS_BLEND );
 
 #ifdef DEBUG_HEIGHT_MAP
 	debugGround( sx, sy, ex, ey );
@@ -515,7 +515,7 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 }
 
 void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
 	float gx, gy;
 	for ( int xx = sx; xx <= ex; xx++ ) {
@@ -540,7 +540,7 @@ void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
 			glEnd();
 		}
 	}
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 }
 
 void MapRender::createGroundMap() {

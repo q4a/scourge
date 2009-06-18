@@ -59,19 +59,19 @@ void Canvas::drawWidget( Window* parent ) {
 		           parent->getScourgeGui()->getScreenHeight() -
 		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
-		glEnable( GL_SCISSOR_TEST );
+		glsEnable( GLS_SCISSOR_TEST );
 
 		glPushMatrix();
 		notify( Widget::Draw ); 
 		glPopMatrix();
 
-		glDisable( GL_SCISSOR_TEST );
+		glsDisable( GLS_SCISSOR_TEST );
 	}
 
 	// draw the border
 	if ( drawBorders ) {
-		glDisable( GL_TEXTURE_2D );
-		glDisable( GL_BLEND );
+		glsDisable( GLS_TEXTURE_2D );
+		glsDisable( GLS_BLEND );
 		if ( highlightBorders ) {
 			glLineWidth( 3.0f );
 		}
@@ -141,9 +141,9 @@ ImageCanvas::~ImageCanvas() {
 }
 
 void ImageCanvas::drawWidgetContents( Canvas *w ) {
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	glPushMatrix();
 	glBindTexture( GL_TEXTURE_2D, image );
@@ -161,7 +161,7 @@ void ImageCanvas::drawWidgetContents( Canvas *w ) {
 	glEnd();
 	glPopMatrix();
 
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
 }
 */

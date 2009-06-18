@@ -562,7 +562,7 @@ void Effect::drawRipple( bool proceed ) {
 	float r = rippleRadius * MUL;
 	float z = 0.3f * MUL;
 
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	glPushMatrix();
 	glColor4f( 0.3f, 0.25f, 0.17f, rippleAlpha );
 	if ( rippleTex.isSpecified() ) rippleTex.glBind();
@@ -717,8 +717,8 @@ void Effect::drawParticle( Particle *particle ) {
 	sh = ( fabs( particle->z - particle->startZ ) * MUL ) / 3.0f;
 	if ( h == 0 ) h = 0.25f * MUL;
 
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
 	for ( int i = 0; i < particle->trail; i++ ) {
 		glPushMatrix();
 

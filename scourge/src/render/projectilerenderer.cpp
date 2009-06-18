@@ -32,7 +32,7 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	glPushMatrix();
 	glTranslatef( last.x, last.y, last.z );
 	glColor4f( 1, 1, 1, 0.9f );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	( ( GLShape* )shape )->setCameraPos( map->getXPos(),
 	                                     map->getYPos(),
 	                                     map->getZPos(),
@@ -60,15 +60,15 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	}
 
 	if ( shape->isBlended() ) {
-		glEnable( GL_BLEND );
-		glDepthMask( GL_FALSE );
+		glsEnable( GLS_BLEND );
+		glsDisable( GLS_DEPTH_MASK );
 		shape->setupBlending();
 	}
 	shape->draw();
 	if ( shape->isBlended() ) {
 		shape->endBlending();
-		glDisable( GL_BLEND );
-		glDepthMask( GL_TRUE );
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_MASK );
 	}
 	glPopMatrix();
 }
@@ -98,9 +98,9 @@ void EffectProjectileRenderer::drawPath( Map *map, RenderedProjectile *proj, std
 		glPushMatrix();
 		glTranslatef( v.x, v.y, v.z );
 		glColor4f( 1, 1, 1, 0.9f );
-		glDisable( GL_CULL_FACE );
-		glEnable( GL_BLEND );
-		glDepthMask( GL_FALSE );
+		glsDisable( GLS_CULL_FACE );
+		glsEnable( GLS_BLEND );
+		glsDisable( GLS_DEPTH_MASK );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
 		float percent = static_cast<float>( i ) / static_cast<float>( maxSteps );
@@ -109,8 +109,8 @@ void EffectProjectileRenderer::drawPath( Map *map, RenderedProjectile *proj, std
 		}
 		effects[i]->draw( effectType, 0, percent );
 
-		glDisable( GL_BLEND );
-		glDepthMask( GL_TRUE );
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_MASK );
 		glPopMatrix();
 	}
 }

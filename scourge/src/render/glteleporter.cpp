@@ -61,7 +61,7 @@ void GLTeleporter::draw() {
 		star[i][1] = r + ( r * Constants::sinFromAngle( starAngle[i] ) );
 
 		// draw
-		glDisable( GL_CULL_FACE );
+		glsDisable( GLS_CULL_FACE );
 		glPushMatrix();
 
 
@@ -86,7 +86,7 @@ void GLTeleporter::draw() {
 		glEnd();
 
 		glPopMatrix();
-		glEnable( GL_CULL_FACE );
+		glsEnable( GLS_CULL_FACE );
 
 		// move
 		starAngle[i] += starSpeed[i];
@@ -101,7 +101,7 @@ void GLTeleporter::draw() {
 		}
 
 		// draw
-		glDisable( GL_CULL_FACE );
+		glsDisable( GLS_CULL_FACE );
 		glPushMatrix();
 
 		float w = ( static_cast<float>( width ) * MUL );
@@ -132,7 +132,7 @@ void GLTeleporter::draw() {
 		glEnd();
 
 		glPopMatrix();
-		glEnable( GL_CULL_FACE );
+		glsEnable( GLS_CULL_FACE );
 
 		// move
 		ring[i] += delta[i];

@@ -89,17 +89,17 @@ void MD2Shape::draw() {
 
 	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
 	if( isShade() ) {
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 	} else {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}
 
 	AnimateMD2Model();
 
 	if( isShade() ) {
-		if ( textureWasEnabled ) glEnable( GL_TEXTURE_2D );
+		if ( textureWasEnabled ) glsEnable( GLS_TEXTURE_2D );
 	} else {
-		if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+		if ( !textureWasEnabled ) glsDisable( GLS_TEXTURE_2D );
 	}
 
 	glPopMatrix();
@@ -108,11 +108,11 @@ void MD2Shape::draw() {
 void MD2Shape::outline( float r, float g, float b ) {
 	useShadow = true;
 	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glFrontFace( GL_CCW );
 	glPolygonMode( GL_BACK, GL_LINE );
 	glLineWidth( 4 );
-	glEnable( GL_CULL_FACE );
+	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_FRONT );
 	glColor3f( r, g, b );
 
@@ -127,9 +127,9 @@ void MD2Shape::outline( float r, float g, float b ) {
 	glPopMatrix();
 
 	glLineWidth( 1 );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_BACK, GL_FILL );
-	if ( texture ) glEnable( GL_TEXTURE_2D );
+	if ( texture ) glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }
