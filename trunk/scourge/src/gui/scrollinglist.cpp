@@ -130,14 +130,14 @@ void ScrollingList::drawWidget( Window* parent ) {
 		           parent->getScourgeGui()->getScreenHeight() -
 		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
-		glEnable( GL_SCISSOR_TEST );
+		glsEnable( GLS_SCISSOR_TEST );
 
 		// highlight the selected line
 		//if(selectedLine > -1) {
 		if ( selectedLine != NULL ) {
 			if ( theme->getSelectionBackground() ) {
 				if ( theme->getSelectionBackground()->color.a < 1 ) {
-					glEnable( GL_BLEND );
+					glsEnable( GLS_BLEND );
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				}
 				glColor4f( theme->getSelectionBackground()->color.r,
@@ -155,7 +155,7 @@ void ScrollingList::drawWidget( Window* parent ) {
 				glVertex2i( scrollerWidth, textPos + ( ( selectedLine[i] + 1 ) * lineHeight + 5 ) );
 				glEnd();
 			}
-			glDisable( GL_BLEND );
+			glsDisable( GLS_BLEND );
 		}
 
 		// draw the contents
@@ -218,11 +218,11 @@ void ScrollingList::drawWidget( Window* parent ) {
 			}
 		}
 
-		glDisable( GL_SCISSOR_TEST );
+		glsDisable( GLS_SCISSOR_TEST );
 	}
 
-	glDisable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( 0, 0, 0, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -231,14 +231,14 @@ void ScrollingList::drawWidget( Window* parent ) {
 	glVertex2i( 0, h );
 	glVertex2i( scrollerWidth, h );
 	glEnd();
-	glDisable( GL_BLEND );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
 
 	drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
 	            false, false, false, false, inside );
 
 	// draw the outline
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	if ( highlightBorders ) {
 		glLineWidth( 3.0f );
 	}
@@ -305,9 +305,8 @@ void ScrollingList::printLine( Window* parent, int x, int y, const std::string& 
 void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	int n = lineHeight - 3;
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 	glPushMatrix();
 	glTranslatef( x, y, 0 );
@@ -326,7 +325,7 @@ void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	glVertex2i( n, n );
 	glEnd();
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	if ( iconBorder ) {
 		GuiTheme *theme = parent->getTheme();
@@ -347,7 +346,7 @@ void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	}
 	glPopMatrix();
 
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 int ScrollingList::getLineAtPoint( int x, int y ) {

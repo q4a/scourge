@@ -663,8 +663,8 @@ void PcEditor::rollApperance() {
 bool PcEditor::onDrawPortrait( Widget* w ) {
 	if ( w == portrait ) {
 		glPushMatrix();
-		glEnable( GL_TEXTURE_2D );
-		glDisable( GL_CULL_FACE );
+		glsEnable( GLS_TEXTURE_2D );
+		glsDisable( GLS_CULL_FACE );
 		glColor4f( 1, 1, 1, 1 );
 		scourge->getShapePalette()->getPortraitTexture( getSex(), portraitIndex ).glBind();
 
@@ -678,7 +678,7 @@ bool PcEditor::onDrawPortrait( Widget* w ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
 		glEnd();
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glPopMatrix();
 		return true;
 	}  
@@ -720,21 +720,16 @@ bool PcEditor::onDrawModel( Widget* w ) {
 		glColor3f( 0, 0.1f, 0.25f );
 		glVertex2i( model->getWidth(), model->getHeight() );
 		glEnd();
-		glEnable( GL_DEPTH_TEST );
-		glDisable( GL_BLEND );
-		glDepthMask( GL_TRUE );
-		glEnable( GL_TEXTURE_2D );
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_TEXTURE_2D );
 		glTranslatef( 105, MODEL_SIZE + 10, 500 );
 		glRotatef( 90, 1, 0, 0 );
 		glRotatef( 180, 0, 0, 1 );
 		glScalef( 2, 2, 2 );
 		glColor4f( 1, 1, 1, 1 );
-		//glDisable( GL_SCISSOR_TEST );
+		//glsDisable( GLS_SCISSOR_TEST );
 		shape->draw();
-		glDisable( GL_TEXTURE_2D );
-		glDepthMask( GL_FALSE );
-		glDisable( GL_DEPTH_TEST );
-		glDisable( GL_BLEND );
+		glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_MASK | GLS_DEPTH_TEST | GLS_BLEND );
 		glPopMatrix();
 		return true;
 	}

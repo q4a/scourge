@@ -62,14 +62,14 @@ void ScourgeGui::removeWindow( Window* win ) {
 }
 
 void ScourgeGui::drawVisibleWindows() {
-	//  glDisable(GL_CULL_FACE);
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
+
 	for ( int i = 0; i < windowCount; i++ ) {
 		if ( window[i]->isVisible() ) {
 			window[i]->drawWidget( NULL );
 		}
 	}
-	glEnable( GL_DEPTH_TEST );
+
 }
 
 bool ScourgeGui::sendMousePosition( int x, int y ) {

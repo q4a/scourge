@@ -52,10 +52,10 @@ void Button::drawWidget( Window* parent ) {
 	drawButton( parent, 0, 0, x2 - x, y2 - y, toggle, selected, inverse, glowing, inside );
 
 	if ( texture.isSpecified() ) {
-		glDisable( GL_CULL_FACE );
-		glEnable( GL_BLEND );
+		glsDisable( GLS_CULL_FACE );
+		glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable( GL_TEXTURE_2D );
+
 		glPushMatrix();
 		texture.glBind();
 
@@ -77,8 +77,7 @@ void Button::drawWidget( Window* parent ) {
 		glEnd();
 		glPopMatrix();
 
-		glDisable( GL_TEXTURE_2D );
-		glDisable( GL_BLEND );
+		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	}
 
 	if ( strlen( label ) ) {

@@ -66,7 +66,7 @@ void Outdoor::drawMap() {
 	
 	if( stencilOn ) {
 		glClear( GL_STENCIL_BUFFER_BIT );
-		glEnable( GL_STENCIL_TEST );
+		glsEnable( GLS_STENCIL_TEST );
 		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 	}
@@ -78,7 +78,7 @@ void Outdoor::drawMap() {
 		drawObjects( &shades );	
 	}
 	
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	
 	// doors
 	for ( int i = 0; i < map->stencilCount; i++ ) map->stencil[i].draw();
@@ -110,12 +110,12 @@ void Outdoor::drawMap() {
  
 	drawEffects();
 	
-	glDisable( GL_BLEND );
-	glDepthMask( GL_TRUE );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_DEPTH_MASK );
+	glsEnable( GLS_TEXTURE_2D );
 		
 	if( !map->isCurrentlyUnderRoof && stencilOn ) {
-		glDisable( GL_DEPTH_TEST );
+		glsDisable( GLS_DEPTH_TEST );
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_ZERO, GL_ZERO, GL_ZERO );
 		glColor4f( 0.25f, 0.25f, 0.25f, 0.5f );
@@ -125,10 +125,10 @@ void Outdoor::drawMap() {
 			shades[i]->shade();
 		}		
 		
-		glDisable( GL_BLEND );
-		glDepthMask( GL_TRUE );
-		glDisable( GL_STENCIL_TEST );
-		glEnable( GL_DEPTH_TEST );
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_MASK );
+		glsDisable( GLS_STENCIL_TEST );
+		glsEnable( GLS_DEPTH_TEST );
 	}
 	
 	// draw water last so things like bridges show partially under-water
@@ -137,11 +137,11 @@ void Outdoor::drawMap() {
 	// draw the fog of war or shading
 #ifndef DEBUG_OUTDOOR
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
-		glEnable( GL_BLEND );
-		glDepthMask( GL_FALSE );		
+		glsEnable( GLS_BLEND );
+		glsDisable( GLS_DEPTH_MASK );		
 		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
-		glDisable( GL_BLEND );
-		glDepthMask( GL_TRUE );		
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_MASK );		
 	}
 #endif	
 }
@@ -192,8 +192,8 @@ void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 /// Draws creature effects and damage counters.
 
 void Outdoor::drawEffects() {
-	glEnable( GL_BLEND );
-	glDepthMask( GL_FALSE );	
+	glsEnable( GLS_BLEND );
+	glsDisable( GLS_DEPTH_MASK );	
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		// skip roof-top effects when roof is off
 		if( map->later[i].zpos < 10 * MUL || !map->isCurrentlyUnderRoof ) {
@@ -225,9 +225,9 @@ void Outdoor::drawWalls() {
 			if( alpha <= 0.5f ) alpha = 0.5f;
 			
 			if( alpha >= 1.0f ) {
-				glDisable( GL_BLEND );
+				glsDisable( GLS_BLEND );
 			} else {
-				glEnable( GL_BLEND );
+				glsEnable( GLS_BLEND );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				shape->setAlpha( alpha );
 				RenderedLocation::colorAlreadySet = true;
@@ -248,12 +248,12 @@ void Outdoor::drawRoofs() {
 			if( map->roof[i].getRoofAlpha() <= 0 ) continue;
 			
 			if( map->roof[i].getRoofAlpha() < 1 ) {
-				glEnable( GL_BLEND );
+				glsEnable( GLS_BLEND );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( map->roof[i].getRoofAlpha() );
 				RenderedLocation::colorAlreadySet = true;
 			} else {
-				glDisable( GL_BLEND );
+				glsDisable( GLS_BLEND );
 				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( 1.0f );
 			}
 			map->roof[i].draw();
@@ -330,8 +330,8 @@ bool Outdoor::drawHeightMapFloor() {
 
 	bool ret = true;
 
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D );
 
 	int startX = ( map->getX() / OUTDOORS_STEP );
 	int startY = ( map->getY() / OUTDOORS_STEP );
@@ -346,7 +346,7 @@ bool Outdoor::drawHeightMapFloor() {
 			//if( lightMap[chunkX][chunkY] ) {
 			map->groundPos[ xx ][ yy ].tex.glBind();
 			//} else {
-			//glDisable( GL_TEXTURE_2D );
+			//glsDisable( GLS_TEXTURE_2D );
 			//}
 
 			p[0] = &( map->groundPos[ xx ][ yy ] );
@@ -369,9 +369,9 @@ bool Outdoor::drawHeightMapFloor() {
 		}
 	}
 
-	//glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-	glEnable( GL_BLEND );
+	//glsEnable( GLS_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_MASK );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// draw outdoor textures
@@ -391,15 +391,15 @@ bool Outdoor::drawHeightMapFloor() {
 		}
 	}
 
-	//glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-	glDisable( GL_BLEND );
+	//glsDisable( GLS_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_MASK );
+	glsDisable( GLS_BLEND );
 
 	if ( DEBUG_MOUSE_POS || ( map->settings->isGridShowing() && map->gridEnabled ) ) {
-		//glDisable( GL_DEPTH_TEST );
-		glEnable( GL_BLEND );
+		//glsDisable( GLS_DEPTH_TEST );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 0.4f, 0.4f, 0.4f, 0.3f );
 		for ( int yy = startY; yy < endY; yy++ ) {
 			for ( int xx = startX; xx < endX; xx++ ) {
@@ -417,9 +417,9 @@ bool Outdoor::drawHeightMapFloor() {
 				glEnd();
 			}
 		}
-		glEnable( GL_TEXTURE_2D );
-		//glEnable( GL_DEPTH_TEST );
-		glDisable( GL_BLEND );
+		glsEnable( GLS_TEXTURE_2D );
+		//glsEnable( GLS_DEPTH_TEST );
+		glsDisable( GLS_BLEND );
 	}
 
 	return ret;
@@ -506,9 +506,9 @@ void Outdoor::drawWaterLevel() {
 		if ( waterTexY >= 1.0f ) waterTexY -= 1.0f;
 	}
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	waterTexture.glBind();
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 	float w = static_cast<float>( map->mapViewWidth ) * MUL;
@@ -527,7 +527,7 @@ void Outdoor::drawWaterLevel() {
 	glTexCoord2f( ( map->getX() + map->mapViewWidth ) / MUL * ratio + waterTexX, ( map->getY() + map->mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
 	glEnd();
-	//glDisable( GL_BLEND );
+	//glsDisable( GLS_BLEND );
 }
 
 /// Sets up the outdoor ground heightfield including texturing and lighting.

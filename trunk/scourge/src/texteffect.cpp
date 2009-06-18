@@ -46,8 +46,8 @@ TextEffect::~TextEffect() {
 }
 
 void TextEffect::draw() {
-	glDisable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_CULL_FACE );
 
 	if ( !textureInMemory ) {
 		buildTextures();
@@ -56,7 +56,7 @@ void TextEffect::draw() {
 	float zoom = MENU_ITEM_ZOOM;
 	zoom = ( active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//scourge->setBlendFunc();
 
@@ -72,7 +72,7 @@ void TextEffect::draw() {
 		glColor4f( 1, 1, 1, 1 );
 	}
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );
 //  glNormal3f( 0, 0, 1 );
 	glTexCoord2i( 0, 1 );
@@ -84,8 +84,8 @@ void TextEffect::draw() {
 	glTexCoord2i( 1, 0 );
 	glVertex2f( MENU_ITEM_WIDTH * zoom, MENU_ITEM_HEIGHT * zoom );
 	glEnd();
-	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
 	glPopMatrix();
 
 	drawEffect( 4.0f, 20 );
@@ -104,14 +104,14 @@ void TextEffect::draw() {
 		}
 	}
 
-	//glDepthMask( GL_TRUE );
-	glEnable( GL_DEPTH_TEST );
+	//glsEnable( GLS_DEPTH_MASK );
+	glsEnable( GLS_DEPTH_TEST );
 }
 
 void TextEffect::drawEffect( float divisor, int count ) {
 	float scaledDivisor = 256.0f * divisor;
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_DST_COLOR, GL_ONE );
 	glPushMatrix();
 	glBindTexture( GL_TEXTURE_2D, texture[0] );
@@ -145,7 +145,7 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			           static_cast<float>( particle[i].b ) / ( scaledDivisor ),
 			           a / divisor );
 
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 //   glNormal3f( 0, 0, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 1 );
@@ -157,11 +157,11 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			glTexCoord2i( 1, 0 );
 			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, MENU_ITEM_HEIGHT * particle[i].zoom );
 			glEnd();
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 		}
 	}
 	glPopMatrix();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 void TextEffect::buildTextures() {
@@ -174,7 +174,7 @@ void TextEffect::buildTextures() {
 	glLoadIdentity();
 	glColor4f( 0, 0, 0, 0 );
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( x, y - FONT_OFFSET );
 	glVertex2i( x + width, y - FONT_OFFSET );
@@ -214,7 +214,7 @@ void TextEffect::buildTextures() {
 	                  width, height, 0 );
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glPopMatrix();
 }
 

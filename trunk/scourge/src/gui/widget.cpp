@@ -137,15 +137,15 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	glTranslatef( x, y, 0 );
 
 	if ( isTranslucent() ) {
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		glEnable( GL_BLEND );
 	}
 
 	int n = 0;
 	Texture tex;
 	if ( toggle && selected ) {
 		if ( theme->getButtonSelectionBackground() ) {
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			tex = theme->getButtonSelectionBackground()->texture;
 			tex.glBind();
 			if ( isEnabled() ) {
@@ -164,7 +164,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			applySelectionColor();
 		}
 	} else if ( theme->getButtonBackground() ) {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		tex = theme->getButtonBackground()->texture;
 		tex.glBind();
 		if ( isEnabled() ) {
@@ -292,9 +292,9 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 	}
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	if ( isTranslucent() ) {
-		glDisable( GL_BLEND );
+		glsDisable( GLS_BLEND );
 	}
 
 	GLint t = SDL_GetTicks();
@@ -308,13 +308,13 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	// glowing red
 	if ( glowing ) {
 		if ( theme->getButtonHighlight() ) {
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			theme->getButtonHighlight()->texture.glBind();
 		}
 		// FIXME: use theme
 		glColor4f( 1, 0.15f, 0.15f, alpha );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( n, n );
@@ -325,22 +325,22 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
-		glDisable( GL_BLEND );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	}
 
 
 	if ( inside && isEnabled() ) {
 		if ( theme->getButtonHighlight() ) {
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			glColor4f( theme->getButtonHighlight()->color.r,
 			           theme->getButtonHighlight()->color.g,
 			           theme->getButtonHighlight()->color.b,
 			           alpha );
 			theme->getButtonHighlight()->texture.glBind();
 		}
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glEnable( GL_BLEND );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( n, n );
@@ -351,8 +351,8 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
-		glDisable( GL_BLEND );
-		glDisable( GL_TEXTURE_2D );
+
+		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	}
 
 	if ( theme->getButtonBorder() ) {
@@ -466,9 +466,8 @@ void Widget::drawTooltip( Window* parent ) {
 void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int height,
                                   int left, int right, int textureWidth, bool inverse ) {
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
 
 	texture.glBind();
 
@@ -540,7 +539,7 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 
 	glPopMatrix();
 
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 int Widget::getTextWidth( Window* parent, const char* s ) {

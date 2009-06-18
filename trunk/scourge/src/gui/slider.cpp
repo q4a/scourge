@@ -82,56 +82,9 @@ void Slider::drawWidget( Window* parent ) {
 	glVertex2i( x2 - x, 20 );
 	glEnd();
 
-
-
 	drawButton( parent, pos, 12, pos + BUTTON_SIZE / 2, 12 + BUTTON_SIZE,
 	            false, false, false, false, inside );
 
-	/*
-	glTranslatef( pos, 12, 0 );
-
-	applyBackgroundColor();
-	glBegin( GL_QUADS );
-	glVertex2d(0, 0);
-	glVertex2d(0, BUTTON_SIZE);
-	glVertex2d(BUTTON_SIZE / 2, BUTTON_SIZE);
-	glVertex2d(BUTTON_SIZE / 2, 0);
-	glEnd();
-
-	if(inside) {
-	  glEnable( GL_TEXTURE_2D );
-	  glColor4f( 0.75, 0.75, 1, alpha );
-	  glBindTexture( GL_TEXTURE_2D, highlight );
-	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	  glEnable( GL_BLEND );
-	  glDisable( GL_CULL_FACE );
-	  glBegin( GL_QUADS );
-	  glTexCoord2f( 0, 0 );glDisable( GL_CULL_FACE );
-	  glVertex2d(0, 0);
-	  glTexCoord2f( 0, 1 );
-	  glVertex2d(0, BUTTON_SIZE);
-	  glTexCoord2f( 1, 1 );
-	  glVertex2d(BUTTON_SIZE / 2, BUTTON_SIZE);
-	  glTexCoord2f( 1, 0 );
-	  glVertex2d(BUTTON_SIZE / 2, 0);
-	  glEnd();
-	  glDisable( GL_BLEND );
-	  glDisable( GL_TEXTURE_2D );
-	  glEnable( GL_CULL_FACE );
-	}
-	applyBorderColor();
-	glBegin( GL_LINES );
-	glVertex2d( 0, 0 );
-	glVertex2d( 0, BUTTON_SIZE );
-	glVertex2d( 0, BUTTON_SIZE );
-	glVertex2d( BUTTON_SIZE / 2, BUTTON_SIZE );
-	glVertex2d( BUTTON_SIZE / 2, BUTTON_SIZE );
-	glVertex2d( BUTTON_SIZE / 2, 0 );
-	glVertex2d( BUTTON_SIZE / 2, 0 );
-	glVertex2d( 0, 0 );
-	*/
-
-	glEnd();
 	glPopMatrix();
 }
 

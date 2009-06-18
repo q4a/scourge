@@ -75,9 +75,6 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	if ( n != -1 ) status = n;
 	if ( max != -1 ) maxStatus = max;
 
-	glPushAttrib( GL_ENABLE_BIT );
-
-	//if(updateScreen)
 	glLoadIdentity();
 
 	if ( clearScreen ) {
@@ -85,9 +82,8 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 		glClearColor( 0, 0, 0, 0 );
 	}
 
-	glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_CULL_FACE );
+	glsEnable( GLS_ALPHA_TEST );
 
 	int w = 10;
 //  int h = 22;
@@ -109,22 +105,22 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	int x = ( center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture.isSpecified() ? TEXTURE_BORDER : 0 ) );
 	//int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
 	int y = 0;
-	glTranslatef( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	
-	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 0, 0, 0 );
+	glsDisable( GLS_TEXTURE_2D );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
+
 	glBegin( GL_QUADS );
 	glVertex2i( -TEXTURE_BORDER + 20, 10 );
 	glVertex2i( width + TEXTURE_BORDER - 20, 10 );
 	glVertex2i( width + TEXTURE_BORDER - 20, 30 );
 	glVertex2i( -TEXTURE_BORDER + 20, 30 );
 	glEnd();
-	glEnable( GL_TEXTURE_2D );
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	Widget::drawBorderedTexture( texture,
 	                             -TEXTURE_BORDER,
 	                             0,
@@ -133,7 +129,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	                             TEXTURE_BORDER, TEXTURE_BORDER,
 	                             256 );
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	if ( message ) scourgeGui->texPrint( 0, 22, message );
 
 	for ( int i = 0; i < 3; i++ ) {
@@ -144,8 +140,8 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 		glTranslatef( x + 10, y + 32, 0 );
 		switch ( i ) {
 		case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
-		case 1: glColor4f( 1, 1, 1, 0.8f ); break;
-		case 2: glColor4f( 1, 0.4f, 0, 0.8f ); break;
+		case 1: glColor4f( 1.0f, 1.0f, 1.0f, 0.8f ); break;
+		case 2: glColor4f( 1.0f, 0.4f, 0.0f, 0.8f ); break;
 		}
 		Widget::drawBorderedTexture( highlight,
 		                             -HIGHLIGHT_BORDER, 0,
@@ -155,19 +151,15 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 		                             HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
 		glPopMatrix();
 	}
-	//glDisable( GL_TEXTURE_2D );
-	/* Draw it to the screen */
+
 	if ( updateScreen ) {
 		if ( drawScreen ) {
 			scourgeGui->processEventsAndRepaint();
 		} else SDL_GL_SwapBuffers( );
 	}
 	status++;
-	//sleep(1);
 
-	glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-
-	glPopAttrib();
+	glsDisable( GLS_ALPHA_TEST );
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 }
 

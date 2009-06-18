@@ -124,11 +124,11 @@ void GLCaveShape::draw() {
 	if ( h == 0 ) h = 0.25f * MUL;
 
 	if ( !useShadow ) {
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 	}
 	
 	// enabling face culling screws up caves
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 
 	switch ( mode ) {
 	case MODE_FLAT: drawFaces(); break;
@@ -141,7 +141,7 @@ void GLCaveShape::draw() {
 	}
 
 
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 }
 
@@ -155,8 +155,8 @@ void GLCaveShape::drawFaces() {
 	for ( int t = 0; t < 2; t++ ) {
 		if ( useShadow ) return;
 		if ( t == 1 ) {
-			glDisable( GL_TEXTURE_2D );
-			glDisable( GL_DEPTH_TEST );
+			glsDisable( GLS_TEXTURE_2D );
+			glsDisable( GLS_DEPTH_TEST );
 		}
 #endif
 		for ( int i = 0; i < ( int )face->size(); i++ ) {
@@ -197,8 +197,8 @@ void GLCaveShape::drawFaces() {
 		}
 #ifdef DEBUG_CAVE_SHAPE
 	}
-	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D );
+	glsEnable( GLS_DEPTH_TEST );
 #endif
 }
 
@@ -254,10 +254,10 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 
 	GLfloat n = 0.25f * MUL;
 
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_TEST );
 
 	// draw the lava
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	floorTextureGroup[ GLShape::FRONT_SIDE ].glBind();
 	glColor4f(  1, 1, 1, 0.75f );
@@ -272,10 +272,10 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	glTexCoord2f( 1 + lavaTexX, 1 + lavaTexY );
 	glVertex3f( w, d, n );
 	glEnd();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 
 	if ( stencilIndex > -1 ) {
-		glEnable( GL_ALPHA_TEST );
+		glsEnable( GLS_ALPHA_TEST );
 		glAlphaFunc( GL_GREATER, 0x00 );
 		glPushMatrix();
 		glTranslatef( ( w / 2 ), ( d / 2 ), 0 );
@@ -294,10 +294,10 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 		glVertex3f( w, d, n );
 		glEnd();
 		glPopMatrix();
-		//glDisable( GL_BLEND );
-		glDisable( GL_ALPHA_TEST );
+		//glsDisable( GLS_BLEND );
+		glsDisable( GLS_ALPHA_TEST );
 	}
-	glEnable( GL_DEPTH_TEST );
+	glsEnable( GLS_DEPTH_TEST );
 }
 
 /// Calculates the normals (for lighting) for all the polygons.

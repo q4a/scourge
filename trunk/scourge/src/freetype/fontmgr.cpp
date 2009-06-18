@@ -109,12 +109,8 @@ void FontMgr::textSizeUNICODE( Uint16 *p, SDL_Rect *r ) {
 
 
 void FontMgr::drawTextUTF8( char *text, int x, int y ) {
-	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT );
-
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND | GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-	glEnable( GL_TEXTURE_2D );
 	// NOTE: important: GL_REPLACE causes colors to not render correctly. The madness!
 	//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -123,25 +119,19 @@ void FontMgr::drawTextUTF8( char *text, int x, int y ) {
 	UTF8_to_UNICODE( unicodeBuffer, text, strlen( text ) );
 
 	drawUNICODE( unicodeBuffer, x, y );
-
-	glPopAttrib();
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 void FontMgr::drawText( char *text, int x, int y ) {
-	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT );
-
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND | GLS_TEXTURE_2D );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-	glEnable( GL_TEXTURE_2D );
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	unicodeBuffer[0] = UNICODE_BOM_NATIVE;
 	LATIN1_to_UNICODE( unicodeBuffer, text, strlen( text ) );
 
 	drawUNICODE( unicodeBuffer, x, y );
-
-	glPopAttrib();
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 void FontMgr::drawUNICODE( Uint16 *p, int x, int y ) {

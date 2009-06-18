@@ -1273,7 +1273,7 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape ) {
 		// in here to keep to the same standard as the rest of the model loaders.
 		if ( pObject->bHasTexture ) {
 			// Turn on texture mapping
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 
 			// Grab the texture index from the materialID index into our material list
 			int textureID = shape->getMaterialInfos( pModel )->at( pObject->materialID ).texureId;
@@ -1282,7 +1282,7 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape ) {
 			shape->getTextures()->at( textureID ).glBind();
 		} else {
 			// Turn off texture mapping
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 		}
 
 		// Start drawing our model triangles

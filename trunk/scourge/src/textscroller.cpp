@@ -140,13 +140,13 @@ void TextScroller::draw() {
 	glLoadIdentity();
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
 	glTranslatef( xp, ytop, 0 );
-	glDisable( GL_DEPTH_TEST );
+	glsDisable( GLS_DEPTH_TEST );
 
 	if ( visible ) {
 		int margin = 10;
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		// glColor4f( 1, 1, 1, 0.25f );
 		glColor4f( 0, 0, 0, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -177,12 +177,12 @@ void TextScroller::draw() {
 		glVertex2i( SCROLL_WIDTH + margin - 7, height - ypos );
 		glEnd();
 
-		glEnable( GL_TEXTURE_2D );
-		glDisable( GL_BLEND );
+		glsEnable( GLS_TEXTURE_2D );
+		glsDisable( GLS_BLEND );
 	}
 
 	glScissor( xp, scourge->getScreenHeight() - ( ytop + height ), SCROLL_WIDTH, height );
-	glEnable( GL_SCISSOR_TEST );
+	glsEnable( GLS_SCISSOR_TEST );
 
 	int currentOffset = ( visible ? 0 : offset );
 	int x = 0;
@@ -199,8 +199,8 @@ void TextScroller::draw() {
 		}
 		y -= LINE_HEIGHT;
 	}
-	glDisable( GL_SCISSOR_TEST );
-	glEnable( GL_DEPTH_TEST );
+	glsDisable( GLS_SCISSOR_TEST );
+	glsEnable( GLS_DEPTH_TEST );
 	glPopMatrix();
 	glColor4f( 1, 1, 1, 1 );
 }

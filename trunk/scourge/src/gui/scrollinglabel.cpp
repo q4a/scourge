@@ -106,7 +106,7 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 		           parent->getScourgeGui()->getScreenHeight() -
 		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
 		           w, getHeight() );
-		glEnable( GL_SCISSOR_TEST );
+		glsEnable( GLS_SCISSOR_TEST );
 
 		// draw the contents
 		if ( theme->getWindowText() ) {
@@ -150,11 +150,11 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 		}
 		//parent->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
 
-		glDisable( GL_SCISSOR_TEST );
+		glsDisable( GLS_SCISSOR_TEST );
 	}
 
-	glDisable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( 0, 0, 0, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -163,14 +163,14 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	glVertex2i( 0, h );
 	glVertex2i( scrollerWidth, h );
 	glEnd();
-	glDisable( GL_BLEND );
-	glEnable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
 
 	drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
 	            false, false, false, false, inside );
 
 	// draw the outline
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	if ( theme->getButtonBorder() ) {
 		glColor4f( theme->getButtonBorder()->color.r,
 		           theme->getButtonBorder()->color.g,

@@ -390,12 +390,12 @@ void C3DSShape::drawShape( bool isShadow, float alpha ) {
 		// Check to see if this object has a texture map, if so bind the texture to it.
 		if ( pObject->bHasTexture && !isShadow ) {
 			// Bind the texture map to the object by it's materialID
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			g_Texture[pObject->materialID].glBind();
 			//if (!isShadow) glColor3ub(255, 255, 255);
 		} else {
 			// Turn off texture mapping and turn on color
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 			// Reset the color to normal again
 			//if (!isShadow) glColor3ub(255, 255, 255);
 		}
@@ -499,9 +499,9 @@ void C3DSShape::draw() {
 
 	glPushMatrix();
 	if ( !useShadow && hasAlphaValues ) {
-		glEnable( GL_ALPHA_TEST );
+		glsEnable( GLS_ALPHA_TEST );
 		glAlphaFunc( GL_NOTEQUAL, 0 );
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	}
 	setOffset( offs_x * MUL - movex * divx,
@@ -520,8 +520,8 @@ void C3DSShape::draw() {
 	drawShape( useShadow, getAlpha() );
 
 	if ( !useShadow && hasAlphaValues ) {
-		glDisable( GL_BLEND );
-		glDisable( GL_ALPHA_TEST );
+		glsDisable( GLS_BLEND );
+		glsDisable( GLS_ALPHA_TEST );
 	}
 	glPopMatrix();
 
@@ -529,12 +529,12 @@ void C3DSShape::draw() {
 
 void C3DSShape::outline( float r, float g, float b ) {
 	useShadow = true;
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 	glPolygonMode( GL_FRONT, GL_LINE );
 	glLineWidth( 4 );
-	glEnable( GL_CULL_FACE );
+	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_BACK );
-	//glEnable( GL_DEPTH_TEST );
+	//glsEnable( GLS_DEPTH_TEST );
 	//GLint df;
 	//glGetIntegerv( GL_DEPTH_FUNC, &df );
 	//glDepthFunc( GL_GEQUAL );
@@ -543,9 +543,9 @@ void C3DSShape::outline( float r, float g, float b ) {
 	glLineWidth( 1 );
 	//glDepthFunc( df );
 	//glCullFace( GL_BACK );
-	glDisable( GL_CULL_FACE );
+	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }

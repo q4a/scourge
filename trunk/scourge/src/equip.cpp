@@ -352,17 +352,17 @@ void Equip::setCreature( Creature *creature ) {
 }
 
 bool Equip::onDraw( Widget* ) {
-	glEnable( GL_TEXTURE_2D );
-	// glEnable( GL_ALPHA_TEST );
-	// glAlphaFunc( GL_NOTEQUAL, 0 );
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	if ( mode == EQUIP_MODE ) {
 		backgroundTexture.glBind();
 	} else {
 		scrollTexture.glBind();
 	}
+
 	glColor4f( 1, 1, 1, 1 );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -373,8 +373,9 @@ bool Equip::onDraw( Widget* ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
-	glDisable( GL_BLEND );
-	// glDisable( GL_ALPHA_TEST );
+
+	glsDisable( GLS_BLEND );
+	// glsDisable( GLS_ALPHA_TEST );
 	if ( creature ) {
 		if ( mode == EQUIP_MODE ) {
 			drawEquipment();
@@ -395,14 +396,14 @@ void Equip::drawEquipment() {
 		Item *item = creature->getEquippedItemByIndex( i );
 		if ( item ) {
 			if ( rect && rect->w && rect->h ) {
-				glEnable( GL_TEXTURE_2D );
+				glsEnable( GLS_TEXTURE_2D );
 				item->renderIcon( pcUi->getScourge(), rect );
 			}
 		}
 	}
 	if ( currentHole > -1 ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( currentHole );
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		pcUi->getWindow()->setTopWindowBorderColor();
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( rect->x, rect->y + rect->h );
@@ -420,7 +421,7 @@ void Equip::drawSpells() {
 	int xx = startX;
 	int yy = 20;
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	for ( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
@@ -432,7 +433,7 @@ void Equip::drawSpells() {
 		int size = 15;
 		int width = w - 55;
 
-		glDisable( GL_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 0, 0, 0, 0.75 );
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 1 );
@@ -440,7 +441,7 @@ void Equip::drawSpells() {
 		glVertex2i( 0, size );
 		glVertex2i( size + width, size );
 		glEnd();
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 
 		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ).glBind();
 		glColor4f( 1, 1, 1, 1 );
@@ -484,20 +485,20 @@ void Equip::drawSpells() {
 			} else {
 				pcUi->getWindow()->setTopWindowBorderColor();
 			}
-			glDisable( GL_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D );
 			glBegin( GL_LINE_LOOP );
 			glVertex2i( xx, yy + SPELL_SIZE );
 			glVertex2i( xx, yy );
 			glVertex2i( xx + SPELL_SIZE, yy );
 			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 		}
 
 		xx = startX;
 		yy += SPELL_SIZE + 12;
 	}
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 /// Draws the list of special capabilities.
@@ -513,9 +514,9 @@ void Equip::drawCapabilities() {
 	int size = 15;
 	int width = w - 55;
 
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	glColor4f( 0, 0, 0, 0.75 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -525,7 +526,7 @@ void Equip::drawCapabilities() {
 	glVertex2i( size + width, size );
 	glEnd();
 
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 
 	glColor4f( 1, 0.35f, 0, 1 );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
@@ -564,6 +565,7 @@ void Equip::drawCapabilities() {
 
 			pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ].glBind();
 			glColor4f( 1, 1, 1, 1 );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
 			glVertex2i( xx, yy );
@@ -580,14 +582,17 @@ void Equip::drawCapabilities() {
 			} else {
 				pcUi->getWindow()->setTopWindowBorderColor();
 			}
-			glDisable( GL_TEXTURE_2D );
+
+			glsDisable( GLS_TEXTURE_2D );
+
 			glBegin( GL_LINE_LOOP );
 			glVertex2i( xx, yy + SPELL_SIZE );
 			glVertex2i( xx, yy );
 			glVertex2i( xx + SPELL_SIZE, yy );
 			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
-			glEnable( GL_TEXTURE_2D );
+
+			glsEnable( GLS_TEXTURE_2D );
 
 			xx += SPELL_SIZE + 2;
 			if ( xx > w - 50 ) {
@@ -600,7 +605,7 @@ void Equip::drawCapabilities() {
 		specialSkill = false;
 		canvas->setTooltip( "" );
 	}
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 /// Using a special capability from the list.

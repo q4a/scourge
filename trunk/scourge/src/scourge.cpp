@@ -303,7 +303,6 @@ void Scourge::start() {
 			bool failed = false;
 
 			if ( value == EDITOR ) {
-				glPushAttrib( GL_ENABLE_BIT );
 
 				// todo: make one simple call for all this
 				getSession()->getSquirrel()->startGame();
@@ -316,7 +315,6 @@ void Scourge::start() {
 				getSession()->getSquirrel()->endLevel( false );
 				getSession()->getSquirrel()->endGame();
 
-				glPopAttrib();
 			} else {
 
 #ifdef HAVE_SDL_NET
@@ -345,9 +343,9 @@ void Scourge::start() {
 
 				if ( !failed ) {
 					// do this to fix slowness in mainmenu the second time around
-					glPushAttrib( GL_ENABLE_BIT );
+//					glPushAttrib( GL_ENABLE_BIT );
 					startMission( !loaded );
-					glPopAttrib();
+//					glPopAttrib();
 				}
 			}
 		} else if ( value == OPTIONS ) {
@@ -2479,9 +2477,9 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						} else if ( !( Item* )storable ) {
 							w->setTooltip( NULL );
 						}
-						glEnable( GL_BLEND );
+						glsEnable( GLS_BLEND );
 						glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-						glEnable( GL_TEXTURE_2D );
+						glsEnable( GLS_TEXTURE_2D );
 
 						glPushMatrix();
 						//    glTranslatef( x, y, 0 );
@@ -2505,8 +2503,8 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						glEnd();
 						glPopMatrix();
 
-						glDisable( GL_BLEND );
-						glDisable( GL_TEXTURE_2D );
+						glsDisable( GLS_BLEND );
+						glsDisable( GLS_TEXTURE_2D );
 					}
 					return true;
 				}
@@ -2517,8 +2515,8 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 }
 
 void Scourge::drawItemIcon( Item *item, int n ) {
-	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	item->getItemIconTexture().glBind();
 
@@ -2538,8 +2536,8 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glVertex2i( n, n );
 	glEnd();
 
-	glDisable( GL_BLEND );
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_BLEND );
+	glsDisable( GLS_TEXTURE_2D );
 
 	glPopMatrix();
 }
@@ -2552,7 +2550,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 	// draw selection border
 	if ( p == getParty()->getPlayer() ) {
-		glEnable( GL_BLEND );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		float lineWidth = 5.0f;
 		glLineWidth( 5.0f );
@@ -2572,13 +2570,13 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 		glVertex2f( w->getWidth() - lineWidth / 2.0f, lineWidth / 2.0f );
 		glEnd();
 		glLineWidth( 1.0f );
-		glDisable( GL_BLEND );
+		glsDisable( GLS_BLEND );
 	}
 }
 
 void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int offs_y ) {
 	glPushMatrix();
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	if ( p == NULL ) {
 		getSession()->getShapePalette()->getNamedTexture( "nobody" ).glBind();
@@ -2598,7 +2596,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glTexCoord2i( 1, 1 );
 	glVertex2i( width - offs_x, height - offs_y );
 	glEnd();
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 
 	if ( p ) {
 
@@ -2637,7 +2635,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			shade = true;
 		}
 		if ( shade ) {
-			glEnable( GL_BLEND );
+			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
@@ -2645,7 +2643,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glVertex2i( 0, height );
 			glVertex2i( width, height );
 			glEnd();
-			glDisable( GL_BLEND );
+			glsDisable( GLS_BLEND );
 		}
 	}
 
@@ -2669,7 +2667,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glColor4f( 0, 0, 0, 0.4f );
 			glPushMatrix();
 			glTranslatef( 3, 14, 0 );
-			glEnable( GL_BLEND );
+			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
@@ -2677,14 +2675,14 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glVertex2i( 0, 13 );
 			glVertex2i( 40, 13 );
 			glEnd();
-			glDisable( GL_BLEND );
+			glsDisable( GLS_BLEND );
 			glPopMatrix();
 			glColor3f( 1, 0.75f, 0 );
 			getSDLHandler()->texPrint( 5, 24, message );
 		}
 
 		// show stat mods
-		glEnable( GL_TEXTURE_2D );
+		glsEnable( GLS_TEXTURE_2D );
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 		int xp = 0;
 		int yp = 1;
@@ -2719,7 +2717,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			}
 		}
 	}
-	glDisable( GL_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D );
 }
 
 bool Scourge::getStateModIcon( Texture* icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
@@ -3827,9 +3825,9 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 }
 
 void Scourge::renderHandAttackIcon( int x, int y, int size ) {
-	glEnable( GL_BLEND );
+	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable( GL_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	getShapePalette()->getHandsAttackIcon().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
@@ -3842,7 +3840,7 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( x + size, y + size );
 	glEnd();
-	glDisable( GL_BLEND );
+	glsDisable( GLS_BLEND );
 }
 
 bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull ) {
@@ -3853,7 +3851,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 	float max, min, cth, skill;
 	if ( ( item && item->getRpgItem()->isWeapon() ) || ( !item && handleNull ) ) {
 		if ( item ) {
-			glEnable( GL_TEXTURE_2D );
+			glsEnable( GLS_TEXTURE_2D );
 			item->renderIcon( this, x, y - 10, 32, 32, true );
 		} else {
 			renderHandAttackIcon( x, y - 10, 32 );
@@ -4396,7 +4394,7 @@ void Scourge::showLoadingScreen() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
   glClearColor( 0, 0, 0, 0 );
   
-  glDisable( GL_CULL_FACE );
+  glsDisable( GLS_CULL_FACE );
 
   // After that is done, just draw the slide.
   mainMenu->drawView();
