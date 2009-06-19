@@ -512,7 +512,6 @@ void Outdoor::drawWaterLevel() {
 	//float z = -4 * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.35f );
-// glNormal3f( 0.0f, 0.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( map->getX() / MUL * ratio + waterTexX, map->getY() / MUL * ratio + waterTexY );
 	glVertex3f( 0.0f, 0.0f, -0.3f );

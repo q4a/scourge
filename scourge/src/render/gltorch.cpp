@@ -189,7 +189,6 @@ void GLTorch::draw() {
 		w = size;
 		d = 0;
 		h = size;
-		//glNormal3f(0.0f, 1.0f, 0.0f);
 		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
 		glTexCoord2i( 1, 0 );
@@ -202,7 +201,6 @@ void GLTorch::draw() {
 		w = 0;
 		d = size;
 		h = size;
-		//glNormal3f(-1.0f, 0.0f, 0.0f);
 		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
 		glTexCoord2i( 0, 1 );
@@ -215,7 +213,6 @@ void GLTorch::draw() {
 		w = 0;
 		d = size;
 		h = size;
-		//glNormal3f(-1.0f, 0.0f, 0.0f);
 		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, 0 );
 		glTexCoord2i( 1, 0 );
@@ -228,7 +225,6 @@ void GLTorch::draw() {
 		w = size;
 		d = 0;
 		h = size;
-//    glNormal3f(0.0f, 1.0f, 0.0f);
 		glTexCoord2i( 1, 1 );
 		glVertex3f( w, 0, 0 );
 		glTexCoord2i( 0, 1 );

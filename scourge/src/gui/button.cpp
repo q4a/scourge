@@ -88,7 +88,7 @@ void Button::drawWidget( Window* parent ) {
 		case BOTTOM: ypos = ( y2 - y ) - 2; break;
 		default: ypos = ( y2 - y ) / 2 + 5;
 		}
-		glTranslated( 5, ypos, 0 );
+		glTranslatef( 5.0f, ypos, 0.0f );
 		if ( selected && theme->getButtonSelectionText() ) {
 			glColor4f( theme->getButtonSelectionText()->r,
 			           theme->getButtonSelectionText()->g,

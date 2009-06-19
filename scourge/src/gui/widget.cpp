@@ -79,7 +79,7 @@ Widget::~Widget() {
 }
 
 void Widget::draw( Window* parent ) {
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	if ( hasFocus() ) {
 		GuiTheme *theme = parent->getTheme();
 		if ( theme->getSelectedBorder() ) {
@@ -134,7 +134,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	GuiTheme *theme = parent->getTheme();
 
 	glPushMatrix();
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 
 	if ( isTranslucent() ) {
 		glsEnable( GLS_BLEND );
@@ -229,7 +229,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslated( 0, y2 - y - n, 0 );
+		glTranslatef( 0.0f, y2 - y - n, 0.0f );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_north.glBind();
 			else theme->getButtonSelectionBackground()->tex_south.glBind();
@@ -250,7 +250,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslated( 0, n, 0 );
+		glTranslatef( 0.0f, n, 0.0f );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_east.glBind();
 			else theme->getButtonSelectionBackground()->tex_west.glBind();
@@ -271,7 +271,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslated( x2 - x - n, n, 0 );
+		glTranslatef( x2 - x - n, n, 0.0f );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_west.glBind();
 			else theme->getButtonSelectionBackground()->tex_east.glBind();
@@ -472,7 +472,7 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 	texture.glBind();
 
 	glPushMatrix();
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	glBegin( GL_QUADS );
 	if ( inverse ) {
 		// quad A

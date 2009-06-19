@@ -61,7 +61,7 @@ void TextEffect::draw() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( x + 40, y + FONT_OFFSET, 0 );
+	glTranslatef( x + 40.0f, y + FONT_OFFSET, 0.0f );
 	glBindTexture( GL_TEXTURE_2D, texture[0] );
 
 	if ( active ) {
@@ -72,7 +72,6 @@ void TextEffect::draw() {
 	}
 
 	glBegin( GL_TRIANGLE_STRIP );
-//  glNormal3f( 0, 0, 1 );
 	glTexCoord2i( 0, 1 );
 	glVertex2f( 0.0f, 0.0f );
 	glTexCoord2i( 1, 1 );
@@ -144,7 +143,6 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			           a / divisor );
 
 			glsEnable( GLS_TEXTURE_2D );
-//   glNormal3f( 0, 0, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 1 );
 			glVertex2f( 0.0f, 0.0f );

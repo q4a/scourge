@@ -42,9 +42,9 @@ void Checkbox::drawWidget( Window* parent ) {
 
 	// Draw texts
 	glPushMatrix();
-	glTranslated( 15, 15, 0 );
+	glTranslatef( 15.0f, 15.0f, 0.0f );
 	staticLabel->drawWidget( parent );
-	glTranslated( x2 - 15 - CHECKBOX_SIZE, -15, 0 );
+	glTranslatef( x2 - 15.0f - CHECKBOX_SIZE, -15.0f, 0.0f );
 	checkButton->setInside( inside );
 	checkButton->drawWidget( parent );
 	glPopMatrix();

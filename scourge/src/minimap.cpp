@@ -112,10 +112,10 @@ void MiniMap::drawMap() {
 	// Set rotation/translation for all following drawing operations.
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0 );
-	glTranslated( mmcenter, mmcenter, 0 );
+	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0.0f );
+	glTranslatef( mmcenter, mmcenter, 0.0f );
 	glRotatef( map->getZRot(), 0.0f, 0.0f, 1.0f );
-	glTranslated( -mmcenter, -mmcenter, 0 );
+	glTranslatef( -mmcenter, -mmcenter, 0.0f );
 
 	// Create the stencil from the minimap mask texture.
 	if ( useStencil ) {
@@ -176,7 +176,7 @@ void MiniMap::drawMap() {
 		glEnd();
 		glPushMatrix();
 		glRotatef( -45.0f, 0.0f, 0.0f, 1.0f );
-		glTranslated( -7, 20, 0 );
+		glTranslatef( -7.0f, 20.0f, 0.0f );
 		glScalef( 1.5f, 1.5f, 1.5f );
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 		scourge->getSDLHandler()->texPrint( 0, 0, "N" );

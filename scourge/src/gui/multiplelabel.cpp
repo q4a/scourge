@@ -45,9 +45,9 @@ void MultipleLabel::drawWidget( Window* parent ) {
 
 	// Draw texts
 	glPushMatrix();
-	glTranslated( 15, 15, 0 );
+	glTranslatef( 15.0f, 15.0f, 0.0f );
 	staticLabel->drawWidget( parent );
-	glTranslated( x2 - dynWidth, 0, 0 );
+	glTranslatef( x2 - dynWidth, 0.0f, 0.0f );
 	dynamicLabel->drawWidget( parent );
 	glPopMatrix();
 }

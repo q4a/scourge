@@ -3558,7 +3558,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glPushMatrix();
-	glTranslated( -10, -20, 0 );
+	glTranslatef( -10.0f, -20.0f, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );

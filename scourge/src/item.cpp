@@ -895,7 +895,7 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 	// getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
 	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );
 	glPushMatrix();
-	glTranslated( x + ox, y + oy, 0 );
+	glTranslatef( x + ox, y + oy, 0.0f );
 // if ( !smallIcon ) {
 	if ( w > 0 && h > 0 ) glScalef( rw / static_cast<float>( w ), rh / static_cast<float>( h ), 1 );
 	if ( isMagicItem() ) {
@@ -1012,7 +1012,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
 		           0.5f );
 		glPushMatrix();
-		glTranslated( x, y, 0 );
+		glTranslatef( x, y, 0.0f );
 		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2.0f,
 		              iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2.0f, 0.0f );
 		//glRotatef( iconUnderEffectParticle[i]->life, 0.0f, 0.0f, 1.0f );

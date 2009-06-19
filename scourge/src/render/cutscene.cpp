@@ -359,7 +359,7 @@ void Cutscene::drawLetterbox() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( 0, 0, 0 );
+	glTranslatef( 0.0f, 0.0f, 0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( w, 0 );
@@ -370,7 +370,7 @@ void Cutscene::drawLetterbox() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
+	glTranslatef( 0.0f, session->getGameAdapter()->getScreenHeight() - h, 0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( w, 0 );

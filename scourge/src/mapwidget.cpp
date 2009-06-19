@@ -143,7 +143,7 @@ bool  MapWidget::onDraw( Widget* ) {
 			glPushMatrix();
 			int xp = xx * BITMAP_SIZE - tx;
 			int yp = yy * BITMAP_SIZE - ty;
-			glTranslated( xp, yp, 0 );
+			glTranslatef( xp, yp, 0.0f );
 
 			if ( ( ( gx + xx ) > -1 ) && ( ( gx + xx ) < BITMAPS_PER_ROW ) && ( ( gy + yy ) > -1 ) && ( ( gy + yy ) < BITMAPS_PER_COL ) ) {
 				bitmapX = gx + xx;
@@ -175,7 +175,7 @@ bool  MapWidget::onDraw( Widget* ) {
 		glsEnable( GLS_BLEND );
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPushMatrix();
-		glTranslated( -tx, -ty, 0 );
+		glTranslatef( -tx, -ty, 0.0f );
 		
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.3f );
 		for( int lx = 0; lx < canvas->getWidth() + BITMAP_SIZE; lx += REGION_SIZE ) {
@@ -221,9 +221,9 @@ bool  MapWidget::onDraw( Widget* ) {
 	glsDisable( GLS_BLEND );
 
 	glPushMatrix();
-	glTranslated( markedX - ( gx * BITMAP_SIZE + tx ),
+	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ),
 	              markedY - ( gy * BITMAP_SIZE + ty ),
-	              0 );
+	              0.0f );
 	glsDisable( GLS_TEXTURE_2D );
 
 	glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );

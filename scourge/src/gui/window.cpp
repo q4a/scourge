@@ -416,7 +416,7 @@ void Window::drawWidget( Window* ) {
 			glColor3f( 1.0f, 0.6f, 0.3f );
 		}
 
-		glTranslated( x, y, z );
+		glTranslatef( x, y, z );
 
 		// HACK: blend window if top color's a < 1.0f
 		if ( !isModal() ) {
@@ -477,8 +477,8 @@ void Window::drawWidget( Window* ) {
 			glLoadIdentity();
 
 			// if this is modified, also change handleWindowEvent
-			//glTranslated(x, y + topY + TOP_HEIGHT, z + 5);
-			glTranslated( x, y + topY + gutter, z + 5 );
+			//glTranslatef(x, y + topY + TOP_HEIGHT, z + 5.0f);
+			glTranslatef( x, y + topY + gutter, z + 5.0f );
 
 			widget[i]->draw( this );
 			glPopMatrix();
@@ -591,14 +591,14 @@ void Window::drawCloseButton( int topY, int openHeight ) {
 
 	glPushMatrix();
 	//glLoadIdentity();
-	glTranslated( w - 10 - ( closeButton->getWidth() ), topY + 8, z + 5 );
+	glTranslatef( w - 10.0f - ( closeButton->getWidth() ), topY + 8.0f, z + 5.0f );
 	closeButton->draw( this );
 	glPopMatrix();
 }
 
 void Window::drawTitle( int topY, int openHeight ) {
 	glPushMatrix();
-	glTranslated( 0, 0, 5 );
+	glTranslatef( 0.0f, 0.0f, 5.0f );
 	if ( theme->getWindowTitleText() ) {
 		glColor4f( theme->getWindowTitleText()->r,
 		           theme->getWindowTitleText()->g,
@@ -682,9 +682,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 	           theme->getWindowBorderTexture()->color.a );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_nw.glBind();
-	glTranslated( theme->getWindowBorderTexture()->width,
+	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -699,9 +699,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_ne.glBind();
-	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -716,9 +716,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_se.glBind();
-	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -733,9 +733,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_sw.glBind();
-	glTranslated( theme->getWindowBorderTexture()->width,
+	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -751,9 +751,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 	int h = openHeight - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_west.glBind();
-	glTranslated( theme->getWindowBorderTexture()->width,
+	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -768,9 +768,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_east.glBind();
-	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -786,9 +786,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 	int w = getWidth() - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_north.glBind();
-	glTranslated( n + theme->getWindowBorderTexture()->width,
+	glTranslatef( n + theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -803,9 +803,9 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_south.glBind();
-	glTranslated( n + theme->getWindowBorderTexture()->width,
+	glTranslatef( n + theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
-	              0 );
+	              0.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -903,7 +903,7 @@ void Window::scissorToWindow( bool insideOnly ) {
 
 #ifdef DEBUG_SCISSOR
 	glPushMatrix();
-	glTranslated( -x, -y, 0 );
+	glTranslatef( -x, -y, 0.0f );
 	glsDisable( GLS_TEXTURE_2D );
 	if ( insideOnly ) {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );

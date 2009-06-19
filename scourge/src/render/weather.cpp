@@ -360,7 +360,7 @@ void Weather::drawWeather() {
 	if ( shouldDrawWeather && fogIntensity ) {
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( 0, 0, 0 );
+		glTranslatef( 0.0f, 0.0f, 0.0f );
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.4f * fogIntensity );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -531,7 +531,7 @@ void Weather::drawWeather() {
 
 			glPushMatrix();
 			glLoadIdentity();
-			glTranslated( 0, 0, 0 );
+			glTranslatef( 0.0f, 0.0f, 0.0f );
 			glColor4f( 1.0f, 1.0f, 1.0f, brightness );
 
 			glBegin( GL_TRIANGLE_STRIP );
@@ -584,7 +584,7 @@ void Weather::drawWeather() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( 0, 0, 0 );
+		glTranslatef( 0.0f, 0.0f, 0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 0 );

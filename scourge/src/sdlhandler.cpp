@@ -705,10 +705,10 @@ void SDLHandler::drawCursor() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
+	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0.0f );
 	gameAdapter->getCursorTexture( cursorMode ).glBind();
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-//  glNormal3f( 0, 0, 1 );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -728,7 +728,7 @@ void SDLHandler::drawCursor() {
 	// cursor focus
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( mouseX, mouseY, 0 );
+	glTranslatef( mouseX, mouseY, 0.0f );
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
@@ -1084,7 +1084,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	}
 
 	glPushMatrix();
-	glTranslated( xpos2, ypos2 - ( y + h - 20 ), zpos2 );
+	glTranslatef( xpos2, ypos2 - ( y + h - 20.0f ), zpos2 );
 	glRotatef( zrot, 0.0f, 0.0f, 1.0f );
 	glRotatef( yrot, 1.0f, 0.0f, 0.0f );
 
