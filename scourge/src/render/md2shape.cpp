@@ -107,7 +107,7 @@ void MD2Shape::draw() {
 
 void MD2Shape::outline( float r, float g, float b ) {
 	useShadow = true;
-	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
+	GLboolean texture = glsGetStates() & GLS_TEXTURE_2D;
 	glsDisable( GLS_TEXTURE_2D );
 	glFrontFace( GL_CCW );
 	glPolygonMode( GL_BACK, GL_LINE );

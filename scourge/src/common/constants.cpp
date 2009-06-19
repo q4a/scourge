@@ -838,6 +838,10 @@ void glsDisable( Uint32 stateBits ) {
 	glStateBits = combinedBits;
 }
 
+Uint32 glsGetStates() {
+	return glStateBits;
+}
+
 string GetDataPath( const string& file ) {
 	return rootDir + file;
 }

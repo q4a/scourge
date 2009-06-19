@@ -2477,9 +2477,8 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						} else if ( !( Item* )storable ) {
 							w->setTooltip( NULL );
 						}
-						glsEnable( GLS_BLEND );
+						glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 						glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-						glsEnable( GLS_TEXTURE_2D );
 
 						glPushMatrix();
 						//    glTranslatef( x, y, 0 );
@@ -2503,8 +2502,7 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						glEnd();
 						glPopMatrix();
 
-						glsDisable( GLS_BLEND );
-						glsDisable( GLS_TEXTURE_2D );
+						glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 					}
 					return true;
 				}
@@ -2515,8 +2513,7 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 }
 
 void Scourge::drawItemIcon( Item *item, int n ) {
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	item->getItemIconTexture().glBind();
 
@@ -2536,8 +2533,7 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glVertex2i( n, n );
 	glEnd();
 
-	glsDisable( GLS_BLEND );
-	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 
 	glPopMatrix();
 }
@@ -3825,9 +3821,8 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 }
 
 void Scourge::renderHandAttackIcon( int x, int y, int size ) {
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	getShapePalette()->getHandsAttackIcon().glBind();
 	glBegin( GL_TRIANGLE_STRIP );

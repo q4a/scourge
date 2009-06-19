@@ -177,11 +177,9 @@ void RoomRenderHelper::draw( int x, int y, int w, int h ) {
 
 		//glTranslatef(viewX, viewY, 0);
 
-		glsDisable( GLS_CULL_FACE );
+		glsDisable( GLS_CULL_FACE| GLS_DEPTH_TEST | GLS_DEPTH_MASK );
+
 		glsEnable( GLS_BLEND );
-		glsDisable( GLS_DEPTH_TEST );
-		glsDisable( GLS_DEPTH_MASK );
-		//glsDisable( GLS_TEXTURE_2D );
 		glBlendFunc( GL_DST_COLOR, GL_ZERO );
 		//scourge->setBlendFunc();
 
@@ -201,8 +199,7 @@ void RoomRenderHelper::draw( int x, int y, int w, int h ) {
 		glEnd();
 
 		//glsEnable( GLS_TEXTURE_2D );
-		glsEnable( GLS_DEPTH_TEST );
-		glsEnable( GLS_DEPTH_MASK );
+		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 		glPopMatrix();
 	}
 }

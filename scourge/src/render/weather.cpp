@@ -350,16 +350,11 @@ void Weather::drawWeather() {
 		}
 	}
 
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_DEPTH_MASK );
+	glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 
-	glsEnable( GLS_ALPHA_TEST );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
-
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_TEXTURE_2D );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
 
 	// Draw the fog
 	if ( shouldDrawWeather && fogIntensity ) {
@@ -605,12 +600,8 @@ void Weather::drawWeather() {
 
 	lastWeatherUpdate = now;
 
-	glsDisable( GLS_ALPHA_TEST );
-
-	glsEnable( GLS_CULL_FACE );
-	glsEnable( GLS_DEPTH_TEST );
-	glsEnable( GLS_DEPTH_MASK );
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 }
 
 /// Determines which type of weather the map will have.

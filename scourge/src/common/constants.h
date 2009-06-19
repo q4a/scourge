@@ -859,6 +859,7 @@ private:
 
 void glsEnable( Uint32 stateBits );
 void glsDisable( Uint32 statebits );
+Uint32 glsGetStates();
 
 std::string GetDataPath( const std::string& file );
 

@@ -253,18 +253,11 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	// ***************************
 	// DRAW IT!
 
-	glsDisable( GLS_TEXTURE_2D );
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST );
 
-	//glBindTexture( GL_TEXTURE_2D, texture );
-
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, EA / 255.0f );
-	//glBlendFunc(GL_DST_COLOR, GL_ZERO);
-	//glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
-
 
 	glPushMatrix();
 	glLoadIdentity();
@@ -332,8 +325,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 	// draw the dark (unvisited) fog
 	glLoadIdentity();
-	glsDisable( GLS_BLEND );
-	//glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	glColor3f( DARK_R, DARK_G, DARK_B );
 	for ( int i = 0; i < pCount; i++ ) {
 		GLfloat x = p[i][0];
@@ -343,8 +335,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 		if ( e[i] ) {
 
-			glsEnable( GLS_TEXTURE_2D );
-			glsEnable( GLS_BLEND );
+			glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 			glBlendFunc( GL_DST_COLOR, GL_ZERO );
 			glColor4f( 1, 1, 1, 0.5f );
 			glBindTexture( GL_TEXTURE_2D, shade_tex );
@@ -362,8 +353,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			glVertex2f( x + w + ( w / 2 ), y + h + ( h / 2 ) );
 			//glVertex2f( x + w, y + h );
 			glEnd();
-			glsDisable( GLS_BLEND );
-			glsDisable( GLS_TEXTURE_2D );
+			glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 			glColor3f( DARK_R, DARK_G, DARK_B );
 		} else {
 			glBegin( GL_TRIANGLE_STRIP );
@@ -378,7 +368,6 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 #ifdef DEBUG_FOG
 	glLoadIdentity();
-	glsDisable( GLS_BLEND );
 	glColor3f( 1, 1, 1 );
 	for ( int i = 0; i < pCount; i++ ) {
 		glBegin( GL_LINE_LOOP );
@@ -391,9 +380,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	glsEnable( GLS_BLEND );
 #endif
 
-	glsEnable( GLS_BLEND );
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_DEPTH_TEST );
 }
 
 // FIXME: highest static point can be stored in the fog[][] struct

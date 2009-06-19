@@ -111,11 +111,9 @@ void MapRender::drawProjectiles() {
 
 void MapRender::willDrawGrid() {
 
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_MASK | GLS_TEXTURE_2D);
 
 	glsEnable( GLS_BLEND );
-	glsDisable( GLS_DEPTH_MASK );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
 	// draw the starting position
@@ -176,6 +174,7 @@ void MapRender::willDrawGrid() {
 
 	glsDisable( GLS_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	int chunkX = ( map->cursorFlatMapX ) / MAP_UNIT;
 	int chunkY = ( map->cursorFlatMapY - 1 ) / MAP_UNIT;
 	float m = 0.5f * MUL;
@@ -283,12 +282,8 @@ void MapRender::willDrawGrid() {
 	glEnd();
 	glPopMatrix();
 
-	glsEnable( GLS_CULL_FACE );
-	glsEnable( GLS_TEXTURE_2D );
-
 	glsDisable( GLS_BLEND );
-	glsEnable( GLS_DEPTH_MASK );
-	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_TEXTURE_2D);
 }
 
 /// Draws the traps.
@@ -299,10 +294,9 @@ void MapRender::drawTraps() {
 
 		if ( trap->discovered || map->settings->isGridShowing() || DEBUG_TRAPS ) {
 
+			glsDisable( GLS_CULL_FACE | GLS_TEXTURE_2D );
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glsDisable( GLS_CULL_FACE );
-			glsDisable( GLS_TEXTURE_2D );
 
 			// get the color
 			// FIXME: colors should be ref-d from scourgeview.cpp colors
@@ -398,17 +392,10 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 
 void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
 
-	//glsEnable( GLS_DEPTH_TEST );
-	glsDisable( GLS_DEPTH_MASK );
-	glsEnable( GLS_BLEND );
+	glsDisable( GLS_DEPTH_MASK | GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_CULL_FACE );
-	glsEnable( GLS_TEXTURE_2D );
 	tex.glBind();
-
-	//glColor4f( 1, 0, 0, 1 );
-	//glsDisable( GLS_DEPTH_MASK );
-	//glsDisable( GLS_DEPTH_TEST );
 
 	// which ground pos?
 	float sx = ( tx / static_cast<float>( OUTDOORS_STEP ) );
@@ -507,7 +494,7 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 
 	//glsDisable( GLS_DEPTH_TEST );
 	glsEnable( GLS_DEPTH_MASK );
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 
 #ifdef DEBUG_HEIGHT_MAP
 	debugGround( sx, sy, ex, ey );

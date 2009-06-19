@@ -197,8 +197,7 @@ void GLCaveShape::drawFaces() {
 		}
 #ifdef DEBUG_CAVE_SHAPE
 	}
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_TEST );
 #endif
 }
 

@@ -351,11 +351,8 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 //		cerr << "\tedge 4" << endl;
 	}		
 		
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_BLEND | GLS_DEPTH_TEST | GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
-	glsDisable( GLS_BLEND );
-	
 	
 	glLoadIdentity();
 	
@@ -380,12 +377,11 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		glPopMatrix();
 	}
 	
-	glsEnable( GLS_DEPTH_MASK );
+	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	glsDisable( GLS_BLEND );
 	
 	// Copy to a texture
 	glLoadIdentity();
-	glsEnable( GLS_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
@@ -408,8 +404,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	glDeleteTextures( 1, &background );
 
 	glsDisable( GLS_BLEND );
-	glsEnable( GLS_CULL_FACE );
-	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;
@@ -470,8 +465,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
 	//GLuint tex[1];
 
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_DEPTH_TEST );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	glsEnable( GLS_TEXTURE_2D );
 
 	glGenTextures( 1, &_id );
@@ -538,8 +532,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glDeleteTextures( 1, &background );
 
 	glsDisable( GLS_BLEND );
-	glsEnable( GLS_CULL_FACE );
-	glsEnable( GLS_DEPTH_TEST );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 
 	assert( _id != INVALID && _id != INPROGRESS );  
 	_isComplete = true;

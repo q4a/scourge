@@ -114,8 +114,7 @@ void Indoor::drawMap() {
 	}
 
 	// draw the effects
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glsDisable( GLS_DEPTH_MASK );
@@ -136,13 +135,12 @@ void Indoor::drawMap() {
 #endif
 #endif
 
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	glsEnable( GLS_DEPTH_MASK );
 }
 
 void Indoor::drawFrontWallsAndWater() {
-	glsEnable( GLS_DEPTH_TEST );
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_BLEND | GLS_DEPTH_TEST );
 	glsDisable( GLS_DEPTH_MASK );
 	if ( map->hasWater && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
 		// map->stencil out the transparent walls (and draw them)
@@ -216,9 +214,8 @@ void Indoor::drawIndoorShadows() {
 	if ( map->preferences->getShadows() >= Constants::OBJECT_SHADOWS && map->helper->drawShadow() ) {
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
-		glsDisable( GLS_TEXTURE_2D );
-		glsDisable( GLS_DEPTH_MASK );
-		glsEnable( GLS_BLEND );
+		glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
+		glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 		RenderedLocation::useShadow = true;
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		for ( int i = 0; i < map->otherCount; i++ ) {
@@ -230,9 +227,8 @@ void Indoor::drawIndoorShadows() {
 			}
 		}
 		RenderedLocation::useShadow = false;
-		glsDisable( GLS_BLEND );
-		glsEnable( GLS_TEXTURE_2D );
-		glsEnable( GLS_DEPTH_MASK );
+		glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
+		glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	}
 
 	//glsEnable( GLS_DEPTH_TEST );
@@ -271,22 +267,15 @@ void Indoor::drawLightsFloor() {
 	// draw all the lights
 	glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST | GLS_DEPTH_MASK );
 	glColorMask( 1, 1, 1, 1 );
-	glsDisable( GLS_DEPTH_MASK );
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	setupLightBlending();
 	for( int i = 0; i < map->lightCount; i++ ) {
 		map->lights[i].draw();
 	}
-	glsEnable( GLS_DEPTH_TEST );
-	//glColorMask(0,0,0,0);
-	glsEnable( GLS_DEPTH_MASK );
-	glsDisable( GLS_BLEND );
-	
-	//glsEnable( GLS_DEPTH_TEST );
-	glsDisable( GLS_STENCIL_TEST );
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK);
+	glsDisable( GLS_BLEND | GLS_ALPHA_TEST | GLS_STENCIL_TEST );
 }
 
 void Indoor::drawLightsWalls() {
@@ -348,16 +337,12 @@ void Indoor::drawLightsWalls() {
 		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 		glColorMask( 1, 1, 1, 1 );
-		glsEnable( GLS_TEXTURE_2D );
-		glsDisable( GLS_DEPTH_TEST );		
-		glsEnable( GLS_BLEND );
+		glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+		glsDisable( GLS_DEPTH_TEST );
 		setupLightBlending();
 		map->lights[t].draw();
+		glsDisable( GLS_BLEND | GLS_ALPHA_TEST | GLS_STENCIL_TEST );
 		glsEnable( GLS_DEPTH_TEST );
-		glsDisable( GLS_BLEND );
-		
-		//glsEnable( GLS_DEPTH_TEST );
-		glsDisable( GLS_STENCIL_TEST );
 	}
 	
 	// reset light info

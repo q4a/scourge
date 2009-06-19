@@ -700,11 +700,9 @@ void SDLHandler::drawCursor() {
 	// for cursor: do alpha bit testing
 	//  glsEnable( GLS_ALPHA_TEST );
 	//  glAlphaFunc( GL_NOTEQUAL, 0 ); // this works better for people with the reverse alpha problem (see forums)
-	glsEnable( GLS_BLEND );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsEnable( GLS_TEXTURE_2D );
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_CULL_FACE );
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
@@ -724,8 +722,7 @@ void SDLHandler::drawCursor() {
 	glPopMatrix();
 
 	//  glsDisable( GLS_ALPHA_TEST );
-	glsDisable( GLS_TEXTURE_2D );
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 
 #ifdef DEBUG_MOUSE_FOCUS
 	// cursor focus
@@ -742,8 +739,7 @@ void SDLHandler::drawCursor() {
 	glPopMatrix();
 #endif
 
-	glsEnable( GLS_DEPTH_TEST );
-	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 }
 
 void SDLHandler::processEventsAndRepaint() {
@@ -872,9 +868,7 @@ void SDLHandler::calculateFps() {
 
 void SDLHandler::drawDebugInfo() {
 	glPushMatrix();
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_DEPTH_MASK );
-	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	glLoadIdentity();
 	glColor3f( 0, 0, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -886,17 +880,15 @@ void SDLHandler::drawDebugInfo() {
 	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
 	texPrint( 400, 10, "FPS: %g %s", getFPS(), ( debugStr ? debugStr : "" ) );
-	glsEnable( GLS_DEPTH_TEST );
-	glsEnable( GLS_DEPTH_MASK );
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	glPopMatrix();
 }
 
 void SDLHandler::drawFadeout() {
 	glPushMatrix();
+	glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_TEST );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_TEXTURE_2D );
-	glsDisable( GLS_DEPTH_TEST );
 
 	if ( fadeoutStartAlpha < fadeoutEndAlpha ) {
 		glColor4f( 0, 0, 0, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) *
@@ -913,9 +905,7 @@ void SDLHandler::drawFadeout() {
 	glVertex2i( screen->w, screen->h );
 	glEnd();
 
-	glsEnable( GLS_DEPTH_TEST );
-	glsDisable( GLS_BLEND );
-	glsEnable( GLS_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_DEPTH_TEST );
 	glPopMatrix();
 
 
@@ -1100,8 +1090,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 
 	glScalef( zoom, zoom, zoom );
 
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -1164,101 +1153,6 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	setFontType( Constants::SCOURGE_DEFAULT_FONT );
 	glPopMatrix();
 }
-
-/* unused: void SDLHandler::testDrawView() {
-	// Clear The Screen And The Depth Buffer 
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	// Move Right 3 Units 
-	glLoadIdentity( );
-	glTranslatef( 1.5f, 0.0f, -6.0f );
-
-	// Rotate The Quad On The X axis ( NEW ) 
-	glRotatef( rquad, 1.0f, 0.0f, 0.0f );
-
-	// Set The Color To Blue One Time Only 
-	glColor3f( 0.5f, 0.5f, 1.0f );
-
-	glBegin( GL_QUADS );               // Draw A Quad                     
-	glColor3f(   0.0f,  1.0f,  0.0f ); // Set The Color To Green           
-	glVertex3f(  1.0f,  1.0f, -1.0f ); // Top Right Of The Quad (Top)      
-	glVertex3f( -1.0f,  1.0f, -1.0f ); // Top Left Of The Quad (Top)       
-	glVertex3f( -1.0f,  1.0f,  1.0f ); // Bottom Left Of The Quad (Top)    
-	glVertex3f(  1.0f,  1.0f,  1.0f ); // Bottom Right Of The Quad (Top)   
-
-	glColor3f(   1.0f,  0.5f,  0.0f ); // Set The Color To Orange          
-	glVertex3f(  1.0f, -1.0f,  1.0f ); // Top Right Of The Quad (Botm)     
-	glVertex3f( -1.0f, -1.0f,  1.0f ); // Top Left Of The Quad (Botm)      
-	glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad (Botm)   
-	glVertex3f(  1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad (Botm)  
-
-	glColor3f(   1.0f,  0.0f,  0.0f ); // Set The Color To Red             
-	glVertex3f(  1.0f,  1.0f,  1.0f ); // Top Right Of The Quad (Front)    
-	glVertex3f( -1.0f,  1.0f,  1.0f ); // Top Left Of The Quad (Front)     
-	glVertex3f( -1.0f, -1.0f,  1.0f ); // Bottom Left Of The Quad (Front)  
-	glVertex3f(  1.0f, -1.0f,  1.0f ); // Bottom Right Of The Quad (Front) 
-
-	glColor3f(   1.0f,  1.0f,  0.0f ); // Set The Color To Yellow          
-	glVertex3f(  1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad (Back)   
-	glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad (Back)  
-	glVertex3f( -1.0f,  1.0f, -1.0f ); // Top Right Of The Quad (Back)     
-	glVertex3f(  1.0f,  1.0f, -1.0f ); // Top Left Of The Quad (Back)      
-
-	glColor3f(   0.0f,  0.0f,  1.0f ); // Set The Color To Blue            
-	glVertex3f( -1.0f,  1.0f,  1.0f ); // Top Right Of The Quad (Left)     
-	glVertex3f( -1.0f,  1.0f, -1.0f ); // Top Left Of The Quad (Left)      
-	glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad (Left)   
-	glVertex3f( -1.0f, -1.0f,  1.0f ); // Bottom Right Of The Quad (Left)  
-
-	glColor3f(   1.0f,  0.0f,  1.0f ); // Set The Color To Violet          
-	glVertex3f(  1.0f,  1.0f, -1.0f ); // Top Right Of The Quad (Right)    
-	glVertex3f(  1.0f,  1.0f,  1.0f ); // Top Left Of The Quad (Right)     
-	glVertex3f(  1.0f, -1.0f,  1.0f ); // Bottom Left Of The Quad (Right)  
-	glVertex3f(  1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad (Right) 
-	glEnd( );                          // Done Drawing The Quad            
-
-	// Move Left 1.5 Units And Into The Screen 6.0 
-	glLoadIdentity();
-	glTranslatef( 0.5f, 0.0f, -8.0f );
-
-	// Rotate The Triangle On The Y axis ( NEW ) 
-	glRotatef( rtri, 0.0f, 1.0f, 0.0f );
-
-	glBegin( GL_TRIANGLES );           // Drawing Using Triangles       
-	glColor3f(   1.0f,  0.0f,  0.0f ); // Red                           
-	glVertex3f(  0.0f,  1.0f,  0.0f ); // Top Of Triangle (Front)       
-	glColor3f(   0.0f,  1.0f,  0.0f ); // Green                         
-	glVertex3f( -1.0f, -1.0f,  1.0f ); // Left Of Triangle (Front)      
-	glColor3f(   0.0f,  0.0f,  1.0f ); // Blue                          
-	glVertex3f(  1.0f, -1.0f,  1.0f ); // Right Of Triangle (Front)     
-
-	glColor3f(   1.0f,  0.0f,  0.0f ); // Red                           
-	glVertex3f(  0.0f,  1.0f,  0.0f ); // Top Of Triangle (Right)       
-	glColor3f(   0.0f,  0.0f,  1.0f ); // Blue                          
-	glVertex3f(  1.0f, -1.0f,  1.0f ); // Left Of Triangle (Right)      
-	glColor3f(   0.0f,  1.0f,  0.0f ); // Green                         
-	glVertex3f(  1.0f, -1.0f, -1.0f ); // Right Of Triangle (Right)     
-
-	glColor3f(   1.0f,  0.0f,  0.0f ); // Red                           
-	glVertex3f(  0.0f,  1.0f,  0.0f ); // Top Of Triangle (Back)        
-	glColor3f(   0.0f,  1.0f,  0.0f ); // Green                         
-	glVertex3f(  1.0f, -1.0f, -1.0f ); // Left Of Triangle (Back)       
-	glColor3f(   0.0f,  0.0f,  1.0f ); // Blue                          
-	glVertex3f( -1.0f, -1.0f, -1.0f ); // Right Of Triangle (Back)      
-
-	glColor3f(   1.0f,  0.0f,  0.0f ); // Red                           
-	glVertex3f(  0.0f,  1.0f,  0.0f ); // Top Of Triangle (Left)        
-	glColor3f(   0.0f,  0.0f,  1.0f ); // Blue                          
-	glVertex3f( -1.0f, -1.0f, -1.0f ); // Left Of Triangle (Left)       
-	glColor3f(   0.0f,  1.0f,  0.0f ); // Green                         
-	glVertex3f( -1.0f, -1.0f,  1.0f ); // Right Of Triangle (Left)      
-	glEnd( );                          // Finished Drawing The Triangle 
-
-	// Increase The Rotation Variable For The Triangle ( NEW ) 
-	rtri  += 0.2f;
-	// Decrease The Rotation Variable For The Quad     ( NEW ) 
-	rquad -= 0.15f;
-}*/
 
 Texture const& SDLHandler::getHighlightTexture() {
 	return gameAdapter->getHighlightTexture();

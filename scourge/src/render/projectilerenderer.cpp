@@ -98,9 +98,8 @@ void EffectProjectileRenderer::drawPath( Map *map, RenderedProjectile *proj, std
 		glPushMatrix();
 		glTranslatef( v.x, v.y, v.z );
 		glColor4f( 1, 1, 1, 0.9f );
-		glsDisable( GLS_CULL_FACE );
+		glsDisable( GLS_CULL_FACE | GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND );
-		glsDisable( GLS_DEPTH_MASK );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
 		float percent = static_cast<float>( i ) / static_cast<float>( maxSteps );
