@@ -353,10 +353,7 @@ void Cutscene::drawLetterbox() {
 	int w = session->getGameAdapter()->getScreenWidth();
 	int h = getCurrentLetterboxHeight();
 
-	glsDisable( GLS_TEXTURE_2D );
-	glsDisable( GLS_CULL_FACE );
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_CULL_FACE | GLS_DEPTH_TEST);
 
 	glColor3f( 0.0f, 0.0f, 0.0f );
 
@@ -382,8 +379,6 @@ void Cutscene::drawLetterbox() {
 	glEnd();
 	glPopMatrix();
 
-	glsEnable( GLS_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
-	glsEnable( GLS_DEPTH_TEST );
-	glsEnable( GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST );
 }

@@ -81,6 +81,30 @@ ScourgeView::~ScourgeView() {
 }
 
 void ScourgeView::drawView() {
+	
+	// This render loop should be reorganized into the following passes:
+	//
+	// TEXTURE_2D	CULL_FACE	DEPTH_TEST	DEPTH_MASK	BLEND	ALPHA_TEST
+	//
+	// Render opaque shapes
+	// X			X			X			X
+	// Render blended shapes (walls in front of player, transparent roofs)
+	// X			X			X			X			X
+	// Render shapes w/ transparency (e.g. player models) and effects
+	// X			X			X			X			X		X
+	// Render map floor features (outdoor textures, circles)
+	// X			X			X						X		X
+	// Render water levels
+	// X			X			X						X
+	// Render shape outlines and floor grid
+	// 							X						X
+	// Render damage counters and other non-GUI 2D stuff
+	// X												X		X
+	// Render GUI
+	// X
+	//
+	// Stencil test, texturing and blending may be toggled locally if explicitly needed.
+	
 	if ( scourge->getSession()->isShowingChapterIntro() ) {
 		endScissorToMap();
 		scourge->hideGui(); // HACK: Hide party UI in the final chapter "outro".
@@ -276,10 +300,9 @@ void ScourgeView::drawChapterIntro() {
 	glColor4f( 0, 0, 0, 0 );
 	glVertex2i( scourge->getScreenWidth() - 150, textHeight - size );
 	glEnd();
-	glsDisable( GLS_BLEND );
-	glsEnable( GLS_TEXTURE_2D );
 
-	glsDisable( GLS_SCISSOR_TEST );
+	glsDisable( GLS_BLEND | GLS_SCISSOR_TEST );
+	glsEnable( GLS_TEXTURE_2D );
 
 	Uint32 now = SDL_GetTicks();
 	if ( now - chapterTextTimer > CHAPTER_TEXT_SPEED && offset > ( static_cast<int>( scourge->getChapterText()->size() ) * -36 ) ) {
@@ -308,8 +331,7 @@ void ScourgeView::drawOutsideMap() {
 	if ( scourge->getMap()->getViewWidth() < scourge->getSDLHandler()->getScreen()->w ||
 	        scourge->getMap()->getViewHeight() < scourge->getSDLHandler()->getScreen()->h ) {
 
-		glsDisable( GLS_CULL_FACE );
-		glsDisable( GLS_DEPTH_TEST );
+		glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST);
 		glsEnable( GLS_TEXTURE_2D );
 
 		glPushMatrix();
@@ -350,9 +372,8 @@ void ScourgeView::drawOutsideMap() {
 
 		glPopMatrix();
 
-		glsEnable( GLS_CULL_FACE );
-		glsEnable( GLS_DEPTH_TEST );
 		glsDisable( GLS_TEXTURE_2D );
+		glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	}
 }
 
@@ -714,11 +735,10 @@ void ScourgeView::drawTextEffect() {
 				// When we don't use a fancy TextEffect, use blinking normal text
 				if ( ( SDL_GetTicks() % 500 ) > 199 ) {
 					glsDisable( GLS_DEPTH_TEST );
-					glsEnable( GLS_BLEND );
+					glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 
 					glPushMatrix();
 					glLoadIdentity();
-					glsEnable( GLS_TEXTURE_2D );
 
 					glColor4f( 1, 1, 0, 1 );
 					scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
@@ -728,10 +748,9 @@ void ScourgeView::drawTextEffect() {
 					scourge->getSDLHandler()->texPrint( x, y, message );
 					scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
-					glsDisable( GLS_TEXTURE_2D );
 					glPopMatrix();
 
-					glsDisable( GLS_BLEND );
+					glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 					glsEnable( GLS_DEPTH_TEST );
 				}
 			} else {
@@ -761,13 +780,10 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
 void ScourgeView::drawDisk( float w, float diff ) {
 	float n = w * 2;
 
-	glsEnable( GLS_DEPTH_TEST );
-	glsDisable( GLS_DEPTH_MASK );
-	glsEnable( GLS_BLEND );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_MASK );
+	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_TEST | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_CULL_FACE );
 
-	glsEnable( GLS_TEXTURE_2D );
 	scourge->getShapePalette()->getSelection().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 // glNormal3f( 0, 0, 1 );
@@ -780,7 +796,7 @@ void ScourgeView::drawDisk( float w, float diff ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2f( n + diff, n + diff );
 	glEnd();
-	glsDisable( GLS_TEXTURE_2D );
+	glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 }
 
 //#define BASE_DEBUG 1
@@ -793,12 +809,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	glPushMatrix();
 	//showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
 
-	glsEnable( GLS_TEXTURE_2D );
-	glsEnable( GLS_DEPTH_TEST );
-	glsDisable( GLS_DEPTH_MASK );
-	glsEnable( GLS_BLEND );
+	glsDisable( GLS_DEPTH_MASK | GLS_CULL_FACE );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST | GLS_DEPTH_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_CULL_FACE );
 
 	// draw circle
 	double w = ( static_cast<double>( creature->getShape()->getWidth() ) / 2.0f ) * MUL;
@@ -870,12 +883,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glPushMatrix();
 		glTranslatef( xpos2, ypos2 - w * 2 - 1 * MUL, zpos2 );
 
-		glsDisable( GLS_TEXTURE_2D );
-		glsDisable( GLS_DEPTH_TEST );
-		glsDisable( GLS_DEPTH_MASK );
+		glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glsDisable( GLS_CULL_FACE );
 
 		// in TB mode and paused?
 		if ( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
@@ -1053,12 +1063,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 					*/
 				}
 
-				glsDisable( GLS_TEXTURE_2D );
-				glsEnable( GLS_DEPTH_TEST );
-				glsDisable( GLS_DEPTH_MASK );
-				glsEnable( GLS_BLEND );
+				glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_MASK );
+				glsEnable( GLS_BLEND | GLS_DEPTH_TEST );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				glsDisable( GLS_CULL_FACE );
 
 				xpos2 = ( static_cast<float>( creature->getX() - scourge->getMap()->getX() ) * MUL );
 				ypos2 = ( static_cast<float>( creature->getY() - scourge->getMap()->getY() ) * MUL );
@@ -1124,16 +1131,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
-	glsDisable( GLS_TEXTURE_2D );
-	glsEnable( GLS_DEPTH_TEST );
-
-	glsEnable( GLS_CULL_FACE );
-	glsDisable( GLS_BLEND );
-	glsEnable( GLS_DEPTH_MASK );
-
-	// draw name
-	//glTranslatef( 0, 0, 100);
-	//getSDLHandler()->texPrint(0, 0, "%s", creature->getName());
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+	glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 
 	glPopMatrix();
 }
@@ -1180,8 +1179,7 @@ void ScourgeView::drawAfter() {
 
 void ScourgeView::showMovieConversation( Creature *creature ) {
 	if ( creature->isTalking() ) {
-		glsDisable( GLS_DEPTH_TEST );
-		glsDisable( GLS_CULL_FACE );
+		glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 		glsEnable( GLS_TEXTURE_2D );
 
 		glPushMatrix();
@@ -1211,8 +1209,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 		}
 
-		glsEnable( GLS_DEPTH_TEST );
-		glsEnable( GLS_CULL_FACE );
+		glsEnable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	}
 }
 

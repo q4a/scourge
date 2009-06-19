@@ -46,8 +46,7 @@ TextEffect::~TextEffect() {
 }
 
 void TextEffect::draw() {
-	glsDisable( GLS_DEPTH_TEST );
-	glsDisable( GLS_CULL_FACE );
+	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 
 	if ( !textureInMemory ) {
 		buildTextures();
@@ -56,7 +55,7 @@ void TextEffect::draw() {
 	float zoom = MENU_ITEM_ZOOM;
 	zoom = ( active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
 
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//scourge->setBlendFunc();
 
@@ -72,7 +71,6 @@ void TextEffect::draw() {
 		glColor4f( 1, 1, 1, 1 );
 	}
 
-	glsEnable( GLS_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );
 //  glNormal3f( 0, 0, 1 );
 	glTexCoord2i( 0, 1 );
@@ -104,7 +102,7 @@ void TextEffect::draw() {
 		}
 	}
 
-	//glsEnable( GLS_DEPTH_MASK );
+	glsDisable( GLS_ALPHA_TEST );
 	glsEnable( GLS_DEPTH_TEST );
 }
 

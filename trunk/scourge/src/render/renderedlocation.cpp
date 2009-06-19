@@ -417,10 +417,7 @@ void RenderedLocation::drawShape() {
 
 void RenderedLocation::drawMousePosition() {
 	if ( pos && pos->shape && !useShadow && ( pos->item || pos->creature || pos->shape->isInteractive() || pos->shape->isRoof() ) ) {
-		glsDisable( GLS_DEPTH_TEST );
-		glsDisable( GLS_DEPTH_MASK );
-		glsDisable( GLS_CULL_FACE );
-		glsDisable( GLS_TEXTURE_2D );
+		glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0, 0, 0 );
@@ -450,8 +447,7 @@ void RenderedLocation::drawMousePosition() {
 		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
 		glEnd();
-		glsEnable( GLS_DEPTH_MASK );
-		glsEnable( GLS_DEPTH_TEST );
+		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	}
 }
 

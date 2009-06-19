@@ -421,19 +421,17 @@ void GLShape::outline( float r, float g, float b ) {
 	glGetFloatv( GL_CURRENT_COLOR, colors );
 
 	useShadow = true;
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_BLEND | GLS_CULL_FACE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glCullFace( GL_BACK );
 	glsDisable( GLS_TEXTURE_2D );
 	glPolygonMode( GL_FRONT, GL_LINE );
 	glLineWidth( 4 );
-	glsEnable( GLS_CULL_FACE );
-	glCullFace( GL_BACK );
 	glColor3f( r, g, b );
 	glCallList( displayListStart );
 	glLineWidth( 1 );
-	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_BLEND | GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
 

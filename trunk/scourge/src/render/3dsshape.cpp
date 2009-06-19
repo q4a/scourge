@@ -499,10 +499,9 @@ void C3DSShape::draw() {
 
 	glPushMatrix();
 	if ( !useShadow && hasAlphaValues ) {
-		glsEnable( GLS_ALPHA_TEST );
-		glAlphaFunc( GL_NOTEQUAL, 0 );
-		glsEnable( GLS_BLEND );
+		glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
 	}
 	setOffset( offs_x * MUL - movex * divx,
 	           offs_y * MUL + ( getDepth() * MUL ) - ( movey * divy ),
@@ -520,8 +519,7 @@ void C3DSShape::draw() {
 	drawShape( useShadow, getAlpha() );
 
 	if ( !useShadow && hasAlphaValues ) {
-		glsDisable( GLS_BLEND );
-		glsDisable( GLS_ALPHA_TEST );
+		glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	}
 	glPopMatrix();
 
@@ -530,22 +528,19 @@ void C3DSShape::draw() {
 void C3DSShape::outline( float r, float g, float b ) {
 	useShadow = true;
 	glsDisable( GLS_TEXTURE_2D );
-	glPolygonMode( GL_FRONT, GL_LINE );
-	glLineWidth( 4 );
 	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_BACK );
-	//glsEnable( GLS_DEPTH_TEST );
-	//GLint df;
-	//glGetIntegerv( GL_DEPTH_FUNC, &df );
-	//glDepthFunc( GL_GEQUAL );
+	glPolygonMode( GL_FRONT, GL_LINE );
+	glLineWidth( 4 );
+
 	glColor3f( r, g, b );
 	draw();
+
 	glLineWidth( 1 );
-	//glDepthFunc( df );
-	//glCullFace( GL_BACK );
-	glsDisable( GLS_CULL_FACE );
 	glPolygonMode( GL_FRONT, GL_FILL );
+	glsDisable( GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
+
 	useShadow = false;
 	glColor4f( 1, 1, 1, 0.9f );
 }

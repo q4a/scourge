@@ -111,8 +111,7 @@ void Outdoor::drawMap() {
 	drawEffects();
 	
 	glsDisable( GLS_BLEND );
-	glsEnable( GLS_DEPTH_MASK );
-	glsEnable( GLS_TEXTURE_2D );
+	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 		
 	if( !map->isCurrentlyUnderRoof && stencilOn ) {
 		glsDisable( GLS_DEPTH_TEST );
@@ -125,10 +124,8 @@ void Outdoor::drawMap() {
 			shades[i]->shade();
 		}		
 		
-		glsDisable( GLS_BLEND );
-		glsEnable( GLS_DEPTH_MASK );
-		glsDisable( GLS_STENCIL_TEST );
-		glsEnable( GLS_DEPTH_TEST );
+		glsDisable( GLS_BLEND | GLS_STENCIL_TEST );
+		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	}
 	
 	// draw water last so things like bridges show partially under-water
@@ -506,10 +503,9 @@ void Outdoor::drawWaterLevel() {
 		if ( waterTexY >= 1.0f ) waterTexY -= 1.0f;
 	}
 
-	glsEnable( GLS_TEXTURE_2D );
-	waterTexture.glBind();
-	glsEnable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	waterTexture.glBind();
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 	float w = static_cast<float>( map->mapViewWidth ) * MUL;
 	float d = static_cast<float>( map->mapViewDepth ) * MUL;
