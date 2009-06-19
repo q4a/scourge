@@ -60,7 +60,7 @@ void Button::drawWidget( Window* parent ) {
 		texture.glBind();
 
 		if ( isEnabled() ) {
-			glColor4f( 1, 1, 1, ( glowing || inside ? getAlpha() + 0.3f : 1 ) );
+			glColor4f( 1.0f, 1.0f, 1.0f, ( glowing || inside ? getAlpha() + 0.3f : 1.0f ) );
 		} else {
 			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		}

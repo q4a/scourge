@@ -298,7 +298,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 		// draw the light circle
 		glsEnable( GLS_TEXTURE_2D );
 		glLoadIdentity();
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glBindTexture( GL_TEXTURE_2D, overlay_tex );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -337,7 +337,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 			glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 			glBlendFunc( GL_DST_COLOR, GL_ZERO );
-			glColor4f( 1, 1, 1, 0.5f );
+			glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 			glBindTexture( GL_TEXTURE_2D, shade_tex );
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -368,7 +368,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 #ifdef DEBUG_FOG
 	glLoadIdentity();
-	glColor3f( 1, 1, 1 );
+	glColor3f( 1.0f, 1.0f, 1.0f );
 	for ( int i = 0; i < pCount; i++ ) {
 		glBegin( GL_LINE_LOOP );
 		glVertex2f( p[i][0], p[i][1] );

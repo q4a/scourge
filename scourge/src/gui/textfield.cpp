@@ -126,7 +126,7 @@ bool TextField::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 void TextField::drawWidget( Window* parent ) {
 	GuiTheme *theme = parent->getTheme();
 
-	//glColor3f( 1, 1, 1 );
+	//glColor3f( 1.0f, 1.0f, 1.0f );
 	if ( theme->getInputBackground() ) {
 		glColor4f( theme->getInputBackground()->color.r,
 		           theme->getInputBackground()->color.g,
@@ -157,7 +157,7 @@ void TextField::drawWidget( Window* parent ) {
 	char letter[2];
 	for ( int i = 0; i < maxPos; i++ ) {
 		glPushMatrix();
-		glTranslatef( OFFSET + i * AVG_CHAR_WIDTH, 0, 0 );
+		glTranslatef( OFFSET + i * AVG_CHAR_WIDTH, 0.0f, 0.0f );
 		letter[0] = text[i];
 		letter[1] = '\0';
 		parent->getScourgeGui()->setFontType( Constants::SCOURGE_MONO_FONT );
@@ -188,7 +188,7 @@ void TextField::drawWidget( Window* parent ) {
 		// cursor
 		glLineWidth( 2.0f );
 		glPushMatrix();
-		glTranslatef( OFFSET + pos * AVG_CHAR_WIDTH + 1, 0, 0 );
+		glTranslatef( OFFSET + pos * AVG_CHAR_WIDTH + 1, 0.0f, 0.0f );
 		glBegin( GL_LINES );
 		glVertex2i( 0, 0 );
 		glVertex2i( 0, getHeight() );

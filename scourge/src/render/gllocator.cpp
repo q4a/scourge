@@ -44,7 +44,7 @@ void GLLocator::draw() {
 	glVertex3f( w, d, h );
 	glEnd();
 
-	glColor4f( 1.0, 1.0, 0.1f, 1.0 );
+	glColor4f( 1.0f, 1.0f, 0.1f, 1.0f );
 	glBegin( GL_LINES );
 	glVertex3f( w, d, h );
 	glVertex3f( 0, d, h );

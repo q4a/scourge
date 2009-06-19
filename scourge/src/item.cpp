@@ -895,7 +895,7 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 	// getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
 	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );
 	glPushMatrix();
-	glTranslatef( x + ox, y + oy, 0 );
+	glTranslated( x + ox, y + oy, 0 );
 // if ( !smallIcon ) {
 	if ( w > 0 && h > 0 ) glScalef( rw / static_cast<float>( w ), rh / static_cast<float>( h ), 1 );
 	if ( isMagicItem() ) {
@@ -956,7 +956,7 @@ void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oy
 /// Renders the item's icon (in lists, the backpack etc.)
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	getItemIconTexture( smallIcon ).glBind();
@@ -1012,24 +1012,24 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
 		           0.5f );
 		glPushMatrix();
-		glTranslatef( x, y, 0 );
-		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2,
-		              iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2, 0 );
-		//glRotatef( iconUnderEffectParticle[i]->life, 0, 0, 1 );
+		glTranslated( x, y, 0 );
+		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2.0f,
+		              iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2.0f, 0.0f );
+		//glRotatef( iconUnderEffectParticle[i]->life, 0.0f, 0.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
-		glVertex2f( 0, 0 );
+		glVertex2f( 0.0f, 0.0f );
 		glTexCoord2i( 1, 0 );
-		glVertex2f( iconUnderEffectParticle[i]->zoom, 0 );
+		glVertex2f( iconUnderEffectParticle[i]->zoom, 0.0f );
 		glTexCoord2i( 0, 1 );
-		glVertex2f( 0, iconUnderEffectParticle[i]->zoom );
+		glVertex2f( 0.0f, iconUnderEffectParticle[i]->zoom );
 		glTexCoord2i( 1, 1 );
 		glVertex2f( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
 		glEnd();
 		glPopMatrix();
 	}
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 /// Renders the "blinking stars" effect for magical items.
@@ -1066,12 +1066,12 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
 		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a,
 		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
-		           1 );
+		           1.0f );
 		glPushMatrix();
-		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2,
-		              iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2, 0 );
+		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2.0f,
+		              iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2.0f, 0.0f );
 		if ( getMagicLevel() >= Constants::DIVINE_MAGIC_ITEM ) {
-			glRotatef( 360.0f * a, 0, 0, 1 );
+			glRotatef( 360.0f * a, 0.0f, 0.0f, 1.0f );
 		}
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
@@ -1086,7 +1086,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		glPopMatrix();
 	}
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 /// Renders the effect for unidentified items. Currently only prints "?"
@@ -1106,7 +1106,7 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 		glVertex2d( x + w - 1, y + h - 1 );
 		glEnd();
 		glsEnable( GLS_TEXTURE_2D );
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		*/
 	} else {
 		scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );

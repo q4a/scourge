@@ -139,7 +139,7 @@ void TextScroller::draw() {
 	glPushMatrix();
 	glLoadIdentity();
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
-	glTranslatef( xp, ytop, 0 );
+	glTranslated( xp, ytop, 0 );
 	glsDisable( GLS_DEPTH_TEST );
 
 	if ( visible ) {
@@ -147,15 +147,15 @@ void TextScroller::draw() {
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glsDisable( GLS_TEXTURE_2D );
-		// glColor4f( 1, 1, 1, 0.25f );
-		glColor4f( 0, 0, 0, 0.5f );
+		// glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( -margin, 0 );
 		glVertex2i( SCROLL_WIDTH + margin, 0 );
 		glVertex2i( -margin, height + margin );
 		glVertex2i( SCROLL_WIDTH + margin, height + margin );
 		glEnd();
-		glColor4f( 0.5f, 0.5f, 0.5f, 1 );
+		glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( -margin, height + margin );
 		glVertex2i( -margin, 0 );
@@ -202,7 +202,7 @@ void TextScroller::draw() {
 	glsDisable( GLS_SCISSOR_TEST );
 	glsEnable( GLS_DEPTH_TEST );
 	glPopMatrix();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 void TextScroller::scrollUp() {

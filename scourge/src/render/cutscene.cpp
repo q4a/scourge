@@ -359,7 +359,7 @@ void Cutscene::drawLetterbox() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 0, 0, 0 );
+	glTranslated( 0, 0, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( w, 0 );
@@ -370,7 +370,7 @@ void Cutscene::drawLetterbox() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
+	glTranslated( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( w, 0 );
@@ -379,6 +379,6 @@ void Cutscene::drawLetterbox() {
 	glEnd();
 	glPopMatrix();
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glsEnable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST );
 }

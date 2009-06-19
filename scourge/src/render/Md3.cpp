@@ -1020,7 +1020,7 @@ void CModelMD3::DrawModel( MD3Shape *shape ) {
 	// this 1 rotate will fix this problem.
 
 	// Rotate the model to compensate for the z up orientation that the model was saved
-	glRotatef( -90, 1, 0, 0 );
+	glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 
 	// Since we have animation now, when we draw the model the animation frames need
 	// to be updated.  To do that, we pass in our lower and upper models to UpdateModel().
@@ -1049,7 +1049,7 @@ void CModelMD3::DrawModel( MD3Shape *shape ) {
 
 	// Draw the first link, which is the lower body.  This will then recursively go
 	// through the models attached to this model and drawn them.
-	glTranslatef( 0, 0, -min[1] ); // translate to floor.
+	glTranslatef( 0.0f, 0.0f, -min[1] ); // translate to floor.
 	DrawLink( &m_Lower, shape );
 }
 

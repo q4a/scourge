@@ -239,7 +239,7 @@ void MainMenu::drawView() {
 	// draw the boards
 	if ( openingTop > 0 ) {
 		glPushMatrix();
-		glColor3f( 1, 1, 1 );
+		glColor3f( 1.0f, 1.0f, 1.0f );
 
 		//    float TILE_W = 510 / 2.0f;
 		float TILE_W = 256.0f;
@@ -249,7 +249,7 @@ void MainMenu::drawView() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( 0, openingTop, 0 );
+		glTranslated( 0, openingTop, 0 );
 		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
@@ -265,7 +265,7 @@ void MainMenu::drawView() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
+		glTranslated( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
 		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
@@ -282,8 +282,8 @@ void MainMenu::drawView() {
 
 		for ( int i = 0; i < 2; i++ ) {
 			glLoadIdentity();
-			glTranslatef( 0, ( i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop ), 0 );
-			glColor4f( 1, 0.7f, 0, 1 );
+			glTranslated( 0, ( i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop ), 0 );
+			glColor4f( 1.0f, 0.7f, 0.0f, 1.0f );
 			glBegin( GL_LINES );
 			glVertex2i( 0, 0 );
 			glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
@@ -297,7 +297,7 @@ void MainMenu::drawView() {
 			glsEnable( GLS_TEXTURE_2D );
 			//glPushMatrix();
 			glLoadIdentity();
-			glTranslatef( 0, openingTop + 1, 0 );
+			glTranslated( 0, openingTop + 1, 0 );
 			slide.glBind();
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -313,7 +313,7 @@ void MainMenu::drawView() {
 			glsDisable( GLS_TEXTURE_2D );
 		} else {
 			glLoadIdentity();
-			glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+			glTranslated( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
 			char version[100];
 			snprintf( version, 100, _( "Scourge version %s" ), SCOURGE_VERSION );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -367,7 +367,7 @@ void MainMenu::drawAfter() {
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glsDisable( GLS_TEXTURE_2D );
-		glColor4f( 0, 0, 0, 0.75f );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 		glBegin( GL_QUADS );
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( 0, scourge->getScreenHeight(), 0 );
@@ -379,7 +379,7 @@ void MainMenu::drawAfter() {
 		*/
 
 		glLoadIdentity();
-		glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+		glTranslated( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
 		int y = 70;
 		int x = 100;
 		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
@@ -389,7 +389,7 @@ void MainMenu::drawAfter() {
 			texPrint( x, y - 3, "%s: %d%%",
 			          getUpdate(),
 			          static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
-			glTranslatef( x + 150, y - 15, 0 );
+			glTranslated( x + 150, y - 15, 0 );
 
 			progress->updateStatusLight( NULL,
 			                             static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ),
@@ -438,9 +438,9 @@ void MainMenu::drawMenu() {
 		} else {
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 			if ( i == activeMenuItem ) {
-				glColor4f( 1, 1, 0, 1 );
+				glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 			} else {
-				glColor4f( 1, 1, 1, 1 );
+				glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			}
 			scourge->getSDLHandler()->texPrint( 50, top + 230 + ( i * 50 ), _( menuText[i] ) );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -458,12 +458,12 @@ void MainMenu::drawLogo() {
 	//Draw the Scourge logo
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 70, logoRot, 0 );
+	glTranslated( 70, logoRot, 0 );
 //  float w = scourge->getShapePalette()->logo->w;
 //  float h = scourge->getShapePalette()->logo->h;
 	int w = 352;
 	int h = 173;
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	scourge->getShapePalette()->logo_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -481,16 +481,16 @@ void MainMenu::drawLogo() {
 	for ( int i = 0; i < 2; i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
-//    glTranslatef( ( !i ? 100 :
+//    glTranslated( ( !i ? 100 :
 //                    70 + scourge->getShapePalette()->logo->w - 30 -
 //                    scourge->getShapePalette()->chain->w ),
 //                  logoRot - scourge->getShapePalette()->chain->h, 0 );
 //    float w = scourge->getShapePalette()->chain->w;
 //    float h = scourge->getShapePalette()->chain->h;
-		glTranslatef( ( !i ? 100 : 70 + 352 - 30 - 32 ), logoRot - 256, 0 );
+		glTranslated( ( !i ? 100 : 70 + 352 - 30 - 32 ), logoRot - 256, 0 );
 		float w = 32.0f;
 		float h = 256.0f;
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		scourge->getShapePalette()->chain_texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -522,7 +522,7 @@ void MainMenu::drawLogo() {
 	glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( candleFlameX, candleFlameY, 0 );
+	glTranslated( candleFlameX, candleFlameY, 0 );
 	w = 64;
 	h = 64;
 
@@ -548,7 +548,7 @@ void MainMenu::drawStars() {
 	for ( int i = 0; i < starCount; i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( star[i].x, star[i].y, -200 );
+		glTranslated( star[i].x, star[i].y, -200 );
 		glColor3f( Util::roll( 0.2f, 0.99f ),
 		           Util::roll( 0.2f, 0.99f ),
 		           Util::roll( 0.2f, 0.99f ) );
@@ -578,8 +578,8 @@ void MainMenu::drawScourge() {
 	//Draw the scourge
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );
-	glColor4f( 1, 1, 1, 1 );
+	glTranslated( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -611,8 +611,8 @@ void MainMenu::drawBackdrop() {
 	//Draw the backdrop image
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 0, top + ( 600 - WATER_HEIGHT_MAIN_MENU - h ), 0 );
-	glColor4f( 1, 1, 1, 1 );
+	glTranslated( 0, top + ( 600 - WATER_HEIGHT_MAIN_MENU - h ), 0 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -647,14 +647,14 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 		h = cloud[i].h;
 		glPushMatrix();
 		glTranslatef( cloud[i].x,
-		              top + ( flipped ? 600 - ( cloud[i].y + h / 2.0 ) : cloud[i].y + 130 ),
-		              0 );
+		              top + ( flipped ? 600.0f - ( cloud[i].y + h / 2.0f ) : cloud[i].y + 130.0f ),
+		              0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( flipped ) {
 			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
 		} else {
-			glColor4f( 1, 1, 1, 1 );
+			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}
 		glTexCoord2i( 0, ( flipped ? 1 : 0 ) );
 		glVertex2i( 0, 0 );
@@ -662,16 +662,16 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 		if ( flipped ) {
 			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
 		} else {
-			glColor4f( 1, 1, 1, 1 );
+			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}		
 		glTexCoord2i( 1, ( flipped ? 1 : 0 ) );
 		glVertex2i( w, 0 );
 		
-		glColor4f( 1, 0.3f, 0, 0.5f );
+		glColor4f( 1.0f, 0.3f, 0.0f, 0.5f );
 		glTexCoord2i( 0, ( flipped ? 0 : 1 ) );
 		glVertex2i( 0, ( flipped ? h / 2 : h ) );
 		
-		glColor4f( 1, 0.3f, 0, 0.5f );
+		glColor4f( 1.0f, 0.3f, 0.0f, 0.5f );
 		glTexCoord2i( 1, ( flipped ? 0 : 1 ) );
 		glVertex2i( w, ( flipped ? h / 2 : h ) );
 		glEnd();
@@ -697,20 +697,20 @@ void MainMenu::drawWater() {
 	w = scourge->getSDLHandler()->getScreen()->w;
 	h = WATER_HEIGHT_MAIN_MENU;
 	glLoadIdentity();
-	glTranslatef( 0, top + ( 600 - h ), 0 );
+	glTranslated( 0, top + ( 600 - h ), 0 );
 	glsDisable( GLS_TEXTURE_2D );
 	//  glDisable( GL_LIGHTING );
 	//glsEnable( GLS_BLEND );
 	//glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glColor4f( 0, 0, 0.1f, 1 );
+	glColor4f( 0.0f, 0.0f, 0.1f, 1.0f );
 	glVertex2i( 0, 0 );
-	glColor4f( 0, 0, 0.1f, 1 );
+	glColor4f( 0.0f, 0.0f, 0.1f, 1.0f );
 	glVertex2i( w, 0 );
-	glColor4f( 0, 0.1f, 0.4f, 1 );
+	glColor4f( 0.0f, 0.1f, 0.4f, 1.0f );
 	glVertex2i( 0, h );
-	glColor4f( 0, 0.1f, 0.4f, 1 );
+	glColor4f( 0.0f, 0.1f, 0.4f, 1.0f );
 	glVertex2i( w, h );
 	glEnd();
 	//glsDisable( GLS_BLEND );

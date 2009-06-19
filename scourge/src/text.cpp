@@ -383,7 +383,7 @@ void TexturedText::txfGetStringMetrics( char *string,
 void TexturedText::txfRenderGlyph( int c ) {
 	TexGlyphVertexInfo *tgvi;
 
-	glRotatef( 180.0, 1, 0, 0 );
+	glRotatef( 180.0f, 1.0f, 0.0f, 0.0f );
 	tgvi = getTCVI( c );
 	glBegin( GL_QUADS );
 	glTexCoord2fv( tgvi->t0 );
@@ -395,8 +395,8 @@ void TexturedText::txfRenderGlyph( int c ) {
 	glTexCoord2fv( tgvi->t3 );
 	glVertex2sv( tgvi->v3 );
 	glEnd();
-	glRotatef( -180.0, 1, 0, 0 );
-	glTranslatef( tgvi->advance, 0.0, 0.0 );
+	glRotatef( -180.0f, 1.0f, 0.0f, 0.0f );
+	glTranslatef( tgvi->advance, 0.0f, 0.0f );
 }
 
 void TexturedText::txfRenderString( char *string,
@@ -458,7 +458,7 @@ void TexturedText::txfRenderFancyString( char *string,
 				glTexCoord2fv( tgvi->t3 );
 				glVertex2sv( tgvi->v3 );
 				glEnd();
-				glTranslatef( tgvi->advance, 0.0, 0.0 );
+				glTranslatef( tgvi->advance, 0.0f, 0.0f );
 				break;
 			case LEFT_RIGHT:
 				tgvi = getTCVI( string[i] );
@@ -476,7 +476,7 @@ void TexturedText::txfRenderFancyString( char *string,
 				glTexCoord2fv( tgvi->t3 );
 				glVertex2sv( tgvi->v3 );
 				glEnd();
-				glTranslatef( tgvi->advance, 0.0, 0.0 );
+				glTranslatef( tgvi->advance, 0.0f, 0.0f );
 				break;
 			case FOUR:
 				tgvi = getTCVI( string[i] );
@@ -494,7 +494,7 @@ void TexturedText::txfRenderFancyString( char *string,
 				glTexCoord2fv( tgvi->t3 );
 				glVertex2sv( tgvi->v3 );
 				glEnd();
-				glTranslatef( tgvi->advance, 0.0, 0.0 );
+				glTranslatef( tgvi->advance, 0.0f, 0.0f );
 				break;
 			}
 		}

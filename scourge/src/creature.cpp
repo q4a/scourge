@@ -3541,7 +3541,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glBlendFunc( Scourge::blendA, Scourge::blendB );
 
 	portrait.glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 1 );
@@ -3555,10 +3555,10 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glEnd();
 
 	session->getShapePalette()->getNamedTexture( "conv" ).glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glPushMatrix();
-	glTranslatef( -10, -20, 0 );
+	glTranslated( -10, -20, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );

@@ -143,7 +143,7 @@ void Effect::draw( int effect, int startTime, float percent ) {
 }
 
 void Effect::glowShape( bool proceed, int startTime ) {
-	glColor4f( 1, 0, 0, 1 );
+	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	int t = SDL_GetTicks();
 	float scale = 1.0f + static_cast<float>( t - startTime ) / Constants::DAMAGE_DURATION;
 	if ( scale > 2.0f ) scale = 2.0f;
@@ -169,7 +169,7 @@ void Effect::drawFlames( bool proceed ) {
 
 			float gg = 1 - ( static_cast<float>( particle[i].life ) / 3.0f );
 			if ( gg < 0 ) gg = 0;
-			glColor4f( 1, gg, 1, 0.5 );
+			glColor4f( 1.0f, gg, 1.0f, 0.5f );
 
 			particle[i].tailColor.r = 1;
 			particle[i].tailColor.g = gg;
@@ -205,7 +205,7 @@ void Effect::drawTeleport( bool proceed ) {
 
 			float c = fabs( particle[i].z - 8 ) / 8.0f;
 			if ( c > 1 ) c = 1;
-			glColor4f( c / 2.0f, c, 1.0f, 0.5 );
+			glColor4f( c / 2.0f, c, 1.0f, 0.5f );
 
 			particle[i].tailColor.r = c / 2.0f;
 			particle[i].tailColor.g = c;
@@ -251,7 +251,7 @@ void Effect::drawGreen( bool proceed ) {
 				c = static_cast<float>( particle[i].maxLife - particle[i].life ) / max;
 			}
 			if ( !diWasSet ) {
-				glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
+				glColor4f( 0.15f, 1.0f, 0.15f, 0.2f * c );
 			} else {
 				glColor4f( di.red, di.green, di.blue, 0.2f * c );
 			}
@@ -288,7 +288,7 @@ void Effect::drawExplosion( bool proceed ) {
 
 			float c = fabs( particle[i].z - 8 ) / 8.0f;
 			if ( c > 1 ) c = 1;
-			glColor4f( c, c / 2.0f, c / 2.0f, 0.5 );
+			glColor4f( c, c / 2.0f, c / 2.0f, 0.5f );
 
 			drawParticle( &( particle[i] ) );
 		}
@@ -394,7 +394,7 @@ void Effect::drawHail( bool proceed ) {
 
 			float c = fabs( particle[i].z - 8 ) / 8.0f;
 			if ( c > 1 ) c = 1;
-			glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
+			glColor4f( 0.0f, c / 4.0f, 1.0f, 0.75f );
 
 			particle[i].tailColor.r = 0.15f;
 			particle[i].tailColor.g = c / 3.0f;
@@ -484,7 +484,7 @@ void Effect::drawSwirl( bool proceed ) {
 		if ( particle[i].active ) {
 			float c = fabs( particle[i].z - 8 ) / 8.0f;
 			if ( c > 1 ) c = 1;
-			glColor4f( c / 2.0f, c / 4.0f, c, 0.5 );
+			glColor4f( c / 2.0f, c / 4.0f, c, 0.5f );
 			drawParticle( &( particle[i] ) );
 		}
 	}
@@ -516,7 +516,7 @@ void Effect::drawCastSpell( bool proceed ) {
 			//   particle[i].rotate += 5.0f;
 			particle[i].zoom = ( ( particle[i].life % 200 ) / 60.0f + 1 ) * 1.5f;
 
-			glColor4f( c / 2.0f, c / 4.0f, 1.0f, 0.25 );
+			glColor4f( c / 2.0f, c / 4.0f, 1.0f, 0.25f );
 
 			drawParticle( &( particle[i] ) );
 		}
@@ -530,7 +530,7 @@ void Effect::drawRing( bool proceed ) {
 	float n = Util::roll( 1.0f, 1.05f );
 	for ( int i = 0; i < 2; i++ ) {
 		glPushMatrix();
-		glRotatef( ( i == 0 ? ringRotate : -ringRotate ), 0, 0, 1 );
+		glRotatef( ( i == 0 ? ringRotate : -ringRotate ), 0.0f, 0.0f, 1.0f );
 		glColor4f( Util::roll( 0.85f, 1.0f ),
 		           Util::roll( 0.85f, 1.0f ),
 		           1.0f, 0.7f );
@@ -733,7 +733,7 @@ void Effect::drawParticle( Particle *particle ) {
 		if ( flameTex.isSpecified() ) flameTex.glBind();
 
 		// rotate particles
-		glRotatef( particle->rotate, 0, 0, 1 );
+		glRotatef( particle->rotate, 0.0f, 0.0f, 1.0f );
 
 		// zoom
 		glScalef( particle->zoom, particle->zoom, particle->zoom );
@@ -747,9 +747,9 @@ void Effect::drawParticle( Particle *particle ) {
 			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 1 );
 			glVertex2f( w / 2.0f, -sh );
 			if ( flameTex.isSpecified() ) glTexCoord2i( 0, 0 );
-			glVertex2f( -w / 2.0f, 0 );
+			glVertex2f( -w / 2.0f, 0.0f );
 			if ( flameTex.isSpecified() ) glTexCoord2i( 1, 0 );
-			glVertex2f( w / 2.0f, 0 );
+			glVertex2f( w / 2.0f, 0.0f );
 			glEnd();
 		}
 		glBegin( GL_TRIANGLE_STRIP );

@@ -61,22 +61,22 @@ void TextEffect::draw() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( x + 40, y + FONT_OFFSET, 0 );
+	glTranslated( x + 40, y + FONT_OFFSET, 0 );
 	glBindTexture( GL_TEXTURE_2D, texture[0] );
 
 	if ( active ) {
-		//glColor4f( 1, 0.6f, 0.5f, 1 );
-		glColor4f( 0.9f, 0.7f, 0.15f, 1 );
+		//glColor4f( 1.0f, 0.6f, 0.5f, 1.0f );
+		glColor4f( 0.9f, 0.7f, 0.15f, 1.0f );
 	} else {
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	glBegin( GL_TRIANGLE_STRIP );
 //  glNormal3f( 0, 0, 1 );
 	glTexCoord2i( 0, 1 );
-	glVertex2f( 0, 0 );
+	glVertex2f( 0.0f, 0.0f );
 	glTexCoord2i( 1, 1 );
-	glVertex2f( MENU_ITEM_WIDTH * zoom, 0 );
+	glVertex2f( MENU_ITEM_WIDTH * zoom, 0.0f );
 	glTexCoord2i( 0, 0 );
 	glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
 	glTexCoord2i( 1, 0 );
@@ -134,7 +134,7 @@ void TextEffect::drawEffect( float divisor, int count ) {
 
 		if ( active ) {
 			glLoadIdentity();
-			glTranslatef( x + particle[i].x, y + particle[i].y, 0 );
+			glTranslatef( x + particle[i].x, y + particle[i].y, 0.0f );
 
 			float a = static_cast<float>( MAX_PARTICLE_LIFE - particle[i].life ) / static_cast<float>( MAX_PARTICLE_LIFE );
 			//if( i == 0 ) cerr << "life=" << particle[i].life << " a=" << a << endl;
@@ -147,9 +147,9 @@ void TextEffect::drawEffect( float divisor, int count ) {
 //   glNormal3f( 0, 0, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 1 );
-			glVertex2f( 0, 0 );
+			glVertex2f( 0.0f, 0.0f );
 			glTexCoord2i( 1, 1 );
-			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, 0 );
+			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, 0.0f );
 			glTexCoord2i( 0, 0 );
 			glVertex2f( 0, MENU_ITEM_HEIGHT * particle[i].zoom );
 			glTexCoord2i( 1, 0 );
@@ -170,7 +170,7 @@ void TextEffect::buildTextures() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glColor4f( 0, 0, 0, 0 );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	glsEnable( GLS_TEXTURE_2D );
 	glBegin( GL_TRIANGLE_STRIP );

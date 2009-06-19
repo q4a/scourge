@@ -73,7 +73,7 @@ bool ContainerView::onDraw( Widget* ) {
 	glsDisable( GLS_BLEND );
 
 	container->getContainerTexture().glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -86,7 +86,7 @@ bool ContainerView::onDraw( Widget* ) {
 	glEnd();
 	
 	glPushMatrix();
-	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
+	glTranslated( OFFSET_X, OFFSET_Y, 0 );
 
 	glsDisable( GLS_TEXTURE_2D );
 
@@ -126,7 +126,7 @@ bool ContainerView::onDraw( Widget* ) {
 		int ph = getSelectedItem()->getBackpackHeight() * GRID_SIZE;
 
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glColor4f( 0, 0, 0, 0.5f );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( px, py );
@@ -161,7 +161,7 @@ bool ContainerView::onDraw( Widget* ) {
 	glsDisable( GLS_BLEND );
 
 	glsEnable( GLS_TEXTURE_2D );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );

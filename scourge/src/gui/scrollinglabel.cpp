@@ -156,7 +156,7 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	glsDisable( GLS_TEXTURE_2D );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glColor4f( 0, 0, 0, 0.4f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( scrollerWidth, 0 );
@@ -251,7 +251,7 @@ char *ScrollingLabel::printLine( Window* parent, int x, int y, char *s ) {
 			        wordPos[ wordPosCount ].y <= ty &&
 			        wordPos[ wordPosCount ].y + wordPos[ wordPosCount ].h > ty ) {
 				// FIXME: shouldn't be hard-coded
-				glColor4f( 1, 0, 1, 1 );
+				glColor4f( 1.0f, 0.0f, 1.0f, 1.0f );
 			} else {
 				Color c = coloring[ *p ];
 				glColor4f( c.r, c.g, c.b, c.a );

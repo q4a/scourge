@@ -176,7 +176,7 @@ void ScrollingList::drawWidget( Window* parent ) {
 			// writing text is expensive, only print what's visible
 			if ( ypos >= 0 && ypos < getHeight() + lineHeight ) {
 				if ( icons ) drawIcon( scrollerWidth + 5, ypos - ( lineHeight - 5 ), icons[i], parent );
-				if ( colors ) glColor4f( ( colors + i )->r, ( colors + i )->g, ( colors + i )->b, 1 );
+				if ( colors ) glColor4f( ( colors + i )->r, ( colors + i )->g, ( colors + i )->b, 1.0f );
 				else if ( isSelected( i ) && theme->getSelectionText() ) {
 					glColor4f( theme->getSelectionText()->r,
 					           theme->getSelectionText()->g,
@@ -224,7 +224,7 @@ void ScrollingList::drawWidget( Window* parent ) {
 	glsDisable( GLS_TEXTURE_2D );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glColor4f( 0, 0, 0, 0.4f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( scrollerWidth, 0 );
@@ -309,9 +309,9 @@ void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glPushMatrix();
-	glTranslatef( x, y, 0 );
+	glTranslated( x, y, 0 );
 	if ( icon.isSpecified() ) icon.glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 
 	glBegin( GL_TRIANGLE_STRIP );

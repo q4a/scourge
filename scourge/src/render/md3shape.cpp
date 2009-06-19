@@ -136,7 +136,7 @@ void MD3Shape::outline( float r, float g, float b ) {
 	glPolygonMode( GL_BACK, GL_FILL );
 	glsEnable( GLS_TEXTURE_2D );
 	useShadow = false;
-	glColor4f( 1, 1, 1, 0.9f );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 }
 
 void MD3Shape::setModelAnimation() {

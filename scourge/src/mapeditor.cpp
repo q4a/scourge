@@ -343,7 +343,7 @@ void MapEditor::drawView() {
 	glsDisable( GLS_DEPTH_TEST );
 	glsDisable( GLS_TEXTURE_2D );
 	glPushMatrix();
-	glColor3f( 1, 0, 0 );
+	glColor3f( 1.0f, 0.0f, 0.0f );
 
 	glLoadIdentity();
 
@@ -366,12 +366,12 @@ void MapEditor::drawView() {
 		    ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
 	}
 	if ( outdoorTexturesButton->isSelected() ) {
-		glColor3f( 1, 1, 0 );
+		glColor3f( 1.0f, 1.0f, 0.0f );
 		scourge->getSDLHandler()->texPrint( 50, 130, "Keys: z,x - rotate, q,w - mirror" );
-		glColor3f( 1, 0, 0 );
+		glColor3f( 1.0f, 0.0f, 0.0f );
 	}
-	glTranslatef( 50, 50, 0 );
-	glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
+	glTranslated( 50, 50, 0 );
+	glRotatef( scourge->getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
 
 	int n = 30;
 	glBegin( GL_LINES );

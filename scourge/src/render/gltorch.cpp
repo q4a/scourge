@@ -82,13 +82,13 @@ void GLTorch::draw() {
 			// save the model_view matrix
 			glPushMatrix();
 
-			w = static_cast<float>( width * MUL ) / 2.0;
+			w = static_cast<float>( width * MUL ) / 2.0f;
 			//float d = static_cast<float>(depth * MUL) / 2.0;
-			h = static_cast<float>( height * MUL ) / 2.5;
+			h = static_cast<float>( height * MUL ) / 2.5f;
 			if ( h == 0 ) h = 0.25f * MUL;
 
 			// position the particle
-			GLfloat z = static_cast<float>( particle[i]->z * h ) / 10.0;
+			GLfloat z = static_cast<float>( particle[i]->z * h ) / 10.0f;
 			if ( isSpell ) {
 				glTranslatef( particle[i]->x, z, particle[i]->y );
 				w = h = 0.75f * MUL;
@@ -104,9 +104,9 @@ void GLTorch::draw() {
 
 			if ( color == 0xffffffff ) {
 				float color = 1.0f / ( ( GLfloat )particle[i]->height / ( GLfloat )particle[i]->z );
-				float red = Util::roll( 0.0f, ( 1.0f - color ) / 4.0 );
-				float green = Util::roll( 0.0f, ( 1.0f - color ) / 8.0 );
-				float blue = Util::roll( 0.0f, ( 1.0f - color ) / 10.0 );
+				float red = Util::roll( 0.0f, ( 1.0f - color ) / 4.0f );
+				float green = Util::roll( 0.0f, ( 1.0f - color ) / 8.0f );
+				float blue = Util::roll( 0.0f, ( 1.0f - color ) / 10.0f );
 				glColor4f( color + red, color + green, color + blue, 1.0f );
 			} else {
 				float red = ( static_cast<float>( ( this->color & 0xff000000 ) >> ( 3 * 8 ) ) +
@@ -173,7 +173,7 @@ void GLTorch::draw() {
 
 		// position the particle
 		glTranslatef( -( size / 2.0f ),
-		              0,
+		              0.0f,
 		              -( size / 2.0f ) );
 
 		// HACK: this is for spells

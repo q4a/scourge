@@ -112,10 +112,10 @@ void MiniMap::drawMap() {
 	// Set rotation/translation for all following drawing operations.
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0.0f );
-	glTranslatef( mmcenter, mmcenter, 0.0f );
+	glTranslated( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0 );
+	glTranslated( mmcenter, mmcenter, 0 );
 	glRotatef( map->getZRot(), 0.0f, 0.0f, 1.0f );
-	glTranslatef( -mmcenter, -mmcenter, 0.0f );
+	glTranslated( -mmcenter, -mmcenter, 0 );
 
 	// Create the stencil from the minimap mask texture.
 	if ( useStencil ) {
@@ -176,7 +176,7 @@ void MiniMap::drawMap() {
 		glEnd();
 		glPushMatrix();
 		glRotatef( -45.0f, 0.0f, 0.0f, 1.0f );
-		glTranslatef( -7.0f, 20.0f, 0.0f );
+		glTranslated( -7, 20, 0 );
 		glScalef( 1.5f, 1.5f, 1.5f );
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 		scourge->getSDLHandler()->texPrint( 0, 0, "N" );
@@ -383,19 +383,19 @@ void MiniMap::drawMap() {
 		int roffsy = ( ry - rtop ) * REGION_SIZE;
 
 		// Our position within the region
-		int px = ( map->getMapX() / (float)MAP_WIDTH ) * (float)REGION_SIZE;
-		int py = ( map->getMapY() / (float)MAP_DEPTH ) * (float)REGION_SIZE;
+		float px = ( map->getMapX() / (float)MAP_WIDTH ) * (float)REGION_SIZE;
+		float py = ( map->getMapY() / (float)MAP_DEPTH ) * (float)REGION_SIZE;
 
 		// Where to draw the center bitmap
-		int x = mmcenter - roffsx - px;
-		int y = mmcenter - roffsy - py;
+		float x = mmcenter - roffsx - px;
+		float y = mmcenter - roffsy - py;
 		
 		// Variables for the bitmaps to draw
 		int bitmapX, bitmapY;
 
 		// Calculate alpha for the superimposed travel map
 
-		#define CHANGE_PER_SECOND 0.1f
+		#define CHANGE_PER_MICRO_SECOND 0.0001f
 
 		targetTravelMapAlpha = targetAlpha;
 
@@ -404,7 +404,7 @@ void MiniMap::drawMap() {
 		lastAlphaCheck = now;
 
 		float oldAlpha = currentTravelMapAlpha;
-		currentTravelMapAlpha += signum( (float)(targetTravelMapAlpha - currentTravelMapAlpha) ) * ( (float)elapsed / 1000 * CHANGE_PER_SECOND );
+		currentTravelMapAlpha += signum( (float)(targetTravelMapAlpha - currentTravelMapAlpha) ) * ( (float)elapsed * CHANGE_PER_MICRO_SECOND );
 
 		// Do some clipping so the alpha doesn't oscillate around the target value
 		if ( ( ( oldAlpha < targetTravelMapAlpha ) && ( currentTravelMapAlpha > targetTravelMapAlpha ) ) || ( ( oldAlpha > targetTravelMapAlpha ) && ( currentTravelMapAlpha < targetTravelMapAlpha ) ) ) currentTravelMapAlpha = targetTravelMapAlpha;
@@ -425,7 +425,7 @@ void MiniMap::drawMap() {
 
 				glPushMatrix();
 				scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
-				glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0 );
+				glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0.0f );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( 0, 0 );
@@ -477,8 +477,8 @@ void MiniMap::drawMap() {
 
 	if ( outdoors && player ) {
 		// Offset of the crosshair from minimap center in regard to player vs. camera location
-		int ox = ( ( player->getX() - map->getMapX() ) / (float)MAP_WIDTH ) * (float)REGION_SIZE;
-		int oy = ( ( player->getY() - map->getMapY() ) / (float)MAP_DEPTH ) * (float)REGION_SIZE;
+		float ox = ( ( player->getX() - map->getMapX() ) / (float)MAP_WIDTH ) * (float)REGION_SIZE;
+		float oy = ( ( player->getY() - map->getMapY() ) / (float)MAP_DEPTH ) * (float)REGION_SIZE;
 
 		glColor4f( 1.0f, 0.0f, 0.0f, currentTravelMapAlpha );
 		glTranslatef( mmcenter + ox, mmcenter + oy, 0.0f );

@@ -54,13 +54,13 @@ void Progress::updateStatusLight( const char *message, int n, int max ) {
 		width = maxWidth;
 	}
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	if ( message && strlen( message ) ) scourgeGui->texPrint( 0, 22, message );
 
 	for ( int i = 0; i < 2; i++ ) {
 		switch ( i ) {
 		case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
-		case 1: glColor4f( 1, 1, 1, 0.8f ); break;
+		case 1: glColor4f( 1.0f, 1.0f, 1.0f, 0.8f ); break;
 		}
 		Widget::drawBorderedTexture( highlight,
 		                             0, 0,
@@ -105,7 +105,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	int x = ( center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture.isSpecified() ? TEXTURE_BORDER : 0 ) );
 	//int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
 	int y = 0;
-	glTranslatef( x, y, 0.0f );
+	glTranslated( x, y, 0 );
 	
 	glsDisable( GLS_TEXTURE_2D );
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -137,7 +137,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 		glPushMatrix();
 		//if(updateScreen)
 		glLoadIdentity();
-		glTranslatef( x + 10, y + 32, 0 );
+		glTranslated( x + 10, y + 32, 0 );
 		switch ( i ) {
 		case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
 		case 1: glColor4f( 1.0f, 1.0f, 1.0f, 0.8f ); break;

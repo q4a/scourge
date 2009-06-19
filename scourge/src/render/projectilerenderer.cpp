@@ -31,7 +31,7 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 
 	glPushMatrix();
 	glTranslatef( last.x, last.y, last.z );
-	glColor4f( 1, 1, 1, 0.9f );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 	glsDisable( GLS_CULL_FACE );
 	( ( GLShape* )shape )->setCameraPos( map->getXPos(),
 	                                     map->getYPos(),
@@ -42,7 +42,7 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	float f = proj->getAngle() + 90;
 	if ( f < 0 ) f += 360;
 	if ( f >= 360 ) f -= 360;
-	glRotatef( f, 0, 0, 1 );
+	glRotatef( f, 0.0f, 0.0f, 1.0f );
 
 	// for projectiles, set the correct camera angle
 	if ( proj->getAngle() < 90 ) {
@@ -97,7 +97,7 @@ void EffectProjectileRenderer::drawPath( Map *map, RenderedProjectile *proj, std
 		CVector3 v = ( *path )[i];
 		glPushMatrix();
 		glTranslatef( v.x, v.y, v.z );
-		glColor4f( 1, 1, 1, 0.9f );
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 		glsDisable( GLS_CULL_FACE | GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
