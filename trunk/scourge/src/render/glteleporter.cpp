@@ -71,7 +71,7 @@ void GLTeleporter::draw() {
 
 		if ( flameTex.isSpecified() ) flameTex.glBind();
 
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front

@@ -361,7 +361,7 @@ bool Equip::onDraw( Widget* ) {
 		scrollTexture.glBind();
 	}
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -428,13 +428,13 @@ void Equip::drawSpells() {
 		MagicSchool *school = MagicSchool::getMagicSchool( i );
 
 		glPushMatrix();
-		glTranslatef( xx, yy - 12, 0 );
+		glTranslated( xx, yy - 12, 0 );
 
 		int size = 15;
 		int width = w - 55;
 
 		glsDisable( GLS_TEXTURE_2D );
-		glColor4f( 0, 0, 0, 0.75 );
+		glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 1 );
 		glVertex2i( size + width, 1 );
@@ -444,7 +444,7 @@ void Equip::drawSpells() {
 		glsEnable( GLS_TEXTURE_2D );
 
 		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ).glBind();
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -456,7 +456,7 @@ void Equip::drawSpells() {
 		glVertex2i( size, size );
 		glEnd();
 
-		glColor4f( 1, 0.35f, 0, 1 );
+		glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
 		pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, school->getDisplayName() );
 		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -468,7 +468,7 @@ void Equip::drawSpells() {
 			Spell *spell = school->getSpell( t );
 			if ( creature && creature->isSpellMemorized( spell ) ) {
 				pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
-				glColor4f( 1, 1, 1, 1 );
+				glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( xx, yy );
@@ -481,7 +481,7 @@ void Equip::drawSpells() {
 				glEnd();
 			}
 			if ( schoolIndex == i && spellIndex == t ) {
-				glColor4f( 1, 1, 0, 1 );
+				glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 			} else {
 				pcUi->getWindow()->setTopWindowBorderColor();
 			}
@@ -509,7 +509,7 @@ void Equip::drawCapabilities() {
 	int yy = 20;
 
 	glPushMatrix();
-	glTranslatef( xx, yy - 12, 0 );
+	glTranslated( xx, yy - 12, 0 );
 
 	int size = 15;
 	int width = w - 55;
@@ -518,7 +518,7 @@ void Equip::drawCapabilities() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glsDisable( GLS_TEXTURE_2D );
 
-	glColor4f( 0, 0, 0, 0.75 );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 1 );
 	glVertex2i( size + width, 1 );
@@ -528,7 +528,7 @@ void Equip::drawCapabilities() {
 
 	glsEnable( GLS_TEXTURE_2D );
 
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, _( "Special Capabilities" ) );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -564,7 +564,7 @@ void Equip::drawCapabilities() {
 			}
 
 			pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ].glBind();
-			glColor4f( 1, 1, 1, 1 );
+			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -578,7 +578,7 @@ void Equip::drawCapabilities() {
 			glEnd();
 
 			if ( specialSkill == ss ) {
-				glColor4f( 1, 1, 0, 1 );
+				glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 			} else {
 				pcUi->getWindow()->setTopWindowBorderColor();
 			}

@@ -360,7 +360,7 @@ void Weather::drawWeather() {
 	if ( shouldDrawWeather && fogIntensity ) {
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( 0, 0, 0 );
+		glTranslated( 0, 0, 0 );
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.4f * fogIntensity );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -395,9 +395,9 @@ void Weather::drawWeather() {
 
 		for ( int i = 0; i < snowFlakeCount; i++ ) {
 			glLoadIdentity();
-			glTranslatef( snowFlakeX[i], snowFlakeY[i], 0 );
+			glTranslatef( snowFlakeX[i], snowFlakeY[i], 0.0f );
 			glScalef( mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i] );
-//			glRotatef( 15, 0, 0, 1 );
+//			glRotatef( 15.0f, 0.0f, 0.0f, 1.0f );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -438,11 +438,11 @@ void Weather::drawWeather() {
 			if ( lightningTime < 501 && ( currentWeather & WEATHER_THUNDER ) ) {
 				glColor4f( 1.0f, 1.0f, 1.0f, rainDropZ[i] );
 			} else {
-				//glColor4f( 0, 0.8f, 1, 0.5f );
+				//glColor4f( 0.0f, 0.8f, 1.0f, 0.5f );
 				glColor4f( 0.0f, 0.5f, 0.7f, rainDropZ[i] );
 			}
 			glLoadIdentity();
-			glTranslatef( rainDropX[i], rainDropY[i], 0 );
+			glTranslatef( rainDropX[i], rainDropY[i], 0.0f );
 			glScalef( mapZoom, mapZoom, mapZoom );
 			glRotatef( 15.0f, 0.0f, 0.0f, 1.0f );
 
@@ -486,7 +486,7 @@ void Weather::drawWeather() {
 			cloudDelta = static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( cloudSpeed[i] ) / 1000 );
 
 			glLoadIdentity();
-			glTranslatef( cloudX[i], cloudY[i], 10 );
+			glTranslatef( cloudX[i], cloudY[i], 0.0f );
 			glScalef( mapZoom, mapZoom, mapZoom );
 
 			glBegin( GL_TRIANGLE_STRIP );
@@ -531,8 +531,8 @@ void Weather::drawWeather() {
 
 			glPushMatrix();
 			glLoadIdentity();
-			glTranslatef( 0, 0, 0 );
-			glColor4f( 1, 1, 1, brightness );
+			glTranslated( 0, 0, 0 );
+			glColor4f( 1.0f, 1.0f, 1.0f, brightness );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
@@ -584,7 +584,7 @@ void Weather::drawWeather() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( 0, 0, 0 );
+		glTranslated( 0, 0, 0 );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 0 );

@@ -175,9 +175,9 @@ public:
 		glColor4f( borderColor2.r, borderColor2.g, borderColor2.b, borderColor2.a );
 	}
 	inline void applyBackgroundColor( bool opaque = false ) {
-		glColor4f( ( enabled ? background.r : background.r / 2 ),
-		           ( enabled ? background.g : background.g / 2 ),
-		           ( enabled ? background.b : background.b / 2 ),
+		glColor4f( ( enabled ? background.r : background.r / 2.0f ),
+		           ( enabled ? background.g : background.g / 2.0f ),
+		           ( enabled ? background.b : background.b / 2.0f ),
 		           ( opaque ? 1.0f : 0.85f ) );
 	}
 	inline void applySelectionColor() {

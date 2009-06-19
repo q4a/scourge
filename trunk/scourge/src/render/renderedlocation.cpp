@@ -387,10 +387,10 @@ void RenderedLocation::drawItem() {
 void RenderedLocation::drawEffect() {
 	if ( pos && pos->creature ) {
 		// translate hack for md2 models... see: md2shape::draw()
-		//glTranslatef( 0, -1 * MUL, 0 );
+		//glTranslatef( 0.0f, -1.0f * MUL, 0.0f );
 		pos->creature->getEffect()->draw( pos->creature->getEffectType(),
 		                                    pos->creature->getDamageEffect() );
-		//glTranslatef( 0, 1 * MUL, 0 );
+		//glTranslatef( 0.0f, 1.0f * MUL, 0.0f );
 	} else if ( effect ) {
 		effect->getEffect()->draw( effect->getEffectType(),
 		                                  effect->getDamageEffect() );
@@ -418,7 +418,7 @@ void RenderedLocation::drawShape() {
 void RenderedLocation::drawMousePosition() {
 	if ( pos && pos->shape && !useShadow && ( pos->item || pos->creature || pos->shape->isInteractive() || pos->shape->isRoof() ) ) {
 		glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( 0, pos->shape->getDepth() * MUL, 0 );

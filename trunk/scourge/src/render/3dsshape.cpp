@@ -542,7 +542,7 @@ void C3DSShape::outline( float r, float g, float b ) {
 	glsEnable( GLS_TEXTURE_2D );
 
 	useShadow = false;
-	glColor4f( 1, 1, 1, 0.9f );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 }
 
 void C3DSShape::setupBlending() {

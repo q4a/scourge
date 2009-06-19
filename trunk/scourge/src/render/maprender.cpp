@@ -185,7 +185,7 @@ void MapRender::willDrawGrid() {
 		float n = static_cast<float>( MAP_UNIT ) * MUL;
 
 		glPushMatrix();
-		glTranslatef( map->chunks[i].x, map->chunks[i].y - ( 1.0f * MUL ), 0 );
+		glTranslatef( map->chunks[i].x, map->chunks[i].y - ( 1.0f * MUL ), 0.0f );
 
 		if ( map->chunks[i].cx == chunkX && map->chunks[i].cy == chunkY ) {
 			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
@@ -302,7 +302,7 @@ void MapRender::drawTraps() {
 			// FIXME: colors should be ref-d from scourgeview.cpp colors
 			if ( !trap->enabled ) {
 				//ret = disabledTrapColor;
-				glColor4f( 0.5, 0.5, 0.5, 0.5f );
+				glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 			} else if ( trap->discovered ) {
 				if ( trap == map->getTrapLoc( map->getSelectedTrapIndex() ) ) {
 					//ret = outlineColor;
@@ -456,25 +456,21 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 			glBegin( GL_TRIANGLE_STRIP );
 
 			glTexCoord2f( texSx, texSy );
-			//glColor4f( 1, 0, 0, 1 );
 			gx = map->groundPos[ xx ][ yy ].x - map->getX() * MUL;
 			gy = map->groundPos[ xx ][ yy ].y - map->getY() * MUL;
 			glVertex3f( gx, gy, map->groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texEx, texSy );
-			//glColor4f( 1, 1, 1, 1 );
 			gx = map->groundPos[ xx + 1 ][ yy ].x - map->getX() * MUL;
 			gy = map->groundPos[ xx + 1 ][ yy ].y - map->getY() * MUL;
 			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texSx, texEy );
-			//glColor4f( 1, 1, 1, 1 );
 			gx = map->groundPos[ xx ][ yy + 1 ].x - map->getX() * MUL;
 			gy = map->groundPos[ xx ][ yy + 1 ].y - map->getY() * MUL;
 			glVertex3f( gx, gy, map->groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texEx, texEy );
-			//glColor4f( 1, 1, 1, 1 );
 			gx = map->groundPos[ xx + 1 ][ yy + 1 ].x - map->getX() * MUL;
 			gy = map->groundPos[ xx + 1 ][ yy + 1 ].y - map->getY() * MUL;
 			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );

@@ -192,7 +192,7 @@ public:
 		xIconRot = x; yIconRot = y; zIconRot = z;
 	}
 	inline void applyIconRotation() {
-		glRotatef( xIconRot, 1, 0, 0 ); glRotatef( yIconRot, 0, 1, 0 ); glRotatef( zIconRot, 0, 0, 1 );
+		glRotatef( xIconRot, 1.0f, 0.0f, 0.0f ); glRotatef( yIconRot, 0.0f, 1.0f, 0.0f ); glRotatef( zIconRot, 0.0f, 0.0f, 1.0f );
 	}
 	inline void setIcon( Texture n, int w, int h ) {
 		icon = n; iconWidth = w; iconHeight = h;

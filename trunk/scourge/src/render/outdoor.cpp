@@ -356,7 +356,7 @@ bool Outdoor::drawHeightMapFloor() {
 				glTexCoord2f( p[i]->u, p[i]->v );
 				glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
 				//} else {
-				//glColor4f( 0, 0, 0, 0 );
+				//glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 				//}
 				gx = p[i]->x - map->getX() * MUL;
 				gy = p[i]->y - map->getY() * MUL;

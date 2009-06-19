@@ -2481,13 +2481,13 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 						glPushMatrix();
-						//    glTranslatef( x, y, 0 );
+						//    glTranslated( x, y, 0 );
 						if ( storable->getStorableType() == Storable::ITEM_STORABLE ) {
 							getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						} else {
 							getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						}
-						glColor4f( 1, 1, 1, 1 );
+						glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 //            glNormal3f( 0, 0, 1 );
 						glBegin( GL_TRIANGLE_STRIP );
@@ -2517,10 +2517,10 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	item->getItemIconTexture().glBind();
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glPushMatrix();
-	//glTranslatef( 0, 5, 0 );
+	//glTranslated( 0, 5, 0 );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -2573,7 +2573,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int offs_y ) {
 	glPushMatrix();
 	glsEnable( GLS_TEXTURE_2D );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	if ( p == NULL ) {
 		getSession()->getShapePalette()->getNamedTexture( "nobody" ).glBind();
 	} else if ( p->getStateMod( StateMod::dead ) ) {
@@ -2608,26 +2608,26 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			}
 			// already had a turn in battle
 			if ( !found ) {
-				glColor4f( 0, 0, 0, 0.75f );
+				glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
 				shade = true;
 				darker = true;
 			}
 		}
 
 		if ( p->getStateMod( StateMod::possessed ) ) {
-			glColor4f( ( darker ? 0.5f : 1.0f ), 0, 0, 0.5f );
+			glColor4f( ( darker ? 0.5f : 1.0f ), 0.0f, 0.0f, 0.5f );
 			shade = true;
 		} else if ( p->getStateMod( StateMod::invisible ) ) {
-			glColor4f( 0, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
+			glColor4f( 0.0f, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
 			shade = true;
 		} else if ( p->getStateMod( StateMod::poisoned ) ) {
-			glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0, 0.5f );
+			glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0.0f, 0.5f );
 			shade = true;
 		} else if ( p->getStateMod( StateMod::blinded ) ) {
 			glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), 0.5f );
 			shade = true;
 		} else if ( p->getStateMod( StateMod::cursed ) ) {
-			glColor4f( ( darker ? 0.375f : 0.75f ), 0, ( darker ? 0.375f : 0.75f ), 0.5f );
+			glColor4f( ( darker ? 0.375f : 0.75f ), 0.0f, ( darker ? 0.375f : 0.75f ), 0.5f );
 			shade = true;
 		}
 		if ( shade ) {
@@ -2646,7 +2646,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glPopMatrix();
 
 	if ( p ) {
-		glColor3f( 1, 1, 1 );
+		glColor3f( 1.0f, 1.0f, 1.0f );
 		getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
 		char *message = NULL;
@@ -2660,9 +2660,9 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		}
 
 		if ( message ) {
-			glColor4f( 0, 0, 0, 0.4f );
+			glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
 			glPushMatrix();
-			glTranslatef( 3, 14, 0 );
+			glTranslated( 3, 14, 0 );
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_TRIANGLE_STRIP );
@@ -2673,7 +2673,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glEnd();
 			glsDisable( GLS_BLEND );
 			glPopMatrix();
-			glColor3f( 1, 0.75f, 0 );
+			glColor3f( 1.0f, 0.75f, 0.0f );
 			getSDLHandler()->texPrint( 5, 24, message );
 		}
 
@@ -2692,7 +2692,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 				icon.glBind();
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
-				glTranslatef( 5 + xp * ( n + 1 ), height - ( yp * ( n + 1 ) ) - n, 0 );
+				glTranslated( 5 + xp * ( n + 1 ), height - ( yp * ( n + 1 ) ) - n, 0 );
 //    glNormal3f( 0, 0, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
@@ -3802,7 +3802,7 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 	float armor, dodgePenalty;
 	p->getInitiative( &initiative );
 
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	snprintf( s, S_SIZE, "%s:%d", _( "Initiative" ), initiative );
 	getSDLHandler()->texPrint( x, y, s );
 
@@ -3823,7 +3823,7 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	getShapePalette()->getHandsAttackIcon().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -3842,7 +3842,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 	enum { LINE_SIZE = 80 };
 	char buff[ LINE_SIZE ];
 	char line1[ LINE_SIZE ], line2[ LINE_SIZE ], line3[ LINE_SIZE ];
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	float max, min, cth, skill;
 	if ( ( item && item->getRpgItem()->isWeapon() ) || ( !item && handleNull ) ) {
 		if ( item ) {
@@ -3870,7 +3870,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 		}
 		snprintf( line2, LINE_SIZE, "%s:%d", _( "CTH" ), toint( skill ) );
 		snprintf( line3, LINE_SIZE, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff, LINE_SIZE ) );
-		glColor4f( 1, 0.35f, 0, 1 );
+		glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 		getSDLHandler()->texPrint( x + 34, y, line1 );
 		getSDLHandler()->texPrint( x + 34, y + 12, line2 );
 		getSDLHandler()->texPrint( x + 34, y + 24, line3 );

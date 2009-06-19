@@ -216,7 +216,7 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
 		           theme->getWindowBorder()->color.b,
 		           theme->getWindowBorder()->color.a );
 	} else {
-		glColor3f( 0, 0, 0 );
+		glColor3f( 0.0f, 0.0f, 0.0f );
 	}
 	glBegin( GL_LINES );
 	if ( layout == HORIZONTAL_LAYOUT ) {

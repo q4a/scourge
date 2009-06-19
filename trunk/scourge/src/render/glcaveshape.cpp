@@ -259,16 +259,16 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	floorTextureGroup[ GLShape::FRONT_SIDE ].glBind();
-	glColor4f(  1, 1, 1, 0.75f );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.75f );
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0 + lavaTexX, 0 + lavaTexY );
+	glTexCoord2f( 0.0f + lavaTexX, 0.0f + lavaTexY );
 	glVertex3f( 0, 0, n );
-	glTexCoord2f( 1 + lavaTexX, 0 + lavaTexY );
+	glTexCoord2f( 1.0f + lavaTexX, 0.0f + lavaTexY );
 	glVertex3f( w, 0, n );
-	glTexCoord2f( 0 + lavaTexX, 1 + lavaTexY );
+	glTexCoord2f( 0.0f + lavaTexX, 1.0f + lavaTexY );
 	glVertex3f( 0, d, n );
-	glTexCoord2f( 1 + lavaTexX, 1 + lavaTexY );
+	glTexCoord2f( 1.0f + lavaTexX, 1.0f + lavaTexY );
 	glVertex3f( w, d, n );
 	glEnd();
 	glsDisable( GLS_BLEND );
@@ -277,9 +277,9 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 		glsEnable( GLS_ALPHA_TEST );
 		glAlphaFunc( GL_GREATER, 0x00 );
 		glPushMatrix();
-		glTranslatef( ( w / 2 ), ( d / 2 ), 0 );
-		glRotatef( stencilAngle, 0, 0, 1 );
-		glTranslatef( -( w / 2 ), -( d / 2 ), 0 );
+		glTranslatef( ( w / 2 ), ( d / 2 ), 0.0f );
+		glRotatef( stencilAngle, 0.0f, 0.0f, 1.0f );
+		glTranslatef( -( w / 2 ), -( d / 2 ), 0.0f );
 		glBindTexture( GL_TEXTURE_2D, our.floorTex[ stencilIndex ] );
 
 		glBegin( GL_TRIANGLE_STRIP );

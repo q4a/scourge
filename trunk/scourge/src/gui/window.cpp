@@ -436,7 +436,7 @@ void Window::drawWidget( Window* ) {
 
 		// top bar
 		if ( title || ( closeButton && !isLocked() ) ) {
-			glColor4f( 0, 0, 0, 0.5f );
+			glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -504,11 +504,11 @@ void Window::drawBackground( int topY, int openHeight ) {
 		glBegin ( GL_TRIANGLE_STRIP );
 		glTexCoord2f ( 0.0f, 0.0f );
 		glVertex2i ( 0, topY );
-		glTexCoord2f ( 1, 0 );
+		glTexCoord2f ( 1.0f, 0.0f );
 		glVertex2i ( w, topY );
-		glTexCoord2f ( 0, 1 );
+		glTexCoord2f ( 0.0f, 1.0f );
 		glVertex2i ( 0, topY + openHeight );
-		glTexCoord2f ( 1, 1 );
+		glTexCoord2f ( 1.0f, 1.0f );
 		glVertex2i ( w, topY + openHeight );
 		glEnd ();
 	} else if ( type == SIMPLE_WINDOW ) {
@@ -518,11 +518,11 @@ void Window::drawBackground( int topY, int openHeight ) {
 		glBegin ( GL_TRIANGLE_STRIP );
 		glTexCoord2f ( 0.0f, 0.0f );
 		glVertex2i ( 0, topY );
-		glTexCoord2f ( 1, 0 );
+		glTexCoord2f ( 1.0f, 0.0f );
 		glVertex2i ( w, topY );
-		glTexCoord2f ( 0, openHeight / static_cast<float>( tileHeight ) );
+		glTexCoord2f ( 0.0f, openHeight / static_cast<float>( tileHeight ) );
 		glVertex2i ( 0, topY + openHeight );
-		glTexCoord2f ( 1, openHeight / static_cast<float>( tileHeight ) );
+		glTexCoord2f ( 1.0f, openHeight / static_cast<float>( tileHeight ) );
 		glVertex2i ( w, topY + openHeight );
 		glEnd ();
 	} else if ( type == BASIC_WINDOW ) {
@@ -542,13 +542,13 @@ void Window::drawBackground( int topY, int openHeight ) {
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2i( 0, topY );
-		glTexCoord2f( 1, 0.0f );
+		glTexCoord2f( 1.0f, 0.0f );
 		//glTexCoord2d( w/static_cast<float>(tileWidth), 0 );
 		glVertex2i( w, topY );
 		glTexCoord2f( 0.0f, ( openHeight ) / static_cast<float>( tileHeight ) );
 		glVertex2i( 0, topY + openHeight );
 		//glTexCoord2f( w/static_cast<float>(tileWidth), ( openHeight ) /static_cast<float>(tileHeight) );
-		glTexCoord2f( 1, ( openHeight ) / static_cast<float>( tileHeight ) );
+		glTexCoord2f( 1.0f, ( openHeight ) / static_cast<float>( tileHeight ) );
 		glVertex2i( w, topY + openHeight );
 		glEnd();
 	}
@@ -605,7 +605,7 @@ void Window::drawTitle( int topY, int openHeight ) {
 		           theme->getWindowTitleText()->b,
 		           theme->getWindowTitleText()->a );
 	} else {
-		glColor3f( 1, 1, 1 );
+		glColor3f( 1.0f, 1.0f, 1.0f );
 	}
 	scourgeGui->setFontType( Constants::SCOURGE_UI_FONT );
 #ifdef DEBUG_WINDOWS
@@ -682,7 +682,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	           theme->getWindowBorderTexture()->color.a );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_nw.glBind();
-	glTranslatef( theme->getWindowBorderTexture()->width,
+	glTranslated( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -699,7 +699,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_ne.glBind();
-	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -716,7 +716,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_se.glBind();
-	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -733,7 +733,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_sw.glBind();
-	glTranslatef( theme->getWindowBorderTexture()->width,
+	glTranslated( theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -751,7 +751,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	int h = openHeight - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_west.glBind();
-	glTranslatef( theme->getWindowBorderTexture()->width,
+	glTranslated( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -768,7 +768,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_east.glBind();
-	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
+	glTranslated( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -786,7 +786,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	int w = getWidth() - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_north.glBind();
-	glTranslatef( n + theme->getWindowBorderTexture()->width,
+	glTranslated( n + theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -803,7 +803,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	glPushMatrix();
 	theme->getWindowBorderTexture()->tex_south.glBind();
-	glTranslatef( n + theme->getWindowBorderTexture()->width,
+	glTranslated( n + theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -903,12 +903,12 @@ void Window::scissorToWindow( bool insideOnly ) {
 
 #ifdef DEBUG_SCISSOR
 	glPushMatrix();
-	glTranslatef( -x, -y, 0 );
+	glTranslated( -x, -y, 0 );
 	glsDisable( GLS_TEXTURE_2D );
 	if ( insideOnly ) {
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	} else {
-		glColor4f( 1, 0, 0, 1 );
+		glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	}
 	glBegin( GL_LINE_LOOP );
 	glVertex2i( sx, sy - sh );

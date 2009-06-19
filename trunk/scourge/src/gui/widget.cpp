@@ -134,7 +134,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	GuiTheme *theme = parent->getTheme();
 
 	glPushMatrix();
-	glTranslatef( x, y, 0 );
+	glTranslated( x, y, 0 );
 
 	if ( isTranslucent() ) {
 		glsEnable( GLS_BLEND );
@@ -154,9 +154,9 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 				           theme->getButtonSelectionBackground()->color.b,
 				           theme->getButtonSelectionBackground()->color.a );
 			} else {
-				glColor4f( theme->getButtonSelectionBackground()->color.r / 2,
-				           theme->getButtonSelectionBackground()->color.g / 2,
-				           theme->getButtonSelectionBackground()->color.b / 2,
+				glColor4f( theme->getButtonSelectionBackground()->color.r / 2.0f,
+				           theme->getButtonSelectionBackground()->color.g / 2.0f,
+				           theme->getButtonSelectionBackground()->color.b / 2.0f,
 				           theme->getButtonSelectionBackground()->color.a / 2.0f );
 			}
 			n = theme->getButtonSelectionBackground()->width;
@@ -173,10 +173,10 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			           theme->getButtonBackground()->color.b,
 			           theme->getButtonBackground()->color.a );
 		} else {
-			glColor4f( theme->getButtonBackground()->color.r / 2,
-			           theme->getButtonBackground()->color.g / 2,
-			           theme->getButtonBackground()->color.b / 2,
-			           theme->getButtonBackground()->color.a / 2 );
+			glColor4f( theme->getButtonBackground()->color.r / 2.0f,
+			           theme->getButtonBackground()->color.g / 2.0f,
+			           theme->getButtonBackground()->color.b / 2.0f,
+			           theme->getButtonBackground()->color.a / 2.0f );
 		}
 		n = theme->getButtonBackground()->width;
 	} else {
@@ -229,7 +229,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslatef( 0, y2 - y - n, 0 );
+		glTranslated( 0, y2 - y - n, 0 );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_north.glBind();
 			else theme->getButtonSelectionBackground()->tex_south.glBind();
@@ -250,7 +250,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslatef( 0, n, 0 );
+		glTranslated( 0, n, 0 );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_east.glBind();
 			else theme->getButtonSelectionBackground()->tex_west.glBind();
@@ -271,7 +271,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
-		glTranslatef( x2 - x - n, n, 0 );
+		glTranslated( x2 - x - n, n, 0 );
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_west.glBind();
 			else theme->getButtonSelectionBackground()->tex_east.glBind();
@@ -312,7 +312,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			theme->getButtonHighlight()->texture.glBind();
 		}
 		// FIXME: use theme
-		glColor4f( 1, 0.15f, 0.15f, alpha );
+		glColor4f( 1.0f, 0.15f, 0.15f, alpha );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glsEnable( GLS_BLEND );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -472,67 +472,67 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 	texture.glBind();
 
 	glPushMatrix();
-	glTranslatef( x, y, 0 );
+	glTranslated( x, y, 0 );
 	glBegin( GL_QUADS );
 	if ( inverse ) {
 		// quad A
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1.0f );
 		glVertex2i( 0, 0 );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0.0f );
 		glVertex2i( 0, height );
-		glTexCoord2f( 0, 0 );
+		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2i( left, height );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2f( 0.0f, 1.0f );
 		glVertex2i( left, 0 );
 
 		// quad B
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1.0f );
 		glVertex2i( left, 0 );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0.0f );
 		glVertex2i( left, height );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0.0f );
 		glVertex2i( width - right, height );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1.0f );
 		glVertex2i( width - right, 0 );
 
 		// quad C
-		glTexCoord2f( 1, 1 );
+		glTexCoord2f( 1.0f, 1.0f );
 		glVertex2i( width - right, 0 );
-		glTexCoord2f( 1, 0 );
+		glTexCoord2f( 1.0f, 0.0f );
 		glVertex2i( width - right, height );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0.0f );
 		glVertex2i( width, height );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1.0f );
 		glVertex2i( width, 0 );
 	} else {
 		// quad A
-		glTexCoord2f( 0, 0 );
+		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2i( 0, 0 );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2f( 0.0f, 1.0f );
 		glVertex2i( 0, height );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1.0f );
 		glVertex2i( left, height );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0.0f );
 		glVertex2i( left, 0 );
 
 		// quad B
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 0.0f );
 		glVertex2i( left, 0 );
-		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1 );
+		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1.0f );
 		glVertex2i( left, height );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1.0f );
 		glVertex2i( width - right, height );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0.0f );
 		glVertex2i( width - right, 0 );
 
 		// quad C
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 0.0f );
 		glVertex2i( width - right, 0 );
-		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1 );
+		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1.0f );
 		glVertex2i( width - right, height );
-		glTexCoord2f( 1, 1 );
+		glTexCoord2f( 1.0f, 1.0f );
 		glVertex2i( width, height );
-		glTexCoord2f( 1, 0 );
+		glTexCoord2f( 1.0f, 0.0f );
 		glVertex2i( width, 0 );
 	}
 	glEnd();

@@ -131,37 +131,3 @@ void Canvas::cancelDrag() {
 void Canvas::removeEffects() {
 	highlightBorders = false;
 }
-
-/* unused and out of sync with changes
-ImageCanvas::ImageCanvas( int x, int y, int x2, int y2, GLuint image ) : Canvas( x, y, x2, y2, this, NULL, false ) {
-	this->image = image;
-}
-
-ImageCanvas::~ImageCanvas() {
-}
-
-void ImageCanvas::drawWidgetContents( Canvas *w ) {
-	glsEnable( GLS_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsEnable( GLS_TEXTURE_2D );
-
-	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, image );
-	glColor4f( 1, 1, 1, 1 );
-
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( getWidth(), 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, getHeight(), 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( getWidth(), getHeight(), 0 );
-	glEnd();
-	glPopMatrix();
-
-	glsDisable( GLS_TEXTURE_2D );
-	glsDisable( GLS_BLEND );
-}
-*/

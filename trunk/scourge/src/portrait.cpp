@@ -199,7 +199,7 @@ bool Portrait::onDraw( Widget* widget ) {
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	backgroundTexture.glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -218,20 +218,20 @@ bool Portrait::onDraw( Widget* widget ) {
 		           62, 77 );
 		glsEnable( GLS_SCISSOR_TEST );
 		glPushMatrix();
-		glTranslatef( 12, 14, 0 );
+		glTranslated( 12, 14, 0 );
 		pcUi->getScourge()->drawPortrait( creature, 62 + 20, 77, 10 );
 		glPopMatrix();
 		glsDisable( GLS_SCISSOR_TEST );
 	}
 
 	int y = 35;
-	glColor4f( 1, 0.8f, 0, 1 );
+	glColor4f( 1.0f, 0.8f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, creature->getName() );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 	//y += 17;
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	y = 35 + 17;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s",
 	                                               ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
@@ -242,7 +242,7 @@ bool Portrait::onDraw( Widget* widget ) {
 
 	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
 	pcUi->getScourge()->describeDefense( creature, 200, y );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	if ( mode == STATS_MODE ) {
 		showStats();
@@ -261,7 +261,7 @@ void Portrait::showStats() {
 	// hp/mp
 	int y = 120;
 // y += 18;
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
 	drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
@@ -291,9 +291,9 @@ void Portrait::showStats() {
 	y += SkillGroup::stats->getSkillCount() * 15;
 
 	// resistances y=250
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y - 2, "%s:", _( "Resistances" ) );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	int x = 5;
 	glsEnable( GLS_TEXTURE_2D );
 	for ( int i = 0; i < resistanceCount; i++ ) {
@@ -309,8 +309,8 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glPushMatrix();
-	glColor4f( 1, 1, 1, 1 );
-	glTranslatef( x, y, 0 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	glTranslated( x, y, 0 );
 	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -348,23 +348,23 @@ void Portrait::scrollSkillsDown() {
 
 void Portrait::showSkills() {
 	int y = 120;
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
-	if ( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
-	else glColor3f( 1, 1, 1 );
+	if ( creature->getHasAvailableSkillPoints() ) glColor3f( 1.0f, 0.0f, 0.0f );
+	else glColor3f( 1.0f, 1.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d",
 	                                               _( "Available Skill Points" ),
 	                                               creature->getAvailableSkillMod() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
 
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 160, y, sg->getDisplayName() );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	for ( int i = 0; i < sg->getSkillCount(); i++, y += 30 ) {
 		Skill *skill = sg->getSkill( i );
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		drawSkill( skill, y );
 	}
 }
@@ -406,11 +406,11 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 				}
 				if ( creature->getHasAvailableSkillPoints() ) {
 					if ( currentSkill == skill && currentMode == i ) {
-						glColor3f( 1, 1, 0 );
+						glColor3f( 1.0f, 1.0f, 0.0f );
 					} else {
-						glColor3f( 1, 1, 1 );
+						glColor3f( 1.0f, 1.0f, 1.0f );
 					}
-				} else glColor3f( 0.5, 0.5, 0.5 );
+				} else glColor3f( 0.5f, 0.5f, 0.5f );
 
 				glBegin( GL_LINE_LOOP );
 				glVertex2i( xx, dy + SKILL_BUTTON_SIZE );
@@ -440,7 +440,7 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 
 void Portrait::showStateMods() {
 	int y = 120;
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d", _( "Coins" ), creature->getMoney() );
 	y += 15;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Thirst" ) );
@@ -459,9 +459,9 @@ void Portrait::showStateMods() {
 	drawHorizontalLine( y + 4 );
 	y += 18;
 
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Character Conditions:" ) );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	y += 15;
 	int x = 10;
 
@@ -491,9 +491,9 @@ void Portrait::showStateMods() {
 
 	drawHorizontalLine( y - 12 );
 
-	glColor4f( 1, 0.35f, 0, 1 );
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Immune to Conditions:" ) );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	y += 15;
 	x = 10;
 	for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
@@ -522,7 +522,7 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 	icon.glBind();
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
-	glTranslatef( x, y - size, 0 );
+	glTranslated( x, y - size, 0 );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -535,16 +535,16 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 	glVertex2i( size, size );
 	glEnd();
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 10, name );
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
 	glPushMatrix();
 	glsEnable( GLS_TEXTURE_2D );
-	glTranslatef( x, y, 0 );
+	glTranslated( x, y, 0 );
 	barTexture.glBind();
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -565,7 +565,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 		if ( v > 0 ) {
 			n = static_cast<int>( static_cast<float>( v ) * static_cast<float>( BAR_INNER_WIDTH ) / static_cast<float>( maxValue ) );
 			glsDisable( GLS_TEXTURE_2D );
-			glColor4f( 0, 0.5f, 1, 1 );
+			glColor4f( 0.0f, 0.5f, 1.0f, 1.0f );
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( BAR_X, BAR_Y );
 			glVertex2i( BAR_X + n, BAR_Y );
@@ -592,18 +592,18 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBegin( GL_TRIANGLE_STRIP );
-	glColor4f( 0, 0, 0, 0.9f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.9f );
 	glVertex2i( BAR_X, BAR_Y );
-	glColor4f( 0, 0, 0, 0.85f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.85f );
 	glVertex2i( BAR_X + BAR_INNER_WIDTH, BAR_Y );
-	glColor4f( 0, 0, 0, 0.2f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.2f );
 	glVertex2i( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
-	glColor4f( 0, 0, 0, 0.2f );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.2f );
 	glVertex2i( BAR_X + BAR_INNER_WIDTH, BAR_Y + BAR_INNER_HEIGHT );
 	glEnd();
 	glsDisable( GLS_BLEND );
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glPopMatrix();
 }
 
@@ -618,16 +618,16 @@ void Portrait::drawHorizontalLine( int y ) {
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 	glBegin( GL_LINES );
-	glColor4f( 0.45f, 0.25f, 0, 0.75f );
+	glColor4f( 0.45f, 0.25f, 0.0f, 0.75f );
 	glVertex2i( 20, y );
-	glColor4f( 1, 0.75f, 0, 0.75f );
+	glColor4f( 1.0f, 0.75f, 0.0f, 0.75f );
 	glVertex2i( ( canvas->getWidth() - 20 ) / 2, y );
 	glVertex2i( ( canvas->getWidth() - 20 ) / 2, y );
-	glColor4f( 0.45f, 0.25f, 0, 0.75f );
+	glColor4f( 0.45f, 0.25f, 0.0f, 0.75f );
 	glVertex2i( canvas->getWidth() - 20, y );
 	glEnd();
 	glsDisable( GLS_BLEND );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glsEnable( GLS_TEXTURE_2D );
 	glLineWidth( 1 );
 }

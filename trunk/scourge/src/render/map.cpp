@@ -997,21 +997,6 @@ int Map::getPanningFromMapXY( Uint16 mapx, Uint16 mapy ) {
 	return toint( panning );
 }
 
-/*
-void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
-  float xpos2 = (static_cast<float>(mapx - getX()) * MUL);
-  float ypos2 = (static_cast<float>(mapy - getY()) * MUL);
-  float zpos2 = static_cast<float>(mapz) * MUL;
-  glTranslatef( xpos2, ypos2, zpos2 + 100);
-
-  //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  //glRasterPos2f( 0, 0 );
-  scourge->getSDLHandler()->texPrint(0, 0, "%s", message);
-
-  glTranslatef( -xpos2, -ypos2, -(zpos2 + 100));
-}
-*/
-
 /// Positions the "camera".
 
 void Map::setPos( float x, float y, float z ) {
@@ -1027,7 +1012,7 @@ void Map::setPos( float x, float y, float z ) {
 void Map::initMapView( bool ignoreRot ) {
 	glLoadIdentity();
 
-	glTranslatef( viewX, viewY, 0 );
+	glTranslatef( viewX, viewY, 0.0f );
 	glScissor( viewX, adapter->getScreenHeight() - ( viewY + viewHeight ), viewWidth, viewHeight );
 	glsEnable( GLS_SCISSOR_TEST );
 	// adjust for screen size
@@ -1038,7 +1023,7 @@ void Map::initMapView( bool ignoreRot ) {
 
 	// translate the camera and rotate
 	// the offsets ensure that the center of rotation is under the player
-	glTranslatef( this->xpos, this->ypos, 0 );
+	glTranslatef( this->xpos, this->ypos, 0.0f );
 	if ( !ignoreRot ) {
 		glRotatef( xrot, 0.0f, 1.0f, 0.0f );
 		glRotatef( yrot, 1.0f, 0.0f, 0.0f );
@@ -1096,7 +1081,7 @@ void Map::doQuake() {
 		quakeOffsX = quakeOffsY = 0;
 	}
 
-	glTranslatef( quakeOffsX, quakeOffsY, 0 );
+	glTranslatef( quakeOffsX, quakeOffsY, 0.0f );
 }
 
 /// Trigger a quake (the screen shivers for a while).

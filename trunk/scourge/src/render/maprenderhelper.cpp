@@ -183,7 +183,7 @@ void RoomRenderHelper::draw( int x, int y, int w, int h ) {
 		glBlendFunc( GL_DST_COLOR, GL_ZERO );
 		//scourge->setBlendFunc();
 
-		glColor4f( 1, 1, 1, 0.5f );
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 
 		glBindTexture( GL_TEXTURE_2D, overlay_tex );
 		glBegin( GL_TRIANGLE_STRIP );

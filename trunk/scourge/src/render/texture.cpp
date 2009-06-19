@@ -356,7 +356,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	
 	glLoadIdentity();
 	
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	
 	// draw the original
 	drawQuad( original->_id, _width, _height );
@@ -370,9 +370,9 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	for( unsigned int i = 0; i < tmps.size(); i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( _width / 2, _height / 2, 0 );
-		glRotatef( angles[i], 0, 0, 1 );
-		glTranslatef( -_width / 2, -_height / 2, 0 );
+		glTranslatef( _width / 2.0f, _height / 2.0f, 0.0f );
+		glRotatef( angles[i], 0.0f, 0.0f, 1.0f );
+		glTranslatef( -_width / 2.0f, -_height / 2.0f, 0.0f );
 		drawQuad( tmps[i]->_id, _width, _height );
 		glPopMatrix();
 	}
@@ -487,7 +487,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glLoadIdentity();
 
 	glsDisable( GLS_TEXTURE_2D );
-	glColor4f( 0, 0, 0, 0 );
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
@@ -496,19 +496,19 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glVertex2i( textureSizeW, textureSizeH );
 	glEnd();
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	// draw the grass
 	glsEnable( GLS_TEXTURE_2D );
 
 	for( int i = 0; i < sampleCount; i++ ) {
-		glColor4f( 1, 1, 1, 1 );
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		drawQuad( sample[i]->_id, width, height );
 	}
 
 	// draw the alpha pixels only
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	drawQuad( alpha->_id, width, height );
 	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 
