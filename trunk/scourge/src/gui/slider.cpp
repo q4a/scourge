@@ -62,7 +62,7 @@ void Slider::drawWidget( Window* parent ) {
 	}
 
 	glPushMatrix();
-	glTranslated( 0, 10, 0 );
+	glTranslatef( 0.0f, 10.0f, 0.0f );
 	label->drawWidget( parent );
 	glPopMatrix();
 

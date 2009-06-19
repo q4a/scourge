@@ -218,7 +218,7 @@ bool Portrait::onDraw( Widget* widget ) {
 		           62, 77 );
 		glsEnable( GLS_SCISSOR_TEST );
 		glPushMatrix();
-		glTranslated( 12, 14, 0 );
+		glTranslatef( 12.0f, 14.0f, 0.0f );
 		pcUi->getScourge()->drawPortrait( creature, 62 + 20, 77, 10 );
 		glPopMatrix();
 		glsDisable( GLS_SCISSOR_TEST );
@@ -310,7 +310,7 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 
 	glPushMatrix();
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -522,7 +522,7 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 	icon.glBind();
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
-	glTranslated( x, y - size, 0 );
+	glTranslatef( x, y - size, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -542,7 +542,7 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
 	glPushMatrix();
 	glsEnable( GLS_TEXTURE_2D );
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	barTexture.glBind();
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );

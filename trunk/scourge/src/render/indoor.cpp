@@ -502,8 +502,7 @@ void Indoor::drawFlatFloor() {
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 	float w = static_cast<float>( map->mapViewWidth ) * MUL;
 	float d = static_cast<float>( map->mapViewDepth ) * MUL;
-	//glTranslatef( xpos2, ypos2, 0.0f);
-// glNormal3f( 0.0f, 0.0f, 1.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( map->getX() / MUL * ratio, map->getY() / MUL * ratio );
 	glVertex3f( 0.0f, 0.0f, 0.0f );

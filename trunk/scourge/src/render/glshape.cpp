@@ -109,7 +109,6 @@ void GLShape::createShadowList( GLuint listName ) {
 
 	// left
 	if ( !( skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ) ) ) {
-		//glNormal3f(-1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex3fv( surfaces[LEFT_SURFACE]->vertices[1] );
 		glVertex3fv( surfaces[LEFT_SURFACE]->vertices[2] );
@@ -120,7 +119,6 @@ void GLShape::createShadowList( GLuint listName ) {
 
 	// bottom
 	if ( !( skipside & ( 1 << GLShape::FRONT_SIDE ) ) ) {
-		//glNormal3f(0.0f, -1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex3fv( surfaces[BOTTOM_SURFACE]->vertices[1] );
 		glVertex3fv( surfaces[BOTTOM_SURFACE]->vertices[2] );
@@ -131,7 +129,6 @@ void GLShape::createShadowList( GLuint listName ) {
 
 	// right
 	if ( !( skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ) ) ) {
-		//glNormal3f(1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[1] );
 		glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[2] );
@@ -142,7 +139,6 @@ void GLShape::createShadowList( GLuint listName ) {
 
 	// front
 	if ( !( skipside & ( 1 << GLShape::FRONT_SIDE ) ) ) {
-		//glNormal3f(0.0f, 1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex3fv( surfaces[FRONT_SURFACE]->vertices[1] );
 		glVertex3fv( surfaces[FRONT_SURFACE]->vertices[2] );
@@ -152,7 +148,6 @@ void GLShape::createShadowList( GLuint listName ) {
 	}
 
 	// top
-	//glNormal3f(0.0f, 0.0f, 1.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex3fv( surfaces[TOP_SURFACE]->vertices[1] );
 	glVertex3fv( surfaces[TOP_SURFACE]->vertices[2] );

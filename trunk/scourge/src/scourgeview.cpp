@@ -247,8 +247,8 @@ void ScourgeView::drawChapterIntro() {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glLoadIdentity();
-		glTranslated( imageX, imageY, 0 );
-//          glNormal3f( 0, 0, 1 );
+		glTranslatef( imageX, imageY, 0.0f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -268,7 +268,7 @@ void ScourgeView::drawChapterIntro() {
 	glScissor( 150, 0, scourge->getScreenWidth() - 150, textHeight );
 	glsEnable( GLS_SCISSOR_TEST );
 	int offset = scourge->getChapterTextPos();
-	glTranslated( 160, ( scourge->getScreenHeight() - textHeight ), 0 );
+	glTranslatef( 160.0f, ( scourge->getScreenHeight() - textHeight ), 0.0f );
 	glColor4f( 1.0f, 0.9f, 0.8f, 1.0f );
 	for ( unsigned int i = 0; i < scourge->getChapterText()->size(); i++ ) {
 		string s = ( *scourge->getChapterText() )[i];
@@ -343,7 +343,7 @@ void ScourgeView::drawOutsideMap() {
 		float TILE_H = 270 / 2.0f;
 
 		glLoadIdentity();
-		glTranslated( scourge->getMap()->getViewWidth(), 0.0f, 0.0f );
+		glTranslatef( scourge->getMap()->getViewWidth(), 0.0f, 0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
@@ -357,7 +357,7 @@ void ScourgeView::drawOutsideMap() {
 		glEnd();
 
 		glLoadIdentity();
-		glTranslated( 0, scourge->getMap()->getViewHeight(), 0 );
+		glTranslatef( 0.0f, scourge->getMap()->getViewHeight(), 0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
@@ -596,8 +596,8 @@ void ScourgeView::drawBorder() {
 	glLoadIdentity();
 
 	// ok change: viewx, viewy always 0
-	//glTranslated(viewX, viewY, 100);
-	glTranslated( 0, 0, 100 );
+	//glTranslatef(viewX, viewY, 100.0f);
+	glTranslatef( 0.0f, 0.0f, 100.0f );
 
 	//  glDisable(GL_BLEND);
 	glsDisable( GLS_DEPTH_TEST );
@@ -672,7 +672,7 @@ void ScourgeView::drawBorder() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	//glTranslated(10, -5, 0);
+	//glTranslatef(10.0f, -5.0f, 0.0f);
 	//glRotatef(20.0f, 0.0f, 0.0f, 1.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 	// top left
@@ -690,7 +690,7 @@ void ScourgeView::drawBorder() {
 	// top right
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( w - gw, 0, 0 );
+	glTranslatef( w - gw, 0.0f, 0.0f );
 	//glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f ( ( 1.0f / gw ) * ( gw - 1.0f ), 0.0f );
@@ -786,7 +786,6 @@ void ScourgeView::drawDisk( float w, float diff ) {
 
 	scourge->getShapePalette()->getSelection().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
-// glNormal3f( 0, 0, 1 );
 	glTexCoord2i( 0, 0 );
 	glVertex2f( -diff, -diff );
 	glTexCoord2i( 1, 0 );
@@ -958,7 +957,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				glTranslatef( -7.0f, -7.0f, 0.0f );
 
 				icon.glBind();
-//        glNormal3f( 0, 0, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
 				if ( icon.isSpecified() ) glTexCoord2i( 0, 0 );
 				glVertex2i( 0, 0 );
@@ -1027,40 +1025,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 					                                  creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
 					                                  creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
 					                                  nn, nn, areaRot );
-					/*
-					     glPushMatrix();
-
-					     Uint32 t = SDL_GetTicks();
-					     if( areaTicks == 0 || t - areaTicks >= AREA_SPEED ) {
-					       areaRot += AREA_ROT_DELTA;
-					       if( areaRot >= 360.0f ) areaRot -= 360.0f;
-					     }
-					float h = ( creature->getShape()->getWidth() / 2.0f ) * MUL;
-					glTranslatef( h, h, 0.0f );
-					     glRotatef( areaRot, 0.0f, 0.0f, 1.0f );
-					     glTranslatef( -( n / 2.0f ), -( n / 2.0f ), 0.0f );
-
-					     glsEnable( GLS_BLEND );
-					     //glBlendFunc( GL_DST_COLOR, GL_ZERO );
-					     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-					     glsEnable( GLS_TEXTURE_2D );
-					     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getAreaTexture() );
-					     glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
-					     glBegin( GL_QUADS );
-					     glNormal3f( 0, 0, 1 );
-					     glTexCoord2f( 0.0f, 0.0f );
-					     glVertex3f( 0, 0, 0 );
-					     glTexCoord2f( 0.0f, 1.0f );
-					     glVertex3f( 0, n, 0 );
-					     glTexCoord2f( 1.0f, 1.0f );
-					     glVertex3f( n, n, 0 );
-					     glTexCoord2f( 1.0f, 0.0f );
-					     glVertex3f( n, 0, 0 );
-					     glEnd();
-					     glsDisable( GLS_TEXTURE_2D );
-					     glPopMatrix();
-					     //glsEnable( GLS_DEPTH_TEST );
-					*/
 				}
 
 				glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_MASK );
@@ -1147,7 +1111,7 @@ void ScourgeView::drawAfter() {
 		glPushMatrix();
 
 		glLoadIdentity();
-		glTranslated( 20, 20, 0 );
+		glTranslatef( 20.0f, 20.0f, 0.0f );
 
 		Creature *c = scourge->getCurrentBattle()->getCreature();
 		enum { MSG_SIZE = 80 };
@@ -1184,7 +1148,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( 20, scourge->getSession()->getCutscene()->getLetterboxHeight() + 30, 600 );
+		glTranslatef( 20.0f, scourge->getSession()->getCutscene()->getLetterboxHeight() + 30.0f, 600.0f );
 		creature->drawMoviePortrait( 100, 100 );
 		glPopMatrix();
 
@@ -1196,7 +1160,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 			glLoadIdentity();
 			glsDisable( GLS_DEPTH_TEST );
 			glsEnable( GLS_TEXTURE_2D );
-			glTranslated( 140, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60, 600 );
+			glTranslatef( 140.0f, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60.0f, 600.0f );
 			glColor4f( 1.0f, 1.0f, 0.75f, 1.0f );
 			char tmp[3000];
 			snprintf( tmp, 3000, "%s:", creature->getName() );
@@ -1218,7 +1182,7 @@ void ScourgeView::drawDraggedItem() {
 		glsDisable( GLS_DEPTH_TEST );
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( scourge->getSDLHandler()->mouseX - 25, scourge->getSDLHandler()->mouseY - 25, 0 );
+		glTranslatef( scourge->getSDLHandler()->mouseX - 25.0f, scourge->getSDLHandler()->mouseY - 25.0f, 0.0f );
 		//scourge->drawItemIcon( scourge->getMovingItem(), 32 );
 		SDL_Rect rect;
 		rect.x = rect.y = 0;

@@ -309,7 +309,7 @@ void ScrollingList::drawIcon( int x, int y, Texture icon, Window* parent ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glPushMatrix();
-	glTranslated( x, y, 0 );
+	glTranslatef( x, y, 0.0f );
 	if ( icon.isSpecified() ) icon.glBind();
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 

@@ -139,7 +139,7 @@ void TextScroller::draw() {
 	glPushMatrix();
 	glLoadIdentity();
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
-	glTranslated( xp, ytop, 0 );
+	glTranslatef( xp, ytop, 0.0f );
 	glsDisable( GLS_DEPTH_TEST );
 
 	if ( visible ) {

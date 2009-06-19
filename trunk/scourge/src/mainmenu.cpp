@@ -249,7 +249,7 @@ void MainMenu::drawView() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( 0, openingTop, 0 );
+		glTranslatef( 0.0f, openingTop, 0.0f );
 		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
@@ -265,7 +265,7 @@ void MainMenu::drawView() {
 
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
+		glTranslatef( 0.0f, scourge->getSDLHandler()->getScreen()->h - openingTop, 0.0f );
 		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
@@ -282,7 +282,7 @@ void MainMenu::drawView() {
 
 		for ( int i = 0; i < 2; i++ ) {
 			glLoadIdentity();
-			glTranslated( 0, ( i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop ), 0 );
+			glTranslatef( 0.0f, ( i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop ), 0.0f );
 			glColor4f( 1.0f, 0.7f, 0.0f, 1.0f );
 			glBegin( GL_LINES );
 			glVertex2i( 0, 0 );
@@ -297,7 +297,7 @@ void MainMenu::drawView() {
 			glsEnable( GLS_TEXTURE_2D );
 			//glPushMatrix();
 			glLoadIdentity();
-			glTranslated( 0, openingTop + 1, 0 );
+			glTranslatef( 0.0f, openingTop + 1.0f, 0.0f );
 			slide.glBind();
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -313,7 +313,7 @@ void MainMenu::drawView() {
 			glsDisable( GLS_TEXTURE_2D );
 		} else {
 			glLoadIdentity();
-			glTranslated( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+			glTranslatef( 10.0f, scourge->getSDLHandler()->getScreen()->h - openingTop + 12.0f, 0.0f );
 			char version[100];
 			snprintf( version, 100, _( "Scourge version %s" ), SCOURGE_VERSION );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -379,7 +379,7 @@ void MainMenu::drawAfter() {
 		*/
 
 		glLoadIdentity();
-		glTranslated( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+		glTranslatef( 10.0f, scourge->getSDLHandler()->getScreen()->h - openingTop + 12.0f, 0.0f );
 		int y = 70;
 		int x = 100;
 		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
@@ -389,7 +389,7 @@ void MainMenu::drawAfter() {
 			texPrint( x, y - 3, "%s: %d%%",
 			          getUpdate(),
 			          static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
-			glTranslated( x + 150, y - 15, 0 );
+			glTranslatef( x + 150.0f, y - 15.0f, 0.0f );
 
 			progress->updateStatusLight( NULL,
 			                             static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ),
@@ -458,7 +458,7 @@ void MainMenu::drawLogo() {
 	//Draw the Scourge logo
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( 70, logoRot, 0 );
+	glTranslatef( 70.0f, logoRot, 0.0f );
 //  float w = scourge->getShapePalette()->logo->w;
 //  float h = scourge->getShapePalette()->logo->h;
 	int w = 352;
@@ -481,13 +481,13 @@ void MainMenu::drawLogo() {
 	for ( int i = 0; i < 2; i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
-//    glTranslated( ( !i ? 100 :
-//                    70 + scourge->getShapePalette()->logo->w - 30 -
+//    glTranslatef( ( !i ? 100.0f :
+//                    70.0f + scourge->getShapePalette()->logo->w - 30.0f -
 //                    scourge->getShapePalette()->chain->w ),
-//                  logoRot - scourge->getShapePalette()->chain->h, 0 );
+//                  logoRot - scourge->getShapePalette()->chain->h, 0.0f );
 //    float w = scourge->getShapePalette()->chain->w;
 //    float h = scourge->getShapePalette()->chain->h;
-		glTranslated( ( !i ? 100 : 70 + 352 - 30 - 32 ), logoRot - 256, 0 );
+		glTranslatef( ( !i ? 100.0f : 70.0f + 352.0f - 30.0f - 32.0f ), logoRot - 256.0f, 0.0f );
 		float w = 32.0f;
 		float h = 256.0f;
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -522,7 +522,7 @@ void MainMenu::drawLogo() {
 	glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( candleFlameX, candleFlameY, 0 );
+	glTranslatef( candleFlameX, candleFlameY, 0.0f );
 	w = 64;
 	h = 64;
 
@@ -548,7 +548,7 @@ void MainMenu::drawStars() {
 	for ( int i = 0; i < starCount; i++ ) {
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslated( star[i].x, star[i].y, -200 );
+		glTranslatef( star[i].x, star[i].y, -200.0f );
 		glColor3f( Util::roll( 0.2f, 0.99f ),
 		           Util::roll( 0.2f, 0.99f ),
 		           Util::roll( 0.2f, 0.99f ) );
@@ -578,7 +578,7 @@ void MainMenu::drawScourge() {
 	//Draw the scourge
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );
+	glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0.0f );
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
@@ -611,7 +611,7 @@ void MainMenu::drawBackdrop() {
 	//Draw the backdrop image
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslated( 0, top + ( 600 - WATER_HEIGHT_MAIN_MENU - h ), 0 );
+	glTranslatef( 0.0f, top + ( 600.0f - WATER_HEIGHT_MAIN_MENU - h ), 0.0f );
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
@@ -697,7 +697,7 @@ void MainMenu::drawWater() {
 	w = scourge->getSDLHandler()->getScreen()->w;
 	h = WATER_HEIGHT_MAIN_MENU;
 	glLoadIdentity();
-	glTranslated( 0, top + ( 600 - h ), 0 );
+	glTranslatef( 0.0f, top + ( 600.0f - h ), 0.0f );
 	glsDisable( GLS_TEXTURE_2D );
 	//  glDisable( GL_LIGHTING );
 	//glsEnable( GLS_BLEND );

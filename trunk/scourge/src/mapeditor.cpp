@@ -370,7 +370,7 @@ void MapEditor::drawView() {
 		scourge->getSDLHandler()->texPrint( 50, 130, "Keys: z,x - rotate, q,w - mirror" );
 		glColor3f( 1.0f, 0.0f, 0.0f );
 	}
-	glTranslated( 50, 50, 0 );
+	glTranslatef( 50.0f, 50.0f, 0.0f );
 	glRotatef( scourge->getMap()->getZRot(), 0.0f, 0.0f, 1.0f );
 
 	int n = 30;

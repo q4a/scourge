@@ -86,7 +86,7 @@ bool ContainerView::onDraw( Widget* ) {
 	glEnd();
 	
 	glPushMatrix();
-	glTranslated( OFFSET_X, OFFSET_Y, 0 );
+	glTranslatef( OFFSET_X, OFFSET_Y, 0.0f );
 
 	glsDisable( GLS_TEXTURE_2D );
 

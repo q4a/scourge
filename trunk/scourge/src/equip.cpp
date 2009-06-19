@@ -428,7 +428,7 @@ void Equip::drawSpells() {
 		MagicSchool *school = MagicSchool::getMagicSchool( i );
 
 		glPushMatrix();
-		glTranslated( xx, yy - 12, 0 );
+		glTranslatef( xx, yy - 12.0f, 0.0f );
 
 		int size = 15;
 		int width = w - 55;
@@ -509,7 +509,7 @@ void Equip::drawCapabilities() {
 	int yy = 20;
 
 	glPushMatrix();
-	glTranslated( xx, yy - 12, 0 );
+	glTranslatef( xx, yy - 12.0f, 0.0f );
 
 	int size = 15;
 	int width = w - 55;

@@ -2481,7 +2481,7 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 						glPushMatrix();
-						//    glTranslated( x, y, 0 );
+						//    glTranslatef( x, y, 0.0f );
 						if ( storable->getStorableType() == Storable::ITEM_STORABLE ) {
 							getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						} else {
@@ -2489,7 +2489,6 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						}
 						glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-//            glNormal3f( 0, 0, 1 );
 						glBegin( GL_TRIANGLE_STRIP );
 						glTexCoord2i( 0, 0 );
 						glVertex2i( 0, 0 );
@@ -2520,8 +2519,6 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glPushMatrix();
-	//glTranslated( 0, 5, 0 );
-//  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -2581,7 +2578,6 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	} else {
 		getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ).glBind();
 	}
-//  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( -offs_x, -offs_y );
@@ -2662,7 +2658,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		if ( message ) {
 			glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
 			glPushMatrix();
-			glTranslated( 3, 14, 0 );
+			glTranslatef( 3.0f, 14.0f, 0.0f );
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_TRIANGLE_STRIP );
@@ -2692,8 +2688,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 				icon.glBind();
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
-				glTranslated( 5 + xp * ( n + 1 ), height - ( yp * ( n + 1 ) ) - n, 0 );
-//    glNormal3f( 0, 0, 1 );
+				glTranslatef( 5.0f + xp * ( n + 1.0f ), height - ( yp * ( n + 1.0f ) ) - n, 0.0f );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( 0, 0 );
