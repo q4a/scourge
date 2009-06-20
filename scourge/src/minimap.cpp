@@ -460,13 +460,13 @@ void MiniMap::drawMap() {
 				glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0.0f );
 
 				glBegin( GL_TRIANGLE_STRIP );
-				glTexCoord2i( 0, 0 );
+				glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ZERO_TEXCOORD );
 				glVertex2i( 0, 0 );
-				glTexCoord2i( 1, 0 );
+				glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ZERO_TEXCOORD );
 				glVertex2i( BITMAP_SIZE, 0 );
-				glTexCoord2i( 0, 1 );
+				glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ONE_TEXCOORD );
 				glVertex2i( 0, BITMAP_SIZE );
-				glTexCoord2i( 1, 1 );
+				glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ONE_TEXCOORD );
 				glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
 				glEnd();
 

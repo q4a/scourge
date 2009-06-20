@@ -199,6 +199,11 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 #define GL_BGR                                  0x80E0
 #define GL_BGRA                                 0x80E1
 
+// Safe coordinates for passing to glTexCoord2f() instead of 0.0f or 1.0f.
+// Passing exactly 0 or 1 sometimes results in banding lines between adjacent
+// sprite textures on ATI hardware.
+#define SAFE_ZERO_TEXCOORD 0.0005f
+#define SAFE_ONE_TEXCOORD 0.9995f
 
 /*
   Float swapping code by:http://sourceforge.net/project/stats/?group_id=98006&ugn=scourge
