@@ -828,9 +828,11 @@ public:
 	void setContinueAt( char *func, int timeout );
 	void pcApproved();
 	
+	void saveMapRegions();
 	void mapRegionsChanged( float party_x, float party_y );
 
 protected:
+	std::string getSavedRegionFile( int regionX, int regionY );
 	void preMainLoop();
 	bool getItem( Location *pos );
 	// returns new z coordinate

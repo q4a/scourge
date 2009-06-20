@@ -404,8 +404,9 @@ void Map::reset() {
 
 	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
 		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
-			rugPos[x][y].texture.clear();
-			rugPos[x][y].texture = Texture();
+			//rugPos[x][y].texture.clear(); // we never want to unload these textures
+			//rugPos[x][y].texture = Texture();
+			rugPos[x][y].isSpecified = false;
 		}
 	}
 
@@ -1140,7 +1141,10 @@ Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny,
 }
 
 void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
-	rugPos[ xchunk ][ ychunk ] = *rug;
+	rugPos[ xchunk ][ ychunk ].angle = rug->angle;
+	rugPos[ xchunk ][ ychunk ].isHorizontal = rug->isHorizontal;
+	rugPos[ xchunk ][ ychunk ].texture = rug->texture;
+	rugPos[ xchunk ][ ychunk ].isSpecified = true;
 }
 
 /// Creates a shape on the floor (indoors).
@@ -1165,7 +1169,7 @@ void Map::setFloorPosition( Sint16 x, Sint16 y, Shape *shape ) {
 }
 
 void Map::removeRugPosition( Sint16 xchunk, Sint16 ychunk ) {
-	rugPos[ xchunk ][ ychunk ].texture.clear();
+	rugPos[ xchunk ][ ychunk ].isSpecified = false;;
 }
 
 /// Removes items lying on the floor and water at the specified location.
@@ -1501,8 +1505,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 				//!( pos[x + xp][y - yp][z + zp] ) );
 				
 				if ( zp && pos[x + xp][y - yp][z + zp] && pos[x + xp][y - yp][z + zp] != p ) {
-					cerr << "error setting position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) <<
-					" shape=" << p->shape->getName() << endl;
+					//cerr << "error setting position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) <<
+					//" shape=" << p->shape->getName() << endl;
 				} else {
 					if ( isNonBlockingItem )
 						itemPos[x + xp][y - yp] = p;
@@ -2517,7 +2521,7 @@ void Map::adjustMapCoordinatesNearEdges() {
 		}
 	}
 	if( reloadRegions ) {
-		//saveMapRegions();
+		adapter->saveMapRegions();
 		
 		regionX = newRegionX;
 		regionY = newRegionY;
@@ -2719,17 +2723,26 @@ void Map::handleEvent( SDL_Event *event ) {
 }
 
 #define NEG_GROUND_HEIGHT 0x00100000
-void Map::saveMap( const string& name, string& result, bool absolutePath, int referenceType ) {
+void Map::saveMap( const string& name, string& result, bool absolutePath, int referenceType, 
+                   int save_start_x, int save_end_x, int save_start_y, int save_end_y ) {
 
 	if ( name.length() == 0 ) {
 		result = _( "You need to name the map first." );
 		return;
 	}
+	
+	cerr << "=========================================================" << endl;
+	cerr << "SAVING MAP: " << name << endl;
 
 	MapInfo *info = new MapInfo;
 	info->version = PERSIST_VERSION;
 
 	info->reference_type = referenceType;
+	
+	info->map_start_x = save_start_x;
+	info->map_start_y = save_start_y;
+	info->map_end_x = save_end_x;
+	info->map_end_y = save_end_y;
 
 	info->start_x = startx;
 	info->start_y = starty;
@@ -2749,8 +2762,8 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	info->theme_name[254] = 0;
 
 	info->pos_count = 0;
-	for ( int x = 0; x < MAP_WIDTH; x++ ) {
-		for ( int y = 0; y < MAP_DEPTH; y++ ) {
+	for ( int x = save_start_x; x < save_end_x; x++ ) {
+		for ( int y = save_start_y; y < save_end_y; y++ ) {
 
 			if ( floorPositions[x][y] ) {
 				info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
@@ -2820,9 +2833,9 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 
 	// save rugs
 	info->rug_count = 0;
-	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
-		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
-			if ( rugPos[x][y].texture.isSpecified() ) {
+	for ( int x = save_start_x / MAP_UNIT; x < save_end_x / MAP_UNIT; x++ ) {
+		for ( int y = save_start_y / MAP_UNIT; y < save_end_y / MAP_UNIT; y++ ) {
+			if ( rugPos[x][y].isSpecified ) {
 				info->rugPos[ info->rug_count ] = Persist::createRugInfo( x, y );
 				info->rugPos[ info->rug_count ]->angle = toint( rugPos[x][y].angle * 100.0f );
 				info->rugPos[ info->rug_count ]->isHorizontal = ( rugPos[x][y].isHorizontal ? 1 : 0 );
@@ -2856,35 +2869,40 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 
 	// save the fog
 	if ( helper ) helper->saveHelper( &( info->fog_info ) );
+	
+	// save the ground textures
+	info->outdoorTextureInfoCount = 0;
+	for ( int x = save_start_x / OUTDOORS_STEP; x < save_end_x / OUTDOORS_STEP; x++ ) {
+		for ( int y = save_start_y / OUTDOORS_STEP; y < save_end_y / OUTDOORS_STEP; y++ ) {
+			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
+				if( outdoorTex[x][y][z].texture.isSpecified() ) {
+					GroundTexture *gt = shapes->getGroundTexture( outdoorTex[x][y][z].groundTextureName );
+					info->outdoorTexture[ info->outdoorTextureInfoCount ] = Persist::createOutdoorTextureInfo( x, y + 1 + ( gt->getHeight() ) / OUTDOORS_STEP, z );	
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->offsetX = toint( outdoorTex[x][y][z].offsetX * 100 );
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->offsetY = toint( outdoorTex[x][y][z].offsetY * 100 );
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->angle = toint( outdoorTex[x][y][z].angle * 100 );
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->horizFlip = (Uint8)outdoorTex[x][y][z].horizFlip;
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->vertFlip = (Uint8)outdoorTex[x][y][z].vertFlip;
+					strncpy( ( char* )info->outdoorTexture[ info->outdoorTextureInfoCount ]->groundTextureName, 
+					         outdoorTex[x][y][z].groundTextureName.c_str(), 254 );
+					info->outdoorTexture[ info->outdoorTextureInfoCount ]->groundTextureName[254] = 0;
+					info->outdoorTextureInfoCount++;
+				}
+			}
+		}
+	}
 
 	info->edited = edited;
 
 	// save ground height for outdoors maps
 	// save the outdoor textures
 	info->heightMapEnabled = ( Uint8 )( heightMapEnabled ? 1 : 0 );
-	info->outdoorTextureInfoCount = 0;
-	for ( int gx = 0; gx < MAP_TILES_X; gx++ ) {
-		for ( int gy = 0; gy < MAP_TILES_Y; gy++ ) {
+	for ( int gx = save_start_x / OUTDOORS_STEP; gx < save_end_x / OUTDOORS_STEP; gx++ ) {
+		for ( int gy = save_start_y / OUTDOORS_STEP; gy < save_end_y / OUTDOORS_STEP; gy++ ) {
 			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
 			info->ground[ gx ][ gy ] = ( Uint32 )( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
-			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-				if ( outdoorTex[ gx ][ gy ][ z ].texture.isSpecified() ) {
-//					OutdoorTextureInfo *oti = new OutdoorTextureInfo;
-//					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
-//					int mx = gx * OUTDOORS_STEP;
-//					int my = gy * OUTDOORS_STEP + height + 1;
-//					oti->x = mx;
-//					oti->y = my;
-//					oti->angle = outdoorTex[ gx ][ gy ][z].angle * 1000;
-//					oti->horizFlip = outdoorTex[ gx ][ gy ][z].horizFlip;
-//					oti->vertFlip = outdoorTex[ gx ][ gy ][z].vertFlip;
-//					oti->offsetX = outdoorTex[ gx ][ gy ][z].offsetX * 1000;
-//					oti->offsetY = outdoorTex[ gx ][ gy ][z].offsetY * 1000;
-//					oti->outdoorThemeRef = outdoorTex[ gx ][ gy ][z].outdoorThemeRef;
-//					oti->z = z;
-//					info->outdoorTexture[ info->outdoorTextureInfoCount++ ] = oti;
-				}
-			}
+			info->climate[gx][gy] = ( Uint8 )( climate[ gx ][ gy ] );
+			info->vegetation[gx][gy] = ( Uint8 )( vegetation[ gx ][ gy ] );
 		}
 	}
 
@@ -2935,6 +2953,10 @@ void Map::initForCave( char *themeName ) {
 	setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
+bool Map::loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY ) {
+	return loadMap( name, result, report, 1, 0, false, false, false, false, NULL, NULL, true, NULL, posX, posY, false );
+}
+
 bool Map::loadMap( const string& name, std::string& result, StatusReport *report,
                    int level, int depth,
                    bool changingStory, bool fromRandom,
@@ -2942,7 +2964,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
                    vector< RenderedItem* > *items,
                    vector< RenderedCreature* > *creatures,
                    bool absolutePath,
-                   char *templateMapName ) {
+                   char *templateMapName, 
+                   int posX, int posY, bool resetMap ) {
 	if ( !name.length() ) {
 		result = _( "Enter a name of a map to load." );
 		return false;
@@ -2970,11 +2993,13 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	File *file = new ZipFile( fp, ZipFile::ZIP_READ );
 	MapInfo *info = Persist::loadMap( file );
 	delete file;
-
+	
 	if ( report ) report->updateStatus( 1, 7, _( "Loading theme" ) );
 
-	// reset the map
-	reset();
+	// reset the map (unless loading a region)
+	if( resetMap ) {
+		reset();
+	}
 
 	if ( info->map_type == MapRenderHelper::ROOM_HELPER ) {
 		// it's a room-type map
@@ -3004,29 +3029,38 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	edited = info->edited != 0;
 
 	// load ground heights for outdoors maps
+	int px, py;
 	heightMapEnabled = ( info->heightMapEnabled == 1 );
-	for ( int gx = 0; gx < MAP_TILES_X; gx++ ) {
-		for ( int gy = 0; gy < MAP_TILES_Y; gy++ ) {
+	for ( int gx = info->map_start_x / OUTDOORS_STEP; gx < info->map_end_x / OUTDOORS_STEP; gx++ ) {
+		for ( int gy = info->map_start_y / OUTDOORS_STEP; gy < info->map_end_y / OUTDOORS_STEP; gy++ ) {
+			px = gx - info->map_start_x / OUTDOORS_STEP + posX;
+			py = gy - info->map_start_y / OUTDOORS_STEP + posY;
 			if ( info->ground[ gx ][ gy ] > NEG_GROUND_HEIGHT ) {
-				ground[ gx ][ gy ] = ( info->ground[ gx ][ gy ] - NEG_GROUND_HEIGHT ) / -100.0f;
+				ground[ px ][ py ] = ( info->ground[ gx ][ gy ] - NEG_GROUND_HEIGHT ) / -100.0f;
 			} else {
-				ground[ gx ][ gy ] = info->ground[ gx ][ gy ] / 100.0f;
+				ground[ px ][ py ] = info->ground[ gx ][ gy ] / 100.0f;
 			}
+			climate[ px ][ py ] = info->climate[ gx ][ gy ];
+			vegetation[ px ][ py ] = info->vegetation[ gx ][ gy ];
 		}
 	}
 
-//	for ( int i = 0; i < ( int )info->outdoorTextureInfoCount; i++ ) {
-//		OutdoorTextureInfo *oti = info->outdoorTexture[i];
-//		setOutdoorTexture( oti->x, oti->y,
-//		                   oti->offsetX / 1000.0f, oti->offsetY / 1000.0f,
-//		                   oti->outdoorThemeRef, oti->angle / 1000.0f,
-//		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
-//	}
+	// load the outdoor textures
+	for ( int i = 0; i < ( int )info->outdoorTextureInfoCount; i++ ) {
+		OutdoorTextureInfo *oti = info->outdoorTexture[i];
+		px = oti->x - info->map_start_x / OUTDOORS_STEP + posX;
+		py = oti->y - info->map_start_y / OUTDOORS_STEP + posY;
+		string s = (char*)info->outdoorTexture[ i ]->groundTextureName;
+		setOutdoorTexture( px * OUTDOORS_STEP, py * OUTDOORS_STEP,
+		                   oti->offsetX / 100.0f, oti->offsetY / 100.0f,
+		                   s, oti->angle / 100.0f,
+		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
+	}
 
 //	if ( heightMapEnabled ) {
 //		outdoor->initOutdoorsGroundTexture();
 //	}
-
+	
 	setHasWater( info->hasWater == 1 ? true : false );
 
 	if ( report ) report->updateStatus( 2, 7, _( "Starting map" ) );
@@ -3044,7 +3078,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	  starty = toint( adapter->getPlayer()->getY() );
 	}
 	*/
-	cerr << "LOADMAP: using saved starting position. goingUp=" << goingUp << " goingDown=" << goingDown << endl;
+	//cerr << "LOADMAP: using saved starting position. goingUp=" << goingUp << " goingDown=" << goingDown << endl;
 	startx = info->start_x;
 	starty = info->start_y;
 	float start_dist = -1;
@@ -3063,11 +3097,20 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 			cerr << "*** Skipping invalid map location: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
 			continue;
 		}
+		
+		// silently skip positions outside the saved region
+		if( info->pos[i]->x < info->map_start_x || info->pos[i]->x >= info->map_end_x ||
+				info->pos[i]->y < info->map_start_y || info->pos[i]->y >= info->map_end_y ) {
+			continue;
+		}
+		
+		px = info->pos[i]->x - info->map_start_x + posX * OUTDOORS_STEP;
+		py = info->pos[i]->y - info->map_start_y + posY * OUTDOORS_STEP;
 
 		if ( strlen( ( char* )( info->pos[i]->floor_shape_name ) ) ) {
 			shape = shapes->findShapeByName( ( char* )( info->pos[i]->floor_shape_name ) );
 			if ( shape )
-				setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
+				setFloorPosition( px, py, shape );
 			else
 				cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
 				" at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
@@ -3081,7 +3124,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				item = adapter->createItem( info->pos[i]->item_pos );
 			}
 			if ( item ) {
-				setItem( info->pos[i]->x, info->pos[i]->y, 0, item );
+				setItem( px, py, 0, item );
 				if ( items )
 					items->push_back( item );
 			} else
@@ -3106,7 +3149,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				item = adapter->createItem( info->pos[i]->item );
 			}
 			if ( item ) {
-				setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
+				setItem( px, py, info->pos[i]->z, item );
 				if ( items ) items->push_back(  item );
 			} else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
 		} else if ( strlen( ( char* )( info->pos[i]->monster_name ) ) || info->pos[i]->creature ) {
@@ -3117,26 +3160,26 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				creature = adapter->createMonster( info->pos[i]->creature );
 			}
 			if ( creature ) {
-				setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
-				creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
+				setCreature( px, py, info->pos[i]->z, creature );
+				creature->moveTo( px, py, info->pos[i]->z );
 				if ( creatures ) creatures->push_back(  creature );
 			} else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
 		} else if ( strlen( ( char* )( info->pos[i]->shape_name ) ) ) {
 			shape = shapes->findShapeByName( ( char* )( info->pos[i]->shape_name ) );
 			if ( shape ) {
-				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
+				setPosition( px, py, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
 				if( shape->isRoof() ) {
-					roofs.insert( pos[info->pos[i]->x][info->pos[i]->y][info->pos[i]->z]);
+					roofs.insert( pos[px][py][info->pos[i]->z]);
 				}
 				if ( settings->isPlayerEnabled() ) {
 					if ( ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
 					        ( goingDown && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_UP" ) ) ||
 					        ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN_OUTDOORS" ) ) ) {
-						float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
-						          ( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
+						float d = ( px - adapter->getPlayer()->getX() ) * ( px - adapter->getPlayer()->getX() ) +
+						          ( py - adapter->getPlayer()->getY() ) * ( py - adapter->getPlayer()->getY() );
 						if ( start_dist == -1 || d < start_dist ) {
-							startx = info->pos[i]->x;
-							starty = info->pos[i]->y;
+							startx = px;
+							starty = py;
 							start_dist = d;
 							cerr << "LOADMAP: using stairs as starting position. Dist=" << start_dist << endl;
 						}
@@ -3149,7 +3192,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 		// load the deity locations
 		if ( ms ) {
-			Location *pos = getPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
+			Location *pos = getPosition( px, py, info->pos[i]->z );
 			if ( !pos ) {
 				cerr << "*** error: Can't find position to place deity!" << endl;
 			} else {
@@ -3160,18 +3203,21 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 	// load rugs
 	Rug rug;
+	int cx, cy;
 	for ( int i = 0; i < static_cast<int>( info->rug_count ); i++ ) {
 		//rug.angle = info->rugPos[i]->angle / 100.0f;
 		rug.angle = Util::roll( -15.0f, 15.0f ); // fixme?
 		rug.isHorizontal = ( info->rugPos[i]->isHorizontal == 1 );
 		rug.texture = shapes->getRandomRug(); // fixme?
-		setRugPosition( info->rugPos[i]->cx, info->rugPos[i]->cy, &rug );
+		cx = info->rugPos[i]->cx - info->map_start_x / MAP_UNIT + posX * OUTDOORS_STEP / MAP_UNIT;
+		cy = info->rugPos[i]->cy - info->map_start_y / MAP_UNIT + posY * OUTDOORS_STEP / MAP_UNIT;
+		setRugPosition( cx, cy, &rug ); 
 	}
 
 	// load traps
 	for ( int i = 0; i < info->trapCount; i++ ) {
 		TrapInfo *trapInfo = info->trap[ i ];
-		int index = addTrap( trapInfo->x, trapInfo->y, trapInfo->w, trapInfo->h );
+		int index = addTrap( trapInfo->x - info->map_start_x + posX * OUTDOORS_STEP, trapInfo->y - info->map_start_y + posY * OUTDOORS_STEP, trapInfo->w, trapInfo->h );
 		Trap *trap = getTrapLoc( index );
 		trap->discovered = ( trapInfo->discovered != 0 );
 		trap->enabled = ( trapInfo->enabled != 0 );
@@ -3238,7 +3284,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	  find a better AI solution as this code can place the party outside the walls.
 	  For now always leave "whitespace" around gates in edited levels.
 	*/
-	if ( settings->isPlayerEnabled() ) {
+	if ( settings->isPlayerEnabled() && resetMap ) {
 		int xx = startx;
 		int yy = starty;
 		int nx, ny;

@@ -47,13 +47,6 @@ class MapRender;
 class MapSettings;
 class MapMemoryManager;
 
-enum {
-	GROUND_LAYER = 0,
-	ROAD_LAYER,
-
-	MAX_OUTDOOR_LAYER
-};
-
 /// It's a trap!
 class Trap {
 public:
@@ -85,7 +78,8 @@ public:
 	Rug() 
 		: texture()
 		, isHorizontal( false )
-		, angle() {
+		, angle()
+		, isSpecified( false ) {
 	}
 
 	~Rug() {
@@ -96,6 +90,7 @@ public:
 	Texture texture;
 	bool isHorizontal;
 	float angle;
+	bool isSpecified;
 };
 
 // how many water points per 1 floor tile
@@ -352,7 +347,9 @@ public:
 	}
 
 
-	void saveMap( const std::string& name, std::string& result, bool absolutePath = false, int referenceType = REF_TYPE_NAME );
+	void saveMap( const std::string& name, std::string& result, bool absolutePath = false, int referenceType = REF_TYPE_NAME,
+	              int save_start_x=0, int save_end_x=MAP_WIDTH, int save_start_y=0, int save_end_y=MAP_DEPTH );
+	bool loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY );
 	bool loadMap( const std::string& name, std::string& result, StatusReport *report = NULL,
 	              int level = 1, int depth = 0,
 	              bool changingStory = false, bool fromRandom = false,
@@ -360,7 +357,9 @@ public:
 	              std::vector< RenderedItem* > *items = NULL,
 	              std::vector< RenderedCreature* > *creatures = NULL,
 	              bool absolutePath = false,
-	              char *templateMapName = NULL );
+	              char *templateMapName = NULL,
+	              int posX = 0, int posY = 0,
+	              bool resetMap = true );
 	void loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth = 0 );
 	void initForCave( char *themeName = NULL );
 
@@ -588,7 +587,7 @@ public:
 	void setRugPosition( Sint16 x, Sint16 y, Rug *rug );
 	void removeRugPosition( Sint16 x, Sint16 y );
 	inline bool hasRugAtPosition( Sint16 x, Sint16 y ) {
-		return rugPos[x][y].texture.isSpecified();
+		return rugPos[x][y].isSpecified;
 	}
 
 	Location *isBlocked( Sint16 x, Sint16 y, Sint16 z,

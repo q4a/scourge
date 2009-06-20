@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 41
+#define PERSIST_VERSION 42
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -155,12 +155,11 @@ struct TrapInfo {
 
 /// Info on the ground texturing at an outdoor map position.
 struct OutdoorTextureInfo {
-	Uint16 x, y;
+	Uint16 x, y, z;
 	Uint32 offsetX, offsetY; // measured in map units
 	Uint32 angle;
 	Uint8 horizFlip, vertFlip;
-	Uint16 outdoorThemeRef;
-	Uint8 z;
+	Uint8 groundTextureName[255];
 };
 
 /// Level map info for savegame.
@@ -168,6 +167,7 @@ struct MapInfo {
 	Uint32 version;
 	Uint8 map_type;
 	Uint16 start_x, start_y;
+	Uint16 map_start_x, map_start_y, map_end_x, map_end_y;
 	Uint16 grid_x, grid_y;
 	Uint32 pos_count;
 	Uint8 theme_name[255];
@@ -186,10 +186,12 @@ struct MapInfo {
 	Uint8 edited;
 	Uint8 heightMapEnabled;
 	Uint32 ground[ MAP_TILES_X ][ MAP_TILES_Y ];
+	Uint8 climate[ MAP_TILES_X ][ MAP_TILES_Y ];
+	Uint8 vegetation[ MAP_TILES_X ][ MAP_TILES_Y ];
 	Uint8 trapCount;
 	TrapInfo *trap[ 255 ];
 	Uint32 outdoorTextureInfoCount;
-	OutdoorTextureInfo *outdoorTexture[ ( MAP_TILES_X ) * ( MAP_TILES_Y ) ];
+	OutdoorTextureInfo *outdoorTexture[ ( MAP_TILES_X ) * ( MAP_TILES_Y ) * ( MAX_OUTDOOR_LAYER ) ];
 };
 
 /// Mission info for savegame.
@@ -215,6 +217,7 @@ RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
 TrapInfo *createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled );
 LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
 DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
+OutdoorTextureInfo *createOutdoorTextureInfo( Uint16 x, Uint16 y, Uint16 z );
 void saveMap( File *file, MapInfo *info );
 MapInfo *loadMap( File *file );
 void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );

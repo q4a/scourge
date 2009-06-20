@@ -70,7 +70,7 @@ public:
 	inline bool getWillAddParty() { return willAddParty; }
 	
 	void initOutdoorsGroundTexture( Map *map );
-	
+		
 private:	
 	void addHighVariation( Map *map, std::string ref, int z );
 	bool isRockTexture( Map *map, int x, int y );

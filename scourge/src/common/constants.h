@@ -178,6 +178,13 @@ typedef void ( APIENTRY * PFNGLMULTITEXCOORD2IARBPROC ) ( GLenum target, GLint s
 #define SCOURGE_VERSION "0.22"
 #define MAX_PARTY_SIZE 4
 
+enum {
+	GROUND_LAYER = 0,
+	ROAD_LAYER,
+
+	MAX_OUTDOOR_LAYER
+};
+
 // Max level depth per mission
 #define MAX_MISSION_DEPTH 10
 

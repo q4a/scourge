@@ -97,6 +97,10 @@ public:
 	}
 	
 	static GLuint saveAreaUnder( int x, int y, int w, int h, GLuint *tex = NULL );
+	
+	inline std::string getFilename() {
+		return _ref ? _ref->_filename : "null"; 
+	}
 
 private:
 	// all member data is in refcounted Actual

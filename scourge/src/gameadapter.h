@@ -268,6 +268,7 @@ public:
 	
 	virtual void forceRepaint() {}
 	
+	virtual void saveMapRegions() {}
 	virtual void mapRegionsChanged( float party_x, float party_y ) {}
 };
 
