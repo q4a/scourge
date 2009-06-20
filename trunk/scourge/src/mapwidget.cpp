@@ -130,19 +130,22 @@ void MapWidget::calculateValues() {
 
 bool  MapWidget::onDraw( Widget* ) {
 	Canvas *canvas = this;
-
 	int bitmapX, bitmapY;
 
 	glsEnable( GLS_TEXTURE_2D );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	for ( int xx = 0; xx < canvas->getWidth() / BITMAP_SIZE + 2; xx++ ) {
 		if ( gx + xx >= BITMAP_SIZE ) continue;
+
 		for ( int yy = 0; yy < canvas->getHeight() / BITMAP_SIZE + 2; yy++ ) {
 			if ( gy + yy >= BITMAP_SIZE ) continue;
-			glPushMatrix();
 			int xp = xx * BITMAP_SIZE - tx;
 			int yp = yy * BITMAP_SIZE - ty;
+
+			glPushMatrix();
+
 			glTranslatef( xp, yp, 0.0f );
 
 			if ( ( ( gx + xx ) > -1 ) && ( ( gx + xx ) < BITMAPS_PER_ROW ) && ( ( gy + yy ) > -1 ) && ( ( gy + yy ) < BITMAPS_PER_COL ) ) {
@@ -165,6 +168,7 @@ bool  MapWidget::onDraw( Widget* ) {
 			glTexCoord2i( 1, 1 );
 			glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
 			glEnd();
+
 			glPopMatrix();
 		}
 	}
@@ -174,16 +178,20 @@ bool  MapWidget::onDraw( Widget* ) {
 	if( showRegions ) {
 		glsEnable( GLS_BLEND );
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		glPushMatrix();
+
 		glTranslatef( -tx, -ty, 0.0f );
 		
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.3f );
+
 		for( int lx = 0; lx < canvas->getWidth() + BITMAP_SIZE; lx += REGION_SIZE ) {
 			glBegin( GL_LINES );
 			glVertex2i( lx, 0 );
 			glVertex2i( lx, canvas->getHeight() + BITMAP_SIZE );
 			glEnd();
 		}
+
 		for( int ly = 0; ly < canvas->getHeight() + BITMAP_SIZE; ly += REGION_SIZE ) {
 			glBegin( GL_LINES );
 			glVertex2i( canvas->getWidth() + BITMAP_SIZE, ly );
@@ -192,6 +200,7 @@ bool  MapWidget::onDraw( Widget* ) {
 		}
 		
 		glPopMatrix();
+
 		glsDisable( GLS_BLEND );
 	}
 
@@ -218,15 +227,14 @@ bool  MapWidget::onDraw( Widget* ) {
 	glVertex2i( 0, getHeight() );
 	glEnd();
 
-	glsDisable( GLS_BLEND );
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 
 	glPushMatrix();
-	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ),
-	              markedY - ( gy * BITMAP_SIZE + ty ),
-	              0.0f );
-	glsDisable( GLS_TEXTURE_2D );
+
+	glTranslatef( markedX - ( gx * BITMAP_SIZE + tx ), markedY - ( gy * BITMAP_SIZE + ty ), 0.0f );
 
 	glColor4f( 1.0f, 0.0f, 0.0f, 0.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 10, 0 );
@@ -235,6 +243,7 @@ bool  MapWidget::onDraw( Widget* ) {
 	glEnd();
 
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
+
 	glBegin( GL_LINE_LOOP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 10, 0 );
@@ -242,8 +251,9 @@ bool  MapWidget::onDraw( Widget* ) {
 	glVertex2i( 0, 10 );
 	glEnd();
 
-	glsEnable( GLS_TEXTURE_2D );
 	glPopMatrix();
+
+	glsEnable( GLS_TEXTURE_2D );
 
 	return true;
 }

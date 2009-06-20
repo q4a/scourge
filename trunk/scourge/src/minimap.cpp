@@ -50,9 +50,7 @@ MiniMap :: ~MiniMap() {
 void MiniMap::drawMap() {
 	if ( !showMiniMap ) return;
 
-	bool useStencil =
-	  ( scourge->getPreferences()->getStencilbuf() &&
-	    scourge->getPreferences()->getStencilBufInitialized() );
+	bool useStencil = ( scourge->getPreferences()->getStencilbuf() && scourge->getPreferences()->getStencilBufInitialized() );
 
 	Map *map = scourge->getMap();
 
@@ -81,6 +79,7 @@ void MiniMap::drawMap() {
 
 	// Check whether the party is on the map
 	if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
+
 		player = scourge->getSession()->getParty()->getPlayer();
 		playerPos = map->getLocation( player->getX(), player->getY(), player->getZ() );
 
@@ -88,6 +87,7 @@ void MiniMap::drawMap() {
 
 			// Check whether monsters are close (visible or not)
 			for ( int i = 0; i < creatureCount ; i++ ) {
+
 				Creature *creature = scourge->getSession()->getCreature( i ) ;
 
 				if ( !creature->getStateMod( StateMod::dead ) && !creature->getStateMod( StateMod::possessed ) && creature->isMonster() ) {
@@ -112,6 +112,7 @@ void MiniMap::drawMap() {
 	// Set rotation/translation for all following drawing operations.
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( MINI_MAP_OFFSET_X, MINI_MAP_OFFSET_Y, 0.0f );
 	glTranslatef( mmcenter, mmcenter, 0.0f );
 	glRotatef( map->getZRot(), 0.0f, 0.0f, 1.0f );
@@ -119,16 +120,21 @@ void MiniMap::drawMap() {
 
 	// Create the stencil from the minimap mask texture.
 	if ( useStencil ) {
+
 		glClear( GL_STENCIL_BUFFER_BIT );
 		glColorMask( 0, 0, 0, 0 );
+
 		glsEnable( GLS_STENCIL_TEST | GLS_ALPHA_TEST | GLS_TEXTURE_2D );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
 		glAlphaFunc( GL_NOTEQUAL, 0 );
 
 		glPushMatrix();
+
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -139,19 +145,26 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
-		glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
+
 		glPopMatrix();
+
+		glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 
 		glColorMask( 1, 1, 1, 1 );
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+
 		glsDisable( GLS_DEPTH_MASK );
 
 		// Draw the transparent background.
-		glPushMatrix();
 		glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
+
+		glPushMatrix();
+
 		scourge->getShapePalette()->getMinimapMaskTexture().glBind();
+
 		glColor4f( 0.0f, 0.0f, 0.0f, 0.5f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -162,35 +175,48 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
-		glsDisable( GLS_TEXTURE_2D );
+
 		glPopMatrix();
+
+		glsDisable( GLS_TEXTURE_2D );
+
 	} else {
+
 		// Draw north marker and outline for the "simple" non-stencil version.
 		glsEnable( GLS_BLEND );
 
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+
 		glBegin( GL_TRIANGLES );
 		glVertex2i( 0, 0 );
 		glVertex2i( 30, 0 );
 		glVertex2i( 0, 30 );
 		glEnd();
+
 		glPushMatrix();
+
 		glRotatef( -45.0f, 0.0f, 0.0f, 1.0f );
 		glTranslatef( -7.0f, 20.0f, 0.0f );
 		glScalef( 1.5f, 1.5f, 1.5f );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+
 		scourge->getSDLHandler()->texPrint( 0, 0, "N" );
+
 		glScalef( 1.0f, 1.0f, 1.0f );
+
 		glPopMatrix();
 
 		// outline
 		glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( 0, 0 );
 		glVertex2i( 0, mmsize );
 		glVertex2i( mmsize, mmsize );
 		glVertex2i( mmsize, 0 );
 		glEnd();
+
 	}
 
 	float targetAlpha = 1.0f;
@@ -339,13 +365,16 @@ void MiniMap::drawMap() {
 						float cy = ( creature->getY() - sy ) * MINI_MAP_BLOCK - width;
 
 						glPushMatrix();
+
 						glTranslatef( cx, cy, 0.0f );
 						glRotatef( ( ( AnimatedShape* )creature->getShape() )->getAngle(), 0.0f, 0.0f, 1.0f );
+
 						glBegin( GL_TRIANGLES );
 						glVertex2i( width, width );
 						glVertex2i( -width, width );
 						glVertex2i( 0, -width );
 						glEnd();
+
 						glPopMatrix();
 
 					}
@@ -413,6 +442,7 @@ void MiniMap::drawMap() {
 		glColor4f( 1.0f, 1.0f, 1.0f, currentTravelMapAlpha );
 		
 		for ( int ty = -1; ty < 2; ty++ ) {
+
 			for ( int tx = -1; tx < 2; tx++ ) {
 
 				if ( ( ( bx + tx ) > -1 ) && ( ( bx + tx ) < BITMAPS_PER_ROW ) && ( ( by + ty ) > -1 ) && ( ( by + ty ) < BITMAPS_PER_COL ) ) {
@@ -424,8 +454,11 @@ void MiniMap::drawMap() {
 				}
 
 				glPushMatrix();
+
 				scourge->getShapePalette()->travelMap[bitmapX][bitmapY].glBind();
+
 				glTranslatef( x + ( tx * BITMAP_SIZE ), y + ( ty * BITMAP_SIZE ), 0.0f );
+
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( 0, 0 );
@@ -436,6 +469,7 @@ void MiniMap::drawMap() {
 				glTexCoord2i( 1, 1 );
 				glVertex2i( BITMAP_SIZE, BITMAP_SIZE );
 				glEnd();
+
 				glPopMatrix();
 
 			}
@@ -451,8 +485,11 @@ void MiniMap::drawMap() {
 		glAlphaFunc( GL_ALWAYS, 0 );
 
 		glPushMatrix();
+
 		!monstersClose ? scourge->getShapePalette()->getMinimapTexture().glBind() : scourge->getShapePalette()->getMinimap2Texture().glBind();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -463,7 +500,9 @@ void MiniMap::drawMap() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( mmsize, mmsize );
 		glEnd();
+
 		glsDisable( GLS_TEXTURE_2D | GLS_ALPHA_TEST );
+
 		glPopMatrix();
 
 		// draw pointers for gates and teleporters
@@ -471,6 +510,7 @@ void MiniMap::drawMap() {
 			drawPointers( map->getGates(), Color( 1.0f, 0.0f, 0.0f, 1.0f ) );
 			drawPointers( map->getTeleporters(), Color( 0.0f, 0.0f, 1.0f, 1.0f ) );
 		}
+
 	}
 
 	// Draw the crosshair marking player's position
@@ -481,6 +521,7 @@ void MiniMap::drawMap() {
 		float oy = ( ( player->getY() - map->getMapY() ) / (float)MAP_DEPTH ) * (float)REGION_SIZE;
 
 		glColor4f( 1.0f, 0.0f, 0.0f, currentTravelMapAlpha );
+
 		glTranslatef( mmcenter + ox, mmcenter + oy, 0.0f );
 		glRotatef( -map->getZRot(), 0.0f, 0.0f, 1.0f );
 

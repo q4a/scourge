@@ -719,6 +719,7 @@ void Effect::drawParticle( Particle *particle ) {
 
 	glsDisable( GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
+
 	for ( int i = 0; i < particle->trail; i++ ) {
 		glPushMatrix();
 
@@ -752,6 +753,7 @@ void Effect::drawParticle( Particle *particle ) {
 			glVertex2f( w / 2.0f, 0.0f );
 			glEnd();
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( flameTex.isSpecified() ) glTexCoord2i( 0, 1 );
 		glVertex2f( -w / 2.0f, -h / 2.0f );

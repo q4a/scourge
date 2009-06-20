@@ -306,6 +306,7 @@ void Weather::drawWeather() {
 	float rainIntensity, snowIntensity, thunderIntensity, fogIntensity;
 
 	if ( !weatherChanging ) {
+
 		rainIntensity = currentWeather & WEATHER_RAIN ? 1.0f : 0.0f;
 		snowIntensity = currentWeather & WEATHER_SNOW ? 1.0f : 0.0f;
 		thunderIntensity = currentWeather & WEATHER_THUNDER ? 1.0f : 0.0f;
@@ -319,7 +320,9 @@ void Weather::drawWeather() {
 			}
 			lastWeatherRoll = now;
 		}
+
 	} else {
+
 		if ( ( currentWeather & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) {
 			rainIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
 		} else if ( !( currentWeather & WEATHER_RAIN ) && ( oldWeather & WEATHER_RAIN ) ) {
@@ -327,6 +330,7 @@ void Weather::drawWeather() {
 		} else if ( ( currentWeather & WEATHER_RAIN ) && ( oldWeather & WEATHER_RAIN ) ) {
 			rainIntensity = 1.0f;
 		}
+
 		if ( ( currentWeather & WEATHER_SNOW ) && !( oldWeather & WEATHER_SNOW ) ) {
 			snowIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
 		} else if ( !( currentWeather & WEATHER_SNOW ) && ( oldWeather & WEATHER_SNOW ) ) {
@@ -334,6 +338,7 @@ void Weather::drawWeather() {
 		} else if ( ( currentWeather & WEATHER_SNOW ) && ( oldWeather & WEATHER_SNOW ) ) {
 			snowIntensity = 1.0f;
 		}
+
 		if ( ( currentWeather & WEATHER_THUNDER ) && !( oldWeather & WEATHER_THUNDER ) ) {
 			thunderIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
 		} else if ( !( currentWeather & WEATHER_THUNDER ) && ( oldWeather & WEATHER_THUNDER ) ) {
@@ -341,6 +346,7 @@ void Weather::drawWeather() {
 		} else if ( ( currentWeather & WEATHER_THUNDER ) && ( oldWeather & WEATHER_THUNDER ) ) {
 			thunderIntensity = 1.0f;
 		}
+
 		if ( ( currentWeather & WEATHER_FOG ) && !( oldWeather & WEATHER_FOG ) ) {
 			fogIntensity = (float)(now - lastWeatherChange) / WEATHER_CHANGE_DURATION;
 		} else if ( !( currentWeather & WEATHER_FOG ) && ( oldWeather & WEATHER_FOG ) ) {
@@ -348,10 +354,10 @@ void Weather::drawWeather() {
 		} else if ( ( currentWeather & WEATHER_FOG ) && ( oldWeather & WEATHER_FOG ) ) {
 			fogIntensity = 1.0f;
 		}
+
 	}
 
 	glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
-
 	glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glAlphaFunc( GL_NOTEQUAL, 0 );
@@ -360,7 +366,9 @@ void Weather::drawWeather() {
 	if ( shouldDrawWeather && fogIntensity ) {
 		glPushMatrix();
 		glLoadIdentity();
+
 		glTranslatef( 0.0f, 0.0f, 0.0f );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.4f * fogIntensity );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -391,13 +399,14 @@ void Weather::drawWeather() {
 
 		glPushMatrix();
 		session->getShapePalette()->getSnowFlakeTexture().glBind();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		for ( int i = 0; i < snowFlakeCount; i++ ) {
 			glLoadIdentity();
+
 			glTranslatef( snowFlakeX[i], snowFlakeY[i], 0.0f );
 			glScalef( mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i], mapZoom * snowFlakeZ[i] );
-//			glRotatef( 15.0f, 0.0f, 0.0f, 1.0f );
 
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
@@ -420,6 +429,7 @@ void Weather::drawWeather() {
 				snowFlakeY[i] = -Util::pickOne( SNOW_FLAKE_SIZE, screenH );
 			}
 		}
+
 		glPopMatrix();
 	// Draw the rain drops (if no snow)
 	} else if ( shouldDrawWeather && rainIntensity ) {
@@ -432,6 +442,7 @@ void Weather::drawWeather() {
 		else if ( ( rainDropCount < MIN_RAIN_DROP_COUNT ) && !weatherChanging ) rainDropCount = MIN_RAIN_DROP_COUNT;
 
 		glPushMatrix();
+
 		session->getShapePalette()->getRaindropTexture().glBind();
 
 		for ( int i = 0; i < rainDropCount; i++ ) {
@@ -441,7 +452,9 @@ void Weather::drawWeather() {
 				//glColor4f( 0.0f, 0.8f, 1.0f, 0.5f );
 				glColor4f( 0.0f, 0.5f, 0.7f, rainDropZ[i] );
 			}
+
 			glLoadIdentity();
+
 			glTranslatef( rainDropX[i], rainDropY[i], 0.0f );
 			glScalef( mapZoom, mapZoom, mapZoom );
 			glRotatef( 15.0f, 0.0f, 0.0f, 1.0f );
@@ -467,6 +480,7 @@ void Weather::drawWeather() {
 				rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
 			}
 		}
+
 		glPopMatrix();
 	}
 
@@ -474,7 +488,9 @@ void Weather::drawWeather() {
 	if ( shouldDrawWeather && fogIntensity ) {
 
 		session->getShapePalette()->fogCloudTexture.glBind();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 0.6f * fogIntensity );
+
 		glPushMatrix();
 
 		int cloudCount = ( int )( CLOUD_COUNT * ( 1.0f - session->getMap()->getZoomPercent() ) );
@@ -486,6 +502,7 @@ void Weather::drawWeather() {
 			cloudDelta = static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( cloudSpeed[i] ) / 1000 );
 
 			glLoadIdentity();
+
 			glTranslatef( cloudX[i], cloudY[i], 0.0f );
 			glScalef( mapZoom, mapZoom, mapZoom );
 
@@ -512,7 +529,6 @@ void Weather::drawWeather() {
 		}
 
 		glPopMatrix();
-
 	}
 
 	glsDisable( GLS_TEXTURE_2D );
@@ -531,7 +547,9 @@ void Weather::drawWeather() {
 
 			glPushMatrix();
 			glLoadIdentity();
+
 			glTranslatef( 0.0f, 0.0f, 0.0f );
+
 			glColor4f( 1.0f, 1.0f, 1.0f, brightness );
 
 			glBegin( GL_TRIANGLE_STRIP );
@@ -546,6 +564,7 @@ void Weather::drawWeather() {
 	}
 
 	if ( now > ( lastLightningRoll + 500 ) ) {
+
 		if ( Util::dice( 25 ) == 0 ) {
 			lastLightning = now;
 			lightningBrightness = 0.3f + ( Util::mt_rand() * 0.5f );
@@ -554,6 +573,7 @@ void Weather::drawWeather() {
 				thunderOnce = false;
 			}
 		}
+
 		lastLightningRoll = now;
 	}
 
@@ -584,6 +604,7 @@ void Weather::drawWeather() {
 
 		glPushMatrix();
 		glLoadIdentity();
+
 		glTranslatef( 0.0f, 0.0f, 0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );

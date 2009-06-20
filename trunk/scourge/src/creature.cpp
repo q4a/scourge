@@ -3531,9 +3531,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 			getMonster()->getPortraitTexture().glBind();
 		}
 
-		portrait.createAlpha( session->getShapePalette()->getNamedTexture( "conv_filter" ),
-		              getCharacter() ? getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) :
-		              getMonster()->getPortraitTexture(), 128, 128, width, height );
+		portrait.createAlpha( session->getShapePalette()->getNamedTexture( "conv_filter" ), getCharacter() ? getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) : getMonster()->getPortraitTexture(), 128, 128, width, height );
 	}
 
 	glsDisable( GLS_DEPTH_TEST | GLS_CULL_FACE );
@@ -3570,6 +3568,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( width + 20, height + 40 );
 	glEnd();
+
 	glPopMatrix();
 
 	glsDisable( GLS_BLEND );

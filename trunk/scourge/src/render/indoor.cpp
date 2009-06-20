@@ -83,15 +83,16 @@ void Indoor::drawMap() {
 		// lights on walls
 		if ( map->preferences->isLightingEnabled() ) {
 			drawLightsWalls();
-		}	
+		}
 		
 		// draw the creatures/objects/doors/etc.
-		drawObjectsAndCreatures();		
+		drawObjectsAndCreatures();
 
 		// draw walls in front of the player and water effects
 		drawFrontWallsAndWater();
 
 	} else {
+
 		// no player; just draw the damn walls
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			map->stencil[i].draw();
@@ -100,33 +101,37 @@ void Indoor::drawMap() {
 		// lights on walls
 		if ( map->preferences->isLightingEnabled() ) {
 			drawLightsWalls();
-		}	
+		}
 		
 		drawObjectsAndCreatures();
 
 		// draw water (has to come after walls to look good)
 		if ( map->hasWater ) {
-			glsEnable( GLS_BLEND );
 			glsDisable( GLS_DEPTH_MASK );
+			glsEnable( GLS_BLEND );
+
 			drawWaterIndoor();
+
 			glsEnable( GLS_DEPTH_MASK );
 		}
 	}
 
 	// draw the effects
+	glsDisable( GLS_DEPTH_MASK );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	glsDisable( GLS_DEPTH_MASK );
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		map->later[i].pos->shape->setupBlending();
 		map->later[i].draw();
 		map->later[i].pos->shape->endBlending();
 	}
+
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
 	for ( int i = 0; i < map->damageCount; i++ ) {
 		map->damage[i].draw();
-	}	
+	}
 			
 	// draw the fog of war or shading
 #ifdef USE_LIGHTING
@@ -140,22 +145,24 @@ void Indoor::drawMap() {
 }
 
 void Indoor::drawFrontWallsAndWater() {
-	glsEnable( GLS_BLEND | GLS_DEPTH_TEST );
 	glsDisable( GLS_DEPTH_MASK );
+	glsEnable( GLS_BLEND | GLS_DEPTH_TEST );
+
 	if ( map->hasWater && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized() ) {
+
 		// map->stencil out the transparent walls (and draw them)
-		//glDisable(GL_DEPTH_TEST);
-		//glColorMask(0,0,0,0);
 		glClear( GL_STENCIL_BUFFER_BIT );
+
 		glsEnable( GLS_STENCIL_TEST );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+
 		// draw walls blended in front of the player
 		// 6,2 6,4 work well
 		// FIXME: blending walls have some artifacts that depth-sorting
 		// is supposed to get rid of but that didn't work for me.
-		//glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
 				setupBlendedWallColor();
@@ -167,13 +174,17 @@ void Indoor::drawFrontWallsAndWater() {
 		// draw the water (except where the transp. walls are)
 		glStencilFunc( GL_NOTEQUAL, 1, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+
 		drawWaterIndoor();
 
 		glsDisable( GLS_STENCIL_TEST );
+
 	} else {
+
 		// draw transp. walls and water w/o map->stencil buffer
 		//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( map->stencil[i].inFront ) {
 				setupBlendedWallColor();
@@ -181,24 +192,27 @@ void Indoor::drawFrontWallsAndWater() {
 				map->stencil[i].draw();
 			}
 		}
+
 		if ( map->hasWater ) {
 			drawWaterIndoor();
-		}	
+		}
+
 	}
+
 	glsEnable( GLS_DEPTH_MASK );
 }
 
 void Indoor::drawWaterIndoor() {
 	glsDisable( GLS_TEXTURE_2D );
 	glBlendFunc( GL_ONE, GL_SRC_COLOR );
+
 	map->setupShapes( false, true );
-	glsEnable( GLS_TEXTURE_2D );	
+
+	glsEnable( GLS_TEXTURE_2D );
 }
 
 void Indoor::drawIndoorShadows() {
 	// map->stencil and draw the floor
-	//glDisable(GL_DEPTH_TEST);
-	//glColorMask(0,0,0,0);
 	glsEnable( GLS_STENCIL_TEST );
 	glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 	glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
@@ -212,46 +226,54 @@ void Indoor::drawIndoorShadows() {
 
 	// shadows
 	if ( map->preferences->getShadows() >= Constants::OBJECT_SHADOWS && map->helper->drawShadow() ) {
-		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
-		glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+
+		RenderedLocation::useShadow = true;
+
 		glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
-		RenderedLocation::useShadow = true;
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+		glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+
 		for ( int i = 0; i < map->otherCount; i++ ) {
 			map->other[i].draw();
 		}
+
 		if ( map->preferences->getShadows() == Constants::ALL_SHADOWS ) {
 			for ( int i = 0; i < map->stencilCount; i++ ) {
 				map->stencil[i].draw();
 			}
 		}
+
 		RenderedLocation::useShadow = false;
+
 		glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 		glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	}
 
-	//glsEnable( GLS_DEPTH_TEST );
 	glsDisable( GLS_STENCIL_TEST );	
 }
 
 void Indoor::drawObjectsAndCreatures() {
 	for ( int i = 0; i < map->otherCount; i++ ) {
 		if ( map->other[i].pos->shape->isFlatCaveshape() ) continue;
+
 		if ( map->selectedDropTarget && ( ( map->selectedDropTarget->creature && map->selectedDropTarget->creature == map->other[i].pos->creature ) ||
 		                             ( map->selectedDropTarget->item && map->selectedDropTarget->item == map->other[i].pos->item ) ) ) {
 			RenderedLocation::colorAlreadySet = true;
 			setupDropLocationColor();
 		}
+
 		map->other[i].draw();
-	}	
+	}
 }
 
 void Indoor::drawLightsFloor() {
 	// map->stencil and draw the floor
-	//glDisable(GL_DEPTH_TEST);
 	glColorMask( 0, 0, 0, 0 );
 	glClear( GL_STENCIL_BUFFER_BIT );
+
 	glsEnable( GLS_STENCIL_TEST );
 	glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 	glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
@@ -265,44 +287,53 @@ void Indoor::drawLightsFloor() {
 	}
 	
 	// draw all the lights
+	glDisable(GL_DEPTH_TEST | GLS_DEPTH_MASK );
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 	glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-	glDisable(GL_DEPTH_TEST | GLS_DEPTH_MASK );
 	glColorMask( 1, 1, 1, 1 );
-	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 	setupLightBlending();
+
 	for( int i = 0; i < map->lightCount; i++ ) {
 		map->lights[i].draw();
 	}
-	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK);
+
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST | GLS_STENCIL_TEST );
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK);
 }
 
 void Indoor::drawLightsWalls() {
-	//glsDisable( GLS_DEPTH_MASK );
 	glsEnable( GLS_DEPTH_MASK );
+
 	for( int t = 0; t < map->lightCount; t++ ) {
 		// map->stencil and draw the wall
-		//glDisable(GL_DEPTH_TEST);
 		glColorMask( 0, 0, 0, 0 );
 		glClear( GL_STENCIL_BUFFER_BIT );
+
 		glsEnable( GLS_STENCIL_TEST );
 		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
 
 		// for each shape, map->stencil out the visible surfaces
 		for ( int i = 0; i < map->stencilCount; i++ ) {
+
 			if( map->stencil[i].inFront || map->isWallBetweenLocations( map->lights[t].pos, map->stencil[i].pos ) ) {
 				continue;
 			}
+
 			set<Surface*> surfaces;
 			map->stencil[i].pos->shape->getSurfaces( &surfaces, true );
 			map->stencil[i].pos->lightFacingSurfaces.clear();
+
 			for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
 				Surface *surface = *e;
+
 				if( 16 > map->distance( map->stencil[i].pos, map->lights[t].pos ) && isFacingLight( surface, map->stencil[i].pos, map->lights[t].pos ) ) {
 					map->stencil[i].pos->lightFacingSurfaces.insert( surface );
 				}
+
 			}
 			
 			if( map->stencil[i].pos->lightFacingSurfaces.empty() ) {
@@ -310,37 +341,49 @@ void Indoor::drawLightsWalls() {
 			}
 			
 			// draw the visible surfaces
-			map->stencil[i].draw();			
+			map->stencil[i].draw();
 		}
 		
 		// minus the blocking surfaces
 		glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+
 		for ( int i = 0; i < map->stencilCount; i++ ) {
+
 			if( !map->stencil[i].inFront && 16 > distance( map->stencil[i].pos, map->lights[t].pos ) ) {
+
 				if( !map->stencil[i].pos->lightFacingSurfaces.empty() ) {
 					set<Surface*> surfaces;
 					map->stencil[i].pos->shape->getSurfaces( &surfaces, false );
 					map->stencil[i].pos->lightFacingSurfaces.clear();
+
 					for( set<Surface*>::iterator e = surfaces.begin(); e != surfaces.end(); ++e ) {
 						Surface *surface = *e;
+
 						if( !isFacingLight( surface, map->stencil[i].pos, map->lights[t].pos ) ) {
 							map->stencil[i].pos->lightFacingSurfaces.insert( surface );
 						}
+
 					}
+
 				}
+
 				map->stencil[i].draw();
 			}
+
 		}
 		
 		// draw the current light
 		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 		glColorMask( 1, 1, 1, 1 );
-		glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 		glsDisable( GLS_DEPTH_TEST );
+		glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 		setupLightBlending();
 		map->lights[t].draw();
+
 		glsDisable( GLS_BLEND | GLS_ALPHA_TEST | GLS_STENCIL_TEST );
 		glsEnable( GLS_DEPTH_TEST );
 	}
@@ -349,7 +392,7 @@ void Indoor::drawLightsWalls() {
 	for ( int i = 0; i < map->stencilCount; i++ ) {
 		map->stencil[i].pos->lightFacingSurfaces.clear();
 	}
-	//glsEnable( GLS_DEPTH_MASK );
+
 	glClear( GL_STENCIL_BUFFER_BIT );
 }
 
@@ -385,6 +428,7 @@ void Indoor::drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Sh
 	// draw water
 	Uint32 key = map->createPairKey( posX, posY );
 	if ( map->water.find( key ) != map->water.end() ) {
+
 		glsDisable( GLS_CULL_FACE );
 
 		float sx = ( static_cast<float>( MAP_UNIT ) / static_cast<float>( WATER_TILE_X ) ) * MUL;
@@ -392,9 +436,11 @@ void Indoor::drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Sh
 
 		int xp = 0;
 		int yp = 0;
+
 		while ( true ) {
 			int stx = xp;
 			int sty = yp;
+
 			glBegin( GL_TRIANGLE_STRIP );
 			for ( int i = 0; i < 4; i++ ) {
 				int wx, wy;
@@ -416,11 +462,13 @@ void Indoor::drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Sh
 				int yy = wy % WATER_TILE_Y;
 				WaterTile *w = NULL;
 				Uint32 key = map->createPairKey( wx / WATER_TILE_X, wy / WATER_TILE_Y );
+
 				if ( map->water.find( key ) != map->water.end() ) {
 					w = map->water[key];
 
 					Uint32 time = SDL_GetTicks();
 					Uint32 elapsedTime = time - w->lastTime[xx][yy];
+
 					if ( elapsedTime >= ( Uint32 )( 1000.0f / WATER_ANIM_SPEED ) ) {
 
 						w->z[xx][yy] += w->step[xx][yy];
@@ -429,41 +477,42 @@ void Indoor::drawWaterPosition( int posX, int posY, float xpos2, float ypos2, Sh
 
 						w->lastTime[xx][yy] = time;
 					}
+
 				}
 
 				float zz = ( w ? w->z[xx][yy] : 0.0f );
 				float sz = ( WATER_HEIGHT + zz ) * MUL;
-				glColor4f( 0.3f + ( zz / 30.0f ),
-				           0.25f + ( zz / 10.0f ),
-				           0.17f + ( zz / 15.0f ),
-				           0.5f );
 
+				glColor4f( 0.3f + ( zz / 30.0f ), 0.25f + ( zz / 10.0f ), 0.17f + ( zz / 15.0f ), 0.5f );
 
 				glVertex3f( static_cast<float>( xp ) * sx, static_cast<float>( yp ) * sy, sz );
 
 				switch ( i ) {
-				case 0: xp++; break;
-				case 1: yp++; xp--; break;
-				case 2: xp++; break;
-				case 3: yp--; xp--; break;
+					case 0: xp++; break;
+					case 1: yp++; xp--; break;
+					case 2: xp++; break;
+					case 3: yp--; xp--; break;
 				}
+
 				if ( xp > WATER_TILE_X || yp > WATER_TILE_Y ) {
 					break;
 				}
+
 			}
+
 			glEnd();
+
 			xp = stx + 1;
 			yp = sty;
+
 			if ( xp >= WATER_TILE_X ) {
 				xp = 0;
 				yp++;
 				if ( yp >= WATER_TILE_Y ) break;
 			}
+
 		}
 
-
-		//glsEnable( GLS_DEPTH_MASK );
-		//glsDisable( GLS_BLEND );
 	}
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );

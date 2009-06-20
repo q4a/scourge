@@ -328,7 +328,6 @@ void GLShape::resetMultiTexture() {
 }
 
 void GLShape::draw() {
-
 	if ( !initialized ) {
 		cerr << "*** Warning: shape not intialized. name=" << getName() << endl;
 	}
@@ -343,6 +342,7 @@ void GLShape::draw() {
 	} else {
 		glsEnable( GLS_TEXTURE_2D );
 	}
+
 	bool isFloorShape = ( height < 1 );
 	bool *sides = getOccludedSides();
 	int textureIndexTop = isFloorShape && getTextureIndex() > -1 ? getTextureIndex() : GLShape::TOP_SIDE;
@@ -355,7 +355,9 @@ void GLShape::draw() {
 	}
 	
 	if( !isGround() ) {
+
 		if ( sides[Shape::N_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[BOTTOM_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 				glsEnable( GLS_TEXTURE_2D );
@@ -366,10 +368,13 @@ void GLShape::draw() {
 			} else {
 				tex[textureIndexFront].glBind();
 			}
+
 			glCallList( displayListStart + 2 + Shape::N_SIDE );
 			resetMultiTexture();
 		}
+
 		if ( sides[Shape::S_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[FRONT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 				glsEnable( GLS_TEXTURE_2D );
@@ -380,10 +385,13 @@ void GLShape::draw() {
 			} else {
 				tex[textureIndexFront].glBind();
 			}
+
 			glCallList( displayListStart + 2 + Shape::S_SIDE );
 			resetMultiTexture();
 		}
+
 		if ( sides[Shape::E_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[RIGHT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
+
 			if ( !isShade() && Constants::multitexture ) {
 				glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 				glsEnable( GLS_TEXTURE_2D );
@@ -394,13 +402,16 @@ void GLShape::draw() {
 			} else {
 				tex[textureIndexSide].glBind();
 			}
+
 			glCallList( displayListStart + 2 + Shape::E_SIDE );
-			resetMultiTexture();			
+			resetMultiTexture();
 		}
+
 		if ( sides[Shape::W_SIDE] && ( !lightFacingSurfaces || lightFacingSurfaces->find( surfaces[LEFT_SURFACE] ) != lightFacingSurfaces->end() ) ) {
 			tex[textureIndexSide].glBind();
 			glCallList( displayListStart + 2 + Shape::W_SIDE );
 		}
+
 	}
 
 	if( isShade() ) {
@@ -411,23 +422,31 @@ void GLShape::draw() {
 }
 
 void GLShape::outline( float r, float g, float b ) {
-
 	float colors[4];
 	glGetFloatv( GL_CURRENT_COLOR, colors );
 
 	useShadow = true;
+
+	glsDisable( GLS_TEXTURE_2D );
 	glsEnable( GLS_BLEND | GLS_CULL_FACE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glCullFace( GL_BACK );
-	glsDisable( GLS_TEXTURE_2D );
+
 	glPolygonMode( GL_FRONT, GL_LINE );
+
 	glLineWidth( 4 );
+
 	glColor3f( r, g, b );
+
 	glCallList( displayListStart );
+
 	glLineWidth( 1 );
+
 	glPolygonMode( GL_FRONT, GL_FILL );
+
 	glsDisable( GLS_BLEND | GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
+
 	useShadow = false;
 
 	glColor4fv( colors );

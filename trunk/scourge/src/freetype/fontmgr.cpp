@@ -117,20 +117,20 @@ void FontMgr::drawTextUTF8( char *text, int x, int y ) {
 
 	unicodeBuffer[0] = UNICODE_BOM_NATIVE;
 	UTF8_to_UNICODE( unicodeBuffer, text, strlen( text ) );
-
 	drawUNICODE( unicodeBuffer, x, y );
+
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 }
 
 void FontMgr::drawText( char *text, int x, int y ) {
-	glsEnable( GLS_BLEND | GLS_TEXTURE_2D );
+	glsEnable( GLS_BLEND | GLS_TEXTURE_2D | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	unicodeBuffer[0] = UNICODE_BOM_NATIVE;
 	LATIN1_to_UNICODE( unicodeBuffer, text, strlen( text ) );
-
 	drawUNICODE( unicodeBuffer, x, y );
+
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 }
 

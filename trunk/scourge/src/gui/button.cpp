@@ -57,6 +57,7 @@ void Button::drawWidget( Window* parent ) {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 		glPushMatrix();
+
 		texture.glBind();
 
 		if ( isEnabled() ) {
@@ -75,38 +76,40 @@ void Button::drawWidget( Window* parent ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( getWidth(), getHeight() );
 		glEnd();
+
 		glPopMatrix();
 
 		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	}
 
 	if ( strlen( label ) ) {
-		glPushMatrix();
 		int ypos;
+
+		glPushMatrix();
+
 		switch ( getLabelPosition() ) {
-		case TOP: ypos = 13; break;
-		case BOTTOM: ypos = ( y2 - y ) - 2; break;
-		default: ypos = ( y2 - y ) / 2 + 5;
+			case TOP: ypos = 13; break;
+			case BOTTOM: ypos = ( y2 - y ) - 2; break;
+			default: ypos = ( y2 - y ) / 2 + 5;
 		}
+
 		glTranslatef( 5.0f, ypos, 0.0f );
+
 		if ( selected && theme->getButtonSelectionText() ) {
-			glColor4f( theme->getButtonSelectionText()->r,
-			           theme->getButtonSelectionText()->g,
-			           theme->getButtonSelectionText()->b,
-			           theme->getButtonSelectionText()->a );
+			glColor4f( theme->getButtonSelectionText()->r, theme->getButtonSelectionText()->g, theme->getButtonSelectionText()->b, theme->getButtonSelectionText()->a );
 		} else if ( theme->getButtonText() ) {
-			glColor4f( theme->getButtonText()->r,
-			           theme->getButtonText()->g,
-			           theme->getButtonText()->b,
-			           theme->getButtonText()->a );
+			glColor4f( theme->getButtonText()->r, theme->getButtonText()->g, theme->getButtonText()->b, theme->getButtonText()->a );
 		} else {
 			applyColor();
 		}
+
 		parent->getScourgeGui()->setFontType( fontType );
 		parent->getScourgeGui()->texPrint( 0, 0, label );
 		parent->getScourgeGui()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
 		glPopMatrix();
 	}
+
 }
 	
 bool Button::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {

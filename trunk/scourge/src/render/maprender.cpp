@@ -70,8 +70,9 @@ void MapRender::draw() {
 
 void MapRender::renderFloor() {
 	glsEnable( GLS_TEXTURE_2D );
-	//glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+
 	setupShapeColor();
+
 	if ( map->floorTex.isSpecified() ) map->floorTex.glBind();
 	glPushMatrix();
 	
@@ -83,6 +84,7 @@ void MapRender::renderFloor() {
 	if ( map->settings->isGridShowing() ) {
 		map->setupShapes( true, false );
 	}
+
 }
 
 /// Draws the projectiles.
@@ -122,10 +124,15 @@ void MapRender::willDrawGrid() {
 	float zpos2 = 0.0f * MUL;
 	float w = 2.0f * MUL;
 	float h = 4.0f * MUL;
+
 	if ( map->useFrustum && map->frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w * MUL ) ) {
+
 		for ( int i = 0; i < 2; i++ ) {
+
 			glPushMatrix();
+
 			glTranslatef( xpos2, ypos2, zpos2 );
+
 			if ( i == 0 ) {
 				glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
 				glBegin( GL_TRIANGLES );
@@ -168,8 +175,10 @@ void MapRender::willDrawGrid() {
 			glVertex3f( w, w, h );
 
 			glEnd();
+
 			glPopMatrix();
 		}
+
 	}
 
 	glsDisable( GLS_DEPTH_TEST );
@@ -180,18 +189,24 @@ void MapRender::willDrawGrid() {
 	float m = 0.5f * MUL;
 	int const TMPLEN = 100;
 	char tmp[TMPLEN];
+
 	for ( int i = 0; i < map->chunkCount; i++ ) {
 
 		float n = static_cast<float>( MAP_UNIT ) * MUL;
 
 		glPushMatrix();
+
 		glTranslatef( map->chunks[i].x, map->chunks[i].y - ( 1.0f * MUL ), 0.0f );
 
 		if ( map->chunks[i].cx == chunkX && map->chunks[i].cy == chunkY ) {
+
 			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
+
 			glLineWidth( 1 );
+
 			snprintf( tmp, TMPLEN, "%d,%d", ( chunkX * MAP_UNIT ), ( chunkY * MAP_UNIT + 1 ) );
 			map->adapter->texPrint( 0, 0, tmp );
+
 			for ( int xx = 1; xx < MAP_UNIT; xx++ ) {
 				glBegin( GL_LINES );
 				glVertex3f( 0, xx * MUL, m );
@@ -202,16 +217,22 @@ void MapRender::willDrawGrid() {
 				glVertex3f( xx * MUL, n, m );
 				glEnd();
 			}
+
 		} else {
+
 			glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
+
 			glLineWidth( 1 );
+
 		}
+
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0.0f, 0.0f, m );
 		glVertex3f( n, 0.0f, m );
 		glVertex3f( n, n, m );
 		glVertex3f( 0.0f, n, m );
 		glEnd();
+
 		glPopMatrix();
 	}
 
@@ -228,6 +249,7 @@ void MapRender::willDrawGrid() {
 	float green = 0.9f;
 	float blue = 0.15f;
 	bool found = false;
+
 	if ( map->cursorFlatMapX < MAP_WIDTH && map->cursorFlatMapY < MAP_DEPTH ) {
 		for ( int xx = map->cursorFlatMapX; xx < map->cursorFlatMapX + map->cursorWidth; xx++ ) {
 			for ( int yy = map->cursorFlatMapY - 1; yy >= map->cursorFlatMapY - map->cursorDepth; yy-- ) {
@@ -240,13 +262,16 @@ void MapRender::willDrawGrid() {
 			}
 		}
 	}
+
 	if ( found ) {
 		green = 0.15f;
 	}
 
 	// draw the cursor
 	glColor4f( red, green, blue, 0.25f );
+
 	glTranslatef( xp, yp, 0.0f );
+
 	glBegin( GL_QUADS );
 
 	glVertex3f( 0.0f, 0.0f, m );
@@ -280,6 +305,7 @@ void MapRender::willDrawGrid() {
 	glVertex3f( cw, 0.0f, ch );
 
 	glEnd();
+
 	glPopMatrix();
 
 	glsDisable( GLS_BLEND );
@@ -301,46 +327,47 @@ void MapRender::drawTraps() {
 			// get the color
 			// FIXME: colors should be ref-d from scourgeview.cpp colors
 			if ( !trap->enabled ) {
-				//ret = disabledTrapColor;
 				glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+
 			} else if ( trap->discovered ) {
+
 				if ( trap == map->getTrapLoc( map->getSelectedTrapIndex() ) ) {
-					//ret = outlineColor;
 					glColor4f( 0.3f, 0.3f, 0.5f, 0.5f );
 				} else {
-					// ret = enabledTrapColor;
 					glColor4f( 1.0f, 1.0f, 0.0f, 0.5f );
 				}
+
 			} else {
-				// ret = debugTrapColor;
+
 				glColor4f( 0.0f, 1.0f, 1.0f, 0.5f );
 			}
 
 			glLineWidth( 3 );
-			//glBegin( GL_POLYGON );
+
 			glBegin( GL_LINE_LOOP );
 			for ( unsigned int i = 0; i < trap->hull.size(); i++ ) {
 				CVector2 *p = trap->hull[ i ];
 				glVertex3f( ( p->x - map->getX() ) * MUL, ( p->y - map->getY() ) * MUL, 0.5f * MUL );
 			}
 			glEnd();
+
 			glLineWidth( 1 );
+
 			glsEnable( GLS_TEXTURE_2D );
-			//glsDisable( GLS_BLEND );
 		}
+
 	}
+
 }
 
 /// Draws the rugs in Scourge HQ.
 
 void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
-	glPushMatrix();
-	glTranslatef( xpos2, ypos2, 0.255f * MUL );
-	glRotatef( rug->angle, 0.0f, 0.0f, 1.0f );
 	float f = MAP_UNIT * MUL;
 	float offset = 2.5f * MUL;
 
 	float sx, sy, ex, ey;
+
 	// starting section
 	if ( rug->isHorizontal ) {
 		sx = offset;
@@ -356,8 +383,16 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 
 	glsDisable( GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
+
+	glPushMatrix();
+
+	glTranslatef( xpos2, ypos2, 0.255f * MUL );
+	glRotatef( rug->angle, 0.0f, 0.0f, 1.0f );
+
 	setupShapeColor();
+
 	rug->texture.glBind();
+
 	glBegin( GL_TRIANGLE_STRIP );
 	if ( rug->isHorizontal ) {
 		glTexCoord2f( 1.0f, 0.0f );
@@ -379,7 +414,9 @@ void MapRender::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ych
 		glVertex2f( ex, ey );
 	}
 	glEnd();
+
 	glsDisable( GLS_TEXTURE_2D );
+
 	glPopMatrix();
 }
 
@@ -395,6 +432,7 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 	glsDisable( GLS_DEPTH_MASK | GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	tex.glBind();
 
 	// which ground pos?
@@ -432,19 +470,22 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
 	glMatrixMode( GL_TEXTURE );
+
 	glPushMatrix();
 	glLoadIdentity();
 
 	glTranslatef( 0.5f, 0.5f, 0.0f );
 	glRotatef( angle, 0.0f, 0.0f, 1.0f );
 	glTranslatef( -0.5f, -0.5f, 0.0f );
-
 	glTranslatef( offSX, offSY, 0.0f );
+
 	glMatrixMode( GL_MODELVIEW );
 
 
 	float gx, gy;
+
 	for ( int xx = static_cast<int>( sx ); xx <= static_cast<int>( ex ); xx++ ) {
+
 		for ( int yy = static_cast<int>( sy ); yy <= static_cast<int>( ey ); yy++ ) {
 
 			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / ( ex - sx );
@@ -452,7 +493,6 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 			float texSy = ( ( yy - sy ) * ( offEY - offSY ) ) / ( ey - sy );
 			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / ( ey - sy );
 
-			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_TRIANGLE_STRIP );
 
 			glTexCoord2f( texSx, texSy );
@@ -476,21 +516,23 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 			glVertex3f( gx, gy, map->groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glEnd();
+
 		}
+
 	}
 
 	glMatrixMode( GL_TEXTURE );
-	glPopMatrix();
-	glMatrixMode( GL_MODELVIEW );
 
+	glPopMatrix();
+
+	glMatrixMode( GL_MODELVIEW );
 
 	// switch back to repeating the texture
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-	//glsDisable( GLS_DEPTH_TEST );
-	glsEnable( GLS_DEPTH_MASK );
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
+	glsEnable( GLS_DEPTH_MASK );
 
 #ifdef DEBUG_HEIGHT_MAP
 	debugGround( sx, sy, ex, ey );
@@ -499,9 +541,13 @@ void MapRender::drawGroundTex( Texture tex, float tx, float ty, float tw, float 
 
 void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
 	glsDisable( GLS_TEXTURE_2D );
+
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
+
 	float gx, gy;
+
 	for ( int xx = sx; xx <= ex; xx++ ) {
+
 		for ( int yy = sy; yy <= ey; yy++ ) {
 			glBegin( GL_LINE_LOOP );
 			gx = map->groundPos[ xx ][ yy + 1 ].x - map->getX() * MUL;
@@ -522,7 +568,9 @@ void MapRender::debugGround( int sx, int sy, int ex, int ey ) {
 
 			glEnd();
 		}
+
 	}
+
 	glsEnable( GLS_TEXTURE_2D );
 }
 

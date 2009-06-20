@@ -662,10 +662,13 @@ void PcEditor::rollApperance() {
 
 bool PcEditor::onDrawPortrait( Widget* w ) {
 	if ( w == portrait ) {
-		glPushMatrix();
 		glsEnable( GLS_TEXTURE_2D );
 		glsDisable( GLS_CULL_FACE );
+
+		glPushMatrix();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		scourge->getShapePalette()->getPortraitTexture( getSex(), portraitIndex ).glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -678,38 +681,44 @@ bool PcEditor::onDrawPortrait( Widget* w ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
 		glEnd();
-		glsDisable( GLS_TEXTURE_2D );
+
 		glPopMatrix();
+
+		glsDisable( GLS_TEXTURE_2D );
+
 		return true;
-	}  
+	}
+
 	return false;
 }
 
 bool PcEditor::onDrawModel( Widget* w ) {
 	if ( w == model ) {
 		// draw model
-		CharacterModelInfo *cmi = scourge->getShapePalette()->
-		                          getCharacterModelInfo( getSex(), modelIndex );
+		CharacterModelInfo *cmi = scourge->getShapePalette()->getCharacterModelInfo( getSex(), modelIndex );
 		GLShape *shape;
+
 		if ( shapesMap.find( cmi ) == shapesMap.end() ) {
-			shape =
-			  scourge->getShapePalette()->getCreatureShape( cmi->model_name,
-			                                                cmi->skin_name,
-			                                                cmi->scale );
+			shape = scourge->getShapePalette()->getCreatureShape( cmi->model_name, cmi->skin_name, cmi->scale );
 			shapesMap[ cmi ] = shape;
 			shape->setCurrentAnimation( MD2_STAND );
 		} else {
 			shape = shapesMap[ cmi ];
 		}
+
 		if ( willModelPlaySound ) {
-			scourge->playCharacterSound( cmi->model_name,
-			                             GameAdapter::SELECT_SOUND, 127 );
+			scourge->playCharacterSound( cmi->model_name, GameAdapter::SELECT_SOUND, 127 );
 			willModelPlaySound = false;
 		}
+
+		glsDisable( GLS_TEXTURE_2D );
+
 		glPushMatrix();
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
 		glClearDepth( 1.0f );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glColor3f( 0.0f, 0.1f, 0.25f );
 		glVertex2i( 0, 0 );
@@ -720,19 +729,26 @@ bool PcEditor::onDrawModel( Widget* w ) {
 		glColor3f( 0.0f, 0.1f, 0.25f );
 		glVertex2i( model->getWidth(), model->getHeight() );
 		glEnd();
+
 		glsDisable( GLS_BLEND );
 		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_TEXTURE_2D );
+
 		glTranslatef( 105.0f, MODEL_SIZE + 10.0f, 500.0f );
 		glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 		glRotatef( 180.0f, 0.0f, 0.0f, 1.0f );
 		glScalef( 2, 2, 2 );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		//glsDisable( GLS_SCISSOR_TEST );
+
 		shape->draw();
+
 		glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_MASK | GLS_DEPTH_TEST | GLS_BLEND );
+
 		glPopMatrix();
+
 		return true;
 	}
+
 	return false;
 }
 

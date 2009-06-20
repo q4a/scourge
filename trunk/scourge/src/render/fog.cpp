@@ -161,7 +161,9 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	int f[1000];
 	GLfloat p[1000][4];
 	int pCount = 0;
+
 	for ( int x = 0; x < fw; x ++ ) {
+
 		for ( int y = 0; y < fh; y ++ ) {
 			int v = fog[ fx + x ][ fy + y ];
 			if ( v == FOG_VISITED ) continue;
@@ -172,8 +174,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			float zp = static_cast<float>( z ) * MUL;
 
 			// FIXME: we should check 2d inclusion in screen rect instead
-			if ( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) )
-				continue;
+			if ( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) ) continue;
 
 			// get all screen points of the bounding box; draw bounding rectangle on screen
 			float obj[20][3] = {
@@ -207,6 +208,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 			maxScX = maxScY = 0;
 			minScX = minScY = 2000;
+
 			for ( int i = 0; i < 20; i++ ) {
 				GLdouble scx, scy;
 				getScreenXY( ( GLdouble )obj[i][0], ( GLdouble )obj[i][1], ( GLdouble )obj[i][2], &scx, &scy );
@@ -224,10 +226,10 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 					if ( scy < minScY ) minScY = ( GLfloat )scy;
 					if ( scy > maxScY ) maxScY = ( GLfloat )scy;
 				}
+
 			}
 
-			if ( v == FOG_CLEAR )
-				continue;
+			if ( v == FOG_CLEAR ) continue;
 
 			f[pCount] = v;
 			p[pCount][0] = minScX;
@@ -236,6 +238,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			p[pCount][3] = maxScY - minScY;
 
 			e[pCount] = false;
+
 			if ( ( fy + y > 0 && v != fog[ fx + x ][ fy + y - 1 ] )
 			        || ( fx + x > 0 && v != fog[ fx + x - 1 ][ fy + y ] )
 			        || ( fx + x < FOG_WIDTH - 1 && v != fog[ fx + x + 1 ][ fy + y ] )
@@ -246,29 +249,23 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			pCount++;
 			if ( pCount >= 1000 ) break;
 		}
+
 	}
-
-
 
 	// ***************************
 	// DRAW IT!
 
 	glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST );
-
 	glsEnable( GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, EA / 255.0f );
 
 	glPushMatrix();
 	glLoadIdentity();
 
 	// draw a gray rect.
-	if ( map->getAdapter()->
-	        intersects( 0, 0,
-	                    map->getAdapter()->getScreenWidth(),
-	                    map->getAdapter()->getScreenHeight(),
-	                    minLightX, minLightY, maxLightX - minLightX, maxLightY - minLightY ) ) {
-
+	if ( map->getAdapter()->intersects( 0, 0, map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight(), minLightX, minLightY, maxLightX - minLightX, maxLightY - minLightY ) ) {
 
 		glBegin( GL_QUADS );
 
@@ -297,12 +294,14 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 		// draw the light circle
 		glsEnable( GLS_TEXTURE_2D );
+
 		glLoadIdentity();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glBindTexture( GL_TEXTURE_2D, overlay_tex );
-		glBegin( GL_TRIANGLE_STRIP );
 
+		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( minLightX, minLightY );
 		glTexCoord2i( 1, 0 );
@@ -312,8 +311,11 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( maxLightX, maxLightY );
 		glEnd();
+
 		glsDisable( GLS_TEXTURE_2D );
+
 	} else {
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 0 );
 		glVertex2i( map->getAdapter()->getScreenWidth(), 0 );
@@ -324,9 +326,12 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 	}
 
 	// draw the dark (unvisited) fog
-	glLoadIdentity();
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
+
+	glLoadIdentity();
+
 	glColor3f( DARK_R, DARK_G, DARK_B );
+
 	for ( int i = 0; i < pCount; i++ ) {
 		GLfloat x = p[i][0];
 		GLfloat y = p[i][1];
@@ -337,23 +342,24 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 			glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 			glBlendFunc( GL_DST_COLOR, GL_ZERO );
+
 			glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+
 			glBindTexture( GL_TEXTURE_2D, shade_tex );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
 			glVertex2f( x - ( w / 2 ), y - ( h / 2 ) );
-			//glVertex2f( x, y );
 			glTexCoord2i( 1, 0 );
 			glVertex2f( x + w + ( w / 2 ), y - ( h / 2 ) );
-			//glVertex2f( x + w, y );
 			glTexCoord2i( 0, 1 );
 			glVertex2f( x - ( w / 2 ), y + h + ( h / 2 ) );
-			//glVertex2f( x, y + h );
 			glTexCoord2i( 1, 1 );
 			glVertex2f( x + w + ( w / 2 ), y + h + ( h / 2 ) );
-			//glVertex2f( x + w, y + h );
 			glEnd();
+
 			glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 			glColor3f( DARK_R, DARK_G, DARK_B );
 		} else {
 			glBegin( GL_TRIANGLE_STRIP );
@@ -368,7 +374,9 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 
 #ifdef DEBUG_FOG
 	glLoadIdentity();
+
 	glColor3f( 1.0f, 1.0f, 1.0f );
+
 	for ( int i = 0; i < pCount; i++ ) {
 		glBegin( GL_LINE_LOOP );
 		glVertex2f( p[i][0], p[i][1] );
@@ -377,6 +385,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 		glVertex2f( p[i][0] + p[i][2], p[i][1] );
 		glEnd();
 	}
+
 	glsEnable( GLS_BLEND );
 #endif
 

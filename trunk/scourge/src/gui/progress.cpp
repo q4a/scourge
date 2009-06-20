@@ -78,8 +78,8 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	glLoadIdentity();
 
 	if ( clearScreen ) {
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-		glClearColor( 0, 0, 0, 0 );
 	}
 
 	glsDisable( GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_CULL_FACE );
@@ -94,6 +94,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 
 	// display as % if too large
 	int maxWidth = scourgeGui->getScreenWidth() - 50;
+
 	if ( width >= maxWidth ) {
 		maxStatus = static_cast<int>( static_cast<float>( maxStatus * maxWidth ) / static_cast<float>( width ) );
 		status = static_cast<int>( static_cast<float>( status * maxWidth ) / static_cast<float>( width ) );
@@ -105,6 +106,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	int x = ( center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture.isSpecified() ? TEXTURE_BORDER : 0 ) );
 	//int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
 	int y = 0;
+
 	glTranslatef( x, y, 0.0f );
 	
 	glsDisable( GLS_TEXTURE_2D );
@@ -121,34 +123,26 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	Widget::drawBorderedTexture( texture,
-	                             -TEXTURE_BORDER,
-	                             0,
-	                             width + ( 2 * TEXTURE_BORDER ),
-	                             60,
-	                             TEXTURE_BORDER, TEXTURE_BORDER,
-	                             256 );
 
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	Widget::drawBorderedTexture( texture, -TEXTURE_BORDER, 0, width + ( 2 * TEXTURE_BORDER ), 60, TEXTURE_BORDER, TEXTURE_BORDER, 256 );
+
 	if ( message ) scourgeGui->texPrint( 0, 22, message );
 
 	for ( int i = 0; i < 3; i++ ) {
 		if ( i == 2 && alt <= 0 ) continue;
 		glPushMatrix();
-		//if(updateScreen)
 		glLoadIdentity();
+
 		glTranslatef( x + 10.0f, y + 32.0f, 0.0f );
+
 		switch ( i ) {
-		case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
-		case 1: glColor4f( 1.0f, 1.0f, 1.0f, 0.8f ); break;
-		case 2: glColor4f( 1.0f, 0.4f, 0.0f, 0.8f ); break;
+			case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
+			case 1: glColor4f( 1.0f, 1.0f, 1.0f, 0.8f ); break;
+			case 2: glColor4f( 1.0f, 0.4f, 0.0f, 0.8f ); break;
 		}
-		Widget::drawBorderedTexture( highlight,
-		                             -HIGHLIGHT_BORDER, 0,
-		                             HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ),
-		                             //22,
-		                             20,
-		                             HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
+
+		Widget::drawBorderedTexture( highlight, -HIGHLIGHT_BORDER, 0, HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : ( i == 1 ? status : ( status < alt ? status : alt ) ) ) * ( w + gap ), 20, HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
+		
 		glPopMatrix();
 	}
 
@@ -157,6 +151,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 			scourgeGui->processEventsAndRepaint();
 		} else SDL_GL_SwapBuffers( );
 	}
+
 	status++;
 
 	glsDisable( GLS_ALPHA_TEST );

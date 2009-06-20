@@ -69,7 +69,9 @@ void MD2Shape::draw() {
 
 #ifdef DEBUG_MD2
 	glPushMatrix();
+
 	debugShape->draw();
+
 	glPopMatrix();
 #endif
 
@@ -79,15 +81,13 @@ void MD2Shape::draw() {
 	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
 	// move to the middle of the space
-	//glTranslatef( (static_cast<float>(width) * MUL) / 2.0f,
-	//0.25f * MUL,
-	//-(static_cast<float>(depth) * MUL) / 2.0f );
 	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
 
 	// rotate to movement angle
 	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
-	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+	GLboolean textureWasEnabled = ( glsGetStates() & GLS_TEXTURE_2D );
+
 	if( isShade() ) {
 		glsDisable( GLS_TEXTURE_2D );
 	} else {
@@ -107,30 +107,43 @@ void MD2Shape::draw() {
 
 void MD2Shape::outline( float r, float g, float b ) {
 	useShadow = true;
+
 	GLboolean texture = glsGetStates() & GLS_TEXTURE_2D;
+
 	glsDisable( GLS_TEXTURE_2D );
-	glFrontFace( GL_CCW );
-	glPolygonMode( GL_BACK, GL_LINE );
-	glLineWidth( 4 );
 	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_FRONT );
+	glFrontFace( GL_CCW );
+
+	glPolygonMode( GL_BACK, GL_LINE );
+
+	glLineWidth( 4 );
+
 	glColor3f( r, g, b );
 
 	glPushMatrix();
+
 	// rotate to upright
 	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
 
 	// rotate to movement angle
 	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
+
 	AnimateMD2Model();
+
 	glPopMatrix();
 
 	glLineWidth( 1 );
+
 	glsDisable( GLS_CULL_FACE );
+
 	glPolygonMode( GL_BACK, GL_FILL );
+
 	if ( texture ) glsEnable( GLS_TEXTURE_2D );
+
 	useShadow = false;
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
 }
 
