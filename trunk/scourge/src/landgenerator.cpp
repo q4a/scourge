@@ -97,6 +97,16 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 	
+	// set the climate and vegetation values
+	for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
+		for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
+			if ( !cellular->getNode( x, y )->water ) {
+				map->setClimate( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->climate );
+				map->setVegetation( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->vegetation );
+			}
+		}
+	}	
+	
 	// event handler for custom map processing
 	int params[8];
 	params[0] = regionX;
@@ -110,45 +120,29 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 			for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 				if ( !cellular->getNode( x, y )->water ) {
-					
-					//GLShape *shape = shapePal->getRandomTreeShape( shapePal );
-//					int xx = ( mapPosX + x ) * OUTDOORS_STEP;
-//					int yy = ( mapPosY + y ) * OUTDOORS_STEP + shape->getHeight();
-					
-					//if( !map->isRoad( xx, yy ) ) {
-						
-						params[4] = x * OUTDOORS_STEP;
-						params[5] = y * OUTDOORS_STEP;
-						params[6] = cellular->getNode( x, y )->climate;
-						params[7] = cellular->getNode( x, y )->vegetation;
-						shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 8, params );
-						
-						map->setClimate( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->climate );
-						map->setVegetation( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->vegetation );
-		
-		//					// don't put them on roads and in houses
-		//					if ( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
-		//						map->setPosition( xx, yy, 0, shape );
-		//					}
-					//}
+					params[4] = x * OUTDOORS_STEP;
+					params[5] = y * OUTDOORS_STEP;
+					params[6] = cellular->getNode( x, y )->climate;
+					params[7] = cellular->getNode( x, y )->vegetation;
+					shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_tree", 8, params );
 				}
 			}
 		}
-		
-		// create a set of rooms for outdoor items
-		doorCount = 0;
-		roomCount = 0;
-		room[ roomCount ].x = mapPosX * OUTDOORS_STEP;
-		room[ roomCount ].y = mapPosY * OUTDOORS_STEP;
-		room[ roomCount ].w = QUARTER_WIDTH_IN_NODES * OUTDOORS_STEP;
-		room[ roomCount ].h = QUARTER_DEPTH_IN_NODES * OUTDOORS_STEP;
-		room[ roomCount ].valueBonus = 0;
-		roomCount++;
-		roomMaxWidth = 0;
-		roomMaxHeight = 0;
-		objectCount = 7 + ( level / 8 ) * 5;
-		monsters = true;
 	}
+
+	// create a set of rooms for outdoor items
+	doorCount = 0;
+	roomCount = 0;
+	room[ roomCount ].x = mapPosX * OUTDOORS_STEP;
+	room[ roomCount ].y = mapPosY * OUTDOORS_STEP;
+	room[ roomCount ].w = QUARTER_WIDTH_IN_NODES * OUTDOORS_STEP;
+	room[ roomCount ].h = QUARTER_DEPTH_IN_NODES * OUTDOORS_STEP;
+	room[ roomCount ].valueBonus = 0;
+	roomCount++;
+	roomMaxWidth = 0;
+	roomMaxHeight = 0;
+	objectCount = 7 + ( level / 8 ) * 5;
+	monsters = true;
 
 	return true;
 }

@@ -103,6 +103,7 @@ public:
 	/// Are we in movie mode?
 	virtual bool isInMovieMode() = 0;
 	
+	virtual void saveMapRegions() = 0;
 	virtual void mapRegionsChanged( float party_x, float party_y ) = 0;
 };
 

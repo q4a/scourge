@@ -257,11 +257,27 @@ DoorInfo *Persist::createDoorInfo( Uint32 key, Uint32 value ) {
 	return info;
 }
 
+OutdoorTextureInfo *Persist::createOutdoorTextureInfo( Uint16 x, Uint16 y, Uint16 z ) {
+	OutdoorTextureInfo *info = new OutdoorTextureInfo;
+	info->x = x;
+	info->y = y;
+	info->z = z;
+	info->offsetX = info->offsetY = 0;
+	info->angle = 0;
+	info->horizFlip = info->vertFlip = 0;
+	memset( info->groundTextureName, 0, sizeof( info->groundTextureName ) );
+	return info;
+}
+
 void Persist::saveMap( File *file, MapInfo *info ) {
 	file->write( &( info->version ) );
 	file->write( &( info->map_type ) );
 	file->write( &( info->start_x ) );
 	file->write( &( info->start_y ) );
+	file->write( &( info->map_start_x ) );
+	file->write( &( info->map_start_y ) );
+	file->write( &( info->map_end_x ) );
+	file->write( &( info->map_end_y ) );
 	file->write( &( info->grid_x ) );
 	file->write( &( info->grid_y ) );
 	file->write( info->theme_name, 255 );
@@ -357,6 +373,8 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 	for ( int x = 0; x < MAP_TILES_X; x++ ) {
 		for ( int y = 0; y < MAP_TILES_Y; y++ ) {
 			file->write( &( info->ground[ x ][ y ] ) );
+			file->write( &( info->climate[ x ][ y ] ) );
+			file->write( &( info->vegetation[ x ][ y ] ) );
 		}
 	}
 	file->write( &( info->trapCount ) );
@@ -368,13 +386,13 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		OutdoorTextureInfo *oti = info->outdoorTexture[ x ];
 		file->write( &( oti->x ) );
 		file->write( &( oti->y ) );
+		file->write( &( oti->z ) );
 		file->write( &( oti->angle ) );
 		file->write( &( oti->horizFlip ) );
 		file->write( &( oti->vertFlip ) );
 		file->write( &( oti->offsetX ) );
 		file->write( &( oti->offsetY ) );
-		file->write( &( oti->outdoorThemeRef ) );
-		file->write( &( oti->z ) );
+		file->write( oti->groundTextureName, 255 );
 	}
 }
 
@@ -412,6 +430,16 @@ MapInfo *Persist::loadMap( File *file ) {
 	}
 	file->read( &( info->start_x ) );
 	file->read( &( info->start_y ) );
+	if( info->version >= 42 ) {
+		file->read( &( info->map_start_x ) );
+		file->read( &( info->map_start_y ) );
+		file->read( &( info->map_end_x ) );
+		file->read( &( info->map_end_y ) );
+	} else {
+		info->map_start_x = info->map_start_y = 0;
+		info->map_end_x = MAP_WIDTH;
+		info->map_end_y = MAP_DEPTH;
+	}
 	file->read( &( info->grid_x ) );
 	file->read( &( info->grid_y ) );
 	file->read( info->theme_name, 255 );
@@ -567,6 +595,12 @@ MapInfo *Persist::loadMap( File *file ) {
 		for ( int x = 0; x < MAP_TILES_X; x++ ) {
 			for ( int y = 0; y < MAP_TILES_Y; y++ ) {
 				file->read( &( info->ground[ x ][ y ] ) );
+				if( info->version >= 42 ) {
+					file->read( &( info->climate[ x ][ y ] ) );
+					file->read( &( info->vegetation[ x ][ y ] ) );
+				} else {
+					info->climate[ x ][ y ] = info->vegetation[ x ][ y ] = 0;
+				}
 			}
 		}
 	}
@@ -584,17 +618,13 @@ MapInfo *Persist::loadMap( File *file ) {
 			OutdoorTextureInfo *oti = new OutdoorTextureInfo;
 			file->read( &( oti->x ) );
 			file->read( &( oti->y ) );
+			file->read( &( oti->z ) );
 			file->read( &( oti->angle ) );
 			file->read( &( oti->horizFlip ) );
 			file->read( &( oti->vertFlip ) );
 			file->read( &( oti->offsetX ) );
 			file->read( &( oti->offsetY ) );
-			file->read( &( oti->outdoorThemeRef ) );
-			if ( info->version >= 41 ) {
-				file->read( &( oti->z ) );
-			} else {
-				oti->z = 0;
-			}
+			file->read( oti->groundTextureName, 255 );
 			info->outdoorTexture[ x ] = oti;
 		}
 	} else {

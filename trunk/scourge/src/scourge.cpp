@@ -814,6 +814,37 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
+void Scourge::saveMapRegions() {
+	// remove the party from the map
+	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+			levelMap->removeCreature( toint( getParty()->getParty( r )->getX() ),
+			                          toint( getParty()->getParty( r )->getY() ),
+			                          toint( getParty()->getParty( r )->getZ() ) );
+		}
+	}
+	
+	string s, result;
+
+	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, 0, MAP_DEPTH / 2 );
+	
+	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, 0, MAP_DEPTH / 2 );
+	
+	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() + 1 );	
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, MAP_DEPTH / 2, MAP_DEPTH );
+	
+	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() + 1 );	
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, MAP_DEPTH / 2, MAP_DEPTH );
+}
+
+std::string Scourge::getSavedRegionFile( int regionX, int regionY ) {
+	char filename[3000];
+	sprintf( filename, "%s/reg_%2d_%2d.map", getSession()->getSavegameName().c_str(), regionX, regionY );
+	return get_file_name( filename );
+}
+
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	
@@ -845,25 +876,51 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 			// space for the pc should be clear, but look around just in case...
 			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT * MAP_CHUNKS_X ) ) {
 				cerr << "\t\tERROR: couldn't find place for party member (" << getParty()->getParty( r )->getName() << ") on map!!!" << endl;
+//			} else {
+//				cerr << "\t\tparty placed at " << getParty()->getPlayer()->getX() << "," << getParty()->getPlayer()->getY() << endl;
 			}
+			
+			levelMap->center( toint( getParty()->getPlayer()->getX() ), toint( getParty()->getPlayer()->getY() ) );
 		}		
 	}
 //	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
 }
 
 void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
-	if( !landGenerator ) {
-		landGenerator = new LandGenerator( this, 1, 1, 1, false, false, NULL );
+	cerr << "**********************************************************" << endl;
+	string map_file = getSavedRegionFile( rx, ry );
+	FILE *fp = fopen( map_file.c_str(), "rb" );
+	if( fp ) {
+		cerr << "LOADING map region: " << rx << "," << ry << endl;
+		fclose( fp );
+		string result;
+		bool loaded = levelMap->loadRegionMap( map_file, result, this, posX, posY );
+		cerr << "LOAD MAP loaded?=" << loaded << " result=" << result << endl;
+	} else {
+		cerr << "GENERATING map region: " << rx << "," << ry << endl;
+		if( !landGenerator ) {
+			landGenerator = new LandGenerator( this, 1, 1, 1, false, false, NULL );
+		}
+		landGenerator->setWillAddParty( false );
+		landGenerator->setRegion( rx, ry );
+		landGenerator->setMapPosition( posX, posY );
+		landGenerator->toMap( levelMap, getShapePalette(), false, false );
 	}
-	landGenerator->setWillAddParty( false );
-	landGenerator->setRegion( rx, ry );
-	landGenerator->setMapPosition( posX, posY );
-	landGenerator->toMap( levelMap, getShapePalette(), false, false );
+	cerr << "-----------------------------------------------------------" << endl;
 }
 
 void Scourge::loadOrGenerateLargeMap() {
 	int orx = levelMap->getRegionX();
 	int ory = levelMap->getRegionY();
+	
+	// remove the party from the map
+	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
+		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
+			levelMap->removeCreature( toint( getParty()->getParty( r )->getX() ),
+			                          toint( getParty()->getParty( r )->getY() ),
+			                          toint( getParty()->getParty( r )->getZ() ) );
+		}
+	}
 
 	// if landGenerator already exists, it may not be the sessions terrainGenerator (and it needs to be if getClimate is going to work)
 	if ( landGenerator )
@@ -3481,7 +3538,7 @@ void Scourge::printToConsole( const char *s ) {
 			squirrelLabel->appendText( q.c_str() );
 		}
 	} else {
-		cerr << s << endl;
+		cerr << "&&& SQUIRREL: " << s << endl;
 	}
 }
 

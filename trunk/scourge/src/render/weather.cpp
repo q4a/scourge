@@ -316,7 +316,7 @@ void Weather::drawWeather() {
 			// TODO: Make sure MAP_UNIT is the correct conversion factor
 			if ( ( Util::roll( 0.0f, 1.0f ) <= WEATHER_ROLL_CHANCE ) && ( session->getMap()->isHeightMapEnabled() ) ) {
 				Creature *player = session->getParty()->getPlayer();
-				changeWeather( session->getTerrainGenerator()->getClimate( player->getX() / OUTDOORS_STEP / 2, player->getY() / OUTDOORS_STEP / 2 ) );
+				changeWeather( session->getMap()->getClimate( player->getX() / OUTDOORS_STEP / 2, player->getY() / OUTDOORS_STEP / 2 ) );
 			}
 			lastWeatherRoll = now;
 		}

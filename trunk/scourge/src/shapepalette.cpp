@@ -414,6 +414,7 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		//rugs.push_back( getTileTexture( tmpSurface, tmpImage ) );
 		Texture rug;
 		rug.load( node->getValueAsString( "path" ), false, false );
+		rug.goDiligent();
 		rugs.push_back( rug );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
