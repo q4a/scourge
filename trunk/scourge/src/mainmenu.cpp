@@ -617,13 +617,13 @@ void MainMenu::drawScourge() {
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
+	glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ZERO_TEXCOORD );
 	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
+	glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ZERO_TEXCOORD );
 	glVertex2i( w, 0 );
-	glTexCoord2i( 0, 1 );
+	glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ONE_TEXCOORD );
 	glVertex2i( 0, h );
-	glTexCoord2i( 1, 1 );
+	glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ONE_TEXCOORD );
 	glVertex2i( w, h );
 	glEnd();
 
@@ -654,13 +654,13 @@ void MainMenu::drawBackdrop() {
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2i( 0, 0 );
+	glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ZERO_TEXCOORD );
 	glVertex2i( 0, 0 );
-	glTexCoord2i( 1, 0 );
+	glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ZERO_TEXCOORD );
 	glVertex2i( w, 0 );
-	glTexCoord2i( 0, 1 );
+	glTexCoord2f( SAFE_ZERO_TEXCOORD, SAFE_ONE_TEXCOORD );
 	glVertex2i( 0, h );
-	glTexCoord2i( 1, 1 );
+	glTexCoord2f( SAFE_ONE_TEXCOORD, SAFE_ONE_TEXCOORD );
 	glVertex2i( w, h );
 	glEnd();
 
