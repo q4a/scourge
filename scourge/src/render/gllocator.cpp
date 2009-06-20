@@ -36,7 +36,9 @@ void GLLocator::draw() {
 
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
 	glColor4f( 0.2f, 0.5f, 0.1f, 0.7f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex3f( 0, 0, h );
 	glVertex3f( w, 0, h );
@@ -45,6 +47,7 @@ void GLLocator::draw() {
 	glEnd();
 
 	glColor4f( 1.0f, 1.0f, 0.1f, 1.0f );
+
 	glBegin( GL_LINES );
 	glVertex3f( w, d, h );
 	glVertex3f( 0, d, h );
@@ -58,7 +61,6 @@ void GLLocator::draw() {
 	glVertex3f( w, 0, h );
 	glVertex3f( w, d, h );
 	glEnd();
-
 
 	glsEnable( GLS_TEXTURE_2D );
 }

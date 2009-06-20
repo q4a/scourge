@@ -128,12 +128,11 @@ bool Widget::isInside( int x, int y ) {
 	        y >= getY() && y < getY() + h );
 }
 
-void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
-                         bool toggle, bool selected, bool inverse,
-                         bool glowing, bool inside ) {
+void Widget::drawButton( Window* parent, int x, int y, int x2, int y2, bool toggle, bool selected, bool inverse, bool glowing, bool inside ) {
 	GuiTheme *theme = parent->getTheme();
 
 	glPushMatrix();
+
 	glTranslatef( x, y, 0.0f );
 
 	if ( isTranslucent() ) {
@@ -143,44 +142,45 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 
 	int n = 0;
 	Texture tex;
+
 	if ( toggle && selected ) {
+
 		if ( theme->getButtonSelectionBackground() ) {
 			glsEnable( GLS_TEXTURE_2D );
+
 			tex = theme->getButtonSelectionBackground()->texture;
 			tex.glBind();
+
 			if ( isEnabled() ) {
-				glColor4f( theme->getButtonSelectionBackground()->color.r,
-				           theme->getButtonSelectionBackground()->color.g,
-				           theme->getButtonSelectionBackground()->color.b,
-				           theme->getButtonSelectionBackground()->color.a );
+				glColor4f( theme->getButtonSelectionBackground()->color.r, theme->getButtonSelectionBackground()->color.g, theme->getButtonSelectionBackground()->color.b, theme->getButtonSelectionBackground()->color.a );
 			} else {
-				glColor4f( theme->getButtonSelectionBackground()->color.r / 2.0f,
-				           theme->getButtonSelectionBackground()->color.g / 2.0f,
-				           theme->getButtonSelectionBackground()->color.b / 2.0f,
-				           theme->getButtonSelectionBackground()->color.a / 2.0f );
+				glColor4f( theme->getButtonSelectionBackground()->color.r / 2.0f, theme->getButtonSelectionBackground()->color.g / 2.0f, theme->getButtonSelectionBackground()->color.b / 2.0f, theme->getButtonSelectionBackground()->color.a / 2.0f );
 			}
+
 			n = theme->getButtonSelectionBackground()->width;
 		} else {
 			applySelectionColor();
 		}
+
 	} else if ( theme->getButtonBackground() ) {
+
 		glsEnable( GLS_TEXTURE_2D );
+
 		tex = theme->getButtonBackground()->texture;
 		tex.glBind();
+
 		if ( isEnabled() ) {
-			glColor4f( theme->getButtonBackground()->color.r,
-			           theme->getButtonBackground()->color.g,
-			           theme->getButtonBackground()->color.b,
-			           theme->getButtonBackground()->color.a );
+			glColor4f( theme->getButtonBackground()->color.r, theme->getButtonBackground()->color.g, theme->getButtonBackground()->color.b, theme->getButtonBackground()->color.a );
 		} else {
-			glColor4f( theme->getButtonBackground()->color.r / 2.0f,
-			           theme->getButtonBackground()->color.g / 2.0f,
-			           theme->getButtonBackground()->color.b / 2.0f,
-			           theme->getButtonBackground()->color.a / 2.0f );
+			glColor4f( theme->getButtonBackground()->color.r / 2.0f, theme->getButtonBackground()->color.g / 2.0f, theme->getButtonBackground()->color.b / 2.0f, theme->getButtonBackground()->color.a / 2.0f );
 		}
+
 		n = theme->getButtonBackground()->width;
+
 	} else {
+
 		applyBackgroundColor( true );
+
 	}
 
 	if ( inverse ) {
@@ -209,6 +209,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 
 	if ( n ) {
 		glPushMatrix();
+
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_south.glBind();
 			else theme->getButtonSelectionBackground()->tex_north.glBind();
@@ -216,6 +217,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			if ( inverse ) theme->getButtonBackground()->tex_south.glBind();
 			else theme->getButtonBackground()->tex_north.glBind();
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -229,7 +231,9 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glPopMatrix();
 
 		glPushMatrix();
+
 		glTranslatef( 0.0f, y2 - y - n, 0.0f );
+
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_north.glBind();
 			else theme->getButtonSelectionBackground()->tex_south.glBind();
@@ -237,6 +241,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			if ( inverse ) theme->getButtonBackground()->tex_north.glBind();
 			else theme->getButtonBackground()->tex_south.glBind();
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -247,10 +252,13 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( x2 - x, n );
 		glEnd();
+
 		glPopMatrix();
 
 		glPushMatrix();
+
 		glTranslatef( 0.0f, n, 0.0f );
+
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_east.glBind();
 			else theme->getButtonSelectionBackground()->tex_west.glBind();
@@ -258,6 +266,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			if ( inverse ) theme->getButtonBackground()->tex_east.glBind();
 			else theme->getButtonBackground()->tex_west.glBind();
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -268,10 +277,13 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( n, y2 - y - ( 2 * n ) );
 		glEnd();
+
 		glPopMatrix();
 
 		glPushMatrix();
+
 		glTranslatef( x2 - x - n, n, 0.0f );
+
 		if ( toggle && selected ) {
 			if ( inverse ) theme->getButtonSelectionBackground()->tex_west.glBind();
 			else theme->getButtonSelectionBackground()->tex_east.glBind();
@@ -279,6 +291,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			if ( inverse ) theme->getButtonBackground()->tex_west.glBind();
 			else theme->getButtonBackground()->tex_east.glBind();
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -289,6 +302,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( n, y2 - y - ( 2 * n ) );
 		glEnd();
+
 		glPopMatrix();
 	}
 
@@ -312,9 +326,11 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 			theme->getButtonHighlight()->texture.glBind();
 		}
 		// FIXME: use theme
-		glColor4f( 1.0f, 0.15f, 0.15f, alpha );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glsEnable( GLS_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+		glColor4f( 1.0f, 0.15f, 0.15f, alpha );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( n, n );
@@ -325,6 +341,7 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 		glTexCoord2i( 1, 1 );
 		glVertex2i( x2 - x - n, y2 - y - n );
 		glEnd();
+
 		glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 	}
 
@@ -332,12 +349,11 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	if ( inside && isEnabled() ) {
 		if ( theme->getButtonHighlight() ) {
 			glsEnable( GLS_TEXTURE_2D );
-			glColor4f( theme->getButtonHighlight()->color.r,
-			           theme->getButtonHighlight()->color.g,
-			           theme->getButtonHighlight()->color.b,
-			           alpha );
+
+			glColor4f( theme->getButtonHighlight()->color.r, theme->getButtonHighlight()->color.g, theme->getButtonHighlight()->color.b, alpha );
 			theme->getButtonHighlight()->texture.glBind();
 		}
+
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -356,28 +372,14 @@ void Widget::drawButton( Window* parent, int x, int y, int x2, int y2,
 	}
 
 	if ( theme->getButtonBorder() ) {
-		glColor4f( theme->getButtonBorder()->color.r,
-		           theme->getButtonBorder()->color.g,
-		           theme->getButtonBorder()->color.b,
-		           theme->getButtonBorder()->color.a );
+		glColor4f( theme->getButtonBorder()->color.r, theme->getButtonBorder()->color.g, theme->getButtonBorder()->color.b, theme->getButtonBorder()->color.a );
 	}
+
 	glBegin( GL_LINE_LOOP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 0, y2 - y );
 	glVertex2i( x2 - x, y2 - y );
 	glVertex2i( x2 - x, 0 );
-
-	/*
-	glVertex2d(0, 0);
-	glVertex2d(0, y2 - y);
-	glVertex2d(x2 - x, 0);
-	glVertex2d(x2 - x, y2 - y);
-	glVertex2d(0, 0);
-	glVertex2d(x2 - x, 0);
-	glVertex2d(0, y2 - y);
-	glVertex2d(x2 - x, y2 - y);
-	*/
-
 	glEnd();
 
 	glPopMatrix();
@@ -463,8 +465,7 @@ void Widget::drawTooltip( Window* parent ) {
  * the height changes of the quad is not as important as stretching
  * it horizontally. This is generally true for buttons, progress bars, etc.
  */
-void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int height,
-                                  int left, int right, int textureWidth, bool inverse ) {
+void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int height, int left, int right, int textureWidth, bool inverse ) {
 
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -472,9 +473,12 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 	texture.glBind();
 
 	glPushMatrix();
+
 	glTranslatef( x, y, 0.0f );
+
 	glBegin( GL_QUADS );
 	if ( inverse ) {
+
 		// quad A
 		glTexCoord2f( static_cast<float>( left ) / static_cast<float>( textureWidth ), 1.0f );
 		glVertex2i( 0, 0 );
@@ -504,7 +508,9 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 		glVertex2i( width, height );
 		glTexCoord2f( 1.0f - ( static_cast<float>( right ) / static_cast<float>( textureWidth ) ), 1.0f );
 		glVertex2i( width, 0 );
+
 	} else {
+
 		// quad A
 		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2i( 0, 0 );
@@ -534,7 +540,9 @@ void Widget::drawBorderedTexture( Texture texture, int x, int y, int width, int 
 		glVertex2i( width, height );
 		glTexCoord2f( 1.0f, 0.0f );
 		glVertex2i( width, 0 );
+
 	}
+
 	glEnd();
 
 	glPopMatrix();

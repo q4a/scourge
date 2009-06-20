@@ -338,18 +338,23 @@ bool InfoGui::handleEvent( Widget *widget, SDL_Event *event ) {
 
 bool InfoGui::onDrawImage( Widget* w ) {
 	if ( w == image && ( item || spell || skill ) ) {
+
 		glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		
 		if( hasItem() ) {
+
 			// glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() );
 			SDL_Rect rect;
 			rect.x = rect.y = 0;
 			rect.w = image->getWidth();
 			rect.h = image->getHeight();
 			item->renderIcon( scourge, &rect );
+
 		} else {
+
 			glPushMatrix();
+
 			if ( hasSpell() ) {
 				scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
 			} else if ( hasSkill() ) {
@@ -373,8 +378,10 @@ bool InfoGui::onDrawImage( Widget* w ) {
 		}
 
 		glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+
 		return true;
 	}
+
 	return false;
 }
 

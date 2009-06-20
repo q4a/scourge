@@ -135,15 +135,18 @@ void RenderedLocation::draw() {
 void RenderedLocation::shade() {
 	glPushMatrix();
 	setupTransforms();
-	//setupColor();
+
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	//drawShape();
+
 	pos->shape->setShade( true );
 	pos->shape->draw();
+
 	glsDisable( GLS_BLEND );
+
 	glPopMatrix();
-	resetAfterDraw();	
+
+	resetAfterDraw();
 }
 
 void RenderedLocation::resetAfterDraw() {
@@ -346,10 +349,10 @@ void RenderedLocation::drawCreature() {
 	}
 	
 	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
-		glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
 		glsEnable( GLS_BLEND );
-		//glsDisable( GLS_DEPTH_MASK );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+		glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
 	} else if ( pos->creature->getStateMod( StateMod::possessed ) ) {
 		glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
 	}
@@ -357,11 +360,11 @@ void RenderedLocation::drawCreature() {
 	if( !pos->lightFacingSurfaces.empty() ) {
 		pos->shape->setLightFacingSurfaces( &pos->lightFacingSurfaces );
 	}
+
 	pos->shape->draw();
 
 	if ( pos->creature->getStateMod( StateMod::invisible ) ) {
 		glsDisable( GLS_BLEND );
-		//glsEnable( GLS_DEPTH_MASK );
 	}
 }
 
@@ -417,45 +420,53 @@ void RenderedLocation::drawShape() {
 
 void RenderedLocation::drawMousePosition() {
 	if ( pos && pos->shape && !useShadow && ( pos->item || pos->creature || pos->shape->isInteractive() || pos->shape->isRoof() ) ) {
+
 		glsDisable( GLS_TEXTURE_2D | GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( 0, pos->shape->getDepth() * MUL, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
 		glEnd();
+
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0, 0, pos->shape->getHeight() * MUL );
 		glVertex3f( 0, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
 		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
 		glEnd();
+
 		glBegin( GL_LINES );
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( 0, 0, pos->shape->getHeight() * MUL );
 		glEnd();
+
 		glBegin( GL_LINES );
 		glVertex3f( 0, pos->shape->getDepth() * MUL, 0 );
 		glVertex3f( 0, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
 		glEnd();
+
 		glBegin( GL_LINES );
 		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, pos->shape->getDepth() * MUL, pos->shape->getHeight() * MUL );
 		glEnd();
+
 		glBegin( GL_LINES );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, 0 );
 		glVertex3f( pos->shape->getWidth() * MUL, 0, pos->shape->getHeight() * MUL );
 		glEnd();
+
 		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	}
+
 }
 
 void RenderedLocation::outlineVirtuals() {
 	// in the map editor outline virtual shapes
 	if ( pos && pos->shape->isVirtual() && map->getSettings()->isGridShowing() && map->isGridEnabled() ) {
-
-		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
 
 		float z = ( pos->shape->getHeight() + 0.25f ) * MUL;
 		float lowZ = 0.25f * MUL;
@@ -463,12 +474,18 @@ void RenderedLocation::outlineVirtuals() {
 		float wm = pos->shape->getWidth() * MUL;
 		float dm = pos->shape->getDepth() * MUL;
 
+		glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
+
 		glPushMatrix();
+
 		glTranslatef( 0.0f, 20.0f, z );
+
 		map->getAdapter()->texPrint( 0, 0, "virtual" );
+
 		glPopMatrix();
 
 		glsDisable( GLS_TEXTURE_2D );
+
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0.0f, 0.0f, z );
 		glVertex3f( 0.0f, dm, z );
@@ -496,8 +513,9 @@ void RenderedLocation::outlineVirtuals() {
 		glVertex3f( wm, dm, z );
 
 		glEnd();
+
 		glsEnable( GLS_TEXTURE_2D );
-	}	
+	}
 }
 
 #define MIN_ROOF_ALPHA 0.25f

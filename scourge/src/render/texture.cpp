@@ -360,8 +360,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 	
 	// draw the original
 	drawQuad( original->_id, _width, _height );
-	
-	
+
 	// blend in the tmp
 	glsDisable( GLS_DEPTH_MASK );
 	glsEnable( GLS_BLEND );
@@ -377,12 +376,14 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 		glPopMatrix();
 	}
 	
-	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	
 	// Copy to a texture
 	glLoadIdentity();
+
 	glBindTexture( GL_TEXTURE_2D, _id );
+
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
 	                     0,      // x texture offset
@@ -400,7 +401,9 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 
 	// cover with the original
 	drawQuad( background, _width, _height );
+
 	glPopMatrix();
+
 	glDeleteTextures( 1, &background );
 
 	glsDisable( GLS_BLEND );
@@ -414,6 +417,7 @@ bool Texture::Actual::createEdgeBlended( const string& path, Actual* original, A
 
 void Texture::Actual::drawQuad( GLuint id, int width, int height ) {
 	glBindTexture( GL_TEXTURE_2D, id );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -487,6 +491,7 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 	glLoadIdentity();
 
 	glsDisable( GLS_TEXTURE_2D );
+
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -508,13 +513,18 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 
 	// draw the alpha pixels only
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	drawQuad( alpha->_id, width, height );
+
 	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 
 	// Copy to a texture
 	glLoadIdentity();
+
 	glsEnable( GLS_TEXTURE_2D );
+
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glCopyTexSubImage2D( GL_TEXTURE_2D,
 	                     0,      // MIPMAP level
@@ -528,7 +538,9 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample[], int sampleCo
 
 	// cover with the original
 	drawQuad( background, width, height );
+
 	glPopMatrix();
+
 	glDeleteTextures( 1, &background );
 
 	glsDisable( GLS_BLEND );
@@ -873,14 +885,19 @@ bool Texture::loadShot( const string& dirName ) {
 GLuint Texture::saveAreaUnder( int x, int y, int w, int h, GLuint *tex ) {
 	// Copy to a texture the original image
 	glLoadIdentity();
+
 	glsEnable( GLS_TEXTURE_2D );
+
 	GLuint background;
+
 	if( !tex || *tex == 0 ) {
 		glGenTextures( 1, &background );
 	} else {
 		background = *tex;
 	}
+
 	std::vector<unsigned char*> backgroundInMem( w * h * 4 );
+
 	glBindTexture( GL_TEXTURE_2D, background );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );

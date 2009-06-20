@@ -50,28 +50,29 @@ GLTeleporter::~GLTeleporter() {
 
 
 void GLTeleporter::draw() {
+	float w = ( static_cast<float>( width ) * MUL ) / 10.0f;
+	float d = ( static_cast<float>( depth ) * MUL ) / 10.0f;
+	float h = 1.25f * MUL;
 	float r = ( static_cast<float>( width ) * MUL ) / 2.0f;
+
+	glsDisable( GLS_CULL_FACE );
+
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	for ( int i = 0; i < MAX_STARS; i++ ) {
 		// reposition
 		if ( star[i][0] == -1 ) {
 			starAngle[i] = Util::roll( 0.0f, 360.0f );
 			starSpeed[i] = Util::roll( 2.0f, 10.0f );
 		}
+
 		star[i][0] = r + ( r * Constants::cosFromAngle( starAngle[i] ) );
 		star[i][1] = r + ( r * Constants::sinFromAngle( starAngle[i] ) );
 
 		// draw
-		glsDisable( GLS_CULL_FACE );
 		glPushMatrix();
 
-
-		float w = ( static_cast<float>( width ) * MUL ) / 10.0f;
-		float d = ( static_cast<float>( depth ) * MUL ) / 10.0f;
-		float h = 1.25f * MUL;
-
 		if ( flameTex.isSpecified() ) flameTex.glBind();
-
-		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
@@ -86,12 +87,18 @@ void GLTeleporter::draw() {
 		glEnd();
 
 		glPopMatrix();
-		glsEnable( GLS_CULL_FACE );
 
 		// move
 		starAngle[i] += starSpeed[i];
 		if ( starAngle[i] >= 360.0f ) starAngle[i] -= 360.0f;
 	}
+
+	w = ( static_cast<float>( width ) * MUL );
+	d = ( static_cast<float>( depth ) * MUL );
+	float red = static_cast<float>( ( this->color & 0xff000000 ) >> ( 3 * 8 ) ) / static_cast<float>( 0xff );
+	float green = static_cast<float>( ( this->color & 0x00ff0000 ) >> ( 2 * 8 ) ) / static_cast<float>( 0xff );
+	float blue = static_cast<float>( ( this->color & 0x0000ff00 ) >> ( 1 * 8 ) ) / static_cast<float>( 0xff );
+	float max = ( static_cast<float>( height - 1 ) * MUL ) / 2.0f;
 
 	for ( int i = 0; !locked && i < MAX_RINGS; i++ ) {
 		// reposisition
@@ -101,22 +108,13 @@ void GLTeleporter::draw() {
 		}
 
 		// draw
-		glsDisable( GLS_CULL_FACE );
 		glPushMatrix();
 
-		float w = ( static_cast<float>( width ) * MUL );
-		float d = ( static_cast<float>( depth ) * MUL );
 		float h = ring[i];
-		//      if(h == 0) h = 0.25 * MUL;
+		float dist = 1.5f - abs( static_cast<int>( max - ring[i] ) ) / max;
 
 		if ( flameTex.isSpecified() ) flameTex.glBind();
 
-		float red = static_cast<float>( ( this->color & 0xff000000 ) >> ( 3 * 8 ) ) / static_cast<float>( 0xff );
-		float green = static_cast<float>( ( this->color & 0x00ff0000 ) >> ( 2 * 8 ) ) / static_cast<float>( 0xff );
-		float blue = static_cast<float>( ( this->color & 0x0000ff00 ) >> ( 1 * 8 ) ) / static_cast<float>( 0xff );
-		float max = ( static_cast<float>( height - 1 ) * MUL ) / 2.0f;
-		// float dist = 1.5f - abs(max - ring[i]) / max;
-		float dist = 1.5f - abs( static_cast<int>( max - ring[i] ) ) / max;
 		glColor4f( red, green, blue, dist );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -132,10 +130,11 @@ void GLTeleporter::draw() {
 		glEnd();
 
 		glPopMatrix();
-		glsEnable( GLS_CULL_FACE );
 
 		// move
 		ring[i] += delta[i];
 	}
+
+	glsEnable( GLS_CULL_FACE );
 
 }

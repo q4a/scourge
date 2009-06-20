@@ -186,6 +186,7 @@ void MainMenu::drawView() {
 		drawStars();
 
 		glsDisable( GLS_TEXTURE_2D );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		drawBackdrop();
@@ -216,17 +217,19 @@ void MainMenu::drawView() {
 		glsDisable( GLS_STENCIL_TEST );
 
 		// draw the blended water
-		glsEnable( GLS_BLEND );
 		glsDisable( GLS_DEPTH_MASK );
+		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_COLOR );
-		drawWater();
-		glsEnable( GLS_DEPTH_MASK );
-		glsDisable( GLS_BLEND );
 
+		drawWater();
+
+		glsDisable( GLS_BLEND );
+		glsEnable( GLS_DEPTH_MASK );
 
 		drawClouds( true, false );
 
 		glsDisable( GLS_TEXTURE_2D );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		drawScourge();
@@ -238,19 +241,23 @@ void MainMenu::drawView() {
 
 	// draw the boards
 	if ( openingTop > 0 ) {
-		glPushMatrix();
-		glColor3f( 1.0f, 1.0f, 1.0f );
-
-		//    float TILE_W = 510 / 2.0f;
 		float TILE_W = 256.0f;
 		float TILE_H = 256.0f;
+
+		glPushMatrix();
+
+		glColor3f( 1.0f, 1.0f, 1.0f );
+
 		glsEnable( GLS_TEXTURE_2D );
 		Texture const& yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
 
 		glPushMatrix();
 		glLoadIdentity();
+
 		glTranslatef( 0.0f, openingTop, 0.0f );
+
 		yellow.glBind();
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
 		glVertex2i( 0, 0 );
@@ -261,12 +268,16 @@ void MainMenu::drawView() {
 		glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, 0 );
 		glVertex2i( scourge->getSDLHandler()->getScreen()->w, -scourge->getSDLHandler()->getScreen()->h / 2 );
 		glEnd();
+
 		glPopMatrix();
 
 		glPushMatrix();
 		glLoadIdentity();
+
 		glTranslatef( 0.0f, scourge->getSDLHandler()->getScreen()->h - openingTop, 0.0f );
+
 		yellow.glBind();
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -277,13 +288,18 @@ void MainMenu::drawView() {
 		glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, scourge->getSDLHandler()->getScreen()->h / TILE_H );
 		glVertex2i( scourge->getSDLHandler()->getScreen()->w, scourge->getSDLHandler()->getScreen()->h / 2 );
 		glEnd();
+
 		glPopMatrix();
+
 		glsDisable( GLS_TEXTURE_2D );
 
 		for ( int i = 0; i < 2; i++ ) {
 			glLoadIdentity();
+
 			glTranslatef( 0.0f, ( i == 0 ? openingTop : scourge->getSDLHandler()->getScreen()->h - openingTop ), 0.0f );
+
 			glColor4f( 1.0f, 0.7f, 0.0f, 1.0f );
+
 			glBegin( GL_LINES );
 			glVertex2i( 0, 0 );
 			glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
@@ -291,14 +307,18 @@ void MainMenu::drawView() {
 		}
 
 		if ( slideMode ) {
+
 			int w = scourge->getSDLHandler()->getScreen()->w;
 			int h = ( scourge->getSDLHandler()->getScreen()->w / 2 ) - 1;
 
 			glsEnable( GLS_TEXTURE_2D );
-			//glPushMatrix();
+
 			glLoadIdentity();
+
 			glTranslatef( 0.0f, openingTop + 1.0f, 0.0f );
+
 			slide.glBind();
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2i( 0, 0 );
 			glVertex2i( 0, 0 );
@@ -309,16 +329,22 @@ void MainMenu::drawView() {
 			glTexCoord2i( 1, 1 );
 			glVertex2i( w, h );
 			glEnd();
-			//glPopMatrix();
+
 			glsDisable( GLS_TEXTURE_2D );
+
 		} else {
+
 			glLoadIdentity();
+
 			glTranslatef( 10.0f, scourge->getSDLHandler()->getScreen()->h - openingTop + 12.0f, 0.0f );
+
 			char version[100];
 			snprintf( version, 100, _( "Scourge version %s" ), SCOURGE_VERSION );
 			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 			scourge->getSDLHandler()->texPrint( 0, 0, version );
+
 			glColor3f( 0.8f, 0.75f, 0.65f );
+
 			int y = 14;
 			scourge->getSDLHandler()->texPrint( 0, y, _( "Optionally compiled modules:" ) );
 			y += 14;
@@ -330,26 +356,33 @@ void MainMenu::drawView() {
 			scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
 			y += 14;
 #endif
+
 			glPopMatrix();
 
 			if ( openingTop > top && scourge->getSession()->isDataInitialized() ) {
 				Uint32 t = SDL_GetTicks();
+
 				if ( t - lastTick > 40 ) {
 					int d = ( scourge->getSDLHandler()->getScreen()->h - openingTop ) / 20;
 					openingTop -= ( 10 + static_cast<int>( d * 1.2 ) );
 					if ( openingTop < top ) openingTop = top;
 					lastTick = t;
 				}
+
 			}
+
 		}
+
 	}
 
 	if ( openingTop <= top ) {
 		drawLogo();
+
 		if ( !musicStarted ) {
 			scourge->getSession()->getSound()->playMusicMenu();
 			musicStarted = true;
 		}
+
 	}
 
 	// initialize universe (nice how this is hidden here...)
@@ -360,46 +393,32 @@ void MainMenu::drawView() {
 
 void MainMenu::drawAfter() {
 	if ( strlen( getUpdate() ) ) {
-		glPushMatrix();
-
-		/*
-		glLoadIdentity();
-		glsEnable( GLS_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glsDisable( GLS_TEXTURE_2D );
-		glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
-		glBegin( GL_QUADS );
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, scourge->getScreenHeight(), 0 );
-		glVertex3f( scourge->getScreenWidth(), scourge->getScreenHeight(), 0 );
-		glVertex3f( scourge->getScreenWidth(), 0, 0 );
-		glEnd();
-		glsEnable( GLS_TEXTURE_2D );
-		glsDisable( GLS_BLEND );
-		*/
-
-		glLoadIdentity();
-		glTranslatef( 10.0f, scourge->getSDLHandler()->getScreen()->h - openingTop + 12.0f, 0.0f );
 		int y = 70;
 		int x = 100;
 		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
+
+		glPushMatrix();
+		glLoadIdentity();
+
+		glTranslatef( 10.0f, scourge->getSDLHandler()->getScreen()->h - openingTop + 12.0f, 0.0f );
+
 		glColor3f( 0.8f, 0.75f, 0.65f );
+
 		if ( getUpdateTotal() > -1 ) {
-			scourge->getSDLHandler()->
-			texPrint( x, y - 3, "%s: %d%%",
-			          getUpdate(),
-			          static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
+			scourge->getSDLHandler()->texPrint( x, y - 3, "%s: %d%%", getUpdate(), static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
+
 			glTranslatef( x + 150.0f, y - 15.0f, 0.0f );
 
-			progress->updateStatusLight( NULL,
-			                             static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ),
-			                             static_cast<int>( maxStatus ) );
+			progress->updateStatusLight( NULL, static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ), static_cast<int>( maxStatus ) );
 		} else {
 			scourge->getSDLHandler()->texPrint( x, y - 3, getUpdate() );
 		}
+
 		glPopMatrix();
 	}
+
 	eventsEnabled = scourge->getSession()->isDataInitialized();
+
 	if ( eventsEnabled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
 	else scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
 }
@@ -451,6 +470,8 @@ void MainMenu::drawMenu() {
 /// Draws the logo in the upper left.
 
 void MainMenu::drawLogo() {
+	int w = 352;
+	int h = 173;
 
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -458,12 +479,11 @@ void MainMenu::drawLogo() {
 	//Draw the Scourge logo
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( 70.0f, logoRot, 0.0f );
-//  float w = scourge->getShapePalette()->logo->w;
-//  float h = scourge->getShapePalette()->logo->h;
-	int w = 352;
-	int h = 173;
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	scourge->getShapePalette()->logo_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -476,21 +496,20 @@ void MainMenu::drawLogo() {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
+
 	glPopMatrix();
 
 	for ( int i = 0; i < 2; i++ ) {
-		glPushMatrix();
-		glLoadIdentity();
-//    glTranslatef( ( !i ? 100.0f :
-//                    70.0f + scourge->getShapePalette()->logo->w - 30.0f -
-//                    scourge->getShapePalette()->chain->w ),
-//                  logoRot - scourge->getShapePalette()->chain->h, 0.0f );
-//    float w = scourge->getShapePalette()->chain->w;
-//    float h = scourge->getShapePalette()->chain->h;
-		glTranslatef( ( !i ? 100.0f : 70.0f + 352.0f - 30.0f - 32.0f ), logoRot - 256.0f, 0.0f );
 		float w = 32.0f;
 		float h = 256.0f;
+
+		glPushMatrix();
+		glLoadIdentity();
+
+		glTranslatef( ( !i ? 100.0f : 70.0f + 352.0f - 30.0f - 32.0f ), logoRot - 256.0f, 0.0f );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		scourge->getShapePalette()->chain_texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -503,15 +522,19 @@ void MainMenu::drawLogo() {
 		glTexCoord2i( 1, 1 );
 		glVertex2i( w, h );
 		glEnd();
+
 		glPopMatrix();
 	}
 
 	GLint t = SDL_GetTicks();
+
 	if ( t - logoTicks > logoTicksDelta ) {
+
 		if ( logoRot < 120 - ( ( 1024 - scourge->getScreenHeight() ) / 4 ) ) {
 			logoTicks = t;
 			logoRot += 8;
 		}
+
 		candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + Util::dice( 4 ) - 4;
 		candleFlameY = top + 385 + Util::dice( 4 ) - 4;
 	}
@@ -519,12 +542,16 @@ void MainMenu::drawLogo() {
 	glBlendFunc( GL_SRC_COLOR, GL_ONE );
 
 	scourge->getShapePalette()->candle.glBind();
+
 	glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
+
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( candleFlameX, candleFlameY, 0.0f );
+
 	w = 64;
 	h = 64;
+
+	glTranslatef( candleFlameX, candleFlameY, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
@@ -536,6 +563,7 @@ void MainMenu::drawLogo() {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
+
 	glPopMatrix();
 
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
@@ -545,41 +573,47 @@ void MainMenu::drawLogo() {
 
 void MainMenu::drawStars() {
 	glsDisable( GLS_TEXTURE_2D );
+
 	for ( int i = 0; i < starCount; i++ ) {
+		int n = 1;
+
 		glPushMatrix();
 		glLoadIdentity();
+
 		glTranslatef( star[i].x, star[i].y, -200.0f );
-		glColor3f( Util::roll( 0.2f, 0.99f ),
-		           Util::roll( 0.2f, 0.99f ),
-		           Util::roll( 0.2f, 0.99f ) );
-		int n = 1;
+
+		glColor3f( Util::roll( 0.2f, 0.99f ), Util::roll( 0.2f, 0.99f ), Util::roll( 0.2f, 0.99f ) );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 0 );
 		glVertex2i( n, 0 );
 		glVertex2i( 0, n );
 		glVertex2i( n, n );
 		glEnd();
+
 		glPopMatrix();
 	}
-	glsEnable( GLS_TEXTURE_2D );
 
+	glsEnable( GLS_TEXTURE_2D );
 }
 
 /// Draws the scourge (the house entrance to the right).
 
 void MainMenu::drawScourge() {
+	float w = 554; //scourge->getShapePalette()->scourge->w;
+	float h = 600; //scourge->getShapePalette()->scourge->h;
 
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	float w = 554; //scourge->getShapePalette()->scourge->w;
-	float h = 600; //scourge->getShapePalette()->scourge->h;
-
 	//Draw the scourge
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0.0f );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -592,6 +626,7 @@ void MainMenu::drawScourge() {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
+
 	glPopMatrix();
 
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
@@ -600,19 +635,22 @@ void MainMenu::drawScourge() {
 /// Draws the mountains in the back.
 
 void MainMenu::drawBackdrop() {
-	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
 //  float w = scourge->getShapePalette()->scourgeBackdrop->w;
 	float w = scourge->getSDLHandler()->getScreen()->w;
 	//float h = scourge->getShapePalette()->scourgeBackdrop->h;
 	float h = 256.0f;
 
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	//Draw the backdrop image
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( 0.0f, top + ( 600.0f - WATER_HEIGHT_MAIN_MENU - h ), 0.0f );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -625,6 +663,7 @@ void MainMenu::drawBackdrop() {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
+
 	glPopMatrix();
 
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
@@ -645,44 +684,37 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	for ( int i = 0; i < cloudCount; i++ ) {
 		w = cloud[i].w;
 		h = cloud[i].h;
+
 		glPushMatrix();
-		glTranslatef( cloud[i].x,
-		              top + ( flipped ? 600.0f - ( cloud[i].y + h / 2.0f ) : cloud[i].y + 130.0f ),
-		              0.0f );
+
+		glTranslatef( cloud[i].x, top + ( flipped ? 600.0f - ( cloud[i].y + h / 2.0f ) : cloud[i].y + 130.0f ), 0.0f );
 
 		glBegin( GL_TRIANGLE_STRIP );
-		if ( flipped ) {
-			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
-		} else {
-			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		}
+		flipped ? glColor4f( 0.1f, 0.1f, 0.3f, 0.5f ) : glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glTexCoord2i( 0, ( flipped ? 1 : 0 ) );
 		glVertex2i( 0, 0 );
-
-		if ( flipped ) {
-			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
-		} else {
-			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		}		
+		flipped ? glColor4f( 0.1f, 0.1f, 0.3f, 0.5f ) : glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		glTexCoord2i( 1, ( flipped ? 1 : 0 ) );
 		glVertex2i( w, 0 );
-		
 		glColor4f( 1.0f, 0.3f, 0.0f, 0.5f );
 		glTexCoord2i( 0, ( flipped ? 0 : 1 ) );
 		glVertex2i( 0, ( flipped ? h / 2 : h ) );
-		
 		glColor4f( 1.0f, 0.3f, 0.0f, 0.5f );
 		glTexCoord2i( 1, ( flipped ? 0 : 1 ) );
 		glVertex2i( w, ( flipped ? h / 2 : h ) );
 		glEnd();
+
 		glPopMatrix();
 
 		if ( moveClouds ) {
 			cloud[i].x += cloud[i].speed;
+
 			if ( cloud[i].x >= scourge->getSDLHandler()->getScreen()->w ) {
 				cloud[i].x = -cloud[i].w;
 			}
+
 		}
+
 	}
 
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
@@ -692,16 +724,16 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 
 void MainMenu::drawWater() {
 	int w, h;
-	// draw the water
-	glPushMatrix();
 	w = scourge->getSDLHandler()->getScreen()->w;
 	h = WATER_HEIGHT_MAIN_MENU;
+
+	// draw the water
+	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( 0.0f, top + ( 600.0f - h ), 0.0f );
+
 	glsDisable( GLS_TEXTURE_2D );
-	//  glDisable( GL_LIGHTING );
-	//glsEnable( GLS_BLEND );
-	//glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glColor4f( 0.0f, 0.0f, 0.1f, 1.0f );
@@ -713,7 +745,7 @@ void MainMenu::drawWater() {
 	glColor4f( 0.0f, 0.1f, 0.4f, 1.0f );
 	glVertex2i( w, h );
 	glEnd();
-	//glsDisable( GLS_BLEND );
+
 	glPopMatrix();
 }
 

@@ -140,7 +140,6 @@ void GLCaveShape::draw() {
 	default: cerr << "Unknown cave_shape mode: " << mode << endl;
 	}
 
-
 	glsDisable( GLS_TEXTURE_2D );
 
 }
@@ -149,21 +148,27 @@ void GLCaveShape::draw() {
 
 void GLCaveShape::drawFaces() {
 	vector<CaveFace*>* face = our.polys[ caveIndex ];
+
 	if ( !face ) cerr << "Can't find face for shape: " <<
 		getName() << " caveIndex=" << caveIndex << endl;
 #ifdef DEBUG_CAVE_SHAPE
+
 	for ( int t = 0; t < 2; t++ ) {
 		if ( useShadow ) return;
+
 		if ( t == 1 ) {
 			glsDisable( GLS_TEXTURE_2D );
 			glsDisable( GLS_DEPTH_TEST );
 		}
 #endif
+
 		for ( int i = 0; i < ( int )face->size(); i++ ) {
 			CaveFace *p = ( *face )[i];
+
 			if ( !useShadow ) {
 				glColor3f( p->shade, p->shade, p->shade );
 			}
+
 			switch ( p->textureType ) {
 			case CaveFace::WALL:
 				wallTextureGroup[ GLShape::FRONT_SIDE ].glBind();
@@ -176,19 +181,20 @@ void GLCaveShape::drawFaces() {
 				break;
 			}
 #ifdef DEBUG_CAVE_SHAPE
+
 			glBegin( t == 0 ? GL_TRIANGLES : GL_LINE_LOOP );
 #else
+
 			glBegin( GL_TRIANGLES );
 #endif
+
 			if ( p->tex[0][0] > -1 ) glTexCoord2f( p->tex[0][0], p->tex[0][1] );
 			CVector3 *xyz = our.points[ p->p1 ];
 			glVertex3f( xyz->x, xyz->y, xyz->z );
 
-
 			if ( p->tex[1][0] > -1 ) glTexCoord2f( p->tex[1][0], p->tex[1][1] );
 			xyz = our.points[ p->p2 ];
 			glVertex3f( xyz->x, xyz->y, xyz->z );
-
 
 			if ( p->tex[2][0] > -1 ) glTexCoord2f( p->tex[2][0], p->tex[2][1] );
 			xyz = our.points[ p->p3 ];
@@ -197,6 +203,7 @@ void GLCaveShape::drawFaces() {
 		}
 #ifdef DEBUG_CAVE_SHAPE
 	}
+
 	glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_TEST );
 #endif
 }
@@ -243,6 +250,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	if ( useShadow ) return;
 
 	Uint32 t = SDL_GetTicks();
+
 	if ( t - lavaMoveTick > LAVA_MOVE_SPEED ) {
 		lavaMoveTick = t;
 		lavaTexX += LAVA_MOVE_DELTA;
@@ -253,12 +261,13 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 
 	GLfloat n = 0.25f * MUL;
 
-	glsDisable( GLS_DEPTH_TEST );
-
 	// draw the lava
+	glsDisable( GLS_DEPTH_TEST );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	floorTextureGroup[ GLShape::FRONT_SIDE ].glBind();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.75f );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -271,15 +280,19 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	glTexCoord2f( 1.0f + lavaTexX, 1.0f + lavaTexY );
 	glVertex3f( w, d, n );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 
 	if ( stencilIndex > -1 ) {
 		glsEnable( GLS_ALPHA_TEST );
 		glAlphaFunc( GL_GREATER, 0x00 );
+
 		glPushMatrix();
+
 		glTranslatef( ( w / 2 ), ( d / 2 ), 0.0f );
 		glRotatef( stencilAngle, 0.0f, 0.0f, 1.0f );
 		glTranslatef( -( w / 2 ), -( d / 2 ), 0.0f );
+
 		glBindTexture( GL_TEXTURE_2D, our.floorTex[ stencilIndex ] );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -292,10 +305,12 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 		glTexCoord2i( 1, 1 );
 		glVertex3f( w, d, n );
 		glEnd();
+
 		glPopMatrix();
-		//glsDisable( GLS_BLEND );
+
 		glsDisable( GLS_ALPHA_TEST );
 	}
+
 	glsEnable( GLS_DEPTH_TEST );
 }
 

@@ -95,13 +95,16 @@ void Outdoor::drawMap() {
 	
 	// draw the player and remove it from the stencil (so walls behind the player don't show thru)
 	if( !map->isCurrentlyUnderRoof ) {
+
 		if( stencilOn ) {
 			glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
 			glStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
 		}
+
 		for( unsigned int i = 0; i < shades.size(); i++ ) {
 			shades[i]->draw();
 		}
+
 	}
 		
 	if( !map->isCurrentlyUnderRoof && stencilOn ) {
@@ -115,6 +118,7 @@ void Outdoor::drawMap() {
 		
 	if( !map->isCurrentlyUnderRoof && stencilOn ) {
 		glsDisable( GLS_DEPTH_TEST );
+
 		glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 		glStencilOp( GL_ZERO, GL_ZERO, GL_ZERO );
 		glColor4f( 0.25f, 0.25f, 0.25f, 0.5f );
@@ -122,7 +126,7 @@ void Outdoor::drawMap() {
 		// player
 		for( unsigned int i = 0; i < shades.size(); i++ ) {
 			shades[i]->shade();
-		}		
+		}
 		
 		glsDisable( GLS_BLEND | GLS_STENCIL_TEST );
 		glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
@@ -134,18 +138,22 @@ void Outdoor::drawMap() {
 	// draw the fog of war or shading
 #ifndef DEBUG_OUTDOOR
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
+		glsDisable( GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND );
-		glsDisable( GLS_DEPTH_MASK );		
+
 		map->helper->draw( map->getX(), map->getY(), map->mapViewWidth, map->mapViewDepth );
+
 		glsDisable( GLS_BLEND );
-		glsEnable( GLS_DEPTH_MASK );		
+		glsEnable( GLS_DEPTH_MASK );
 	}
 #endif	
 }
 
 void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 	for ( int i = 0; i < map->otherCount; i++ ) {
+
 		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
+
 		if( shape->isVirtual() ) {
 			shape = ((VirtualShape*)shape)->getRef();
 		}
@@ -162,16 +170,19 @@ void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 		
 		// don't draw the player
 		if( map->isCurrentlyUnderRoof || !map->other[i].pos->creature || map->other[i].pos->creature != map->getAdapter()->getPlayer() ) { 
-//				!( map->other[i].pos->creature && !map->other[i].pos->creature->isMonster() && !map->other[i].pos->creature->isNpc() ) ) {
 			// only draw inside of houses when under roof
 			int px = map->other[i].pos->x + map->other[i].pos->shape->getWidth() / 2;
 			int py = map->other[i].pos->y - 1 - map->other[i].pos->shape->getDepth() / 2;
+
 			if( map->isCurrentlyUnderRoof || !map->isOnFloorTile( px, py ) ) {
 				map->other[i].draw();
 			}
+
 		} else {
+
 			// don't draw party members yet
 			shades->push_back( &map->other[i] );
+
 		}
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
@@ -183,14 +194,17 @@ void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 			setupShadowColor();
 			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
 		}
+
 	}
+
 }
 
 /// Draws creature effects and damage counters.
 
 void Outdoor::drawEffects() {
-	glsEnable( GLS_BLEND );
 	glsDisable( GLS_DEPTH_MASK );	
+	glsEnable( GLS_BLEND );
+
 	for ( int i = 0; i < map->laterCount; i++ ) {
 		// skip roof-top effects when roof is off
 		if( map->later[i].zpos < 10 * MUL || !map->isCurrentlyUnderRoof ) {
@@ -199,7 +213,9 @@ void Outdoor::drawEffects() {
 			map->later[i].pos->shape->endBlending();
 		}
 	}
+
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
 	for ( int i = 0; i < map->damageCount; i++ ) {
 		if( map->damage[i].zpos < 12 * MUL || !map->isCurrentlyUnderRoof ) {
 			map->damage[i].draw();
@@ -210,11 +226,15 @@ void Outdoor::drawEffects() {
 
 void Outdoor::drawWalls() {
 	float alpha;
+
 	for ( int i = 0; i < map->otherCount; i++ ) {
+
 		GLShape *shape = (GLShape*)(map->other[i].pos->shape);
+
 		if( shape->isVirtual() ) {
 			shape = ((VirtualShape*)shape)->getRef();
 		}
+
 		if( shape->isLightBlocking() ) {
 			map->other[i].updateWallAlpha();
 				
@@ -222,22 +242,30 @@ void Outdoor::drawWalls() {
 			if( alpha <= 0.5f ) alpha = 0.5f;
 			
 			if( alpha >= 1.0f ) {
+
 				glsDisable( GLS_BLEND );
+
 			} else {
 				glsEnable( GLS_BLEND );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 				shape->setAlpha( alpha );
 				RenderedLocation::colorAlreadySet = true;
+
 			}
+
 			map->other[i].draw();
 		}
-	}	
+
+	}
+
 }
 
 /// Draws the roofs on outdoor levels, including the fading.
 
 void Outdoor::drawRoofs() {
 	if ( map->roofAlpha > 0 ) {
+
 		for ( int i = 0; i < map->roofCount; i++ ) {
 			
 			map->roof[i].updateRoofAlpha();
@@ -245,25 +273,35 @@ void Outdoor::drawRoofs() {
 			if( map->roof[i].getRoofAlpha() <= 0 ) continue;
 			
 			if( map->roof[i].getRoofAlpha() < 1 ) {
+
 				glsEnable( GLS_BLEND );
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( map->roof[i].getRoofAlpha() );
 				RenderedLocation::colorAlreadySet = true;
+
 			} else {
+
 				glsDisable( GLS_BLEND );
+
 				( ( GLShape* )map->roof[i].pos->shape )->setAlpha( 1.0f );
 			}
+
 			map->roof[i].draw();
 		}
+
 	}
+
 }
 
 /// Draws a shape sitting on the ground at the specified map coordinates.
 
 void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, Shape *shape ) {
 	GLuint name;
+
 	// encode this shape's map location in its name
 	name = posX + ( MAP_WIDTH * posY );
+
 	glTranslatef( xpos2, ypos2, 0.0f );
 
 	glPushName( name );
@@ -274,18 +312,6 @@ void Outdoor::drawGroundPosition( int posX, int posY, float xpos2, float ypos2, 
 	glPopName();
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );
-//	
-//	GLuint name;
-//	// encode this shape's map location in its name
-//	name = posX + ( MAP_WIDTH * posY );
-//	glTranslatef( xpos2, ypos2, 0.0f );
-//
-//	glPushName( name );
-//	setupShapeColor();
-//	shape->drawHeightMap( map->ground, posX, posY );
-//	glPopName();
-//
-//	glTranslatef( -xpos2, -ypos2, 0.0f );
 }
 
 void Outdoor::doRenderFloor() {
@@ -295,22 +321,33 @@ void Outdoor::doRenderFloor() {
 	if ( map->groundVisible || map->settings->isGridShowing() ) {
 
 		if ( useDisplayList ) {
+
 			if ( hasDisplayList ) {
+
 				glCallList(floorDisplayList);
+
 			} else {
+
 				floorDisplayList = glGenLists( 1 );
 				glNewList( floorDisplayList, GL_COMPILE );
 				drawHeightMapFloor();
 				glEndList();
 				hasDisplayList = true;
 				glCallList(floorDisplayList);
+
 			}
+
 		} else {
+
 			if ( hasDisplayList ) {
+
 				glDeleteLists( floorDisplayList, 1 );
 				hasDisplayList = false;
+
 			}
+
 			drawHeightMapFloor();
+
 		}
 
 		//drawWaterLevel();
@@ -336,75 +373,73 @@ bool Outdoor::drawHeightMapFloor() {
 	int endY = ( ( map->getY() + map->mapViewDepth ) / OUTDOORS_STEP ) - 1;
 
 	for ( int yy = startY; yy < endY; yy++ ) {
+
 		for ( int xx = startX; xx < endX; xx++ ) {
 
-			//int chunkX = ( ( xx * OUTDOORS_STEP ) ) / MAP_UNIT;
-			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP )  - 1 ) / MAP_UNIT;
-			//if( lightMap[chunkX][chunkY] ) {
 			map->groundPos[ xx ][ yy ].tex.glBind();
-			//} else {
-			//glsDisable( GLS_TEXTURE_2D );
-			//}
 
 			p[0] = &( map->groundPos[ xx ][ yy ] );
 			p[1] = &( map->groundPos[ xx + 1 ][ yy ] );
 			p[2] = &( map->groundPos[ xx ][ yy + 1 ] );
 			p[3] = &( map->groundPos[ xx + 1 ][ yy + 1 ] );
+
 			glBegin( GL_TRIANGLE_STRIP );
+
 			for ( int i = 0; i < 4; i++ ) {
-				//if( lightMap[chunkX][chunkY] ) {
 				glTexCoord2f( p[i]->u, p[i]->v );
 				glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
-				//} else {
-				//glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
-				//}
 				gx = p[i]->x - map->getX() * MUL;
 				gy = p[i]->y - map->getY() * MUL;
 				glVertex3f( gx, gy, p[i]->z );
 			}
+
 			glEnd();
 		}
+
 	}
 
-	//glsEnable( GLS_DEPTH_TEST );
 	glsDisable( GLS_DEPTH_MASK );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// draw outdoor textures
-	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;
 	for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
+
 		for ( int yy = startY; yy < endY; yy++ ) {
+
 			for ( int xx = startX; xx < endX; xx++ ) {
+
 				if ( map->outdoorTex[xx][yy][z].texture.isSpecified() ) {
-					drawOutdoorTex( map->outdoorTex[xx][yy][z].texture, 
-					                xx + map->outdoorTex[xx][yy][z].offsetX, 
-					                yy + map->outdoorTex[xx][yy][z].offsetY, 
-					                map->outdoorTex[xx][yy][z].width, 
-					                map->outdoorTex[xx][yy][z].height, 
-					                map->outdoorTex[xx][yy][z].angle );
+
+					drawOutdoorTex( map->outdoorTex[xx][yy][z].texture, xx + map->outdoorTex[xx][yy][z].offsetX, yy + map->outdoorTex[xx][yy][z].offsetY, map->outdoorTex[xx][yy][z].width, map->outdoorTex[xx][yy][z].height, map->outdoorTex[xx][yy][z].angle );
+
 				}
+
 			}
+
 		}
+
 	}
 
-	//glsDisable( GLS_DEPTH_TEST );
-	glsEnable( GLS_DEPTH_MASK );
 	glsDisable( GLS_BLEND );
+	glsEnable( GLS_DEPTH_MASK );
 
 	if ( DEBUG_MOUSE_POS || ( map->settings->isGridShowing() && map->gridEnabled ) ) {
-		//glsDisable( GLS_DEPTH_TEST );
+		glsDisable( GLS_TEXTURE_2D );
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glsDisable( GLS_TEXTURE_2D );
+
 		glColor4f( 0.4f, 0.4f, 0.4f, 0.3f );
+
 		for ( int yy = startY; yy < endY; yy++ ) {
+
 			for ( int xx = startX; xx < endX; xx++ ) {
 
 				p[0] = &( map->groundPos[ xx ][ yy + 1 ] );
 				p[1] = &( map->groundPos[ xx ][ yy ] );
 				p[2] = &( map->groundPos[ xx + 1 ][ yy ] );
 				p[3] = &( map->groundPos[ xx + 1 ][ yy + 1 ] );
+
 				glBegin( GL_LINE_LOOP );
 				for ( int i = 0; i < 4; i++ ) {
 					gx = p[i]->x - map->getX() * MUL;
@@ -412,11 +447,12 @@ bool Outdoor::drawHeightMapFloor() {
 					glVertex3f( gx, gy, p[i]->z + 0.05f * MUL );
 				}
 				glEnd();
+
 			}
+
 		}
+
 		glsEnable( GLS_TEXTURE_2D );
-		//glsEnable( GLS_DEPTH_TEST );
-		glsDisable( GLS_BLEND );
 	}
 
 	return ret;
@@ -425,19 +461,6 @@ bool Outdoor::drawHeightMapFloor() {
 /// Draws a ground texture on outdoor maps. Uses OUTDOORS_STEP coordinates.
 
 void Outdoor::drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
-	tex.glBind();
-
-	glMatrixMode( GL_TEXTURE );
-	glPushMatrix();
-	glLoadIdentity();
-
-	glTranslatef( 0.5f, 0.5f, 0.0f );
-	glRotatef( angle, 0.0f, 0.0f, 1.0f );
-	glTranslatef( -0.5f, -0.5f, 0.0f );
-
-	//glTranslatef( offSX, offSY, 0 );
-	glMatrixMode( GL_MODELVIEW );
-
 	int sx = tx;
 	int sy = ty;
 	int ex = tx + tw;
@@ -447,7 +470,22 @@ void Outdoor::drawOutdoorTex( Texture tex, float tx, float ty, float tw, float t
 
 	int DIFF_Z = 0.01f * MUL;
 	CVectorTex *p;
+
+	tex.glBind();
+
+	glMatrixMode( GL_TEXTURE );
+
+	glPushMatrix();
+	glLoadIdentity();
+
+	glTranslatef( 0.5f, 0.5f, 0.0f );
+	glRotatef( angle, 0.0f, 0.0f, 1.0f );
+	glTranslatef( -0.5f, -0.5f, 0.0f );
+
+	glMatrixMode( GL_MODELVIEW );
+
 	for ( int xx = sx; xx < ex; xx++ ) {
+
 		for ( int yy = sy; yy < ey; yy++ ) {
 
 			float texSx = ( ( xx - sx ) ) / ( float )( ex - sx );
@@ -455,7 +493,6 @@ void Outdoor::drawOutdoorTex( Texture tex, float tx, float ty, float tw, float t
 			float texSy = ( ( yy - sy ) ) / ( float )( ey - sy );
 			float texEy = ( ( yy + 1 - sy ) ) / ( float )( ey - sy );
 
-			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_TRIANGLE_STRIP );
 
 			p = &map->groundPos[ xx ][ yy ];
@@ -495,6 +532,7 @@ void Outdoor::drawOutdoorTex( Texture tex, float tx, float ty, float tw, float t
 
 void Outdoor::drawWaterLevel() {
 	Uint32 t = SDL_GetTicks();
+
 	if ( t - waterMoveTick > WATER_MOVE_SPEED ) {
 		waterMoveTick = t;
 		waterTexX += WATER_MOVE_DELTA;
@@ -505,13 +543,15 @@ void Outdoor::drawWaterLevel() {
 
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	waterTexture.glBind();
+
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
 	float w = static_cast<float>( map->mapViewWidth ) * MUL;
 	float d = static_cast<float>( map->mapViewDepth ) * MUL;
-	//float z = -4 * MUL;
-	//glTranslatef( xpos2, ypos2, 0.0f);
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.35f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( map->getX() / MUL * ratio + waterTexX, map->getY() / MUL * ratio + waterTexY );
 	glVertex3f( 0.0f, 0.0f, -0.3f );
@@ -522,7 +562,6 @@ void Outdoor::drawWaterLevel() {
 	glTexCoord2f( ( map->getX() + map->mapViewWidth ) / MUL * ratio + waterTexX, ( map->getY() + map->mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
 	glEnd();
-	//glsDisable( GLS_BLEND );
 }
 
 /// Sets up the outdoor ground heightfield including texturing and lighting.

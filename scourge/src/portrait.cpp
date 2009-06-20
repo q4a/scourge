@@ -198,8 +198,11 @@ void Portrait::setCurrentWeaponTooltip() {
 bool Portrait::onDraw( Widget* widget ) {
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	backgroundTexture.glBind();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -210,38 +213,44 @@ bool Portrait::onDraw( Widget* widget ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( w, h );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 
 	if ( creature ) {
-		glScissor( pcUi->getWindow()->getX() + x + 12,
-		           pcUi->getScourge()->getScreenHeight() - ( pcUi->getWindow()->getY() + y + TITLE_HEIGHT + 14 + 77 ),
-		           62, 77 );
 		glsEnable( GLS_SCISSOR_TEST );
+		glScissor( pcUi->getWindow()->getX() + x + 12, pcUi->getScourge()->getScreenHeight() - ( pcUi->getWindow()->getY() + y + TITLE_HEIGHT + 14 + 77 ), 62, 77 );
+
 		glPushMatrix();
+
 		glTranslatef( 12.0f, 14.0f, 0.0f );
+
 		pcUi->getScourge()->drawPortrait( creature, 62 + 20, 77, 10 );
+
 		glPopMatrix();
+
 		glsDisable( GLS_SCISSOR_TEST );
 	}
 
 	int y = 35;
+
 	glColor4f( 1.0f, 0.8f, 0.0f, 1.0f );
+
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, creature->getName() );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-	//y += 17;
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	y = 35 + 17;
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s",
-	                                               ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-	                                               creature->getCharacter()->getDisplayName() );
+
+	y += 17;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ), creature->getCharacter()->getDisplayName() );
+
 	y += 12;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d (%s: %d)", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
-	y += 12;
 
+	y += 12;
 	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
 	pcUi->getScourge()->describeDefense( creature, 200, y );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	if ( mode == STATS_MODE ) {
@@ -253,15 +262,16 @@ bool Portrait::onDraw( Widget* widget ) {
 	}
 
 	glsDisable( GLS_TEXTURE_2D );
+
 	return false;
 }
 
 
 void Portrait::showStats() {
-	// hp/mp
 	int y = 120;
-// y += 18;
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
 	drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
@@ -273,33 +283,40 @@ void Portrait::showStats() {
 
 	y += 15;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
+
 	int maxAp = static_cast<int>( creature->getMaxAP() );
 	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
+
 	drawBar( 120, y - 10, ap, maxAp, 1, 0, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", ap, maxAp );
 
 	y += 15;
 	drawHorizontalLine( y - 9 );
 
-	// stats
 	y += 5;
 	for ( int i = 0; i < SkillGroup::stats->getSkillCount(); i++ ) {
 		int yy = y + ( i * 15 );
 		Skill *skill = SkillGroup::stats->getSkill( i );
 		drawSkill( skill, yy );
 	}
+
 	y += SkillGroup::stats->getSkillCount() * 15;
 
-	// resistances y=250
 	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y - 2, "%s:", _( "Resistances" ) );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	int x = 5;
+
 	glsEnable( GLS_TEXTURE_2D );
+
 	for ( int i = 0; i < resistanceCount; i++ ) {
 		drawResistance( x, y, resistanceIcons[ i ], resistanceSkills[ i ] );
 		x += RESISTANCE_WIDTH;
 	}
+
 }
 
 void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
@@ -309,8 +326,11 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	glPushMatrix();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glTranslatef( x, y, 0.0f );
+
 	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -329,6 +349,7 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	if ( creature ) {
 		pcUi->getScourge()->getSDLHandler()->texPrint( size, 15, "%d%%", creature->getSkill( skill, false ) );
 	}
+
 	glPopMatrix();
 }
 
@@ -519,9 +540,13 @@ void Portrait::showStateMods() {
 
 void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, int y, int size ) {
 	glsEnable( GLS_TEXTURE_2D );
+
 	icon.glBind();
+
 	glColor4f( color.r, color.g, color.b, color.a );
+
 	glPushMatrix();
+
 	glTranslatef( x, y - size, 0.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -536,15 +561,21 @@ void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, i
 	glEnd();
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 10, name );
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
-	glPushMatrix();
 	glsEnable( GLS_TEXTURE_2D );
+
+	glPushMatrix();
+
 	glTranslatef( x, y, 0.0f );
+
 	barTexture.glBind();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -559,13 +590,18 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glsDisable( GLS_TEXTURE_2D );
 
 	int v, n;
+
 	if ( mod > 0 ) {
 		v = value + mod;
 		if ( v > maxValue ) v = maxValue;
+
 		if ( v > 0 ) {
 			n = static_cast<int>( static_cast<float>( v ) * static_cast<float>( BAR_INNER_WIDTH ) / static_cast<float>( maxValue ) );
+
 			glsDisable( GLS_TEXTURE_2D );
+
 			glColor4f( 0.0f, 0.5f, 1.0f, 1.0f );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( BAR_X, BAR_Y );
 			glVertex2i( BAR_X + n, BAR_Y );
@@ -573,14 +609,19 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 			glVertex2i( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
 			glEnd();
 		}
+
 	}
 
 	v = value;
 	if ( v > maxValue ) v = maxValue;
+
 	if ( v > 0 ) {
 		n = static_cast<int>( static_cast<float>( v ) * static_cast<float>( BAR_INNER_WIDTH ) / static_cast<float>( maxValue ) );
+
 		glsDisable( GLS_TEXTURE_2D );
+
 		glColor4f( r, g, b, a );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( BAR_X, BAR_Y );
 		glVertex2i( BAR_X + n, BAR_Y );
@@ -591,6 +632,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.9f );
 	glVertex2i( BAR_X, BAR_Y );
@@ -601,9 +643,11 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.2f );
 	glVertex2i( BAR_X + BAR_INNER_WIDTH, BAR_Y + BAR_INNER_HEIGHT );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glPopMatrix();
 }
 
@@ -612,11 +656,12 @@ void Portrait::setCreature( Creature *creature ) {
 }
 
 void Portrait::drawHorizontalLine( int y ) {
-	glLineWidth( 2 );
 	glsDisable( GLS_TEXTURE_2D );
-	//pcUi->getWindow()->setTopWindowBorderColor();
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+
+	glLineWidth( 2 );
+
 	glBegin( GL_LINES );
 	glColor4f( 0.45f, 0.25f, 0.0f, 0.75f );
 	glVertex2i( 20, y );
@@ -626,8 +671,11 @@ void Portrait::drawHorizontalLine( int y ) {
 	glColor4f( 0.45f, 0.25f, 0.0f, 0.75f );
 	glVertex2i( canvas->getWidth() - 20, y );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glsEnable( GLS_TEXTURE_2D );
+
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glLineWidth( 1 );
 }

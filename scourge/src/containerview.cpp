@@ -69,11 +69,14 @@ void ContainerView::convertMousePos( int x, int y, int *invX, int *invY ) {
 bool ContainerView::onDraw( Widget* ) {
 	int w = container->getRpgItem()->getContainerWidth() * GRID_SIZE;
 	int h = container->getRpgItem()->getContainerHeight() * GRID_SIZE;
-	glsEnable( GLS_TEXTURE_2D );
+
 	glsDisable( GLS_BLEND );
+	glsEnable( GLS_TEXTURE_2D );
+
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	container->getContainerTexture().glBind();
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -99,19 +102,22 @@ bool ContainerView::onDraw( Widget* ) {
 	int rowCount = container->getRpgItem()->getContainerHeight();
 
 	if ( scourge->getMovingItem() ) {
+
 		int currentX, currentY;
-		convertMousePos( scourge->getSDLHandler()->mouseX - win->getX() - x,
-		                 scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT,
-		                 &currentX, &currentY );
+
+		convertMousePos( scourge->getSDLHandler()->mouseX - win->getX() - x, scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT, &currentX, &currentY );
+
 		int px = currentX;
 		int py = currentY;
+
 		if ( px >= 0 && px + scourge->getMovingItem()->getBackpackWidth() <= colCount &&
 		        py >= 0 && py + scourge->getMovingItem()->getBackpackHeight() <= rowCount ) {
 			px *= GRID_SIZE;
 			py *= GRID_SIZE;
+
 			int pw = scourge->getMovingItem()->getBackpackWidth() * GRID_SIZE;
 			int ph = scourge->getMovingItem()->getBackpackHeight() * GRID_SIZE;
-			//cerr << "pw=" << pw << " ph=" << ph << endl;
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( px, py );
 			glVertex2i( px + pw, py );
@@ -119,7 +125,9 @@ bool ContainerView::onDraw( Widget* ) {
 			glVertex2i( px + pw, py + ph );
 			glEnd();
 		}
+
 	} else if( getSelectedItem() ) {
+
 		int px = getSelectedItem()->getBackpackX() * GRID_SIZE - OFFSET_X;
 		int py = getSelectedItem()->getBackpackY() * GRID_SIZE - OFFSET_Y;
 		int pw = getSelectedItem()->getBackpackWidth() * GRID_SIZE;
@@ -145,12 +153,14 @@ bool ContainerView::onDraw( Widget* ) {
 		glVertex2i( colCount * GRID_SIZE, yy * GRID_SIZE );
 		glEnd();
 	}
+
 	for ( int xx = 0; xx <= colCount; xx++ ) {
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( xx * GRID_SIZE, 0 );
 		glVertex2i( xx * GRID_SIZE, rowCount * GRID_SIZE );
 		glEnd();
 	}
+
 	glBegin( GL_LINE_LOOP );
 	glVertex2i( 0, 0 );
 	glVertex2i( colCount * GRID_SIZE - 1, 0 );
@@ -159,8 +169,8 @@ bool ContainerView::onDraw( Widget* ) {
 	glEnd();
 
 	glsDisable( GLS_BLEND );
-
 	glsEnable( GLS_TEXTURE_2D );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
@@ -180,6 +190,7 @@ bool ContainerView::onDraw( Widget* ) {
 	glPopMatrix();
 
 	glsDisable( GLS_TEXTURE_2D );
+
 	return true;
 }
 

@@ -1010,37 +1010,45 @@ void Map::setPos( float x, float y, float z ) {
 /// Initializes the map view (translate, rotate)
 
 void Map::initMapView( bool ignoreRot ) {
+	glsEnable( GLS_SCISSOR_TEST );
+	glScissor( viewX, adapter->getScreenHeight() - ( viewY + viewHeight ), viewWidth, viewHeight );
+
 	glLoadIdentity();
 
 	glTranslatef( viewX, viewY, 0.0f );
-	glScissor( viewX, adapter->getScreenHeight() - ( viewY + viewHeight ), viewWidth, viewHeight );
-	glsEnable( GLS_SCISSOR_TEST );
+
 	// adjust for screen size
 	float adjust = static_cast<float>( viewWidth ) / 800.0f;
-	glScalef( adjust, adjust, adjust );
 
+	glScalef( adjust, adjust, adjust );
 	glScalef( zoom, zoom, zoom );
 
 	// translate the camera and rotate
 	// the offsets ensure that the center of rotation is under the player
 	glTranslatef( this->xpos, this->ypos, 0.0f );
+
 	if ( !ignoreRot ) {
 		glRotatef( xrot, 0.0f, 1.0f, 0.0f );
 		glRotatef( yrot, 1.0f, 0.0f, 0.0f );
 		glRotatef( zrot, 0.0f, 0.0f, 1.0f );
 	}
+
 	glTranslatef( 0.0f, 0.0f, this->zpos );
 
 	// adjust for centered-map movement
 	float xdiff = 0;
 	float ydiff = 0;
+
 	if ( settings->isPlayerEnabled() && ( preferences->getAlwaysCenterMap() || mapCenterCreature ) ) {
 		RenderedCreature *c = ( mapCenterCreature ? mapCenterCreature : adapter->getPlayer() );
+
 		if ( c ) {
 			xdiff = ( c->getX() - static_cast<float>( toint( c->getX() ) ) );
 			ydiff = ( c->getY() - static_cast<float>( toint( c->getY() ) ) );
 		}
+
 	}
+
 	float startx = -( static_cast<float>( mapViewWidth ) / 2.0 + ( mapx - static_cast<float>( x ) + xdiff ) - 4 ) * MUL;
 	float starty = -( static_cast<float>( mapViewDepth ) / 2.0 + ( mapy - static_cast<float>( y ) + ydiff ) - 8 ) * MUL;
 	float startz = 0.0;
@@ -1050,6 +1058,7 @@ void Map::initMapView( bool ignoreRot ) {
 	if ( quakesEnabled ) {
 		quake();
 	}
+
 }
 
 void Map::doQuake() {

@@ -2464,29 +2464,39 @@ bool Scourge::onDrawPlayerWeapon( Widget* w ) {
 
 bool Scourge::onDrawQuickSpell( Widget* w ) {
 	char tooltip[255];
+
 	for ( int t = 0; t < 12; t++ ) {
+
 		if ( quickSpell[t] == w ) {
+
 			quickSpell[t]->setGlowing( pcui->getStorable() != NULL ? true : false );
+
 			for ( int i = 0; i < party->getPartySize(); i++ ) {
+
 				if ( party->getParty( i ) == getParty()->getPlayer() ) {
+
 					if ( getParty()->getPlayer()->getQuickSpell( t ) ) {
+
 						Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
+
 						if ( storable ) {
 							snprintf( tooltip, 255, "%s [%s]", _( storable->getName() ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_QUICKSPELL1 + t ) );
 							w->setTooltip( tooltip );
 						} else if ( !( Item* )storable ) {
 							w->setTooltip( NULL );
 						}
+
 						glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 						glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 						glPushMatrix();
-						//    glTranslatef( x, y, 0.0f );
+
 						if ( storable->getStorableType() == Storable::ITEM_STORABLE ) {
 							getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						} else {
 							getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						}
+
 						glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 						glBegin( GL_TRIANGLE_STRIP );
@@ -2499,26 +2509,34 @@ bool Scourge::onDrawQuickSpell( Widget* w ) {
 						glTexCoord2i( 1, 1 );
 						glVertex2i( w->getWidth(), w->getHeight() );
 						glEnd();
+
 						glPopMatrix();
 
 						glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 					}
+
 					return true;
 				}
+
 			}
+
 		}
+
 	}
+
 	return false;
 }
 
 void Scourge::drawItemIcon( Item *item, int n ) {
 	glsEnable( GLS_TEXTURE_2D | GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	item->getItemIconTexture().glBind();
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glPushMatrix();
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( 0, 0 );
@@ -2530,9 +2548,9 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glVertex2i( n, n );
 	glEnd();
 
-	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
-
 	glPopMatrix();
+
+	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 }
 
 void Scourge::drawPortrait( Widget *w, Creature *p ) {
@@ -2543,34 +2561,41 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 	// draw selection border
 	if ( p == getParty()->getPlayer() ) {
+		GuiTheme *theme = mainWin->getTheme();
+		float lineWidth = 5.0f;
+
 		glsEnable( GLS_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		float lineWidth = 5.0f;
+
 		glLineWidth( 5.0f );
-		GuiTheme *theme = mainWin->getTheme();
+
 		if ( theme->getSelectedCharacterBorder() ) {
-			glColor4f( theme->getSelectedCharacterBorder()->color.r,
-			           theme->getSelectedCharacterBorder()->color.g,
-			           theme->getSelectedCharacterBorder()->color.b,
-			           0.5f );
+			glColor4f( theme->getSelectedCharacterBorder()->color.r, theme->getSelectedCharacterBorder()->color.g, theme->getSelectedCharacterBorder()->color.b, 0.5f );
 		} else {
 			mainWin->applySelectionColor();
 		}
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2f( lineWidth / 2.0f, lineWidth / 2.0f );
 		glVertex2f( lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
 		glVertex2f( w->getWidth() - lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
 		glVertex2f( w->getWidth() - lineWidth / 2.0f, lineWidth / 2.0f );
 		glEnd();
+
 		glLineWidth( 1.0f );
+
 		glsDisable( GLS_BLEND );
 	}
+
 }
 
 void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int offs_y ) {
-	glPushMatrix();
 	glsEnable( GLS_TEXTURE_2D );
+
+	glPushMatrix();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	if ( p == NULL ) {
 		getSession()->getShapePalette()->getNamedTexture( "nobody" ).glBind();
 	} else if ( p->getStateMod( StateMod::dead ) ) {
@@ -2578,6 +2603,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	} else {
 		getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ).glBind();
 	}
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( -offs_x, -offs_y );
@@ -2588,26 +2614,33 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glTexCoord2i( 1, 1 );
 	glVertex2i( width - offs_x, height - offs_y );
 	glEnd();
+
 	glsDisable( GLS_TEXTURE_2D );
 
 	if ( p ) {
 
 		bool shade = false;
 		bool darker = false;
+
 		if ( inTurnBasedCombat() ) {
+
 			bool found = false;
+
 			for ( int i = battleTurn; i < static_cast<int>( battleRound.size() ); i++ ) {
 				if ( battleRound[i]->getCreature() == p ) {
 					found = true;
 					break;
 				}
 			}
+
 			// already had a turn in battle
 			if ( !found ) {
 				glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
+
 				shade = true;
 				darker = true;
 			}
+
 		}
 
 		if ( p->getStateMod( StateMod::possessed ) ) {
@@ -2626,15 +2659,18 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glColor4f( ( darker ? 0.375f : 0.75f ), 0.0f, ( darker ? 0.375f : 0.75f ), 0.5f );
 			shade = true;
 		}
+
 		if ( shade ) {
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
 			glVertex2i( width, 0 );
 			glVertex2i( 0, height );
 			glVertex2i( width, height );
 			glEnd();
+
 			glsDisable( GLS_BLEND );
 		}
 	}
@@ -2643,13 +2679,13 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 
 	if ( p ) {
 		glColor3f( 1.0f, 1.0f, 1.0f );
+
 		getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
 		char *message = NULL;
 
 		// can train?
-		if ( p->getCharacter()->getChildCount() > 0 &&
-		        p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
+		if ( p->getCharacter()->getChildCount() > 0 && p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
 			message = Constants::getMessage( Constants::TRAINING_AVAILABLE );
 		} else if ( p->getAvailableSkillMod() > 0 ) {
 			message = Constants::getMessage( Constants::SKILL_POINTS_AVAILABLE );
@@ -2657,25 +2693,31 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 
 		if ( message ) {
 			glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
+
 			glPushMatrix();
+
 			glTranslatef( 3.0f, 14.0f, 0.0f );
+
 			glsEnable( GLS_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
 			glVertex2i( 40, 0 );
 			glVertex2i( 0, 13 );
 			glVertex2i( 40, 13 );
 			glEnd();
+
 			glsDisable( GLS_BLEND );
+
 			glPopMatrix();
+
 			glColor3f( 1.0f, 0.75f, 0.0f );
+
 			getSDLHandler()->texPrint( 5, 24, message );
 		}
 
 		// show stat mods
-		glsEnable( GLS_TEXTURE_2D );
-		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 		int xp = 0;
 		int yp = 1;
 		int n = 12;
@@ -2683,12 +2725,22 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		Texture icon;
 		char name[255];
 		Color color;
+
+		glsEnable( GLS_TEXTURE_2D );
+
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+
 		for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
+
 			if ( getStateModIcon( &icon, name, &color, p, i ) ) {
 				icon.glBind();
+
 				glColor4f( color.r, color.g, color.b, color.a );
+
 				glPushMatrix();
+
 				glTranslatef( 5.0f + xp * ( n + 1.0f ), height - ( yp * ( n + 1.0f ) ) - n, 0.0f );
+
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( 0, 0 );
@@ -2699,15 +2751,21 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 				glTexCoord2i( 1, 1 );
 				glVertex2i( n, n );
 				glEnd();
+
 				glPopMatrix();
 				xp++;
+
 				if ( xp >= row ) {
 					xp = 0;
 					yp++;
 				}
+
 			}
+
 		}
+
 	}
+
 	glsDisable( GLS_TEXTURE_2D );
 }
 
@@ -3818,8 +3876,11 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	getShapePalette()->getHandsAttackIcon().glBind();
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2i( 0, 0 );
 	glVertex2i( x, y );
@@ -3830,6 +3891,7 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( x + size, y + size );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 }
 
@@ -3837,42 +3899,45 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 	enum { LINE_SIZE = 80 };
 	char buff[ LINE_SIZE ];
 	char line1[ LINE_SIZE ], line2[ LINE_SIZE ], line3[ LINE_SIZE ];
-	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 	float max, min, cth, skill;
+
+	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 	if ( ( item && item->getRpgItem()->isWeapon() ) || ( !item && handleNull ) ) {
+
 		if ( item ) {
 			glsEnable( GLS_TEXTURE_2D );
 			item->renderIcon( this, x, y - 10, 32, 32, true );
 		} else {
 			renderHandAttackIcon( x, y - 10, 32 );
 		}
+
 		p->getAttack( item, &max, &min );
 		p->getCth( item, &cth, &skill, false );
+
 		if ( toint( max ) > toint( min ) ) {
-			snprintf( line1, LINE_SIZE, "%s:%d-%d(%c)",
-			          _( "ATK" ),
-			          toint( min ), toint( max ),
-			          RpgItem::getDamageTypeLetter( ( item ?
-			                                          item->getRpgItem()->getDamageType() :
-			                                          RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+			snprintf( line1, LINE_SIZE, "%s:%d-%d(%c)", _( "ATK" ), toint( min ), toint( max ), RpgItem::getDamageTypeLetter( ( item ? item->getRpgItem()->getDamageType() : RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
 		} else {
-			snprintf( line1, LINE_SIZE, "%s:%d(%c)",
-			          _( "ATK" ),
-			          toint( min ),
-			          RpgItem::getDamageTypeLetter( ( item ?
-			                                          item->getRpgItem()->getDamageType() :
-			                                          RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+			snprintf( line1, LINE_SIZE, "%s:%d(%c)", _( "ATK" ), toint( min ), RpgItem::getDamageTypeLetter( ( item ? item->getRpgItem()->getDamageType() : RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
 		}
+
 		snprintf( line2, LINE_SIZE, "%s:%d", _( "CTH" ), toint( skill ) );
 		snprintf( line3, LINE_SIZE, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff, LINE_SIZE ) );
+
 		glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 		getSDLHandler()->texPrint( x + 34, y, line1 );
 		getSDLHandler()->texPrint( x + 34, y + 12, line2 );
 		getSDLHandler()->texPrint( x + 34, y + 24, line3 );
+
 		return true;
+
 	} else {
+
 		return false;
 	}
+
 }
 
 void Scourge::describeAttacks( Creature *p, int x, int y, bool currentOnly ) {

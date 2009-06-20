@@ -66,7 +66,9 @@ void MD3Shape::draw() {
 #ifdef DEBUG_MD2
 	//if( glIsEnabled( GL_TEXTURE_2D ) ) {
 	glPushMatrix();
+
 	debugShape->draw();
+
 	glPopMatrix();
 	//}
 #endif
@@ -77,9 +79,6 @@ void MD3Shape::draw() {
 	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
 	// move to the middle of the space
-	//glTranslatef( (static_cast<float>(width) * MUL) / 2.0f,
-	//0.25f * MUL,
-	//-(static_cast<float>(depth) * MUL) / 2.0f );
 	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
 
 	// rotate to movement angle
@@ -92,6 +91,7 @@ void MD3Shape::draw() {
 	}
 
 	glScalef( div, div, div );
+
 	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel( this );
 
@@ -106,15 +106,20 @@ void MD3Shape::draw() {
 
 void MD3Shape::outline( float r, float g, float b ) {
 	useShadow = true;
+
 	glsDisable( GLS_TEXTURE_2D );
-	glFrontFace( GL_CCW );
-	glPolygonMode( GL_BACK, GL_LINE );
-	glLineWidth( 4 );
 	glsEnable( GLS_CULL_FACE );
 	glCullFace( GL_FRONT );
+	glFrontFace( GL_CCW );
+
+	glPolygonMode( GL_BACK, GL_LINE );
+
+	glLineWidth( 4 );
+
 	glColor3f( r, g, b );
 
 	glPushMatrix();
+
 	// rotate to upright
 	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
@@ -122,21 +127,22 @@ void MD3Shape::outline( float r, float g, float b ) {
 	// rotate to movement angle
 	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
-	//glTranslatef( -md3->getMin()[2], -md3->getMin()[0], -md3->getMin()[1] );
-	//glTranslatef( -md3->getMax()[2] / 2, 0, -md3->getMax()[1] / 2 );
 	glScalef( div, div, div );
-	//glTranslatef( 0, -md3->getMin()[0] * div, 0 );
+
 	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel( this );
 
 	glPopMatrix();
 
-	glLineWidth( 1 );
 	glsDisable( GLS_CULL_FACE );
-	glPolygonMode( GL_BACK, GL_FILL );
 	glsEnable( GLS_TEXTURE_2D );
-	useShadow = false;
+	glPolygonMode( GL_BACK, GL_FILL );
+
+	glLineWidth( 1 );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
+
+	useShadow = false;
 }
 
 void MD3Shape::setModelAnimation() {

@@ -375,7 +375,7 @@ bool Equip::onDraw( Widget* ) {
 	glEnd();
 
 	glsDisable( GLS_BLEND );
-	// glsDisable( GLS_ALPHA_TEST );
+
 	if ( creature ) {
 		if ( mode == EQUIP_MODE ) {
 			drawEquipment();
@@ -385,6 +385,7 @@ bool Equip::onDraw( Widget* ) {
 			drawCapabilities();
 		}
 	}
+
 	return true;
 }
 
@@ -394,17 +395,22 @@ void Equip::drawEquipment() {
 	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( i );
 		Item *item = creature->getEquippedItemByIndex( i );
+
 		if ( item ) {
 			if ( rect && rect->w && rect->h ) {
 				glsEnable( GLS_TEXTURE_2D );
 				item->renderIcon( pcUi->getScourge(), rect );
 			}
+
 		}
+
 	}
+
 	if ( currentHole > -1 ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( currentHole );
 		glsDisable( GLS_TEXTURE_2D );
 		pcUi->getWindow()->setTopWindowBorderColor();
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( rect->x, rect->y + rect->h );
 		glVertex2i( rect->x, rect->y );
@@ -412,6 +418,7 @@ void Equip::drawEquipment() {
 		glVertex2i( rect->x + rect->w, rect->y + rect->h );
 		glEnd();
 	}
+
 }
 
 /// Draws the spell list.
@@ -435,16 +442,20 @@ void Equip::drawSpells() {
 
 		glsDisable( GLS_TEXTURE_2D );
 		glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2i( 0, 1 );
 		glVertex2i( size + width, 1 );
 		glVertex2i( 0, size );
 		glVertex2i( size + width, size );
 		glEnd();
+
 		glsEnable( GLS_TEXTURE_2D );
 
 		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ).glBind();
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -457,6 +468,7 @@ void Equip::drawSpells() {
 		glEnd();
 
 		glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
 		pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, school->getDisplayName() );
 		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -464,11 +476,15 @@ void Equip::drawSpells() {
 		glPopMatrix();
 
 		yy += 5;
+
 		for ( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
 			Spell *spell = school->getSpell( t );
+
 			if ( creature && creature->isSpellMemorized( spell ) ) {
 				pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
+
 				glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2i( 0, 0 );
 				glVertex2i( xx, yy );
@@ -480,24 +496,29 @@ void Equip::drawSpells() {
 				glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 				glEnd();
 			}
+
 			if ( schoolIndex == i && spellIndex == t ) {
 				glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 			} else {
 				pcUi->getWindow()->setTopWindowBorderColor();
 			}
+
 			glsDisable( GLS_TEXTURE_2D );
+
 			glBegin( GL_LINE_LOOP );
 			glVertex2i( xx, yy + SPELL_SIZE );
 			glVertex2i( xx, yy );
 			glVertex2i( xx + SPELL_SIZE, yy );
 			glVertex2i( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();
+
 			glsEnable( GLS_TEXTURE_2D );
 		}
 
 		xx = startX;
 		yy += SPELL_SIZE + 12;
 	}
+
 	glsDisable( GLS_BLEND );
 }
 
@@ -508,17 +529,18 @@ void Equip::drawCapabilities() {
 	int xx = startX;
 	int yy = 20;
 
-	glPushMatrix();
-	glTranslatef( xx, yy - 12.0f, 0.0f );
-
 	int size = 15;
 	int width = w - 55;
 
+	glPushMatrix();
+	glTranslatef( xx, yy - 12.0f, 0.0f );
+
+	glsDisable( GLS_TEXTURE_2D );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glsDisable( GLS_TEXTURE_2D );
 
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.75f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 1 );
 	glVertex2i( size + width, 1 );
@@ -529,6 +551,7 @@ void Equip::drawCapabilities() {
 	glsEnable( GLS_TEXTURE_2D );
 
 	glColor4f( 1.0f, 0.35f, 0.0f, 1.0f );
+
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, _( "Special Capabilities" ) );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -540,30 +563,29 @@ void Equip::drawCapabilities() {
 
 	yy += 5;
 	bool found = false;
+
 	for ( int i = 0; i < SpecialSkill::getSpecialSkillCount(); i++ ) {
 		SpecialSkill *ss = SpecialSkill::getSpecialSkill( i );
+
 		if ( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) {
 
-			if ( !found &&
-			        mx >= xx && mx < xx + SPELL_SIZE &&
-			        yy >= yy && my < yy + SPELL_SIZE ) {
+			if ( !found && mx >= xx && mx < xx + SPELL_SIZE && yy >= yy && my < yy + SPELL_SIZE ) {
+
 				if ( specialSkill != ss ) {
 					specialSkill = ss;
 					enum { TEXT_SIZE = 3000 };
 					char tmp[ TEXT_SIZE ], tooltip[ TEXT_SIZE ];
+
 					Util::addLineBreaks( ss->getDescription(), tmp );
-					snprintf( tooltip, TEXT_SIZE, "%s:|%s|%s",
-					          ss->getDisplayName(),
-					          tmp,
-					          ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ?
-					          _( "Manual Capability" ) :
-					          _( "Automatic Capability" ) );
+					snprintf( tooltip, TEXT_SIZE, "%s:|%s|%s", ss->getDisplayName(), tmp, ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ? _( "Manual Capability" ) : _( "Automatic Capability" ) );
 					canvas->setTooltip( tooltip );
 				}
+
 				found = true;
 			}
 
 			pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ].glBind();
+
 			glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 			glBegin( GL_TRIANGLE_STRIP );
@@ -595,16 +617,21 @@ void Equip::drawCapabilities() {
 			glsEnable( GLS_TEXTURE_2D );
 
 			xx += SPELL_SIZE + 2;
+
 			if ( xx > w - 50 ) {
 				xx = startX;
 				yy += SPELL_SIZE + 2;
 			}
+
 		}
+
 	}
+
 	if ( !found ) {
 		specialSkill = false;
 		canvas->setTooltip( "" );
 	}
+
 	glsDisable( GLS_BLEND );
 }
 

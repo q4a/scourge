@@ -956,9 +956,11 @@ void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oy
 /// Renders the item's icon (in lists, the backpack etc.)
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	getItemIconTexture( smallIcon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -984,11 +986,12 @@ Texture Item::getItemIconTexture( bool smallIcon ) {
 
 void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	Uint32 t = SDL_GetTicks();
+
 	if ( t - iconUnderEffectTimer > 5 ) {
 		iconUnderEffectTimer = t;
+
 		for ( int i = 0; i < PARTICLE_COUNT; i++ ) {
-			if ( iconUnderEffectParticle[i]->life < 0 ||
-			        iconUnderEffectParticle[i]->life >= iconUnderEffectParticle[i]->maxLife ) {
+			if ( iconUnderEffectParticle[i]->life < 0 || iconUnderEffectParticle[i]->life >= iconUnderEffectParticle[i]->maxLife ) {
 				iconUnderEffectParticle[i]->life = 0;
 				iconUnderEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
 				iconUnderEffectParticle[i]->zoom = Util::roll( 10.0f, 15.0f );
@@ -996,26 +999,29 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 				iconUnderEffectParticle[i]->y = Util::roll( 0.0f, h / 4.0f ) + ( h * 0.375f );
 				iconUnderEffectParticle[i]->z = 0;
 			}
+
 			iconUnderEffectParticle[i]->zoom += 1.0f;
-			//iconUnderEffectParticle[i]->y += 0.25f;
 			iconUnderEffectParticle[i]->life++;
 		}
+
 	}
+
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
 	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ).glBind();
 
 	for ( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		float a = ( 1 - iconUnderEffectParticle[i]->life / static_cast<float>( iconUnderEffectParticle[i]->maxLife ) ) / 8.0f;
-		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
-		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a,
-		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
-		           0.5f );
+
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a, 0.5f );
+
 		glPushMatrix();
+
 		glTranslatef( x, y, 0.0f );
 		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2.0f,
 		              iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2.0f, 0.0f );
-		//glRotatef( iconUnderEffectParticle[i]->life, 0.0f, 0.0f, 1.0f );
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2f( 0.0f, 0.0f );
@@ -1026,9 +1032,12 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		glTexCoord2i( 1, 1 );
 		glVertex2f( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
 		glEnd();
+
 		glPopMatrix();
 	}
+
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
@@ -1038,11 +1047,12 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 	int particleCount = 3 * ( getMagicLevel() + 1 );
 	// draw an effect
 	Uint32 t = SDL_GetTicks();
+
 	if ( t - iconEffectTimer > 5 ) {
 		iconEffectTimer = t;
+
 		for ( int i = 0; i < particleCount; i++ ) {
-			if ( iconEffectParticle[i]->life < 0 ||
-			        iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife ) {
+			if ( iconEffectParticle[i]->life < 0 || iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife ) {
 				iconEffectParticle[i]->life = 0;
 				iconEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
 				iconEffectParticle[i]->zoom = 0.5f;
@@ -1050,29 +1060,34 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 				iconEffectParticle[i]->y = static_cast<float>( h ) * Util::mt_rand();
 				iconEffectParticle[i]->z = 0;
 			}
+
 			iconEffectParticle[i]->zoom += ( iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife / 2.0f ? -1 : 1 ) * 0.5f;
-			//iconEffectParticle[i]->y += 0.25f;
 			iconEffectParticle[i]->life++;
 		}
+
 	}
+
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
 	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ).glBind();
 
 	for ( int i = 0; i < particleCount; i++ ) {
 		float a = ( iconEffectParticle[i]->life / static_cast<float>( iconEffectParticle[i]->maxLife ) );
+
 		if ( a >= 0.5 ) a = 1 - a;
 		a = a * 2.0f;
-		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
-		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a,
-		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
-		           1.0f );
+
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a, 1.0f );
+
 		glPushMatrix();
-		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2.0f,
-		              iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2.0f, 0.0f );
+
+		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2.0f, iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2.0f, 0.0f );
+
 		if ( getMagicLevel() >= Constants::DIVINE_MAGIC_ITEM ) {
 			glRotatef( 360.0f * a, 0.0f, 0.0f, 1.0f );
 		}
+
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2i( 0, 0 );
 		glVertex2f( x, y );
@@ -1083,8 +1098,10 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		glTexCoord2i( 1, 1 );
 		glVertex2f( x + iconEffectParticle[i]->zoom, y + iconEffectParticle[i]->zoom );
 		glEnd();
+
 		glPopMatrix();
 	}
+
 	glsDisable( GLS_BLEND | GLS_ALPHA_TEST );
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
@@ -1095,17 +1112,18 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 	if ( isIdentified() ) {
 		/*
 		glsDisable( GLS_TEXTURE_2D );
-		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
-		      Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
-		      Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
-		      1 );
+
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g, Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b, 1 );
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2d( x + 1, y + h - 1 );
 		glVertex2d( x + 1, y + 1 );
 		glVertex2d( x + w - 1, y + 1 );
 		glVertex2d( x + w - 1, y + h - 1 );
 		glEnd();
+
 		glsEnable( GLS_TEXTURE_2D );
+
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		*/
 	} else {

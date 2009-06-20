@@ -101,32 +101,24 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 
 	// draw the text
 	int textPos = -static_cast<int>( ( ( listHeight - getHeight() ) / 100.0f ) * static_cast<float>( value ) );
+
 	if ( !parent->isOpening() ) {
-		glScissor( parent->getX() + x,
-		           parent->getScourgeGui()->getScreenHeight() -
-		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
-		           w, getHeight() );
 		glsEnable( GLS_SCISSOR_TEST );
+		glScissor( parent->getX() + x, parent->getScourgeGui()->getScreenHeight() - ( parent->getY() + parent->getGutter() + y + getHeight() ), w, getHeight() );
 
 		// draw the contents
 		if ( theme->getWindowText() ) {
-			glColor4f( theme->getWindowText()->r,
-			           theme->getWindowText()->g,
-			           theme->getWindowText()->b,
-			           theme->getWindowText()->a );
+			glColor4f( theme->getWindowText()->r, theme->getWindowText()->g, theme->getWindowText()->b, theme->getWindowText()->a );
 		} else {
 			applyColor();
 		}
 
-		//    int ypos = ypos = textPos + (i + 1) * 15;
-		//    parent->getSDLHandler()->texPrint( scrollerWidth + 5, ypos, text, lineWidth );
-
-		//parent->getSDLHandler()->setFontType( SDLHandler::SCOURGE_MONO_FONT );
 		int ypos;
 
 		int lineCount = 0;
 		ypos = textPos + 15;
 		char *p = text;
+
 		while ( p && *p ) {
 			p = printLine( parent, scrollerWidth + 5, ypos, p );
 			ypos += 15;
@@ -136,9 +128,8 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 		if ( willSetScrollerHeight ) {
 			willSetScrollerHeight = 0;
 			listHeight = lineCount * 15 + 5;
-			scrollerHeight = ( listHeight <= getHeight() ?
-			                   getHeight() :
-			                   ( getHeight() * getHeight() ) / listHeight );
+			scrollerHeight = ( listHeight <= getHeight() ? getHeight() : ( getHeight() * getHeight() ) / listHeight );
+
 			// set a min. height for scrollerHeight
 			if ( scrollerHeight < 20 ) scrollerHeight = 20;
 
@@ -148,7 +139,6 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 				scrollerY = static_cast<int>( ( static_cast<float>( getHeight() - scrollerHeight ) / 100.0f ) * static_cast<float>( value ) );
 			}
 		}
-		//parent->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
 
 		glsDisable( GLS_SCISSOR_TEST );
 	}
@@ -156,26 +146,26 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	glsDisable( GLS_TEXTURE_2D );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( scrollerWidth, 0 );
 	glVertex2i( 0, h );
 	glVertex2i( scrollerWidth, h );
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 	glsEnable( GLS_TEXTURE_2D );
 
-	drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight,
-	            false, false, false, false, inside );
+	drawButton( parent, 0, scrollerY, scrollerWidth, scrollerY + scrollerHeight, false, false, false, false, inside );
 
 	// draw the outline
 	glsDisable( GLS_TEXTURE_2D );
+
 	if ( theme->getButtonBorder() ) {
-		glColor4f( theme->getButtonBorder()->color.r,
-		           theme->getButtonBorder()->color.g,
-		           theme->getButtonBorder()->color.b,
-		           theme->getButtonBorder()->color.a );
+		glColor4f( theme->getButtonBorder()->color.r, theme->getButtonBorder()->color.g, theme->getButtonBorder()->color.b, theme->getButtonBorder()->color.a );
 	} else {
 		applyBorderColor();
 	}
@@ -196,6 +186,7 @@ void ScrollingLabel::drawWidget( Window* parent ) {
 	glVertex2i( 0, scrollerY + scrollerHeight );
 	glVertex2i( scrollerWidth, scrollerY + scrollerHeight );
 	glEnd();
+
 	glLineWidth( 1.0f );
 }
 

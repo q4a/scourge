@@ -49,17 +49,14 @@ Canvas::~Canvas() {
 
 void Canvas::drawWidget( Window* parent ) {
 	GuiTheme *theme = parent->getTheme();
+
 	if ( highlightOnMouseOver ) {
-		drawButton( parent, 0, 0, x2 - x, y2 - y,
-		            false, false, dragging, glowing, inside );
+		drawButton( parent, 0, 0, x2 - x, y2 - y, false, false, dragging, glowing, inside );
 	}
 
 	if ( !parent->isOpening() ) {
-		glScissor( parent->getX() + x,
-		           parent->getScourgeGui()->getScreenHeight() -
-		           ( parent->getY() + parent->getGutter() + y + getHeight() ),
-		           w, getHeight() );
 		glsEnable( GLS_SCISSOR_TEST );
+		glScissor( parent->getX() + x, parent->getScourgeGui()->getScreenHeight() - ( parent->getY() + parent->getGutter() + y + getHeight() ), w, getHeight() );
 
 		glPushMatrix();
 		notify( Widget::Draw ); 
@@ -72,25 +69,27 @@ void Canvas::drawWidget( Window* parent ) {
 	if ( drawBorders ) {
 		glsDisable( GLS_TEXTURE_2D );
 		glsDisable( GLS_BLEND );
+
 		if ( highlightBorders ) {
 			glLineWidth( 3.0f );
 		}
+
 		if ( theme->getButtonBorder() ) {
-			glColor4f( theme->getButtonBorder()->color.r,
-			           theme->getButtonBorder()->color.g,
-			           theme->getButtonBorder()->color.b,
-			           theme->getButtonBorder()->color.a );
+			glColor4f( theme->getButtonBorder()->color.r, theme->getButtonBorder()->color.g, theme->getButtonBorder()->color.b, theme->getButtonBorder()->color.a );
 		} else {
 			applyBorderColor();
 		}
+
 		glBegin( GL_LINE_LOOP );
 		glVertex2i( 0, 0 );
 		glVertex2i( 0, y2 - y );
 		glVertex2i( x2 - x, y2 - y );
 		glVertex2i( x2 - x, 0 );
 		glEnd();
+
 		glLineWidth( 1.0f );
 	}
+
 }
 
 bool Canvas::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {

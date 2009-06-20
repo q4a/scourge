@@ -697,16 +697,17 @@ bool SDLHandler::processEvents( bool *isActive ) {
 }
 
 void SDLHandler::drawCursor() {
-	// for cursor: do alpha bit testing
-	//  glsEnable( GLS_ALPHA_TEST );
-	//  glAlphaFunc( GL_NOTEQUAL, 0 ); // this works better for people with the reverse alpha problem (see forums)
 	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0.0f );
+
 	gameAdapter->getCursorTexture( cursorMode ).glBind();
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -719,23 +720,27 @@ void SDLHandler::drawCursor() {
 	glTexCoord2i( 1, 1 );
 	glVertex2i( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
 	glEnd();
+
 	glPopMatrix();
 
-	//  glsDisable( GLS_ALPHA_TEST );
 	glsDisable( GLS_TEXTURE_2D | GLS_BLEND );
 
 #ifdef DEBUG_MOUSE_FOCUS
 	// cursor focus
 	glPushMatrix();
 	glLoadIdentity();
+
 	glTranslatef( mouseX, mouseY, 0.0f );
+
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( 10, 0 );
 	glVertex2i( 0, 10 );
 	glVertex2i( 10, 10 );
 	glEnd();
+
 	glPopMatrix();
 #endif
 
@@ -867,37 +872,46 @@ void SDLHandler::calculateFps() {
 }
 
 void SDLHandler::drawDebugInfo() {
-	glPushMatrix();
 	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST | GLS_DEPTH_MASK );
+
+	glPushMatrix();
 	glLoadIdentity();
+
 	glColor3f( 0.0f, 0.0f, 0.0f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 400, 0 );
 	glVertex2i( screen->w, 0 );
 	glVertex2i( 400, 12 );
 	glVertex2i( screen->w, 12 );
 	glEnd();
+
 	glsEnable( GLS_TEXTURE_2D );
+
 	glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
+
 	texPrint( 400, 10, "FPS: %g %s", getFPS(), ( debugStr ? debugStr : "" ) );
-	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
+
 	glPopMatrix();
+
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 }
 
 void SDLHandler::drawFadeout() {
 	glPushMatrix();
+
 	glsDisable( GLS_TEXTURE_2D | GLS_DEPTH_TEST );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	if ( fadeoutStartAlpha < fadeoutEndAlpha ) {
-		glColor4f( 0.0f, 0.0f, 0.0f, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) *
-		                                              fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
+		glColor4f( 0.0f, 0.0f, 0.0f, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
 	} else {
-		glColor4f( 0.0f, 0.0f, 0.0f, ( fadeoutStartAlpha - ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) *
-		                                              fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
+		glColor4f( 0.0f, 0.0f, 0.0f, ( fadeoutStartAlpha - ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) * fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
 	}
+
 	glLoadIdentity();
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( 0, 0 );
 	glVertex2i( screen->w, 0 );
@@ -905,11 +919,12 @@ void SDLHandler::drawFadeout() {
 	glVertex2i( screen->w, screen->h );
 	glEnd();
 
-	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_DEPTH_TEST );
 	glPopMatrix();
 
+	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_DEPTH_TEST );
 
 	Uint32 t = SDL_GetTicks();
+
 	if ( t - fadeoutTimer > FADEOUT_SPEED ) {
 		fadeoutCurrentStep++;
 		if ( fadeoutCurrentStep > fadeoutSteps ) {
@@ -1033,75 +1048,66 @@ bool SDLHandler::intersects( int x, int y, int w, int h,
 	return intersects( &ra, &rb );
 }
 
-void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
-                              float zrot, float yrot,
-                              char *message,
-                              float r, float g, float b,
-                              float zoom ) {
+void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2, float zrot, float yrot, char *message, float r, float g, float b, float zoom ) {
 	setFontType( Constants::SCOURGE_MONO_FONT );
 
 	int w = 0;
 	vector<int> widths;
 	vector<string> lines = Util::Tokenize<vector<string> >( message, "|" );
+
 	for ( vector<string>::iterator i = lines.begin(); i != lines.end(); i++ ) {
 		int ww = textWidth( i->c_str() ) + 10;
 		widths.push_back( ww );
-		if ( w < ww )
-			w = ww;
+		if ( w < ww ) w = ww;
 	}
 
-	//int w = textWidth( message ) + 10;
-	//int w = strlen( message ) * 8 + 4;
 	int h = 12 * lines.size() + 5;
 	int x = -2;
 	int y = -14;
 
 	// only for widget tooltips: see if it hangs off the screen
 	bool right = false;
+
 	if ( zrot == 0 && yrot == 0 ) {
 		// do gluProject b/c parent window coordinates aren't part of xpos2.
 		GLdouble screenx, screeny, screenz;
 		double projection[16];
 		double modelview[16];
 		GLint viewport[4];
+
 		glGetDoublev( GL_PROJECTION_MATRIX, projection );
 		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
 		glGetIntegerv( GL_VIEWPORT, viewport );
-		int res = gluProject( xpos2 + w + x, 0, 0,
-		                      modelview,
-		                      projection,
-		                      viewport,
-		                      &screenx, &screeny, &screenz );
+
+		int res = gluProject( xpos2 + w + x, 0, 0, modelview, projection, viewport, &screenx, &screeny, &screenz );
+
 		if ( res && screenx > getScreenWidth() ) {
 			xpos2 -= ( w + x );
 			right = true;
 		}
-	}
-
-	// for widget tooltips only (hence the check for zrot/yrot)
-	if ( zrot == 0 && yrot == 0 && xpos2 + w + x > screen->w ) {
 
 	}
 
 	glPushMatrix();
+
 	glTranslatef( xpos2, ypos2 - ( y + h - 20.0f ), zpos2 );
 	glRotatef( zrot, 0.0f, 0.0f, 1.0f );
 	glRotatef( yrot, 1.0f, 0.0f, 0.0f );
-
 	glScalef( zoom, zoom, zoom );
 
 	glsDisable( GLS_CULL_FACE | GLS_DEPTH_TEST );
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	//glColor4f( 0.0f, 0.15f, 0.05f, 0.5f );
 	glColor4f( r, g, b, 0.8f );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2i( x, y );
 	glVertex2i( x + w, y );
 	glVertex2i( x, y + h );
 	glVertex2i( x + w, y + h );
 	glEnd();
+
 	glBegin( GL_TRIANGLES );
 	if ( right ) {
 		glVertex2i( x + w, y + h - 5 );
@@ -1113,10 +1119,11 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 		glVertex2i( x + 5, y + h );
 	}
 	glEnd();
+
 	glsDisable( GLS_BLEND );
 
-	//glColor4f( 0.0f, 0.4f, 0.15f, 0.5f );
 	for ( int i = 0; i < 2; i++ ) {
+
 		if ( !i ) {
 			glLineWidth( 3.0f );
 			glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1124,7 +1131,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 			glLineWidth( 1.0f );
 			glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.8f );
 		}
+
 		glBegin( GL_LINE_LOOP );
+
 		if ( right ) {
 			glVertex2i( x + w, y );
 			glVertex2i( x, y  );
@@ -1140,17 +1149,21 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 			glVertex2i( x + 5, y + h );
 			glVertex2i( x + w, y + h );
 		}
+
 		glEnd();
+
 	}
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
 	for ( unsigned int i = 0; i < lines.size(); i++ ) {
 		int ww = widths[ i ];
 		int x = static_cast<int>( ( w - ww ) / 2.0f ) + 5;
 		texPrint( x, i * 12, "%s", lines[i].c_str() );
 	}
-	//texPrint( 0, 0, "%s", message );
+
 	setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
 	glPopMatrix();
 }
 
