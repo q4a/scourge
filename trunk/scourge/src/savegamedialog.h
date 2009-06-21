@@ -93,6 +93,7 @@ protected:
 	void setSavegameInfoTitle( SavegameInfo *info );
 	bool deleteDirectory( const string& path );
 	void deleteUnreferencedMaps( const string& dirName );
+	bool isRegionVisited( std::string filename );
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 

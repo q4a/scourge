@@ -152,6 +152,7 @@ void SavegameDialog::loadGame( int n ) {
 	getWindow()->setVisible( false );
 	scourge->getSession()->setLoadgameName( fileInfos[n]->path );
 	scourge->getSession()->setLoadgameTitle( fileInfos[n]->title );
+	scourge->getSession()->reset();
 	scourge->getSDLHandler()->endMainLoop();
 }
 
@@ -389,24 +390,40 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 	return b;
 }
 
-void SavegameDialog::deleteUnvisitedMaps( const string& dirName, set<string> *visitedMaps ) {
+void printVisitedRegions( set<Uint16> *s ) {
+	cerr << "VISITED REGIONS: " << endl;
+	for ( set<Uint16>::iterator i = s->begin(); i != s->end(); ++i ) {
+		Uint16 u = *i;
+		cerr << "\t" << ( u % REGIONS_PER_ROW ) << "," << ( u % REGIONS_PER_ROW ) << endl; 
+	}
+}
 
+void SavegameDialog::deleteUnvisitedMaps( const string& dirName, set<string> *visitedMaps ) {
+	//printVisitedRegions( scourge->getSession()->getVisitedRegions() );
+	
 	string path = get_file_name( dirName );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
 	for ( vector<string>::iterator i = fileNameList.begin(); i < fileNameList.end(); i++ ) {
+		bool willDelete = false;
 		if ( ( *i )[0] == '_' ) {
-			if ( visitedMaps->find( *i ) == visitedMaps->end() ) {
-				string tmp = path + "/" + *i;
-				cerr << "\tDeleting un-visited map file: " << tmp << endl;
-				int n = remove( tmp.c_str() );
-				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
-			}
+			willDelete = ( visitedMaps->find( *i ) == visitedMaps->end() );
+		} else if( i->substr( 0, 4 ) == "reg_" ) {
+			willDelete = !isRegionVisited( *i );
+		}
+		
+		if( willDelete ) {
+			string tmp = path + "/" + *i;
+			cerr << "\tDeleting un-visited map file: " << tmp << endl;
+			int n = remove( tmp.c_str() );
+			cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;			
 		}
 	}
 }
 
 void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
+	//printVisitedRegions( scourge->getSession()->getVisitedRegions() );
+	
 	vector<string> referencedMaps;
 	for ( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
 		string s = scourge->getSession()->getBoard()->getMission( i )->getSavedMapName();
@@ -425,32 +442,46 @@ void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
 	for ( vector<string>::iterator i = fileNameList.begin(); i != fileNameList.end(); i++ ) {
-		if ( ( *i )[0] == '_' ) {
-			bool found = false;
+		bool willDelete = false;
+		if( (*i)[0] == '_' ) {
 			for ( vector<string>::iterator t = referencedMaps.begin(); t != referencedMaps.end(); t++ ) {
-				if ( i->compare( 0, t->length(), *t ) == 0 ) {
-					found = true;
+				if ( i->compare( 0, t->length(), *t ) != 0 ) {
+					willDelete = true;
 					break;
 				}
 			}
+		} else if( i->substr( 0, 4 ) == "reg_" ) {
+			willDelete = !isRegionVisited( *i );
+		}
 
-			if ( !found ) {
-				string tmp = path + "/" + *i;
-				cerr << "\tDeleting un-referenced map file: " << tmp << endl;
-				int n = remove( tmp.c_str() );
-				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
-			}
+		if ( willDelete ) {
+			string tmp = path + "/" + *i;
+			cerr << "\tDeleting un-referenced map file: " << tmp << endl;
+			int n = remove( tmp.c_str() );
+			cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 		}
 	}
+}
+
+bool SavegameDialog::isRegionVisited( string filename ) {
+	//cerr << "\t\tisRegionVisited filename=" << filename << endl;
+	int rx = atoi( filename.substr( 4, 2 ).c_str() );
+	int ry = atoi( filename.substr( 7, 2 ).c_str() );
+	//cerr << "\t\t\tregion=" << rx << "," << ry << " visited=" << scourge->getSession()->isRegionVisited( rx, ry ) << endl;
+	return scourge->getSession()->isRegionVisited( rx, ry );
 }
 
 bool SavegameDialog::copyMaps( const string& fromDirName, const string& toDirName ) {
 	vector<string> fileNameList;
 	findFilesInDir( get_file_name( fromDirName ), &fileNameList );
 	for ( vector<string>::iterator i = fileNameList.begin(); i != fileNameList.end(); i++ ) {
-		if ( ( *i )[0] == '_' )
-			if ( !copyFile( fromDirName, toDirName, *i ) )
+		//cerr << "copyMaps is considering file " << (*i) << " sub=" << (i->substr(0, 4)) << endl;
+		if ( ( *i )[0] == '_' || i->substr( 0, 4 ) == "reg_" ) {
+			//cerr << "\tcopying map file: " << (*i) << endl;
+			if ( !copyFile( fromDirName, toDirName, *i ) ) {
 				return false;
+			}
+		}
 	}
 	return true;
 }

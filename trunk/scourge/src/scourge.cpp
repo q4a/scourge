@@ -603,7 +603,7 @@ void Scourge::resetGame( bool resetParty ) {
 		// clear the board
 		// board->reset(); // already done in loadGame
 		// clear the current mission (otherwise weird crashes later)
-		getSession()->setCurrentMission( NULL );
+		getSession()->reset();
 		// reset the party
 		if ( session->isMultiPlayerGame() ) {
 			party->resetMultiplayer( multiplayer->getCreature() );
@@ -739,9 +739,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 			createMissionInfoMessage( lastMission );
 
 			// if we just finished a mission delete it and remove mission items from party backpack
-			if ( lastMission->isCompleted() ) {
-				board->removeCompletedMissionsAndItems();
-			}
+//			if ( lastMission->isCompleted() ) {
+//				board->removeCompletedMissionsAndItems();
+//			}
 		}
 
 		// init the missions board (fill with new missions as needed)
@@ -905,6 +905,8 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 		landGenerator->setRegion( rx, ry );
 		landGenerator->setMapPosition( posX, posY );
 		landGenerator->toMap( levelMap, getShapePalette(), false, false );
+		
+		getSession()->addVisitedRegion( rx, ry );
 	}
 	cerr << "-----------------------------------------------------------" << endl;
 }
@@ -3251,16 +3253,21 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
 		// save our location
 		Uint16 tmpPos = inLand ? 1 : 0;
 		file->write( &tmpPos );
-		int mapPos[4];
-		getMapRegionAndPos( mapPos );
-		tmpPos = mapPos[0];
-		file->write( &tmpPos );
-		tmpPos = mapPos[1];
-		file->write( &tmpPos );
-		tmpPos = mapPos[2];
-		file->write( &tmpPos );
-		tmpPos = mapPos[3];
-		file->write( &tmpPos );
+		
+		Uint16 mapPos[4];
+		mapPos[0] = getMap()->getRegionX();
+		mapPos[1] = getMap()->getRegionY();
+		mapPos[2] = toint( getParty()->getPlayer()->getX() );
+		mapPos[3] = toint( getParty()->getPlayer()->getY() );
+		file->write( mapPos, 4 );
+		
+		// save all the regions we've visited
+		Uint16 regionCount = session->getVisitedRegions()->size();
+		file->write( &regionCount );
+		for( set<Uint16>::iterator i = session->getVisitedRegions()->begin(); i != session->getVisitedRegions()->end(); ++i ) {
+			Uint16 regionIndex = *i;
+			file->write( &regionIndex );
+		}
 
 		Uint8 mission[255];
 		Uint8 story = 0;
@@ -3387,15 +3394,23 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 			inLand = inLandSaved != 0;
 			
 			Uint16 mapPos[4];
-			file->read( &(mapPos[0]) );
-			file->read( &(mapPos[1]) );
-			file->read( &(mapPos[2]) );
-			file->read( &(mapPos[3]) );
+			file->read( mapPos, 4 );
 			
 			landPos[0] = mapPos[0];
 			landPos[1] = mapPos[1];
 			landPos[2] = mapPos[2];
 			landPos[3] = mapPos[3];
+		}
+		
+		// save all the regions we've visited
+		if( version >= 44 ) {
+			Uint16 regionCount;
+			file->read( &regionCount );
+			Uint16 regionIndex;
+			for( int i = 0; i < (int)regionCount; i++ ) {
+				file->read( &regionIndex );
+				session->addVisitedRegionByIndex( regionIndex );
+			}
 		}
 
 		// load current mission/depth info
