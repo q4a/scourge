@@ -28,12 +28,12 @@
 
 using namespace std;
 
-// ###### MS Visual C++ specific ###### 
+// ###### MS Visual C++ specific ######
 #if defined(_MSC_VER) && defined(_DEBUG)
 # define new DEBUG_NEW
 # undef THIS_FILE
   static char THIS_FILE[] = __FILE__;
-#endif 
+#endif
 
 /// Renders the 3D view for indoor levels.
 void Indoor::drawMap() {
@@ -43,11 +43,11 @@ void Indoor::drawMap() {
 		// draw the ground
 		map->setupShapes( true, false );
 	}
-	
+
 	if ( map->preferences->isLightingEnabled() ) {
 		drawLightsFloor();
 	}
-	
+
 	// draw lava flows
 	for ( int i = 0; i < map->otherCount; i++ ) {
 		if ( map->other[i].pos->shape->isFlatCaveshape() ) {
@@ -79,12 +79,12 @@ void Indoor::drawMap() {
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			if ( !( map->stencil[i].inFront ) ) map->stencil[i].draw();
 		}
-		
+
 		// lights on walls
 		if ( map->preferences->isLightingEnabled() ) {
 			drawLightsWalls();
 		}
-		
+
 		// draw the creatures/objects/doors/etc.
 		drawObjectsAndCreatures();
 
@@ -97,12 +97,12 @@ void Indoor::drawMap() {
 		for ( int i = 0; i < map->stencilCount; i++ ) {
 			map->stencil[i].draw();
 		}
-		
+
 		// lights on walls
 		if ( map->preferences->isLightingEnabled() ) {
 			drawLightsWalls();
 		}
-		
+
 		drawObjectsAndCreatures();
 
 		// draw water (has to come after walls to look good)
@@ -132,7 +132,7 @@ void Indoor::drawMap() {
 	for ( int i = 0; i < map->damageCount; i++ ) {
 		map->damage[i].draw();
 	}
-			
+
 	// draw the fog of war or shading
 #ifdef USE_LIGHTING
 #if DEBUG_MOUSE_POS == 0
@@ -252,7 +252,7 @@ void Indoor::drawIndoorShadows() {
 		glsEnable( GLS_TEXTURE_2D | GLS_DEPTH_MASK );
 	}
 
-	glsDisable( GLS_STENCIL_TEST );	
+	glsDisable( GLS_STENCIL_TEST );
 }
 
 void Indoor::drawObjectsAndCreatures() {
@@ -277,7 +277,7 @@ void Indoor::drawLightsFloor() {
 	glsEnable( GLS_STENCIL_TEST );
 	glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 	glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-	
+
 	// draw the floors second
 	// cave floor and map editor bottom (so cursor shows)
 	if ( map->settings->isGridShowing() || map->floorTexWidth > 0 || map->isHeightMapEnabled() ) {
@@ -285,9 +285,9 @@ void Indoor::drawLightsFloor() {
 	} else {
 		map->setupShapes( true, false );
 	}
-	
+
 	// draw all the lights
-	glDisable(GL_DEPTH_TEST | GLS_DEPTH_MASK );
+	glsDisable(GL_DEPTH_TEST | GLS_DEPTH_MASK );
 	glsEnable( GLS_TEXTURE_2D | GLS_BLEND | GLS_ALPHA_TEST );
 
 	glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
@@ -335,15 +335,15 @@ void Indoor::drawLightsWalls() {
 				}
 
 			}
-			
+
 			if( map->stencil[i].pos->lightFacingSurfaces.empty() ) {
 				continue;
 			}
-			
+
 			// draw the visible surfaces
 			map->stencil[i].draw();
 		}
-		
+
 		// minus the blocking surfaces
 		glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
@@ -372,7 +372,7 @@ void Indoor::drawLightsWalls() {
 			}
 
 		}
-		
+
 		// draw the current light
 		glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
 		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
@@ -387,7 +387,7 @@ void Indoor::drawLightsWalls() {
 		glsDisable( GLS_BLEND | GLS_ALPHA_TEST | GLS_STENCIL_TEST );
 		glsEnable( GLS_DEPTH_TEST );
 	}
-	
+
 	// reset light info
 	for ( int i = 0; i < map->stencilCount; i++ ) {
 		map->stencil[i].pos->lightFacingSurfaces.clear();
@@ -403,16 +403,16 @@ bool Indoor::isFacingLight( Surface *surface, Location *p, Location *lightPos ) 
 	pos[1] = surface->matrix[7];
 	pos[2] = surface->matrix[8];
 	Util::normalize( pos );
-	
+
 	// plane's distance from the origin
 	float d = 0 - ( pos[0] * p->x + pos[1] * p->y + pos[2] * p->z );
-	
+
 	// the plane equation
 	float s = pos[0] * lightPos->x + pos[1] * lightPos->y + pos[2] * lightPos->z + d;
 	bool b = ( s > 0 ? true : false );
-	
+
 	// todo: also check that the face is visible (ie. plug in the camera's position)
-	
+
 //	cerr << "isFacingLight: normal:" << pos[0] << "," << pos[1] << "," << pos[2] << " d=" << d << " s=" << s << " " << ( b ? "LIT" : "" ) << endl;
 	return b;
 }
