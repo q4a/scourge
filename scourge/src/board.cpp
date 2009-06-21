@@ -50,11 +50,9 @@ map<string, NpcInfo*> Mission::npcInfos;
 /// This object contains all missions that are displayed on the board,
 /// as well as all information required for the game to start them.
 
-Board::Board( Session *session )
-		: missionText( NULL ) {
+Board::Board( Session *session ) {
 	this->session = session;
 	this->storylineIndex = 0;
-	missionListCount = 0;
 
 	char type;
 	char name[255], displayName[255], line[255], description[2000], replayDisplayName[255], replayDescription[2000], music[255], success[2000], failure[2000], mapName[80], introDescription[2000], location[20];
@@ -159,14 +157,6 @@ Board::~Board() {
 	for ( size_t i = 0; i < templates.size(); ++i ) {
 		delete templates[i];
 	}
-	freeListText();
-}
-
-void Board::freeListText() {
-	if ( missionListCount ) {
-		delete[] missionText;
-		delete[] missionColor;
-	}
 }
 
 /// Resets the board, and the story line index.
@@ -192,22 +182,22 @@ void Board::reset() {
 /// items from completed missions from the party's backpack.
 
 void Board::removeCompletedMissionsAndItems() {
-	// remove completed missions
-	for ( vector<Mission*>::iterator e = availableMissions.begin(); e != availableMissions.end(); ++e ) {
-		Mission *mission = *e;
-		if ( mission->isCompleted() ) {
-
-			// remove mission items from the party's backpack
-			mission->removeMissionItems();
-
-			// delete mission if not storyline
-			if ( !mission->isStoryLine() ) {
-				delete mission;
-				availableMissions.erase( e );
-				e = availableMissions.begin();
-			}
-		}
-	}
+//	// remove completed missions
+//	for ( vector<Mission*>::iterator e = availableMissions.begin(); e != availableMissions.end(); ++e ) {
+//		Mission *mission = *e;
+//		if ( mission->isCompleted() ) {
+//
+//			// remove mission items from the party's backpack
+//			mission->removeMissionItems();
+//
+//			// delete mission if not storyline
+//			if ( !mission->isStoryLine() ) {
+//				delete mission;
+//				availableMissions.erase( e );
+//				e = availableMissions.begin();
+//			}
+//		}
+//	}
 }
 
 Mission *Board::findOrCreateMission( int *mapPos, char *nextMissionName ) {

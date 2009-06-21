@@ -374,10 +374,6 @@ private:
 
 	std::vector<Mission*> availableMissions;
 
-	int missionListCount;
-	std::string* missionText;
-	Color *missionColor;
-
 public:
 
 	enum {
@@ -428,9 +424,6 @@ public:
 		std::cerr << "*** Error: can't find template: " << name << std::endl;
 		return NULL;
 	}
-
-private:
-	void freeListText();
 };
 
 #endif

@@ -66,7 +66,7 @@ Session::Session( GameAdapter *adapter )
 	client = NULL;
 #endif
 	multiplayerGame = false;
-	currentMission = NULL;
+	currentMission = -1;
 	chapterImageWidth = chapterImageHeight = 0;
 	showChapterIntro = false;
 	squirrel = NULL;
@@ -82,6 +82,7 @@ Session::Session( GameAdapter *adapter )
 
 Session::~Session() {
 	if( !isExiting() ) {
+		reset();
 		SpecialSkill::unInitSkills();
 		Monster::unInitMonsters();
 		delete characters;
@@ -458,13 +459,6 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 	creatures.clear();
 	nonVisibleCreatures.clear();
 
-	/*
-	cerr << "***************************************" << endl;
-	  cerr << "After mission: " <<
-	  " creatureCount=" << creatureCount <<
-	  " itemCount=" << itemCount << endl;
-	cerr << "***************************************" << endl;
-	*/
 	getShapePalette()->debugLoadedModels();
 }
 
@@ -788,12 +782,13 @@ Creature *Session::getCreatureByName( char const* name ) {
 }
 
 void Session::setCurrentMission( Mission *mission ) {
-	Mission *oldMission = currentMission;
-	currentMission = mission;
+	Mission *oldMission = getCurrentMission();
+	missions.push_back( mission );
+	currentMission = missions.size() - 1;
 	getGameAdapter()->refreshBackpackUI();
-	if ( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
+	if ( oldMission != mission && mission && mission->isStoryLine() && !mission->isReplay() ) {
 		char filename[300];
-		snprintf( filename, 300, "chapter%d.png", currentMission->getChapter() );
+		snprintf( filename, 300, "chapter%d.png", mission->getChapter() );
 		setChapterImage( filename );
 	}
 
@@ -829,4 +824,26 @@ std::string& Session::getAmbientSoundName() {
 
 void Session::playSound( const std::string& sound, int panning ) {
 	getSound()->playSound( sound, panning );
+}
+
+void Session::addVisitedRegion( int regionX, int regionY ) {
+	visitedRegions.insert( (Uint16)( regionX + regionY * REGIONS_PER_ROW ) );
+}
+
+bool Session::isRegionVisited( int regionX, int regionY ) {
+	return visitedRegions.find( (Uint16)( regionX + regionY * REGIONS_PER_ROW ) ) != visitedRegions.end();
+}
+
+void Session::reset() {
+	visitedRegions.clear();
+	clearMissions();
+}
+
+void Session::clearMissions() {
+	for( unsigned int i = 0; i < missions.size(); i++ ) {
+		Mission *mission = missions[i];
+		delete mission;
+	}
+	missions.clear();
+	currentMission = -1;
 }

@@ -77,7 +77,8 @@ private:
 	Client *client;
 #endif
 	bool multiplayerGame;
-	Mission *currentMission;
+	std::vector<Mission*> missions;
+	int currentMission;
 	TextureData chapterImage;
 	Texture chapterImageTexture;
 	int chapterImageWidth, chapterImageHeight;
@@ -85,6 +86,7 @@ private:
 	std::vector<Item*> newItems;
 	std::vector<Creature*> creatures;
 	std::set<Creature*> nonVisibleCreatures;
+	std::set<Uint16> visitedRegions;
 
 	SqBinding *squirrel;
 	std::map<RpgItem*, Item*> special;
@@ -241,16 +243,21 @@ public:
 	inline Preferences *getPreferences() {
 		return getGameAdapter()->getPreferences();
 	}
-	inline Mission *getCurrentMission() {
-		return currentMission;
-	}
+	
 	inline Cutscene *getCutscene() {
 		return cutscene;
 	}
 	inline Weather *getWeather() {
 		return weather;
 	}
+	
 	void setCurrentMission( Mission *mission );
+	inline Mission *getCurrentMission() {
+		return currentMission < 0 || currentMission >= (int)missions.size() ? NULL : missions[ currentMission ];
+	}
+	void reset();
+	
+	
 	void setChapterImage( char *image );
 	inline TextureData const& getChapterImage() {
 		return chapterImage;
@@ -346,6 +353,18 @@ public:
 	inline TerrainGenerator *getTerrainGenerator() {
 		return this->terrainGenerator;
 	}
+	
+	void addVisitedRegion( int regionX, int regionY );
+	bool isRegionVisited( int regionX, int regionY );
+	inline std::set<Uint16> *getVisitedRegions() {
+		return &visitedRegions;
+	}
+	inline void addVisitedRegionByIndex( Uint16 index ) {
+		visitedRegions.insert( index );
+	}
+	
+private:
+	void clearMissions();
 };
 
 #endif
