@@ -3247,6 +3247,20 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
 		strncpy( ( char* )date, getParty()->getCalendar()->getCurrentDate().getShortString(), 39 );
 		date[39] = 0;
 		file->write( date, 40 );
+		
+		// save our location
+		Uint16 tmpPos = inLand ? 1 : 0;
+		file->write( &tmpPos );
+		int mapPos[4];
+		getMapRegionAndPos( mapPos );
+		tmpPos = mapPos[0];
+		file->write( &tmpPos );
+		tmpPos = mapPos[1];
+		file->write( &tmpPos );
+		tmpPos = mapPos[2];
+		file->write( &tmpPos );
+		tmpPos = mapPos[3];
+		file->write( &tmpPos );
 
 		Uint8 mission[255];
 		Uint8 story = 0;
@@ -3331,7 +3345,6 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 
 	string path = get_file_name( dirName + ( isAutosave ? "/savegamea.dat" : "/savegame.dat" ) );
 
-	//cerr << "Loading: " << path << endl;
 	FILE *fp = fopen( path.c_str(), "rb" );
 	if ( !fp ) {
 		return false;
@@ -3339,6 +3352,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 	File *file = new File( fp );
 	Uint32 version = PERSIST_VERSION;
 	file->read( &version );
+	
 	if ( version < OLDEST_HANDLED_VERSION ) {
 		cerr << "*** Error: Savegame file is too old (v" << version <<
 		" vs. current v" << PERSIST_VERSION <<
@@ -3364,6 +3378,24 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 			Uint8 date[40];
 			file->read( date, 40 );
 			getParty()->getCalendar()->setNextResetDate( ( char* )date );
+		}
+		
+		// load our location
+		if( version >= 43 ) {
+			Uint16 inLandSaved;
+			file->read( &inLandSaved );
+			inLand = inLandSaved != 0;
+			
+			Uint16 mapPos[4];
+			file->read( &(mapPos[0]) );
+			file->read( &(mapPos[1]) );
+			file->read( &(mapPos[2]) );
+			file->read( &(mapPos[3]) );
+			
+			landPos[0] = mapPos[0];
+			landPos[1] = mapPos[1];
+			landPos[2] = mapPos[2];
+			landPos[3] = mapPos[3];
 		}
 
 		// load current mission/depth info
