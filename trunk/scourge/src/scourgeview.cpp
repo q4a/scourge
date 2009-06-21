@@ -36,12 +36,12 @@
 
 using namespace std;
 
-// ###### MS Visual C++ specific ###### 
+// ###### MS Visual C++ specific ######
 #if defined(_MSC_VER) && defined(_DEBUG)
 # define new DEBUG_NEW
 # undef THIS_FILE
   static char THIS_FILE[] = __FILE__;
-#endif 
+#endif
 
 #define INFO_INTERVAL 3000
 
@@ -81,30 +81,30 @@ ScourgeView::~ScourgeView() {
 }
 
 void ScourgeView::drawView() {
-	
+
 	// This render loop should be reorganized into the following passes:
 	//
-	// TEXTURE_2D	CULL_FACE	DEPTH_TEST	DEPTH_MASK	BLEND	ALPHA_TEST
+	// TEXTURE_2D CULL_FACE DEPTH_TEST DEPTH_MASK BLEND ALPHA_TEST
 	//
 	// Render opaque shapes
-	// X			X			X			X
+	//     X          X         X          X
 	// Render blended shapes (walls in front of player, transparent roofs)
-	// X			X			X			X			X
+	//     X          X         X          X        X
 	// Render shapes w/ transparency (e.g. player models) and effects
-	// X			X			X			X			X		X
+	//     X          X         X          X        X       X
 	// Render map floor features (outdoor textures, circles)
-	// X			X			X						X		X
+	//     X          X         X                   X       X
 	// Render water levels
-	// X			X			X						X
+	//     X          X         X                   X
 	// Render shape outlines and floor grid
-	// 							X						X
+	//                X         X                   X
 	// Render damage counters and other non-GUI 2D stuff
-	// X												X		X
+	//     X                                        X       X
 	// Render GUI
-	// X
+	//     X
 	//
 	// Stencil test, texturing and blending may be toggled locally if explicitly needed.
-	
+
 	if ( scourge->getSession()->isShowingChapterIntro() ) {
 		endScissorToMap();
 		scourge->hideGui(); // HACK: Hide party UI in the final chapter "outro".
@@ -133,7 +133,7 @@ void ScourgeView::drawView() {
 	glCullFace( GL_BACK );
 
 	scourge->getMap()->draw();
-	
+
 	drawMapInfos();
 
 	scourge->getSession()->getWeather()->drawWeather();
@@ -520,7 +520,7 @@ void ScourgeView::drawCreatureInfos() {
 	for ( int i = 0; i < scourge->getSession()->getCreatureCount(); i++ ) {
 		//if(!session->getCreature(i)->getStateMod(Constants::dead) &&
 		Creature *creature = scourge->getSession()->getCreature( i );
-		if ( scourge->getMap()->isLocationVisible( toint( creature->getX() ), toint( creature->getY() ) ) && 
+		if ( scourge->getMap()->isLocationVisible( toint( creature->getX() ), toint( creature->getY() ) ) &&
 				scourge->getMap()->isLocationInLight( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) &&
 				scourge->getSession()->isVisible( creature ) ) {
 			showCreatureInfo( scourge->getSession()->getCreature( i ), false, false, false,
