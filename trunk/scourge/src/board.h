@@ -36,10 +36,43 @@ class Board;
 class GameAdapter;
 class ConfigLang;
 struct NpcInfoInfo;
+class Mission;
+class Board;
 
 /**
   *@author Gabor Torok
   */
+
+class MapPlace {
+public:
+	enum {
+		TYPE_DUNGEON = 0,
+		TYPE_CAVE
+	};
+	
+	enum {
+		OBJECTIVE_ITEM = 0,
+		OBJECTIVE_CREATURE,
+		OBJECTIVE_NONE
+	};	
+	
+	char name[80], display_name[80], map_name[300], short_name[10];
+	int rx, ry, x, y;
+	int type;
+	int objective;
+	int objective_count;
+	int level, depth;
+	char ambient[3000];
+	char music[300];
+	char footsteps[300];
+	
+	// computed
+	Mission *mission;
+	
+	MapPlace();
+	~MapPlace();
+	Mission *findOrCreateMission( Board *board );
+};
 
 /// Extra info associated with npc-s on an edited level.
 
@@ -99,7 +132,6 @@ private:
 	int locationX, locationY;
 	std::string ambientSoundName;
 	int regionX, regionY, offsetX, offsetY;
-
 	static std::map<std::string, NpcInfo*> npcInfos;
 
 public:
@@ -373,6 +405,8 @@ private:
 	int storylineIndex;
 
 	std::vector<Mission*> availableMissions;
+	
+	std::map<std::string, std::vector<MapPlace*>*> places;
 
 public:
 
@@ -384,6 +418,17 @@ public:
 
 	Board( Session *session );
 	virtual ~Board();
+	
+	inline std::vector<MapPlace*> *getPlacesForRegion( int rx, int ry ) {
+		char tmp[80];
+		sprintf( tmp, "%d,%d", rx, ry );
+		std::string key = tmp;
+		if( places.find( key ) == places.end() ) {
+			return NULL;
+		} else {
+			return places[key];
+		}
+	}
 
 	inline Session *getSession() {
 		return session;
@@ -391,6 +436,7 @@ public:
 
 	Mission *findOrCreateMission( int *mapPos, char *nextMissionName );
 	void initMissions();
+	void initLocations();
 	void reset();
 
 	void removeCompletedMissionsAndItems();

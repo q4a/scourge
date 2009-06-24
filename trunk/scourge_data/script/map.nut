@@ -147,6 +147,7 @@ function decideAction( creature ) {
 
 // return true if the click was handled from squirrel
 function useShape( x, y, z ) {
+	if(scourgeGame.getMission() == null) return false;
 	//print( "useShape:: x=" + x + " y=" + y + " z=" + z + " chapter=" + scourgeGame.getMission().getChapter() + " depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 	shape <- scourgeGame.getMission().getShape( x, y, z );
 	if( shape != null ) {

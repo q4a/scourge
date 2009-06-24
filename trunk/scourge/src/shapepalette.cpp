@@ -22,6 +22,7 @@
 #include "render/renderlib.h"
 #include "configlang.h"
 #include "sound.h"
+#include "board.h"
 
 using namespace std;
 
@@ -187,13 +188,6 @@ void ShapePalette::initialize() {
 
 ShapePalette::~ShapePalette() {
 	delete loader;
-	typedef vector<MapGridLocation*> MglVec; 
-	for ( map<char, MglVec*>::iterator itm=mapGridLocationByType.begin(); itm != mapGridLocationByType.end(); ++itm ) {
-		for ( MglVec::iterator itv = itm->second->begin(); itv != itm->second->end(); ++itv ) {
-			delete *itv;
-		}
-		delete itm->second;
-	}
 	for ( int i = 0; i < allThemeCount; ++i ) {
 		delete allThemes[ i ];
 	}
@@ -897,35 +891,10 @@ void ShapePalette::loadNpcPortraits() {
 }
 
 void ShapePalette::initMapGrid() {
-	char tmp[200];
-	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
-	vector<ConfigNode*> *v = config->getDocument()->
-	                         getChildrenByName( "location" );
-
-	for ( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = ( *v )[i];
-
-		config->setUpdate( _( "Loading Locations" ), i, v->size() );
-
-		MapGridLocation *loc = new MapGridLocation;
-		strcpy( loc->name, node->getValueAsString( "name" ) );
-		strcpy( tmp, node->getValueAsString( "position" ) );
-		loc->x = atoi( strtok( tmp, "," ) );
-		loc->y = atoi( strtok( NULL, "," ) );
-		loc->type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
-		loc->random = node->getValueAsBool( "random" );
-
-		if ( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
-			mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
-		}
-		mapGridLocationByType[ loc->type ]->push_back( loc );
-	}
-	delete config;
-
 	for ( int y = 0; y < BITMAPS_PER_COL; y++ ) {
 		for ( int x = 0; x < BITMAPS_PER_ROW; x++ ) {
 			int bitmapIndex = y * BITMAPS_PER_ROW + x;
-			config->setUpdate( _( "Loading Travel Map" ), bitmapIndex, BITMAPS_PER_ROW * BITMAPS_PER_COL );
+			//config->setUpdate( _( "Loading Travel Map" ), bitmapIndex, BITMAPS_PER_ROW * BITMAPS_PER_COL );
 
 			char bitmapName[255];
 			sprintf( bitmapName, "/mapgrid/map_%02d.png", bitmapIndex );
@@ -936,29 +905,6 @@ void ShapePalette::initMapGrid() {
 		
 			travelMap[x][y] = texture;
 		}
-	}
-}
-
-/**
- * Find a random location on the scourge map.
- * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
- * @param name will point to the name of the location found
- * @param x the x coordinate
- * @param y the y coordinate
- * @return true if a location of type was found.
- */
-bool ShapePalette::getRandomMapLocation( char type, char **name, int *x, int *y ) {
-	if ( mapGridLocationByType.find( type ) == mapGridLocationByType.end() ) {
-		return false;
-	} else {
-		vector<MapGridLocation*> *positions = mapGridLocationByType[ type ];
-		MapGridLocation *pos = ( *positions )[ Util::dice( positions->size() ) ];
-		if ( name ) {
-			*name = pos->name;
-		}
-		*x = pos->x;
-		*y = pos->y;
-		return true;
 	}
 }
 

@@ -102,6 +102,7 @@ class TextScroller;
 class Spell;
 class SpecialSkill;
 class LandGenerator;
+class MapPlace;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -921,7 +922,7 @@ private:
 	int nextMission;
 	bool inLand;
 	int landPos[4]; // region_x, region_y, offset_x, offset_y
-	char nextMissionName[300];
+	MapPlace *nextPlace;
 	bool teleportFailure;
 	bool inHq;
 	bool missionWillAwardExpPoints;

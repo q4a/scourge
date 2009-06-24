@@ -138,7 +138,7 @@ Scourge::Scourge( UserConfiguration *config )
 	nextMission = -1;
 	teleportFailure = false;
 	inLand = true;
-	strcpy( nextMissionName, "" );
+	nextPlace = NULL;
 	
 	// start in the garden of HQ
 	landPos[0] = 10 * REGIONS_PER_BITMAP + 1;
@@ -557,12 +557,8 @@ string Scourge::getSavedMapName() {
 	string mapBaseName;
 	if ( !session->getCurrentMission() ) {
 		mapBaseName = "hq";
-	} else if ( session->getCurrentMission()->isStoryLine() ) {
-		mapBaseName = session->getCurrentMission()->getMapName();
 	} else {
-		stringstream temp;
-		temp << std::hex << SDL_GetTicks();
-		mapBaseName = temp.str();
+		mapBaseName = session->getCurrentMission()->getMapName();
 	}
 	return "_" + mapBaseName;
 }
@@ -726,30 +722,72 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 				                                             landPos[2] + 10, landPos[2] + 10 );
 			}		
 		}
-	} else if( !strcmp( nextMissionName, "hq" ) ) {
-		cerr << "HQ UNDERGROUND" << endl;
-		// IN HQ
-		missionWillAwardExpPoints = false;
+	} else if( nextPlace ) {
+		cerr << "ENTERING DUNGEON: " << nextPlace->name << endl;
+		
+		getMap()->setContinuousLandMode( false );
+		
+		Mission *mission = nextPlace->findOrCreateMission( getSession()->getBoard() );
+		getSession()->setCurrentMission( mission );
+		
+		if( strlen( nextPlace->map_name ) ) {
+			cerr << "ENTERING EDITED MAP: " << nextPlace->map_name << endl;
+			string result;
+			levelMap->loadMap( string( nextPlace->map_name ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
+		} else {
+			cerr << "ENTERING A GENERATED MAP: " << endl;
+			
+			// try to load a previously saved, random-generated map level
+			string empty( "" );
+			string path = getCurrentMapName( empty );
+			bool loaded = loadMap( path, fromRandomMap, true,
+			                       ( getSession()->getCurrentMission()->isEdited() ?
+			                         getSession()->getCurrentMission()->getMapName() :
+			                         NULL ) );
+	
+			if ( !loaded && getSession()->getCurrentMission()->isEdited() ) {
+				// try to load the edited map
+				loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
+				                  fromRandomMap,
+				                  false );
+			}
+	
+			// if no edited map is found, make a random map
+			if ( !loaded ) {
+				TerrainGenerator *dg = TerrainGenerator::getGenerator( this, currentStory );
+				mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
+				                        goingUp, goingDown );
+				// load the generic conversation
+				string s = rootDir + "/maps/general.map";
+				Mission::loadMapData( this, s );
+				delete dg;
+			}
+			
+		}
+	}
 
-		// in HQ map
-		inHq = true;
-
-		// store mission's outcome (mission may be deleted below)
-		if ( lastMission ) {
-			createMissionInfoMessage( lastMission );
-
-			// if we just finished a mission delete it and remove mission items from party backpack
+//			// IN HQ
+//			missionWillAwardExpPoints = false;
+//
+//			// in HQ map
+//			inHq = true;
+		
+//		// store mission's outcome (mission may be deleted below)
+//		if ( lastMission ) {
+//			createMissionInfoMessage( lastMission );
+//
+//			// if we just finished a mission delete it and remove mission items from party backpack
 //			if ( lastMission->isCompleted() ) {
 //				board->removeCompletedMissionsAndItems();
 //			}
-		}
+//		}
 
-		// init the missions board (fill with new missions as needed)
-		board->initMissions();
+//		// init the missions board (fill with new missions as needed)
+//		board->initMissions();
 
 		// display the HQ map
-		getSession()->setCurrentMission( NULL );
-		missionWillAwardExpPoints = false;
+//		getSession()->setCurrentMission( NULL );
+//		missionWillAwardExpPoints = false;
 
 		// FIXME: HQ is not loaded b/c there's no currentMission() (fails in loadMap)
 		// try to load a previously saved, random-generated map level
@@ -760,56 +798,56 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//getCurrentMapName( path );
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded )
-		string result;
-		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );		
+//		string result;
+//		levelMap->loadMap( string( HQ_MAP_NAME ), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );		
 		//addWanderingHeroes();
-	} else {
-		cerr << "UNDERGROUND" << endl;
-		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
-		// hq is also a mission (with no objectives)
-		getMap()->setContinuousLandMode( false );
-		
-		// NOT in HQ map
-		inHq = false;
-		
-		// find or load the next mission
-		int mapPos[4];
-		getMapRegionAndPos( mapPos );		
-		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
-		cerr << "Party on mission: " << getSession()->getCurrentMission()->getMapRegionX() << "," << getSession()->getCurrentMission()->getMapRegionY() << 
-			"," << getSession()->getCurrentMission()->getMapOffsetX() << "," << getSession()->getCurrentMission()->getMapOffsetY() << 
-			" " << getSession()->getCurrentMission()->getName() << endl;
-		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
-
-		// try to load a previously saved, random-generated map level
-		string empty( "" );
-		string path = getCurrentMapName( empty );
-		bool loaded = loadMap( path, fromRandomMap, true,
-		                       ( getSession()->getCurrentMission()->isEdited() ?
-		                         getSession()->getCurrentMission()->getMapName() :
-		                         NULL ) );
-
-		if ( !loaded && getSession()->getCurrentMission()->isEdited() ) {
-			// try to load the edited map
-			loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
-			                  fromRandomMap,
-			                  false );
-		}
-
-		// if no edited map is found, make a random map
-		if ( !loaded ) {
-			TerrainGenerator *dg = TerrainGenerator::getGenerator( this, currentStory );
-			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
-			                        goingUp, goingDown );
-			// load the generic conversation
-			string s = rootDir + "/maps/general.map";
-			Mission::loadMapData( this, s );
-			delete dg;
-		}
-		
-		// fixme: only if mission def says so...
-		// addWanderingHeroes();
-	}
+//	} else {
+//		cerr << "UNDERGROUND" << endl;
+//		// otherwise load the mission (name in nextMissionName) or if null, generate a random mission
+//		// hq is also a mission (with no objectives)
+//		getMap()->setContinuousLandMode( false );
+//		
+//		// NOT in HQ map
+//		inHq = false;
+//		
+//		// find or load the next mission
+//		int mapPos[4];
+//		getMapRegionAndPos( mapPos );		
+//		getSession()->setCurrentMission( board->findOrCreateMission( mapPos, nextMissionName ) );
+//		cerr << "Party on mission: " << getSession()->getCurrentMission()->getMapRegionX() << "," << getSession()->getCurrentMission()->getMapRegionY() << 
+//			"," << getSession()->getCurrentMission()->getMapOffsetX() << "," << getSession()->getCurrentMission()->getMapOffsetY() << 
+//			" " << getSession()->getCurrentMission()->getName() << endl;
+//		missionWillAwardExpPoints = ( !getSession()->getCurrentMission()->isCompleted() );
+//
+//		// try to load a previously saved, random-generated map level
+//		string empty( "" );
+//		string path = getCurrentMapName( empty );
+//		bool loaded = loadMap( path, fromRandomMap, true,
+//		                       ( getSession()->getCurrentMission()->isEdited() ?
+//		                         getSession()->getCurrentMission()->getMapName() :
+//		                         NULL ) );
+//
+//		if ( !loaded && getSession()->getCurrentMission()->isEdited() ) {
+//			// try to load the edited map
+//			loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
+//			                  fromRandomMap,
+//			                  false );
+//		}
+//
+//		// if no edited map is found, make a random map
+//		if ( !loaded ) {
+//			TerrainGenerator *dg = TerrainGenerator::getGenerator( this, currentStory );
+//			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
+//			                        goingUp, goingDown );
+//			// load the generic conversation
+//			string s = rootDir + "/maps/general.map";
+//			Mission::loadMapData( this, s );
+//			delete dg;
+//		}
+//		
+//		// fixme: only if mission def says so...
+//		// addWanderingHeroes();
+//	}
 	levelMap->refresh();
 	return mapCreated;
 }
@@ -3453,7 +3491,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 				Persist::deleteMissionInfo( info );
 			}
 		}
-		session->getBoard()->initMissions();
+		//session->getBoard()->initMissions();
 		//cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 
 		// load the list of visited maps
@@ -3659,7 +3697,6 @@ bool Scourge::playSelectedMission() {
 
 void Scourge::movePartyToGateAndEndMission() {
 	int panning = 127;
-
 	if ( gatepos ) {
 		panning = getSession()->getMap()->getPanningFromMapXY( gatepos->x, gatepos->y );
 	}
@@ -3688,6 +3725,7 @@ void Scourge::closeExitConfirmationDialog() {
 	teleporting = false;
 	changingStory = goingDown = goingUp = false;
 	currentStory = oldStory;
+	inLand = currentStory <= 0;
 	exitConfirmationDialog->setText( Constants::getMessage( Constants::EXIT_MISSION_LABEL ) );
 	exitConfirmationDialog->setVisible( false );
 	getParty()->toggleRound( false );
@@ -3798,13 +3836,31 @@ void Scourge::getMapRegionAndPos( int *mapPos ) {
 }
 
 void Scourge::descendDungeon( Location *pos ) {
-	if( inLand ) getMapRegionAndPos( landPos );
+	if( inLand ) {
+		getMapRegionAndPos( landPos );
+		// try to find this place on the map
+		vector<MapPlace*> *v = getSession()->getBoard()->getPlacesForRegion( landPos[0], landPos[1] );
+		int px = pos->x + ( landPos[0] == getMap()->getRegionX() ? 0 : ( landPos[0] < getMap()->getRegionX() ? ( MAP_WIDTH / 2 ) : -( MAP_WIDTH / 2 ) ) );
+		int py = pos->y + ( landPos[1] == getMap()->getRegionY() ? 0 : ( landPos[1] < getMap()->getRegionY() ? ( MAP_DEPTH / 2 ) : -( MAP_DEPTH / 2 ) ) ); 
+		cerr << "==========================================" << endl;
+		cerr << "Looking for map place at:" << pos->x << "," << pos->y << endl;
+		cerr << "landpos: region=" << landPos[0] << "," << landPos[1] << " pos: "<< landPos[2] << "," << landPos[3] << endl;
+		for( unsigned i = 0; v && i < v->size(); i++ ) {
+			cerr << "\tchecking " << v->at(i)->x << "," << v->at(i)->y << " vs. " << px << "," << py << endl; 
+			if( SDLHandler::intersects( v->at(i)->x, v->at(i)->y, 2, 2, px, py, 2, 2 ) ) {
+				cerr << "*** Entering map place: " << v->at(i)->name << endl;
+				nextPlace = v->at(i);
+				break;
+			}
+		}
+		cerr << "==========================================" << endl;
+	}
 	inLand = false;
 	
-	strcpy( nextMissionName, "" );
-	int mapPos[4];
-	getMapRegionAndPos( mapPos );
-	getSession()->getSquirrel()->callIntArgStringReturnMethod( "descend_dungeon", nextMissionName, 4, mapPos );
+//	strcpy( nextMissionName, "" );
+//	int mapPos[4];
+//	getMapRegionAndPos( mapPos );
+//	getSession()->getSquirrel()->callIntArgStringReturnMethod( "descend_dungeon", nextMissionName, 4, mapPos );
 	
 	oldStory = currentStory;
 	currentStory++;

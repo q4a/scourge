@@ -53,7 +53,12 @@ map<string, NpcInfo*> Mission::npcInfos;
 Board::Board( Session *session ) {
 	this->session = session;
 	this->storylineIndex = 0;
+	
+	initLocations();
+	initMissions();
+}
 
+void Board::initMissions() {
 	char type;
 	char name[255], displayName[255], line[255], description[2000], replayDisplayName[255], replayDescription[2000], music[255], success[2000], failure[2000], mapName[80], introDescription[2000], location[20];
 	string ambientSoundName;
@@ -146,7 +151,53 @@ Board::Board( Session *session ) {
 		if ( strlen( node->getValueAsString( "special" ) ) )
 			current_mission->setSpecial( node->getValueAsString( "special" ) );
 	}
-	delete( config );
+	delete( config );	
+}
+
+void Board::initLocations() {
+	char tmp[200];
+	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "place" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		config->setUpdate( _( "Loading Locations" ), i, v->size() );
+		
+		MapPlace *place = new MapPlace();
+		strcpy( place->name, node->getValueAsString( "name" ) );
+		strcpy( place->display_name, node->getValueAsString( "display_name" ) );
+		strcpy( place->map_name, node->getValueAsString( "map_name" ) );
+		strcpy( place->short_name, node->getValueAsString( "short_name" ) );
+		strcpy( tmp, node->getValueAsString( "region" ) );
+		place->rx = atoi( strtok( tmp, "," ) );
+		place->ry = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "location" ) );
+		place->x = atoi( strtok( tmp, "," ) );
+		place->y = atoi( strtok( NULL, "," ) );
+		place->type = ( !strcmp( "dungeon", node->getValueAsString( "type" ) ) ? MapPlace::TYPE_DUNGEON : MapPlace::TYPE_CAVE );
+		place->objective = 
+			( !strcmp( "item", node->getValueAsString( "objective" ) ) ? MapPlace::OBJECTIVE_ITEM : 
+				( !strcmp( "creature", node->getValueAsString( "objective" ) ) ? MapPlace::OBJECTIVE_CREATURE : 
+					MapPlace::OBJECTIVE_NONE ) );
+		place->objective_count = node->getValueAsInt( "objective_count" );
+		place->level = node->getValueAsInt( "level" );
+		place->depth = node->getValueAsInt( "depth" );
+		strcpy( place->ambient, node->getValueAsString( "ambient" ) );
+		strcpy( place->music, node->getValueAsString( "music" ) );
+		strcpy( place->footsteps, node->getValueAsString( "footsteps" ) );
+		
+		sprintf( tmp, "%d,%d", place->rx, place->ry );
+		string key = tmp;
+		vector<MapPlace*> *v;
+		if( places.find( key ) == places.end() ) {
+			v = new vector<MapPlace*>();
+			places[key] = v;
+		} else {
+			v = places[key];
+		}
+		v->push_back( place );
+	}
+	delete config;
 }
 
 Board::~Board() {
@@ -252,14 +303,6 @@ Mission *Board::findOrCreateMission( int *mapPos, char *nextMissionName ) {
 	mission->setMapPos( mapPos );
 	availableMissions.push_back( mission );
 	return mission;
-}
-
-/// Creates a set of missions.
-
-/// The set contains the current storyline mission and a selection
-/// of random missions that are suited to the party's level.
-
-void Board::initMissions() {
 }
 
 /// Sets the storyline index.
@@ -492,11 +535,7 @@ Mission::Mission( Board *board, int level, int depth, bool replayable,
 		string result;
 		board->getSession()->getMap()->loadMapLocation( string( mapName ), result, &mapX, &mapY );
 	} else {
-		edited = false;
-		char *s;
-		bool got = board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY );
-		assert( got );
-		strcpy( this->mapName, s );
+		strcpy( this->mapName, "" );
 	}
 
 //   cerr << "*** Created mission: " << getName() << endl;
@@ -1006,4 +1045,26 @@ NpcInfoInfo *NpcInfo::save() {
 NpcInfo *NpcInfo::load( NpcInfoInfo *info ) {
 	char *s = ( char* )info->subtype;
 	return new NpcInfo( info->x, info->y, ( char* )info->name, info->level, ( char* )Constants::npcTypeName[info->type], strlen( s ) > 0 ? s : NULL );
+}
+
+MapPlace::MapPlace() {
+	mission = NULL;
+}
+
+MapPlace::~MapPlace() {
+	if( mission ) {
+		delete( mission );
+	}
+}
+
+Mission *MapPlace::findOrCreateMission( Board *board ) {
+	if( !mission ) {
+		mission = new Mission( board, level, depth, false, name, display_name, "", NULL, NULL, "", music, "", "", short_name );
+		// set items
+		
+		// set creatures
+		
+		//mission->setAmbientSoundName( this->ambientSoundName );
+	}		
+	return mission;
 }

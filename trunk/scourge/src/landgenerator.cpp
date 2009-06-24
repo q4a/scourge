@@ -28,6 +28,7 @@
 #include "rpg/rpglib.h"
 #include "creature.h"
 #include "render/texture.h"
+#include "board.h"
 #include <vector>
 #include <map>
 
@@ -105,7 +106,16 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				map->setVegetation( mapPosX + x, mapPosY + y, cellular->getNode( x, y )->vegetation );
 			}
 		}
-	}	
+	}
+	
+	// add any dungeon/cave entrances
+	vector<MapPlace*> *v = shapePal->getSession()->getBoard()->getPlacesForRegion( regionX, regionY );
+	for( unsigned i = 0; v && i < v->size(); i++ ) {
+		map->setPosition( mapPosX * OUTDOORS_STEP + v->at(i)->x, 
+		                  mapPosY * OUTDOORS_STEP + v->at(i)->y, 
+		                  0, 
+		                  shapePal->findShapeByName( "GATE_DOWN_OUTDOORS" ) );
+	}
 	
 	// event handler for custom map processing
 	int params[8];
