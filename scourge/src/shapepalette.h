@@ -37,14 +37,6 @@ class ConfigLang;
 class ConfigNode;
 class SDLScreenView;
 
-/// A location on the world map.
-struct MapGridLocation {
-	char name[80];
-	int x, y;
-	bool random;
-	char type;
-};
-
 /// An outdoor texture that can be referenced by name.
 struct NamedOutdoorTexture {
 	char name[80];
@@ -70,8 +62,6 @@ private:
 
 	char aboutText[3000];
 
-	std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
-
 	std::map<std::string, Texture> namedTextures;
 	std::map<std::string, NamedOutdoorTexture> outdoorNamedTextures;
 	SDL_Rect equipLocationHoles[ Constants::EQUIP_LOCATION_COUNT ];
@@ -85,7 +75,7 @@ public:
 	inline Session *getSession() {
 		return session;
 	}
-
+	
 	inline  Texture getProgressTexture() {
 		return progressTexture;
 	}
@@ -102,16 +92,6 @@ public:
 	}
 
 	void initMapGrid();
-
-	/**
-	 * Find a random location on the scourge map.
-	 * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
-	 * @param name will point to the name of the location found
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @return true if a location of type was found.
-	 */
-	bool getRandomMapLocation( char type, char **name, int *x, int *y );
 
 	inline char *getAboutText() {
 		return aboutText;

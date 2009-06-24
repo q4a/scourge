@@ -285,7 +285,7 @@ void PathManager::moveNPCsOffPath( Creature* player, Map* map ) {
 	set<Location, LocationComparitor>::iterator setItr = allPathLocations.begin();
 	while ( setItr != allPathLocations.end() ) {
 		Location loc = *setItr;
-		if( loc.x >= 0 && loc.x < MAP_WIDTH && loc.y >= 0 && loc.y < MAP_DEPTH ) {
+		if( (int)loc.x >= 0 && loc.x < MAP_WIDTH && (int)loc.y >= 0 && loc.y < MAP_DEPTH ) {
 			Location* mapLoc = map->getLocation( loc.x, loc.y, 0 );
 			if ( mapLoc && mapLoc->creature && mapLoc->creature != owner && mapLoc->creature != player && !mapLoc->creature->isMonster() ) {
 				Creature* blocker = ( Creature* )mapLoc->creature;

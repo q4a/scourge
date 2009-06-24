@@ -842,7 +842,7 @@ void Session::reset() {
 void Session::clearMissions() {
 	for( unsigned int i = 0; i < missions.size(); i++ ) {
 		Mission *mission = missions[i];
-		delete mission;
+		if( mission ) delete mission;
 	}
 	missions.clear();
 	currentMission = -1;

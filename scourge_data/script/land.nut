@@ -59,17 +59,17 @@ function in_excluded_area( region_x, region_y, x, y ) {
 	return false;
 }
 
-/*
- * Return the name of the map to load at this position in the land.
- * If null is returned, a random map is generated.
- */
-function descend_dungeon( region_x, region_y, offset_x, offset_y ) {
-	print( "descending in region: " + region_x.tostring() + "," + region_y.tostring() + " offset: " + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
-	if( region_x == 41 && region_y == 21 ) {
-		return "hq";
-	}
-	return null;
-}
+///*
+// * Return the name of the map to load at this position in the land.
+// * If null is returned, a random map is generated.
+// */
+//function descend_dungeon( region_x, region_y, offset_x, offset_y ) {
+//	print( "descending in region: " + region_x.tostring() + "," + region_y.tostring() + " offset: " + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
+//	if( region_x == 41 && region_y == 21 ) {
+//		return "hq";
+//	}
+//	return "";
+//}
 
 //*************************************************************
 // Horggh
@@ -192,7 +192,7 @@ function drawHQ( x, y ) {
 	setPosition( x + MAP_UNIT + 9, y + 2 * MAP_UNIT - 8, 0, getTree(), false );
 	setPosition( x + MAP_UNIT + 25, y + 2 * MAP_UNIT - 17, 0, getTree(), true );
 	
-	setPosition( x + 4 * MAP_UNIT, y - MAP_UNIT, 0, "GATE_DOWN", false );
+	//setPosition( x + 4 * MAP_UNIT, y - MAP_UNIT, 0, "GATE_DOWN", false );
 	
 	// the trail
 	drawTrail( x + MAP_UNIT + 4, y - MAP_UNIT - 12, 
