@@ -71,7 +71,7 @@ public:
 	
 	MapPlace();
 	~MapPlace();
-	Mission *findOrCreateMission( Board *board );
+	Mission *findOrCreateMission( Board *board, MissionInfo *info = NULL );
 };
 
 /// Extra info associated with npc-s on an edited level.
@@ -105,7 +105,6 @@ private:
 	int level;
 	int depth;
 	char mapName[80];
-	std::string savedMapName;
 	bool edited;
 	char name[80];
 	char displayName[255];
@@ -127,7 +126,6 @@ private:
 	// the mission's location on the map-grid
 	int mapX, mapY;
 	char special[80];
-	char templateName[80];
 	int missionId;
 	int locationX, locationY;
 	std::string ambientSoundName;
@@ -324,20 +322,6 @@ public:
 		return creatures[ creatureList[ index ] ];
 	}
 
-	inline char *getTemplateName() {
-		return templateName;
-	}
-	inline void setTemplateName( char *s ) {
-		strcpy( templateName, s );
-	}
-
-	inline void setSavedMapName( const std::string s ) {
-		savedMapName = s;
-	}
-	inline std::string getSavedMapName() {
-		return savedMapName;
-	}
-
 	MissionInfo *save();
 	static Mission *load( Session *session, MissionInfo *info );
 	void loadStorylineMission( MissionInfo *info );
@@ -358,55 +342,16 @@ private:
 };
 
 
-/// A template for random missions.
-class MissionTemplate {
-private:
-	Board *board;
-	char name[80];
-	char displayName[255];
-	char mapType;
-	char description[2000];
-	char music[255];
-	char success[2000];
-	char failure[2000];
-	std::string ambientSoundName;
-public:
-	MissionTemplate( Board *board, char *name, char *displayName, char mapType, char *description, char *music, char *success, char *failure, std::string& ambientSoundName );
-	~MissionTemplate();
-	Mission *createMission( Session *session, int level, int depth, MissionInfo *info = NULL );
-	inline char *getName() {
-		return name;
-	}
-	inline char *getDisplayName() {
-		return displayName;
-	}
-	inline std::string& getAmbientSoundName() {
-		return ambientSoundName;
-	}
-	inline char getMapType() {
-		return mapType;
-	}
-private:
-	void parseText( Session *session, int level, int depth,
-	                char *text, char *parsedText,
-	                std::map<std::string, RpgItem*> *items,
-	                std::map<std::string, Monster*> *creatures,
-	                MissionInfo *info = NULL );
-};
-
-
-
 /// Manages the list of missions, and the advancement of the story line.
 class Board {
 private:
 	Session *session;
-	std::vector<MissionTemplate *> templates;
+//	std::vector<MissionTemplate *> templates;
 	std::vector<Mission*> storylineMissions;
 	int storylineIndex;
 
-	std::vector<Mission*> availableMissions;
-	
 	std::map<std::string, std::vector<MapPlace*>*> places;
+	std::map<std::string, MapPlace*> placesByShortName;
 
 public:
 
@@ -434,12 +379,9 @@ public:
 		return session;
 	}
 
-	Mission *findOrCreateMission( int *mapPos, char *nextMissionName );
 	void initMissions();
 	void initLocations();
 	void reset();
-
-	void removeCompletedMissionsAndItems();
 
 	inline Mission *getCurrentStorylineMission() {
 		return storylineMissions[storylineIndex];
@@ -453,22 +395,13 @@ public:
 	void setStorylineIndex( int n );
 	void storylineMissionCompleted( Mission *mission );
 
-	inline int getMissionCount() {
-		return availableMissions.size();
-	}
-	inline Mission *getMission( int index ) {
-		return availableMissions[index];
-	}
-	inline void addMission( Mission *mission ) {
-		availableMissions.push_back( mission );
-	}
-
-	inline MissionTemplate *findTemplateByName( char *name ) {
-		for ( int i = 0; i < static_cast<int>( templates.size() ); i++ ) {
-			if ( !strcmp( templates[i]->getName(), name ) ) return templates[i];
+	inline MapPlace *getMapPlaceByShortName( char *short_name ) {
+		std::string s = short_name;
+		if( placesByShortName.find( s ) == placesByShortName.end() ) {
+			return NULL;
+		} else {
+			return placesByShortName[ s ];
 		}
-		std::cerr << "*** Error: can't find template: " << name << std::endl;
-		return NULL;
 	}
 };
 

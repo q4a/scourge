@@ -59,7 +59,6 @@ Board::Board( Session *session ) {
 }
 
 void Board::initMissions() {
-	char type;
 	char name[255], displayName[255], line[255], description[2000], replayDisplayName[255], replayDescription[2000], music[255], success[2000], failure[2000], mapName[80], introDescription[2000], location[20];
 	string ambientSoundName;
 
@@ -76,23 +75,6 @@ void Board::initMissions() {
 		string ambientFootsteps = node->getValueAsString( "footsteps" );
 		string afterFirstLevel = node->getValueAsString( "after_first_level" );
 		session->getSound()->addAmbientSound( ambientName, ambientAmbient, ambientFootsteps, afterFirstLevel );
-	}
-
-	v = config->getDocument()->getChildrenByName( "template" );
-	for ( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = ( *v )[i];
-
-		config->setUpdate( _( "Loading Missions" ), i, v->size() );
-
-		type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
-		strcpy( name, node->getValueAsString( "name" ) );
-		strcpy( displayName, node->getValueAsString( "display_name" ) );
-		strcpy( description, node->getValueAsString( "description" ) );
-		strcpy( music, node->getValueAsString( "music" ) );
-		strcpy( success, node->getValueAsString( "success" ) );
-		strcpy( failure, node->getValueAsString( "failure" ) );
-		ambientSoundName = node->getValueAsString( "sound" );
-		templates.push_back( new MissionTemplate( this, name, displayName, type, description, music, success, failure, ambientSoundName ) );
 	}
 
 	v = config->getDocument()->getChildrenByName( "mission" );
@@ -196,18 +178,31 @@ void Board::initLocations() {
 			v = places[key];
 		}
 		v->push_back( place );
+		
+		string s = place->short_name;
+		placesByShortName[ s ] = place;
 	}
 	delete config;
 }
 
 Board::~Board() {
 	reset();
+	for ( map<string, vector<MapPlace*>* >::iterator e = places.begin(); e != places.end(); ++e ) {
+		vector<MapPlace*> *v = e->second;
+		for( unsigned int i = 0; i < v->size(); i++ ) {
+			MapPlace *place = v->at( i );
+			delete( place );
+		}
+		delete( v );
+	}
+	places.clear();
+	placesByShortName.clear();
 	for ( size_t i = 0; i < storylineMissions.size(); ++i ) {
 		delete storylineMissions[i];
 	}
-	for ( size_t i = 0; i < templates.size(); ++i ) {
-		delete templates[i];
-	}
+//	for ( size_t i = 0; i < templates.size(); ++i ) {
+//		delete templates[i];
+//	}
 }
 
 /// Resets the board, and the story line index.
@@ -218,91 +213,6 @@ void Board::reset() {
 		mission->reset();
 	}
 	storylineIndex = 0;
-	for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
-		Mission *mission = availableMissions[i];
-		if ( !mission->isStoryLine() ) {
-			delete mission;
-		}
-	}
-	availableMissions.clear();
-}
-
-/// Handles completed missions.
-
-/// This function removes completed missions from the board and
-/// items from completed missions from the party's backpack.
-
-void Board::removeCompletedMissionsAndItems() {
-//	// remove completed missions
-//	for ( vector<Mission*>::iterator e = availableMissions.begin(); e != availableMissions.end(); ++e ) {
-//		Mission *mission = *e;
-//		if ( mission->isCompleted() ) {
-//
-//			// remove mission items from the party's backpack
-//			mission->removeMissionItems();
-//
-//			// delete mission if not storyline
-//			if ( !mission->isStoryLine() ) {
-//				delete mission;
-//				availableMissions.erase( e );
-//				e = availableMissions.begin();
-//			}
-//		}
-//	}
-}
-
-Mission *Board::findOrCreateMission( int *mapPos, char *nextMissionName ) {
-	for( unsigned int i = 0; i < availableMissions.size(); i++ ) {
-		if( availableMissions[i]->compareMapPos( mapPos ) ) {
-			return availableMissions[i];
-		}
-	}
-	
-	// look for a named mission
-	Mission *mission = NULL;
-	if( nextMissionName && strlen( nextMissionName ) ) {
-		for( unsigned int i = 0; i < storylineMissions.size(); i++ ) {
-			if( !strcmp( storylineMissions[i]->getName(), nextMissionName ) ) {
-				mission = storylineMissions[i];
-				break;
-			}
-		}
-	}
-	
-	if( !mission ) {
-		// generate a random mission
-		
-		// find the highest and lowest levels in the party
-		int highest = 0;
-		int lowest = -1;
-		int sum = 0;
-		for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-			int n = session->getParty()->getParty( i )->getLevel();
-			if ( n < 1 ) n = 1;
-			if ( highest < n ) {
-				highest = n;
-			} else if ( lowest == -1 || lowest > n ) {
-				lowest = n;
-			}
-			sum += n;
-		}
-		float ave = ( sum == 0 ? 1 : ( static_cast<float>( sum ) / static_cast<float>( session->getParty()->getPartySize() ) / 1.0f ) );
-	
-		int level = static_cast<int>( Util::roll( ave, ave + 4.0f ) ) - 2;
-		if ( level < 1 ) level = 1;
-		int depth =  static_cast<int>( static_cast<float>( level ) / static_cast<float>( MAX_MISSION_DEPTH - 3 ) ) + 1 + Util::dice( 3 );
-		if ( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
-		if ( depth < 1 ) depth = 1;
-		int templateIndex = Util::dice( templates.size() );
-	
-		// Create a new mission.
-		mission = templates[ templateIndex ]->createMission( session, level, depth );
-	}
-	
-	// remember this mission (by map coordinates)
-	mission->setMapPos( mapPos );
-	availableMissions.push_back( mission );
-	return mission;
 }
 
 /// Sets the storyline index.
@@ -330,176 +240,6 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 	}
 }
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure, string& ambientSoundName ) {
-	this->board = board;
-	strcpy( this->name, name );
-	strcpy( this->displayName, displayName );
-	this->mapType = type;
-	strcpy( this->description, description );
-	strcpy( this->music, music );
-	strcpy( this->success, success );
-	strcpy( this->failure, failure );
-	this->ambientSoundName = ambientSoundName;
-}
-
-MissionTemplate::~MissionTemplate() {
-}
-
-Mission *MissionTemplate::createMission( Session *session, int level, int depth, MissionInfo *info ) {
-
-//  cerr << "*** Creating level " << level << " mission, using template: " << this->name << " type=" << mapType << endl;
-
-	map<string, RpgItem*> items;
-	map<string, Monster*> creatures;
-
-	char parsedName[80];
-	char parsedDescription[2000];
-	char parsedSuccess[2000];
-	char parsedFailure[2000];
-	char s[2000];
-	strcpy( s, _( name ) );
-	parseText( session, level, depth, s, parsedName, &items, &creatures, info );
-	strcpy( s, description );
-	parseText( session, level, depth, s, parsedDescription, &items, &creatures, info );
-	strcpy( s, success );
-	parseText( session, level, depth, s, parsedSuccess, &items, &creatures, info );
-	strcpy( s, failure );
-	parseText( session, level, depth, s, parsedFailure, &items, &creatures, info );
-
-	//TODO VF: select music from multi-tracks missions
-
-	Mission *mission = new Mission( board,
-	    level, depth, false, parsedName, parsedName,
-	    parsedDescription, NULL, NULL, "", music, parsedSuccess,
-	    parsedFailure, NULL, mapType );
-	for ( map<string, RpgItem*>::iterator i = items.begin(); i != items.end(); ++i ) {
-		RpgItem *item = i->second;
-		bool found = false;
-		bool value = false;
-		if ( info ) {
-			for ( int i = 0; i < info->itemCount; i++ ) {
-				if ( !strcmp( ( char* )info->itemName[ i ], item->getName() ) ) {
-					found = true;
-					value = ( info->itemDone[ i ] != 0 );
-					break;
-				}
-			}
-			if ( !found ) {
-				cerr << "*** Error: can't find rpgItem in saved mission: " << item->getName() << endl;
-			}
-		}
-		mission->addItem( item, value );
-	}
-	for ( map<string, Monster*>::iterator i = creatures.begin(); i != creatures.end(); ++i ) {
-		Monster *monster = i->second;
-		bool found = false;
-		bool value = false;
-		if ( info ) {
-			for ( int i = 0; i < info->monsterCount; i++ ) {
-				if ( !strcmp( ( char* )info->monsterName[ i ], monster->getType() ) ) {
-					found = true;
-					value = ( info->monsterDone[ i ] != 0 );
-					break;
-				}
-			}
-			if ( !found ) {
-				cerr << "*** Error: can't find Monster in saved mission: " << monster->getType() << endl;
-			}
-		}
-		mission->addCreature( monster, value );
-	}
-	mission->setTemplateName( this->name );
-	mission->setAmbientSoundName( this->ambientSoundName );
-	if ( info ) {
-		mission->setSavedMapName( ( char* )info->mapName );
-		//cerr << "\tmap name=" << (char*)info->mapName << endl;
-		mission->setCompleted( info->completed == 1 ? true : false );
-	}
-
-	return mission;
-}
-
-void MissionTemplate::parseText( Session *session, int level, int depth,
-    char *text, char *parsedText,
-    map<string, RpgItem*> *items,
-    map<string, Monster*> *creatures,
-    MissionInfo *info ) {
-	int itemCount = 0;
-	int monsterCount = 0;
-	//cerr << "parsing text: " << text << endl;
-	strcpy( parsedText, "" );
-	char *p = strtok( text, " " );
-	while ( p ) {
-		if ( strlen( parsedText ) ) strcat( parsedText, " " );
-		char *start = strchr( p, '{' );
-		char *end = strrchr( p, '}' );
-		if ( start && end && end - start < 255 ) {
-			char varName[255];
-			strncpy( varName, start, ( size_t )( end - start ) );
-			*( varName + ( end - start ) ) = '\0';
-
-			if ( strstr( varName, "item" ) ) {
-				string s = varName;
-				RpgItem *item;
-				if ( items->find( s ) == items->end() ) {
-					if ( info ) {
-						if ( itemCount >= info->itemCount ) {
-							cerr << "*** error: itemCount out of range!" << endl;
-							item = RpgItem::getRandomItem( 1 );
-						} else {
-							item = RpgItem::getItemByName( ( char* )info->itemName[ itemCount++ ] );
-						}
-					} else {
-						item = RpgItem::getRandomItem( 1 );
-					}
-					( *items )[ s ] = item;
-				} else {
-					item = ( *items )[s];
-				}
-				// FIXME: also copy text before and after the variable
-				strcat( parsedText, item->getDisplayName() );
-			} else if ( strstr( varName, "creature" ) ) {
-				string s = varName;
-				Monster *monster = NULL;
-				if ( creatures->find( s ) == creatures->end() ) {
-
-					// find a monster
-					int monsterLevel = level;
-					while ( monsterLevel > 0 && !monster ) {
-						if ( info ) {
-							if ( monsterCount >= info->monsterCount ) {
-								cerr << "*** error: monsterCount out of range!" << endl;
-								monster = Monster::getRandomMonster( monsterLevel );
-							} else {
-								monster = Monster::getMonsterByName( ( char* )info->monsterName[ monsterCount++ ] );
-							}
-						} else {
-							monster = Monster::getRandomMonster( monsterLevel );
-						}
-						if ( !monster ) {
-							cerr << "+ Warning: no monsters defined for level: " << level << endl;
-							monsterLevel--;
-						}
-					}
-					if ( !monster ) {
-						cerr << "Error: could not find any monsters." << endl;
-						exit( 1 );
-					}
-					( *creatures )[ s ] = monster;
-				} else {
-					monster = ( *creatures )[s];
-				}
-				// FIXME: also copy text before and after the variable
-				strcat( parsedText, monster->getDisplayName() );
-			}
-		} else {
-			strcat( parsedText, p );
-		}
-		p = strtok( NULL, " " );
-	}
-}
-
-
 Mission::Mission( Board *board, int level, int depth, bool replayable,
                   char *name, char *displayName, char *description, char *replayDisplayName, char *replayDescription, char *introDescription,
                   char *music,
@@ -526,8 +266,6 @@ Mission::Mission( Board *board, int level, int depth, bool replayable,
 	this->chapter = 0;
 	this->mapX = this->mapY = 0;
 	this->special[0] = '\0';
-	this->templateName[0] = '\0';
-	this->savedMapName == "";
 
 	// assign the map grid location
 	if ( mapName && strlen( mapName ) ) {
@@ -537,11 +275,6 @@ Mission::Mission( Board *board, int level, int depth, bool replayable,
 	} else {
 		strcpy( this->mapName, "" );
 	}
-
-//   cerr << "*** Created mission: " << getName() << endl;
-//   cerr << "\tmap name=" << ( strlen( this->mapName ) ? mapName : "<random>" ) << endl;
-//   cerr << getDescription() << endl;
-//   cerr << "-----------------------" << endl;
 }
 
 Mission::~Mission() {
@@ -864,9 +597,10 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
 MissionInfo *Mission::save() {
 	MissionInfo *info = new  MissionInfo;
 	info->version = PERSIST_VERSION;
-	strncpy( ( char* )info->templateName, ( isStoryLine() ? "storyline" : getTemplateName() ), 79 );
+	strncpy( ( char* )info->templateName, ( isStoryLine() ? "storyline" : "template" ), 79 );
 	info->templateName[79] = 0;
-	strcpy( ( char* )info->mapName, savedMapName.c_str() );
+//	strcpy( ( char* )info->mapName, savedMapName.c_str() );
+	strcpy( ( char* )info->mapName, getMapName() );
 	info->level = getLevel();
 	info->depth = getDepth();
 	info->completed = ( completed ? 1 : 0 );
@@ -891,17 +625,26 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 	Mission *mission;
 	if ( !strcmp( ( char* )info->templateName, "storyline" ) ) {
 		mission = session->getBoard()->getCurrentStorylineMission();
-		//cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
+		cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
 		mission->loadStorylineMission( info );
 	} else {
-		MissionTemplate *missionTemplate = session->getBoard()->
-		    findTemplateByName( ( char* )info->templateName );
-		if ( !missionTemplate ) {
-			cerr << "Can't find template for name: " << info->templateName << endl;
+//		MissionTemplate *missionTemplate = session->getBoard()->
+//		    findTemplateByName( ( char* )info->templateName );
+//		if ( !missionTemplate ) {
+//			cerr << "Can't find template for name: " << info->templateName << endl;
+//			return NULL;
+//		}
+//		//cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
+//		mission = missionTemplate->createMission( session, info->level, info->depth, info );
+
+		cerr << "loading mission for place " << info->mapName << endl;
+		MapPlace *place = session->getBoard()->getMapPlaceByShortName( (char*)info->mapName );
+		if( !place ) {
+			cerr << "*** Error: cannot find map place by short name: " << (char*)(info->mapName) << endl;
 			return NULL;
 		}
-		//cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
-		mission = missionTemplate->createMission( session, info->level, info->depth, info );
+		place->mission = NULL;
+		mission = place->findOrCreateMission( session->getBoard(), info );
 	}
 	mission->setMissionId( info->missionId );
 	return mission;
@@ -929,7 +672,7 @@ void Mission::loadStorylineMission( MissionInfo *info ) {
 			}
 		}
 	}
-	setSavedMapName( ( char* )info->mapName );
+	//setSavedMapName( ( char* )info->mapName );
 	setCompleted( info->completed ? true : false );
 }
 
@@ -1057,14 +800,50 @@ MapPlace::~MapPlace() {
 	}
 }
 
-Mission *MapPlace::findOrCreateMission( Board *board ) {
+Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
+	cerr << "\tMapPlace::findOrCreateMission for place=" << name << endl;
 	if( !mission ) {
+		cerr << "\t\tcreating mission: level=" << level << " depth=" << depth << endl;
 		mission = new Mission( board, level, depth, false, name, display_name, "", NULL, NULL, "", music, "", "", short_name );
-		// set items
 		
-		// set creatures
+		// set objectives
+		RpgItem *item;
+		Monster *monster;
+		bool found;
+		for( int i = 0; i < objective_count; i++ ) {
+			if( objective == MapPlace::OBJECTIVE_ITEM ) {
+				if( info ) {
+					item = RpgItem::getItemByName( (char*)info->itemName[ i ] );
+					found = info->itemDone[ i ] == 1;
+					cerr << "\t\tadding item " << (char*)info->itemName[ i ] << " item=" << item->getName() << endl;
+				} else {
+					item = RpgItem::getRandomItem( 1 );
+					found = false;
+					cerr << "\t\tadding random item " << item->getName() << endl;
+				}
+				mission->addItem( item, found );
+			} else if( objective == MapPlace::OBJECTIVE_CREATURE ) {
+				if( info ) {
+					monster = Monster::getMonsterByName( (char*)info->monsterName[ i ] );
+					found = info->monsterDone[ i ] == 1;
+					cerr << "\t\tadding monster " << (char*)info->monsterName[ i ] << " monster=" << monster->getType() << endl;
+				} else {
+					monster = Monster::getRandomMonster( level );
+					found = false;
+					cerr << "\t\tadding random monster " << monster->getType() << endl;
+				}
+				mission->addCreature( monster, found );
+			}
+		}
+		
+		if( info ) {
+			mission->setCompleted( info->completed );
+			mission->setMissionId( info->missionId );
+		}
 		
 		//mission->setAmbientSoundName( this->ambientSoundName );
-	}		
+	} else {
+		cerr << "\t\tmission already exists. map=" << mission->getMapName() << endl;
+	}
 	return mission;
 }

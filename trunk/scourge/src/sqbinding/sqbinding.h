@@ -215,7 +215,6 @@ public:
 	// called when adding/removing party members
 	void partyChanged();
 
-	void initLevelObjects();
 	bool startLevel( const char *methodName );
 	bool endLevel( bool callMapEvents = true );
 

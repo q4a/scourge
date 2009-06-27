@@ -203,30 +203,6 @@ bool SavegameDialog::findFiles() {
 	return( filenames.size() > 0 );
 }
 
-/* unused:
-GLuint SavegameDialog::loadScreenshot( const string& dirName ) {
- string path = get_file_name( dirName + "/screen.bmp" );
- SDL_Surface* surface = SDL_LoadBMP( path.c_str() );
-
- if ( surface == NULL ) {
-  cerr << "*** Error loading screenshot image (" << path << "): " << IMG_GetError() << endl;
-  return NULL;
- }
-
- GLuint texture;
- glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
- glGenTextures( 1, &texture );
- glBindTexture( GL_TEXTURE_2D, texture );
-
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
- glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
- gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
-
- SDL_FreeSurface( surface );
- return texture;
-}
-*/
 bool SavegameDialog::readFileDetails( const string& dirname ) {
 	string path = get_file_name( dirname + "/savegame.dat" );
 	cerr << "Loading: " << path << endl;
@@ -424,13 +400,13 @@ void SavegameDialog::deleteUnvisitedMaps( const string& dirName, set<string> *vi
 void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
 	//printVisitedRegions( scourge->getSession()->getVisitedRegions() );
 	
+	cerr << "checking missions for referenced maps:" << endl;
 	vector<string> referencedMaps;
-	for ( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
-		string s = scourge->getSession()->getBoard()->getMission( i )->getSavedMapName();
-		if ( s == "" ) {
-			s = "_"; s += scourge->getSession()->getBoard()->getMission( i )->getMapName();
-		}
-		for ( int d = 0; d <= scourge->getSession()->getBoard()->getMission( i )->getDepth(); d++ ) {
+	for ( int i = 0; i < scourge->getSession()->getMissionCount(); i++ ) {
+		cerr << "\tmission: " << scourge->getSession()->getMission( i )->getMapName() << endl;
+		string s = "_"; 
+		s += scourge->getSession()->getMission( i )->getMapName();
+		for ( int d = 1; d <= scourge->getSession()->getMission( i )->getDepth(); d++ ) {
 			stringstream mapName;
 			mapName << s << "_" << d;
 			//cerr << "REFMAP: " << mapName.str() << endl;
@@ -438,23 +414,29 @@ void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
 		}
 	}
 
+	cerr << "checking filenames for referenced maps: " << endl;
 	string path = get_file_name( dirName );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
 	for ( vector<string>::iterator i = fileNameList.begin(); i != fileNameList.end(); i++ ) {
-		bool willDelete = false;
+		bool found = false;
 		if( (*i)[0] == '_' ) {
+			cerr << "\tchecking filename: " << (*i) << endl;
 			for ( vector<string>::iterator t = referencedMaps.begin(); t != referencedMaps.end(); t++ ) {
-				if ( i->compare( 0, t->length(), *t ) != 0 ) {
-					willDelete = true;
+				if ( i->compare( 0, t->length(), *t ) == 0 ) {
+					cerr << "\tfound: " << (*t) << endl;
+					found = true;
 					break;
 				}
 			}
 		} else if( i->substr( 0, 4 ) == "reg_" ) {
-			willDelete = !isRegionVisited( *i );
+			found = isRegionVisited( *i );
+		} else {
+			// some other kind of file that we want to keep.
+			found = true;
 		}
 
-		if ( willDelete ) {
+		if ( !found ) {
 			string tmp = path + "/" + *i;
 			cerr << "\tDeleting un-referenced map file: " << tmp << endl;
 			int n = remove( tmp.c_str() );

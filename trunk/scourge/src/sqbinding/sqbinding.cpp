@@ -252,6 +252,12 @@ void SqBinding::startGame() {
 			}
 		}
 	}
+	
+	// create the Mission
+	if ( DEBUG_SQUIRREL ) cerr << "Creating mission:" << endl;
+	if ( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
+		cerr << "Failed to instantiate mission object." << endl;
+	}	
 }
 
 void SqBinding::endGame() {
@@ -272,6 +278,9 @@ void SqBinding::endGame() {
 	}
 	refSpell.clear();
 	spellMap.clear();
+	
+	// destroy the mission
+	sq_release( vm, &refMission );
 
 	// release game ref.
 	sq_release( vm, &refGame );
@@ -317,14 +326,6 @@ void SqBinding::registerItem( Item *ptr ) {
 	}
 }
 
-void SqBinding::initLevelObjects() {
-	// create the Mission
-	if ( DEBUG_SQUIRREL ) cerr << "Creating mission:" << endl;
-	if ( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
-		cerr << "Failed to instantiate mission object." << endl;
-	}
-}
-
 bool SqBinding::startLevel( const char *methodName ) {
 
 	// create the creatures of the level
@@ -362,9 +363,6 @@ bool SqBinding::endLevel( bool callMapEvents ) {
 	}
 	refItem.clear();
 	itemMap.clear();
-
-	// destroy the mission
-	sq_release( vm, &refMission );
 
 	return ret;
 }

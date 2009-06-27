@@ -783,17 +783,40 @@ Creature *Session::getCreatureByName( char const* name ) {
 
 void Session::setCurrentMission( Mission *mission ) {
 	Mission *oldMission = getCurrentMission();
-	missions.push_back( mission );
-	currentMission = missions.size() - 1;
+	
+	currentMission = -1;
+	if( mission ) {
+		for( unsigned int i = 0; i < missions.size(); i++ ) {
+			if( missions[i] == mission ) {
+				cerr << "\tfound mission." << endl;
+				currentMission = i;
+				break;
+			}
+		}
+		if( currentMission == -1 ) {
+			cerr << "\tmission not found, adding it now" << endl;
+			// if not found, add it
+			missions.push_back( mission );
+			currentMission = missions.size() - 1;
+		}
+	} 
+	
 	getGameAdapter()->refreshBackpackUI();
 	if ( oldMission != mission && mission && mission->isStoryLine() && !mission->isReplay() ) {
 		char filename[300];
 		snprintf( filename, 300, "chapter%d.png", mission->getChapter() );
 		setChapterImage( filename );
 	}
+}
 
-	// initialize script objects
-	getSquirrel()->initLevelObjects();
+void Session::debugMissions( char *message ) {
+	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+	cerr << ">>> " << message << " <<<" << endl;
+	cerr << "mission count: " << missions.size() << " current index: " << currentMission << endl;
+	for( unsigned int i = 0; i < missions.size(); i++ ) {
+		cerr << "\ti=" << i << " mission: " << missions[i]->getName() << " level: " << missions[i]->getLevel() << " depth: " << missions[i]->getDepth() << " map: " << missions[i]->getMapName() << endl;
+	}
+	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
 }
 
 void Session::setChapterImage( char *image ) {
