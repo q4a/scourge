@@ -71,14 +71,14 @@ void MiniMap::drawMap() {
 	int ey = sy + MINI_MAP_SIZE;
 	if ( ey > textureSizeH ) ey = textureSizeW;
 
-	Creature *player;
-	Location *playerPos;
+	Creature *player = NULL;
+	Location *playerPos = NULL;
 
 	int monstersClose = false;
 	int creatureCount = scourge->getSession()->getCreatureCount();
 
 	// Check whether the party is on the map
-	if ( scourge->getParty() && scourge->getParty()->getPartySize() ) {
+	if ( scourge->getSession()->getParty() && scourge->getSession()->getParty()->getPartySize() ) {
 
 		player = scourge->getSession()->getParty()->getPlayer();
 		playerPos = map->getLocation( player->getX(), player->getY(), player->getZ() );

@@ -252,9 +252,13 @@ public:
 	}
 	
 	void setCurrentMission( Mission *mission );
+	void debugMissions( char *message );
 	inline Mission *getCurrentMission() {
 		return currentMission < 0 || currentMission >= (int)missions.size() ? NULL : missions[ currentMission ];
 	}
+	inline int getMissionCount() { return missions.size(); }
+	inline Mission *getMission( int index ) { return missions[ index ]; }
+	
 	void reset();
 	
 	

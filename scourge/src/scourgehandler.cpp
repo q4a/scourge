@@ -643,13 +643,13 @@ bool ScourgeHandler::handleBoardEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == scourge->getBoardWin()->closeButton ||
 	        widget == scourge->getCloseBoard() ) {
 		scourge->getBoardWin()->setVisible( false );
-	} else if ( widget == scourge->getMissionList() ) {
-		scourge->updateBoard();
-	} else if ( widget == scourge->getPlayMission() ) {
-		int selected = scourge->getMissionList()->getSelectedLine();
-		if ( selected != -1 && selected < scourge->getBoard()->getMissionCount() ) {
-			if ( scourge->playSelectedMission() ) return true;
-		}
+//	} else if ( widget == scourge->getMissionList() ) {
+//		scourge->updateBoard();
+//	} else if ( widget == scourge->getPlayMission() ) {
+//		int selected = scourge->getMissionList()->getSelectedLine();
+//		if ( selected != -1 && selected < scourge->getBoard()->getMissionCount() ) {
+//			if ( scourge->playSelectedMission() ) return true;
+//		}
 	}
 	return false;
 }
