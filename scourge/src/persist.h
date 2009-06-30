@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 45
+#define PERSIST_VERSION 46
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -101,6 +101,9 @@ struct CreatureInfo {
 	Uint8 boss;
 	Uint8 mission;
 	NpcInfoInfo *npcInfo;
+	
+	Uint32 missionId;
+	Uint32 missionObjectiveIndex;
 };
 
 /// Level map location info for savegame.

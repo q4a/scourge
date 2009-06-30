@@ -166,7 +166,7 @@ private:
 	std::vector<Creature *> summoned;
 	
 	Conversation *conversation;
-	
+		
 public:
 	static const int DIAMOND_FORMATION = 0;
 	static const int STAGGERED_FORMATION = 1;
@@ -216,7 +216,7 @@ public:
 	Creature( Session *session, Character *character, char const* name, int sex, int character_model_info_index );
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
-
+	
 	/// The session object used to create this class instance.
 	inline Session* getSession() {
 		return session;

@@ -58,11 +58,12 @@ protected:
 	Map *levelMap;
 	DamagePos recentDamages[MAX_RECENT_DAMAGE];
 	int recentDamagesCount;
-
 	char speech[2000];
 	std::vector<std::string> speechWrapped;
 	Uint32 talkStartTime;
 	float offsX, offsY, offsZ;
+	int missionId;
+	int missionObjectiveIndex;	
 
 public:
 	RenderedCreature( Preferences *preferences,
@@ -155,6 +156,17 @@ public:
 	inline void getPositionFraction( float *xp, float *yp ) {
 		*xp = ( getX() - static_cast<float>( toint( getX() ) ) );
 		*yp = ( getY() - static_cast<float>( toint( getY() ) ) );
+	}
+	
+	inline void setMissionObjectInfo( int missionId, int objectiveIndex ) {
+		this->missionId = missionId;
+		this->missionObjectiveIndex = objectiveIndex;
+	}
+	inline int getMissionId() {
+		return missionId;
+	}
+	inline int getMissionObjectiveIndex() {
+		return missionObjectiveIndex;
 	}
 
 protected:

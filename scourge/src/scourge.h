@@ -860,7 +860,6 @@ protected:
 	std::string getCurrentMapName( const std::string& dirName, int depth = -1, std::string *mapFileName = NULL );
 	std::string getSavedMapName();
 	bool loadMap( const std::string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName = NULL );
-	void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
 
 	void initChapterIntro( char *text = NULL, char *missionTitle = NULL );
 

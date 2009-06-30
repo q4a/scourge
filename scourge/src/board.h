@@ -119,7 +119,6 @@ private:
 	std::vector<RpgItem*> itemList;
 	std::map<Monster*, bool> creatures;
 	std::vector<Monster*> creatureList;
-	std::map<Creature*, Monster*> monsterInstanceMap;
 	bool completed;
 	bool replayable;
 	bool storyLine;
@@ -232,15 +231,6 @@ public:
 		itemList.push_back( item );
 	}
 
-	inline void addCreatureInstanceMap( Creature *creature, Monster *monster ) {
-		monsterInstanceMap[ creature ] = monster;
-	}
-
-	inline bool isMissionCreature( RenderedCreature *creature ) {
-		return ( monsterInstanceMap.find( ( Creature* )creature ) != monsterInstanceMap.end() );
-	}
-
-	void deleteMonsterInstances();
 	void removeMissionItems();
 
 	inline bool isCompleted() {
