@@ -111,6 +111,8 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	// add any dungeon/cave entrances
 	vector<MapPlace*> *v = shapePal->getSession()->getBoard()->getPlacesForRegion( regionX, regionY );
 	for( unsigned i = 0; v && i < v->size(); i++ ) {
+		map->flattenChunk( mapPosX * OUTDOORS_STEP + v->at(i)->x, 
+			                  mapPosY * OUTDOORS_STEP + v->at(i)->y );
 		map->setPosition( mapPosX * OUTDOORS_STEP + v->at(i)->x, 
 		                  mapPosY * OUTDOORS_STEP + v->at(i)->y, 
 		                  0, 

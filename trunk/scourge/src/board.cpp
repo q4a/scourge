@@ -282,7 +282,6 @@ Mission::~Mission() {
 	itemList.clear();
 	creatures.clear();
 	creatureList.clear();
-	monsterInstanceMap.clear();
 }
 
 void Mission::setCompleted( bool b ) {
@@ -307,14 +306,12 @@ bool Mission::itemFound( Item *item ) {
 
 bool Mission::creatureSlain( Creature *creature ) {
 	if ( !completed ) {
-		if ( monsterInstanceMap.find( creature ) != monsterInstanceMap.end() ) {
-			Monster *monster = monsterInstanceMap[ creature ];
-			if ( creatures.find( monster ) != creatures.end() ) {
-				creatures[ monster ] = true;
-				checkMissionCompleted();
-			}
+		if ( creature->getMissionId() == getMissionId() ) {
+			Monster *monster = creatureList[ creature->getMissionObjectiveIndex() ];
+			creatures[ monster ] = true;
+			checkMissionCompleted();
+			return isCompleted();
 		}
-		return isCompleted();
 	}
 	return false;
 }
@@ -359,11 +356,6 @@ void Mission::reset() {
 		Monster *monster = i->first;
 		creatures[ monster ] = false;
 	}
-	deleteMonsterInstances();
-}
-
-void Mission::deleteMonsterInstances() {
-	monsterInstanceMap.clear();
 }
 
 void Mission::removeMissionItems() {
@@ -628,15 +620,6 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 		cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
 		mission->loadStorylineMission( info );
 	} else {
-//		MissionTemplate *missionTemplate = session->getBoard()->
-//		    findTemplateByName( ( char* )info->templateName );
-//		if ( !missionTemplate ) {
-//			cerr << "Can't find template for name: " << info->templateName << endl;
-//			return NULL;
-//		}
-//		//cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
-//		mission = missionTemplate->createMission( session, info->level, info->depth, info );
-
 		cerr << "loading mission for place " << info->mapName << endl;
 		MapPlace *place = session->getBoard()->getMapPlaceByShortName( (char*)info->mapName );
 		if( !place ) {
@@ -804,7 +787,8 @@ Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
 	cerr << "\tMapPlace::findOrCreateMission for place=" << name << endl;
 	if( !mission ) {
 		cerr << "\t\tcreating mission: level=" << level << " depth=" << depth << endl;
-		mission = new Mission( board, level, depth, false, name, display_name, "", NULL, NULL, "", music, "", "", short_name );
+		// add one to depth b/c now the outdoors is not part of the depth
+		mission = new Mission( board, level, depth + 1, false, name, display_name, "", NULL, NULL, "", music, "", "", short_name );
 		
 		// set objectives
 		RpgItem *item;

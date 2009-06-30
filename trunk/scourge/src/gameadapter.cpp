@@ -39,7 +39,7 @@ GameAdapter::~GameAdapter() {
 
 bool GameAdapter::isMissionCreature( RenderedCreature *creature ) {
 	if ( !getSession()->getCurrentMission() ) return false;
-	return( getSession()->getCurrentMission()->isMissionCreature( creature ) );
+	return( getSession()->getCurrentMission()->getMissionId() == creature->getMissionId() );
 }
 
 /// Does a party currently exist?

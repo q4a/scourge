@@ -38,6 +38,7 @@ RenderedCreature::RenderedCreature( Preferences *preferences,
 	recentDamagesCount = 0;
 	this->offsX = this->offsY = this->offsZ = 0.0f;
 	talkStartTime = 0;
+	missionId = missionObjectiveIndex = 0;
 }
 
 RenderedCreature::~RenderedCreature() {

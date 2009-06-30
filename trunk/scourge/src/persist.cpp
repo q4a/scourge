@@ -729,6 +729,8 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 		Uint8 n = 0;
 		file->write( &n );
 	}
+	file->write( &( info->missionId ) );
+	file->write( &( info->missionObjectiveIndex ) );
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
@@ -794,6 +796,12 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 		info->npcInfo = ( n ? loadNpcInfoInfo( file ) : NULL );
 	} else {
 		info->npcInfo = NULL;
+	}
+	if( info->version >= 46 ) {
+		file->read( &( info->missionId ) );
+		file->read( &( info->missionObjectiveIndex ) );
+	} else {
+		info->missionId = info->missionObjectiveIndex = 0; 
 	}
 	return info;
 }

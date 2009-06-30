@@ -348,20 +348,16 @@ void TerrainGenerator::addItems( Map *map, ShapePalette *shapePal ) {
 // at all levels and rest at deepest level
 
 void TerrainGenerator::addMissionObjectives( Map *map, ShapePalette *shapePal ) {
-	if ( mission && !mission->isCompleted() ) {
+	cerr << "...TerrainGenerator::addMissionObjectives" << endl;
+	if ( mission && !mission->isCompleted() && depth > 0 ) {
 		int startIndex, endIndex;
 		int items = mission->getItemCount();
-		if ( depth + items >= maxDepth && depth < maxDepth ) { // there are items
-			if ( depth == maxDepth - 1 && items > maxDepth ) { // there are multiple items
-				startIndex = 0;
-				endIndex = items - maxDepth + 1;
-			} else if ( items <= maxDepth ) {
-				startIndex = maxDepth - depth - 1;
-				endIndex = startIndex + 1;
-			} else {
-				startIndex = items - depth - 1;
-				endIndex = startIndex + 1;
-			}
+		cerr << "\t...adding items" << endl;
+		
+		if( items > 0 ) {
+			startIndex = depth - 1;
+			endIndex = depth < maxDepth - 1 ? startIndex + 1 : items;
+			cerr << "\t...range=" << startIndex << " to " << endIndex << endl;
 			//cerr << "*** Added mission items: from " << startIndex << " to " << endIndex << endl;
 			// mission objects are on a pedestal
 			// and they are blocking so creatures can't get them
@@ -379,22 +375,16 @@ void TerrainGenerator::addMissionObjectives( Map *map, ShapePalette *shapePal ) 
 				         x + ( pedestal->getShape()->getWidth() / 2 ) - ( item->getShape()->getWidth() / 2 ),
 				         y - ( pedestal->getShape()->getDepth() / 2 ) + ( item->getShape()->getDepth() / 2 ),
 				         pedestal->getShape()->getHeight() );
-				//cerr << "*** Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
+				cerr << "\t...Added mission item: " << item->getItemName() << " at: " << x << "," << y << endl;
 			}
 		}
 
+		cerr << "\t...adding creatures" << endl;
 		int creatures = mission->getCreatureCount();
-		if ( depth + creatures >= maxDepth && depth < maxDepth ) { // there are creatures
-			if ( depth == maxDepth - 1 && creatures > maxDepth ) { // there are multiple creatures
-				startIndex = 0;
-				endIndex = creatures - maxDepth + 1;
-			} else if ( creatures <= maxDepth ) {
-				startIndex = maxDepth - depth - 1;
-				endIndex = startIndex + 1;
-			} else {
-				startIndex = creatures - depth - 1;
-				endIndex = startIndex + 1;
-			}
+		if( creatures > 0 ) {
+			startIndex = depth - 1;
+			endIndex = depth < maxDepth - 1 ? startIndex + 1 : creatures;		
+			cerr << "\t...range=" << startIndex << " to " << endIndex << endl;
 			//cerr << "*** Added mission creatures: from " << startIndex << " to " << endIndex << endl;
 			// add mission creatures
 			for ( int i = startIndex; i < endIndex; i++ ) {
@@ -406,14 +396,16 @@ void TerrainGenerator::addMissionObjectives( Map *map, ShapePalette *shapePal ) 
 				                                   monster->getScale(),
 				                                   monster );
 				Creature *creature = scourge->getSession()->newCreature( monster, shape );
-				mission->addCreatureInstanceMap( creature, monster );
+				creature->setMissionObjectInfo( mission->getMissionId(), i );
+				//mission->addCreatureInstanceMap( creature, monster );
 				getRandomLocation( map, creature->getShape(), &x, &y );
 				addItem( map, creature, NULL, NULL, x, y );
 				creature->moveTo( x, y, 0 );
-				//cerr << "*** Added mission monster: " << creature->getMonster()->getType() << endl;
+				cerr << "\t...Added mission monster: " << creature->getMonster()->getType() << endl;
 			}
 		}
 	}
+	cerr << "\t...done" << endl;
 }
 
 void TerrainGenerator::addMonsters( Map *levelMap, ShapePalette *shapePal ) {

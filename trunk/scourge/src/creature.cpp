@@ -344,7 +344,10 @@ CreatureInfo *Creature::save() {
 	}
 
 	info->boss = ( Uint8 )boss;
-	info->mission = ( Uint8 )( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ? 1 : 0 );
+	//info->mission = ( Uint8 )( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ? 1 : 0 );
+	
+	info->missionId = getMissionId();
+	info->missionObjectiveIndex = getMissionObjectiveIndex();
 
 	return info;
 }
@@ -471,12 +474,13 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	}
 
 	creature->setBoss( info->boss != 0 );
-	creature->setSavedMissionObjective( info->mission != 0 );
-	if ( creature->isSavedMissionObjective() ) {
-		cerr << "*********************************" << endl;
-		cerr << "Loaded mission creature:" << creature->getName() << endl;
-		cerr << "*********************************" << endl;
-	}
+//	creature->setSavedMissionObjective( info->mission != 0 );
+//	if ( creature->isSavedMissionObjective() ) {
+//		cerr << "*********************************" << endl;
+//		cerr << "Loaded mission creature:" << creature->getName() << endl;
+//		cerr << "*********************************" << endl;
+//	}
+	creature->setMissionObjectInfo( static_cast<int>( info->missionId ), static_cast<int>( info->missionObjectiveIndex ) );
 
 	creature->calculateExpOfNextLevel();
 
@@ -2513,7 +2517,7 @@ void Creature::getDetailedDescription( std::string& s ) {
 
 	s = tempdesc;
 
-	if ( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ) {
+	if ( session->getCurrentMission() && session->getCurrentMission()->getMissionId() == getMissionId() ) {
 		s += _( " *Mission*" );
 	}
 	if ( boss ) {
