@@ -2872,24 +2872,15 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 }
 
 void Scourge::refreshBackpackUI( int playerIndex ) {
-	if ( getPcUi() ) {
-		getPcUi()->setCreature( party->getParty( playerIndex ) );
-		if ( getTradeDialog()->getWindow()->isVisible() )
-			getTradeDialog()->updateUI();
-		if ( getUncurseDialog()->getWindow()->isVisible() )
-			getUncurseDialog()->updateUI();
-		if ( getIdentifyDialog()->getWindow()->isVisible() )
-			getIdentifyDialog()->updateUI();
-		if ( getRechargeDialog()->getWindow()->isVisible() )
-			getRechargeDialog()->updateUI();
-		refreshContainerGui();
+	if( party ) {
+		refreshBackpackUI( playerIndex >= 0 ? party->getParty( playerIndex ) : party->getPlayer() );
 	}
 }
 
-void Scourge::refreshBackpackUI() {
+void Scourge::refreshBackpackUI( Creature *creature ) {
 	if ( getPcUi() ) {
-		if ( party->getPlayer() )
-			getPcUi()->setCreature( party->getPlayer() );
+		if ( creature )
+			getPcUi()->setCreature( creature );
 		if ( getTradeDialog()->getWindow()->isVisible() )
 			getTradeDialog()->updateUI();
 		if ( getUncurseDialog()->getWindow()->isVisible() )

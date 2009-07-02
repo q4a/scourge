@@ -167,6 +167,7 @@ void Board::initLocations() {
 		strcpy( place->ambient, node->getValueAsString( "ambient" ) );
 		strcpy( place->music, node->getValueAsString( "music" ) );
 		strcpy( place->footsteps, node->getValueAsString( "footsteps" ) );
+		strcpy( place->description, node->getValueAsString( "description" ) );
 		
 		sprintf( tmp, "%d,%d", place->rx, place->ry );
 		string key = tmp;
@@ -298,6 +299,7 @@ bool Mission::itemFound( Item *item ) {
 			RpgItem *rpgItem = itemList[ item->getMissionObjectiveIndex() ];
 			items[ rpgItem ] = true;
 			checkMissionCompleted();
+			board->getSession()->getGameAdapter()->refreshBackpackUI();
 			return isCompleted();
 		}
 	}
@@ -310,6 +312,7 @@ bool Mission::creatureSlain( Creature *creature ) {
 			Monster *monster = creatureList[ creature->getMissionObjectiveIndex() ];
 			creatures[ monster ] = true;
 			checkMissionCompleted();
+			board->getSession()->getGameAdapter()->refreshBackpackUI();
 			return isCompleted();
 		}
 	}
@@ -788,7 +791,7 @@ Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
 	if( !mission ) {
 		cerr << "\t\tcreating mission: level=" << level << " depth=" << depth << endl;
 		// add one to depth b/c now the outdoors is not part of the depth
-		mission = new Mission( board, level, depth + 1, false, name, display_name, "", NULL, NULL, "", music, "", "", short_name );
+		mission = new Mission( board, level, depth + 1, false, name, display_name, description, NULL, NULL, "", music, "", "", short_name );
 		
 		// set objectives
 		RpgItem *item;
@@ -829,5 +832,6 @@ Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
 	} else {
 		cerr << "\t\tmission already exists. map=" << mission->getMapName() << endl;
 	}
+	cerr << "\t\tmission id=" << mission->getMissionId() << endl;
 	return mission;
 }
