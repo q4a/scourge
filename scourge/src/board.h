@@ -65,6 +65,7 @@ public:
 	char ambient[3000];
 	char music[300];
 	char footsteps[300];
+	char description[2000];
 	
 	// computed
 	Mission *mission;

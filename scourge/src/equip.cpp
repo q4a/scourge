@@ -743,7 +743,7 @@ void MissionInfoUI::refresh() {
 	Mission* curMission = scourge->getSession()->getCurrentMission();
 	objectiveText.clear();
 	missionColor.clear();
-
+	
 	if ( curMission ) {
 		snprintf( tmp, TMP_SIZE, _( "Depth: %d out of %d." ), ( scourge->getCurrentDepth() + 1 ), curMission->getDepth() );
 		snprintf( missionText, MISSNTXT_SIZE, "%s:|%s|%s", curMission->getDisplayName(), tmp, curMission->getDescription() );

@@ -609,9 +609,9 @@ public:
 
 	void resetPartyUI();
 
-	virtual void refreshBackpackUI( int playerIndex );
+	virtual void refreshBackpackUI( int playerIndex = -1 );
 
-	void refreshBackpackUI();
+	void refreshBackpackUI( Creature *creature );
 
 	void toggleRoundUI( bool startRound );
 

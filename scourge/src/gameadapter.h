@@ -147,8 +147,7 @@ public:
 
 	// UI methods. Only call these if isHeadless() is false.
 	virtual inline void resetPartyUI() {}
-	virtual inline void refreshBackpackUI( int playerIndex ) {}
-	virtual inline void refreshBackpackUI() {}
+	virtual inline void refreshBackpackUI( int playerIndex = -1 ) {}
 	virtual inline void toggleRoundUI( bool startRound ) {}
 	virtual inline void setFormationUI( int formation, bool playerOnly ) {}
 	virtual inline void togglePlayerOnlyUI( bool playerOnly ) {}
