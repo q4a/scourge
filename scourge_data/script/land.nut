@@ -54,6 +54,8 @@ function in_excluded_area( region_x, region_y, x, y ) {
 	return inHq( region_x, region_y, x, y ) || inCity( region_x, region_y, x, y );
 }
 
+// Music selection step 1: find the music key for the current location or failing that for the current vegetation or climate. 
+// This is done in two steps to avoid switching out the currently playing music if we're going to load a new music for the same key.
 function get_music_key( region_x, region_y, x, y, climate_value, vegetation_value ) {
 	if( inHq( region_x, region_y, x, y ) ) {
 		return "hq"
@@ -71,6 +73,9 @@ function get_music_key( region_x, region_y, x, y, climate_value, vegetation_valu
 	return "general";
 }
 
+// Music selection step 2: Load a music file for a specific key. 
+// All music files are prefixed with scourge_data/sound/music in C++.
+// I was going to use a squirrel table with an eval function for this but couldn't get it to work. :-(
 function get_music_name( music_key ) {
 	print( "get_music_name key=" + music_key + "\n" );
 	if( music_key == "hq" ) {
