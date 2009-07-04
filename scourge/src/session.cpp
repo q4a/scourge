@@ -108,7 +108,7 @@ Session::~Session() {
 }
 
 void Session::initialize() {
-	sound = new Sound( adapter->getPreferences() );
+	sound = new Sound( adapter->getPreferences(), this );
 	shapePal = new ShapePalette( this );
 	cutscene = new Cutscene( this );
 	weather = new Weather ( this );

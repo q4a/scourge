@@ -646,6 +646,32 @@ bool SqBinding::callIntArgStringReturnMethod( const char *name, char *answer, in
 	return ret;
 }
 
+bool SqBinding::callStringArgStringReturnMethod( const char *name, char *answer, int argc, char *args[] ) {
+	strcpy( answer, "" );
+	bool ret;
+	int top = sq_gettop( vm ); //saves the stack size before the call
+	sq_pushroottable( vm ); //pushes the global table
+	sq_pushstring( vm, _SC( name ), -1 );
+	if ( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+		sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+		for ( int i = 0; i < argc; i++ ) {
+			sq_pushstring( vm, args[ i ], -1 );
+		}
+		sq_call( vm, 1 + argc, 1 ); //calls the function
+		const SQChar *sqres = NULL;
+		sq_getstring( vm, -1, &sqres );
+		if ( sqres ) {
+			strcpy( answer, static_cast<char const*>( sqres ) );
+		}
+		ret = true;
+	} else {
+		cerr << "Can't find function " << name << endl;
+		ret = false;
+	}
+	sq_settop( vm, top ); //restores the original stack size
+	return ret;
+}
+
 bool SqBinding::callNoArgMethod( const char *name, HSQOBJECT *param ) {
 	//int ret = -1;
 	bool ret;

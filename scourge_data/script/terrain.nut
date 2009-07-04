@@ -5,40 +5,39 @@
 
 MAP_UNIT <- 16;
 
+function pickOne( arg_list ) {
+	selected_index <- ( scourgeGame.getMission().mt_rand() * arg_list.len().tofloat() ).tointeger();
+	return arg_list[ selected_index ];
+}
+
 /**
  * Return a random npc type (name, really) to use for a village population.
  * This method is called repeatedly by the outdoor terrain generator code.
  */
+npc_list <- [ "Male Vagrant", "Male Traveling Wizard", "Male Knight", "Male Rogue", "Female Hobo", "Female Bard", "Female Ranger", "Female Priestess" ];
 function getVillageNpcType() {
 	// in the future, there should be human towns, dwarven towns, etc.
-	npcs <- [ "Male Vagrant", "Male Traveling Wizard", "Male Knight", "Male Rogue", 
-	          "Female Hobo", "Female Bard", "Female Ranger", "Female Priestess" ];
-	c = ( scourgeGame.getMission().mt_rand() * npcs.len().tofloat() ).tointeger();
-	return npcs[ c ];
+	return pickOne( npc_list );
 }
 
 trees <- [ "tree01", "tree02", "tree03", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21", "birch", "bushtree", "cactus", "deadtree", "fern", "fir", "palm", "palm2" ];
 function getTree() {
-	c <- ( scourgeGame.getMission().mt_rand() * trees.len().tofloat() ).tointeger();
-	return trees[c];
+	return pickOne( trees );
 }
 
 carts <- [ "CART", "CART2" ];
 function getRandomCart() {
-	c <- ( scourgeGame.getMission().mt_rand() * carts.len().tofloat() ).tointeger();
-	return carts[c];
+	return pickOne( carts );
 }
 
 merchant_types <- [ "ARMOR", "FOOD;DRINK", "SCROLL;POTION;WAND;RING;AMULET;STAFF", "SWORD;AXE;BOW;MACE;POLE" ];
 function getRandomMerchantType() {
-	c <- ( scourgeGame.getMission().mt_rand() * merchant_types.len().tofloat() ).tointeger();
-	return merchant_types[c];
+	return pickOne( merchant_types );
 }
 
 magic_schools <- [ "Confrontation", "Ambush Trickery and Deceit", "History and Lore", "Life and Death", "Divine Awareness", "Nature" ];
 function getRandomMagicSchool() {
-	c <- ( scourgeGame.getMission().mt_rand() * magic_schools.len().tofloat() ).tointeger();
-	return magic_schools[c];
+	return pickOne( magic_schools );
 }
 
 /**
@@ -153,8 +152,7 @@ function storage( x, y, w, h ) {
 
 room_functions <- [ bedroom, storage ];
 function furnishArea( x, y, w, h ) {
-	n <- ( scourgeGame.getMission().mt_rand() * room_functions.len().tofloat() ).tointeger();
-	room_functions[ n ].call( this, x, y, w, h );
+	pickOne( room_functions ).call( this, x, y, w, h );
 }
 
 // draw parts of a house
@@ -244,16 +242,12 @@ function drawHousePart( postfix_param, roof_postfix_param, x, y, w, h, angle, fu
 
 HOUSE_POSTFIX <- [ "", "_WOOD" ];
 function getHousePostfix() {
-	house_postfix <- HOUSE_POSTFIX[ ( scourgeGame.getMission().mt_rand() * HOUSE_POSTFIX.len().tofloat() ).tointeger() ];
-	//print( "Using house type: " + house_postfix + "\n" );
-	return house_postfix;
+	return pickOne( HOUSE_POSTFIX );
 }
 
 ROOF_POSTFIX <- [ "", "_SLATE", "_RED" ];
 function getRoofPostfix() {
-	roof_postfix <- ROOF_POSTFIX[ ( scourgeGame.getMission().mt_rand() * ROOF_POSTFIX.len().tofloat() ).tointeger() ];
-	//print( "Using roof type: " + roof_postfix + "\n" );
-	return roof_postfix;
+	return pickOne( ROOF_POSTFIX );
 }
 
 function drawStreetlights( x, y ) {
@@ -389,26 +383,22 @@ function drawHouseSquare2( x, y, furnish, postfix, roof_postfix ) {
 
 house_functions <- [ drawHouseZ, drawHouseL, drawHouseL2, drawHouseSquare, drawHouseSquare2 ];
 function drawRandomHouse( x, y ) {
-	n <- ( scourgeGame.getMission().mt_rand() * house_functions.len().tofloat() ).tointeger();
-	house_functions[ n ].call( this, x, y, true, null, null );
+	return pickOne( house_functions ).call( this, x, y, true, null, null );
 }
 
 armor <- [ "Horned helmet", "Leather Work Gloves", "Adventuring Hat", "Wooden Shield" ];
 function getRandomArmorItem() {
-	c <- ( scourgeGame.getMission().mt_rand() * armor.len().tofloat() ).tointeger();
-	return armor[c];
+	return pickOne( armor );
 }
 
 weapon_list <- [ "Kitchen Knife", "Dagger", "Ornamental officer sword", "Battleaxe", "Smallbow", "Rounded mace" ];
 function getRandomWeaponItem() {
-	c <- ( scourgeGame.getMission().mt_rand() * weapon_list.len().tofloat() ).tointeger();
-	return weapon_list[c];
+	return pickOne( weapon_list );
 }
 
 inn <- [ "Beer barrel", "Wine barrel", "Fine wine bottle", "Wine bottle", "Milk", "Apple", "Bread", "Mutton meat", "Chalice" ];
 function getRandomInnItem() {
-	c <- ( scourgeGame.getMission().mt_rand() * inn.len().tofloat() ).tointeger();
-	return inn[c];
+	return pickOne( inn );
 }
 
 function createTable( x, y ) {

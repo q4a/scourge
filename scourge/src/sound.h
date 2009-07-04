@@ -47,6 +47,8 @@ public:
 /// The game's main sound object.
 class Sound {
 private:
+	Session *session;
+	char landMusicName[255], landMusicKey[255];
 	int missionMusicIndex;
 	int fightMusicIndex;
 	bool haveSound;
@@ -54,7 +56,7 @@ private:
 	std::map<std::string, AmbientSound*> ambients;
 #ifdef HAVE_SDL_MIXER
 	Mix_Music *menuMusic;
-	Mix_Music *hqMusic;
+	Mix_Music *landMusic;
 	Mix_Music *missionMusic;
 	Mix_Music *fightMusic, *currentFightMusic;
 	std::map<string, Mix_Music*> bossCombatMusics;
@@ -79,7 +81,7 @@ public:
 	static char *FOOTSTEP_INDOORS;
 	static char *FOOTSTEP_OUTDOORS;
 
-	Sound( Preferences *preferences );
+	Sound( Preferences *preferences, Session *session );
 	virtual ~Sound();
 
 	inline void playMusicMenu() {
@@ -88,11 +90,7 @@ public:
 #endif
 	}
 
-	inline void playMusicHQ() {
-#ifdef HAVE_SDL_MIXER
-		playMusic( hqMusic );
-#endif
-	}
+	void playLandMusic();
 
 	inline void playMusicMission() {
 #ifdef HAVE_SDL_MIXER

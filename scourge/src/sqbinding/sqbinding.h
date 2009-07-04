@@ -231,6 +231,7 @@ public:
 
 	bool callIntArgMethod( const char *name, int argc, int *args );
 	bool callIntArgStringReturnMethod( const char *name, char *answer, int argc, int *args );
+	bool callStringArgStringReturnMethod( const char *name, char *answer, int argc, char *args[] );
 	bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
 	bool callNoArgMethod( const char *name, HSQOBJECT *param = NULL );
 	bool callNoArgStringReturnMethod( const char *name, char *answer );

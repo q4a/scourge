@@ -170,6 +170,7 @@ Scourge::Scourge( UserConfiguration *config )
 	view = new ScourgeView( this );
 	handler = new ScourgeHandler( this );
 	chapterTextPos = 0;
+	lastLandMusicCheck = 0;
 }
 
 void Scourge::initUI() {
@@ -514,7 +515,7 @@ void Scourge::preMainLoop() {
 	showLevelInfo();
 
 	// start the haunting tunes
-	if ( inHq ) getSession()->getSound()->playMusicHQ();
+	if( inLand ) getSession()->getSound()->playLandMusic();
 	else getSession()->getSound()->playMusicMission();
 	setAmbientPaused( false );
 
@@ -1719,7 +1720,19 @@ void Scourge::createUI() {
 	squirrelReload = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 470, 150, getSDLHandler()->getScreen()->w - 390, 170, _( "Reload" ) );
 }
 
+void Scourge::checkLandMusic() {
+	if( inLand ) {
+		Uint32 now = SDL_GetTicks();
+		if( now - lastLandMusicCheck > 5 * 1000 ) {
+			lastLandMusicCheck = now;
+			session->getSound()->playLandMusic();
+		}
+	}
+}
+
 void Scourge::playRound() {
+	checkLandMusic();
+	
 	if ( targetSelectionFor ) return;
 
 	// is the game not paused?
@@ -3704,11 +3717,13 @@ void Scourge::handleDismiss( int index ) {
 	dismissHeroDialog->setVisible( true );
 }
 
-void Scourge::getMapRegionAndPos( int *mapPos ) {
+void Scourge::getMapRegionAndPos( int *mapPos, bool includeClimateAndVegetation ) {
 	mapPos[0] = getMap()->getRegionX();
 	mapPos[1] = getMap()->getRegionY();
-	mapPos[2] = toint( getParty()->getPlayer()->getX() );
-	mapPos[3] = toint( getParty()->getPlayer()->getY() );
+	int px = toint( getParty()->getPlayer()->getX() );
+	int py = toint( getParty()->getPlayer()->getY() );
+	mapPos[2] = px;
+	mapPos[3] = py;
 	if( mapPos[2] > MAP_WIDTH / 2 ) {
 		mapPos[0]++;
 		mapPos[2] -= MAP_WIDTH / 2;
@@ -3716,6 +3731,12 @@ void Scourge::getMapRegionAndPos( int *mapPos ) {
 	if( mapPos[3] > MAP_DEPTH / 2 ) {
 		mapPos[1]++;
 		mapPos[3] -= MAP_WIDTH / 2;
+	}
+	if( includeClimateAndVegetation ) {
+		int ox = px / OUTDOORS_STEP;
+		int oy = py / OUTDOORS_STEP;
+		mapPos[4] = getMap()->getClimate( ox, oy );
+		mapPos[5] = getMap()->getVegetation( ox, oy );
 	}
 }
 

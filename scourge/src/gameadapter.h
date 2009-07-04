@@ -269,6 +269,16 @@ public:
 	
 	virtual void saveMapRegions() {}
 	virtual void mapRegionsChanged( float party_x, float party_y ) {}
+	/**
+	 * Fill in the array with:
+	 * 0 - map region x
+	 * 1 - map region y
+	 * 2 - player x position in region
+	 * 3 - player y position in region
+	 * 4 - climate (if includeClimateAndVegetation)
+	 * 5 - vegetation (if includeClimateAndVegetation)
+	 */
+	virtual void getMapRegionAndPos( int *mapPos, bool includeClimateAndVegetation=false ) {}
 };
 
 /// SDL/OpenGL related extensions to GameAdapter.

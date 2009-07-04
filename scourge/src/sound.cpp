@@ -23,6 +23,8 @@
 #include "rpg/rpglib.h"
 #include "rpg/rpgitem.h"
 #include "creature.h"
+#include "session.h"
+#include "sqbinding/sqbinding.h"
 
 // ###### MS Visual C++ specific ###### 
 #if defined(_MSC_VER) && defined(_DEBUG)
@@ -40,7 +42,8 @@ char *Sound::TELEPORT = "teleport";
 char *Sound::OPEN_DOOR = "open door";
 char *Sound::OPEN_BOX = "open box";
 
-Sound::Sound( Preferences *preferences ) {
+Sound::Sound( Preferences *preferences, Session *session ) {
+	this->session = session;
 	haveSound = false;
 	ambientPause = false;
 
@@ -71,7 +74,9 @@ Sound::Sound( Preferences *preferences ) {
 
 		lastChapter = -1;
 		missionMusicIndex = -1;
-		currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = currentFightMusic = chapterMusic = outroMusic = NULL;
+		currentMusic = currentLevelMusic = menuMusic = landMusic = missionMusic = fightMusic = currentFightMusic = chapterMusic = outroMusic = NULL;
+		strcpy( landMusicName, "" );
+		strcpy( landMusicKey, "" );
 		musicStartTime = 0;
 		musicPosition = 0;
 		if ( haveSound ) {
@@ -89,9 +94,9 @@ Sound::~Sound() {
 			Mix_FreeMusic( menuMusic );
 			menuMusic = NULL;
 		}
-		if ( hqMusic ) {
-			Mix_FreeMusic( hqMusic );
-			hqMusic = NULL;
+		if ( landMusic ) {
+			Mix_FreeMusic( landMusic );
+			landMusic = NULL;
 		}
 		if ( missionMusic ) {
 			Mix_FreeMusic( missionMusic );
@@ -145,14 +150,6 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			menuMusic = Mix_LoadMUS( fn.c_str() );
 			if ( !menuMusic ) {
 				cerr << "*** 1 Error: couldn't load music: " << fn << endl;
-				cerr << "\t" << Mix_GetError() << endl;
-			}
-		}
-		if ( !hqMusic ) {
-			string fn = rootDir + "/sound/music/headquarter.ogg";
-			hqMusic = Mix_LoadMUS( fn.c_str() );
-			if ( !hqMusic ) {
-				cerr << "*** 2 Error: couldn't load music: " << fn << endl;
 				cerr << "\t" << Mix_GetError() << endl;
 			}
 		}
@@ -843,4 +840,50 @@ void Sound::playThunderSound( bool underRoof ) {
 		}
 	}
 #endif					
+}
+
+void Sound::playLandMusic() {
+#ifdef HAVE_SDL_MIXER	
+	char music_key[255], music_name[255];
+	int params[6];
+	session->getGameAdapter()->getMapRegionAndPos( params, true );
+	session->getSquirrel()->callIntArgStringReturnMethod( "get_music_key", music_key, 6, params );
+	
+	// if the music has stopped or the music key has changed, load a new tune
+	if( !Mix_PlayingMusic() || strcmp( music_key, landMusicKey ) ) {
+		cerr << "Switching musics to key=" << music_key << endl;
+		
+		char *args[1];
+		args[0] = music_key;
+		session->getSquirrel()->callStringArgStringReturnMethod( "get_music_name", music_name, 1, args );
+		if( strcmp( music_name, landMusicName ) ) {
+			cerr << "\tSelected music file=" << music_name << endl;
+			
+			// unload the old
+			stopMusic( 500 );
+			if ( landMusic ) {
+				Mix_FreeMusic( landMusic );
+				landMusic = NULL;
+			}
+			
+			if( strlen( music_name ) ) {
+				// load the new
+				string fn = rootDir + "/sound/music/" + music_name;
+				cerr << "\tLoading music " << fn << endl;
+				landMusic = Mix_LoadMUS( fn.c_str() );
+				if ( !landMusic ) {
+					cerr << "*** Error: couldn't load music: " << fn << endl;
+					cerr << "\t" << Mix_GetError() << endl;
+				}
+			} else {
+				cerr << "*** error no music file was returned for music key: " << music_key << endl;
+			}
+			strcpy( landMusicName, music_name );
+			
+			// play it
+			if( landMusic ) playMusic( landMusic, 500, 1 );			
+		}
+		strcpy( landMusicKey, music_key );
+	}
+#endif	
 }
