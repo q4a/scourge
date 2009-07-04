@@ -51,12 +51,51 @@ function get_ground_texture( climate_value, vegetation_value ) {
  * Areas to not cover with trees (towns, roads, etc.)
  */
 function in_excluded_area( region_x, region_y, x, y ) {
-	if( region_x == 40 && region_y == 21 ) {
-		return x >= 163 && x < 275 && y >= 20 && y < 200; // horghh
-	} else if( region_x == 41 && region_y == 21 ) {
-		return x > 55; // hq
+	return inHq( region_x, region_y, x, y ) || inCity( region_x, region_y, x, y );
+}
+
+function get_music_key( region_x, region_y, x, y, climate_value, vegetation_value ) {
+	if( inHq( region_x, region_y, x, y ) ) {
+		return "hq"
+	} else if( inCity( region_x, region_y, x, y ) ) {
+		return "city";
+	} else {
+		vegetation <- getVegetation( vegetation_value );
+		climate <- getClimate( climate_value );
+		if( vegetation != null && climate != null ) {
+			if( vegetation.getclass() == LightForestVegetation || vegetation.getclass() == DeepForestVegetation ) {
+				return "forest";
+			}
+		}
 	}
-	return false;
+	return "general";
+}
+
+function get_music_name( music_key ) {
+	print( "get_music_name key=" + music_key + "\n" );
+	if( music_key == "hq" ) {
+		return pickOne( [ "headquarter.ogg" ] );
+	} else if( music_key == "city" ) { 
+		return pickOne( [ "chapters/chapter1.ogg", "chapters/chapter2.ogg", "chapters/chapter3.ogg" ] );
+	} else if( music_key == "forest" ) {
+		return pickOne( [ "track04.ogg", "track05.ogg", "track06.ogg" ] );
+	} else if( music_key == "general" ) { 
+		return pickOne( [ "track01.ogg", "track02.ogg", "track03.ogg" ] );
+	} else {
+		return "";
+	}
+}
+
+function inHq( region_x, region_y, x, y ) {
+	return region_x == 41 && region_y == 21 && x > 55;
+}
+
+function inCity( region_x, region_y, x, y ) {
+	return inHorggh( region_x, region_y, x, y );
+}
+
+function inHorggh( region_x, region_y, x, y ) {
+	return region_x == 40 && region_y == 21 && x >= 163 && x < 275 && y >= 20 && y < 200;
 }
 
 ///*

@@ -894,16 +894,21 @@ protected:
 
 	void thunder();
 	
+	void checkLandMusic();
+	
 	/**
 	 * Fill in the array with:
 	 * 0 - map region x
 	 * 1 - map region y
 	 * 2 - player x position in region
 	 * 3 - player y position in region
+	 * 4 - climate (if includeClimateAndVegetation)
+	 * 5 - vegetation (if includeClimateAndVegetation)
 	 */
-	void getMapRegionAndPos( int *mapPos ); 
+	void getMapRegionAndPos( int *mapPos, bool includeClimateAndVegetation=false ); 
 
 private:
+	Uint32 lastLandMusicCheck;
 	TextScroller *descriptionScroller;
 	Party *party;
 	Map *levelMap;
