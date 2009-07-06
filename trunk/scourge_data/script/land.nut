@@ -91,6 +91,19 @@ function get_music_name( music_key ) {
 	}
 }
 
+// Music selection step 2: Ambient sound samples selection. Return a list of possible sounds for a music_key.
+// Maybe play different sounds during day/night?
+function get_ambients( music_key ) {
+	print( "get_ambients key=" + music_key + "\n" );
+	if( music_key == "hq" || music_key == "city" ) {
+		return "city01.ogg,city02.ogg,city03.ogg,city04.ogg,city05.ogg";
+	} else if( music_key == "forest" || music_key == "general" ) {
+		return "crickets.ogg,eagleowl.wav,frog.wav,grasshopper.wav,windgust01.wav,windgust02.wav,wolf.wav"
+	} else {
+		return "";
+	}
+}
+
 function inHq( region_x, region_y, x, y ) {
 	return region_x == 41 && region_y == 21 && x > 55;
 }

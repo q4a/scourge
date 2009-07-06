@@ -37,6 +37,7 @@ class AmbientSound {
 public:
 	AmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	~AmbientSound();
+	void updateAmbients( std::string& ambient );
 	int playRandomAmbientSample();
 	int playFootsteps( int panning );
 	inline std::string &getAfterFirstLevel() {
@@ -152,6 +153,8 @@ public:
 	void playThunderSound( bool underRoof ); 
 
 protected:
+	void switchLandAmbients( char *music_key );
+	void switchLandMusic( char *music_key );
 	AmbientSound *getAmbientSound( std::string& name, int depth );
 #ifdef HAVE_SDL_MIXER
 	void playMusic( Mix_Music *music, int ms = 2000, int loopCount = -1 );
