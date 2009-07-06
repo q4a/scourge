@@ -840,7 +840,7 @@ void Session::setChapterImage( char *image ) {
 	}
 }
 
-std::string HQ_AMBIENT_SOUND = "hq";
+std::string HQ_AMBIENT_SOUND = "outdoors";
 std::string& Session::getAmbientSoundName() {
 	return getCurrentMission() ? getCurrentMission()->getAmbientSoundName() : HQ_AMBIENT_SOUND;
 }

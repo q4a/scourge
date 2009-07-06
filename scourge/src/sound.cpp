@@ -701,10 +701,27 @@ AmbientSound::AmbientSound( std::string& name, std::string& ambient, std::string
 	this->name = name;
 	this->afterFirstLevel = afterFirstLevel;
 #ifdef HAVE_SDL_MIXER
+	updateAmbients( ambient );
+	stringstream filename;
+	filename << rootDir << "/sound/footsteps/" << footsteps;
+	//cerr << "\t" << filename.str() << endl;
+	this->footsteps = Mix_LoadWAV( filename.str().c_str() );
+	if ( !this->footsteps ) {
+		cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
+	}
+#endif
+}
+
+void AmbientSound::updateAmbients( std::string& ambient ) {
+	for ( unsigned n = 0; n < ambients.size(); n++ ) {
+		Mix_FreeChunk( this->ambients[ n ] );
+	}
+	ambients.clear();
+	
 	size_t start = 0;
 	size_t found = ambient.find( "," );
 
-	//cerr << "Loading ambients: " << name << endl;
+	//cerr << "Loading ambients: " << name << " stored ambients: " << ambients.size() << endl;
 	//cerr << "ambients=" << ambient << endl;
 	bool first = true;
 	while ( !( found == string::npos && first ) ) {
@@ -718,7 +735,7 @@ AmbientSound::AmbientSound( std::string& name, std::string& ambient, std::string
 
 		stringstream filename;
 		filename << rootDir << "/sound/ambient/" << s;
-//  cerr << "\tLOADING " << filename.str() << endl;
+		//cerr << "\tLOADING " << filename.str() << endl;
 		Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
 		if ( !sample ) {
 			cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
@@ -733,15 +750,7 @@ AmbientSound::AmbientSound( std::string& name, std::string& ambient, std::string
 			found = ambient.find( ",", start );
 			first = false;
 		}
-	}
-	stringstream filename;
-	filename << rootDir << "/sound/footsteps/" << footsteps;
-	//cerr << "\t" << filename.str() << endl;
-	this->footsteps = Mix_LoadWAV( filename.str().c_str() );
-	if ( !this->footsteps ) {
-		cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
-	}
-#endif
+	}	
 }
 
 AmbientSound::~AmbientSound() {
@@ -844,15 +853,52 @@ void Sound::playThunderSound( bool underRoof ) {
 
 void Sound::playLandMusic() {
 #ifdef HAVE_SDL_MIXER	
-	char music_key[255], music_name[255];
+	char music_key[255];
 	int params[6];
 	session->getGameAdapter()->getMapRegionAndPos( params, true );
 	session->getSquirrel()->callIntArgStringReturnMethod( "get_music_key", music_key, 6, params );
+
+	switchLandMusic( music_key );
 	
+	switchLandAmbients( music_key );
+
+	strcpy( landMusicKey, music_key );
+#endif	
+}
+
+void Sound::switchLandAmbients( char *music_key ) {
+	if( strcmp( music_key, landMusicKey ) ) {
+		cerr << "Switching ambients to key=" << music_key << endl;
+		
+		string name = "outdoors";
+		char music_name[255];
+		char *args[1];
+		args[0] = music_key;
+		session->getSquirrel()->callStringArgStringReturnMethod( "get_ambients", music_name, 1, args );
+		if( strlen( music_name ) ) {
+			cerr << "\tSelected ambient files=" << music_name << endl;
+			
+			// modify the current "outdoor" ambient sound
+			stopAmbientSound();
+			AmbientSound *a = getAmbientSound( name, 0 );
+			string ambient_sounds = music_name;
+			a->updateAmbients( ambient_sounds );
+
+		} else {
+			cerr << "*** error no ambients were returned for music key: " << music_key << endl;
+		}
+			
+		// play it
+		startAmbientSound( name, 0 );			
+	}	
+}
+
+void Sound::switchLandMusic( char *music_key ) {
 	// if the music has stopped or the music key has changed, load a new tune
 	if( !Mix_PlayingMusic() || strcmp( music_key, landMusicKey ) ) {
 		cerr << "Switching musics to key=" << music_key << endl;
 		
+		char music_name[255];
 		char *args[1];
 		args[0] = music_key;
 		session->getSquirrel()->callStringArgStringReturnMethod( "get_music_name", music_name, 1, args );
@@ -883,7 +929,5 @@ void Sound::playLandMusic() {
 			// play it
 			if( landMusic ) playMusic( landMusic, 500, 1 );			
 		}
-		strcpy( landMusicKey, music_key );
-	}
-#endif	
+	}	
 }
