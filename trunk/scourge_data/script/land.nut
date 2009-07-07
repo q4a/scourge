@@ -79,13 +79,13 @@ function get_music_key( region_x, region_y, x, y, climate_value, vegetation_valu
 function get_music_name( music_key ) {
 	print( "get_music_name key=" + music_key + "\n" );
 	if( music_key == "hq" ) {
-		return pickOne( [ "headquarter.ogg" ] );
+		return pickOne( [ "headquarters.ogg" ] );
 	} else if( music_key == "city" ) { 
-		return pickOne( [ "chapters/chapter1.ogg", "chapters/chapter2.ogg", "chapters/chapter3.ogg" ] );
+		return pickOne( [ "town1.ogg", "town2.ogg" ] );
 	} else if( music_key == "forest" ) {
-		return pickOne( [ "track04.ogg", "track05.ogg", "track06.ogg" ] );
+		return pickOne( [ "outdoors1.ogg", "outdoors2.ogg", "outdoors3.ogg" ] );
 	} else if( music_key == "general" ) { 
-		return pickOne( [ "track01.ogg", "track02.ogg", "track03.ogg" ] );
+		return pickOne( [ "outdoors1.ogg", "outdoors2.ogg", "outdoors3.ogg" ] );
 	} else {
 		return "";
 	}
