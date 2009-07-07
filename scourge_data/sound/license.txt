@@ -9,13 +9,12 @@ You can contact them at these addresses:
 
 * Toofan Hosseinnezhad: <retrix at users.sourceforge.net>
 * Vincent Fiack: <vfiack at gmail.com>
-* Joel Ross: <joel.binarybrain at gmail.com>
 * Pal Zoltan Illes: http://musicliberated.blogspot.com
 
 FileName		Music Title		Author
 ---------		------------		-------
-menu.ogg		Menu pour Scourge	Vincent Fiack
-headquarter.ogg		Quartier Général	Vincent Fiack
+menu.ogg		Heroes Of Lesser Renown		Pal Zoltan Illes
+headquarters.ogg		At The Headquarters	Pal Zoltan Illes
 track01.ogg		Dark Times		Toofan Hosseinnezhad
 track02.ogg		Promenade Lugubre	Vincent Fiack
 track03.ogg		Dans les sous-sols	Vincent Fiack
@@ -24,6 +23,11 @@ track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
 track06.ogg		Sur un theme de ...	Vincent Fiack
 chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
 chapters/chapter2.ogg   Maw of the Grizzled...  Vincent Fiack
+outdoors1.ogg             Unfolding Plains         Pal Zoltan Illes
+outdoors2.ogg             Mountains In Blue            Pal Zoltan Illes
+outdoors3.ogg             Woods Of Old            Pal Zoltan Illes
+town1.ogg             Till Last Blood         Pal Zoltan Illes
+town2.ogg             Swift Strike            Pal Zoltan Illes
 fight01.ogg             Till Last Blood         Pal Zoltan Illes
 fight02.ogg             Swift Strike            Pal Zoltan Illes
 
