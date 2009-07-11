@@ -21,20 +21,35 @@ track03.ogg		Dans les sous-sols	Vincent Fiack
 track04.ogg		L'excursion		Vincent Fiack
 track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
 track06.ogg		Sur un theme de ...	Vincent Fiack
-chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
-chapters/chapter2.ogg   Maw of the Grizzled...  Vincent Fiack
-outdoors1.ogg             Unfolding Plains         Pal Zoltan Illes
+chapters/chapter1.ogg    Chapter 1     Pal Zoltan Illes
+chapters/chapter2.ogg    Chapter 2     Pal Zoltan Illes
+chapters/chapter3.ogg    Chapter 3     Pal Zoltan Illes
+chapters/chapter4.ogg    Chapter 4     Pal Zoltan Illes
+chapters/chapter5.ogg    Chapter 5     Pal Zoltan Illes
+chapters/chapter6.ogg    Chapter 6     Pal Zoltan Illes
+chapters/chapter7.ogg    Chapter 7     Pal Zoltan Illes
+chapters/chapter8.ogg    Chapter 8     Pal Zoltan Illes
+chapters/chapter9.ogg    Chapter 9     Pal Zoltan Illes
+chapters/chapter10.ogg   Chapter 10    Pal Zoltan Illes
+chapters/chapter11.ogg   Chapter 11    Pal Zoltan Illes
+chapters/chapter12.ogg   Chapter 12    Pal Zoltan Illes
+outdoors1.ogg             Unfolding Plains             Pal Zoltan Illes
 outdoors2.ogg             Mountains In Blue            Pal Zoltan Illes
-outdoors3.ogg             Woods Of Old            Pal Zoltan Illes
-town1.ogg             Till Last Blood         Pal Zoltan Illes
-town2.ogg             Swift Strike            Pal Zoltan Illes
-fight01.ogg             Till Last Blood         Pal Zoltan Illes
-fight02.ogg             Swift Strike            Pal Zoltan Illes
+outdoors3.ogg             Woods Of Old                 Pal Zoltan Illes
+town1.ogg                 Breathing Stones             Pal Zoltan Illes
+town2.ogg                 Towns and Villages           Pal Zoltan Illes
+fight01.ogg               Till Last Blood              Pal Zoltan Illes
+fight02.ogg               Swift Strike                 Pal Zoltan Illes
+fight_mycotharsius.ogg    Deadly Grasp                 Pal Zoltan Illes
+fight_mothrazu.ogg        Mother Of Madness            Pal Zoltan Illes
+finalbattle.ogg           Infernal Dance               Pal Zoltan Illes
+explore_cave.ogg          Exploration of The Caves     Pal Zoltan Illes
+explore_maze.ogg          Exploration of The Maze      Pal Zoltan Illes
+explore_temple.ogg        Exploration of The Temple    Pal Zoltan Illes
 
 The following music tracks were remixed by Dennis Murczak <dmurczak at versanet.de> from material uploaded to www.soundsnap.com by user "Dynamedion":
 
 bossbattle.ogg
-finalbattle.ogg
 outro.ogg
 
 See <http://www.soundsnap.com/license> for the license.
