@@ -853,16 +853,18 @@ void Sound::playThunderSound( bool underRoof ) {
 
 void Sound::playLandMusic() {
 #ifdef HAVE_SDL_MIXER	
-	char music_key[255];
-	int params[6];
-	session->getGameAdapter()->getMapRegionAndPos( params, true );
-	session->getSquirrel()->callIntArgStringReturnMethod( "get_music_key", music_key, 6, params );
-
-	switchLandMusic( music_key );
+	if ( haveSound ) {
+		char music_key[255];
+		int params[6];
+		session->getGameAdapter()->getMapRegionAndPos( params, true );
+		session->getSquirrel()->callIntArgStringReturnMethod( "get_music_key", music_key, 6, params );
 	
-	switchLandAmbients( music_key );
-
-	strcpy( landMusicKey, music_key );
+		switchLandMusic( music_key );
+		
+		switchLandAmbients( music_key );
+	
+		strcpy( landMusicKey, music_key );
+	}
 #endif	
 }
 
@@ -882,7 +884,7 @@ void Sound::switchLandAmbients( char *music_key ) {
 			stopAmbientSound();
 			AmbientSound *a = getAmbientSound( name, 0 );
 			string ambient_sounds = music_name;
-			a->updateAmbients( ambient_sounds );
+			if( a ) a->updateAmbients( ambient_sounds );
 
 		} else {
 			cerr << "*** error no ambients were returned for music key: " << music_key << endl;

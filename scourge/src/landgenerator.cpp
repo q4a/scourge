@@ -109,18 +109,33 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 	
 	// add any dungeon/cave entrances
-	vector<MapPlace*> *v = shapePal->getSession()->getBoard()->getPlacesForRegion( regionX, regionY );
-	for( unsigned i = 0; v && i < v->size(); i++ ) {
-		map->flattenChunk( mapPosX * OUTDOORS_STEP + v->at(i)->x, 
-			                  mapPosY * OUTDOORS_STEP + v->at(i)->y );
-		map->setPosition( mapPosX * OUTDOORS_STEP + v->at(i)->x, 
-		                  mapPosY * OUTDOORS_STEP + v->at(i)->y, 
+	vector<MapPlace*> *places = shapePal->getSession()->getBoard()->getPlacesForRegion( regionX, regionY );
+	for( unsigned i = 0; places && i < places->size(); i++ ) {
+		MapPlace *place = places->at(i);
+		map->flattenChunk( mapPosX * OUTDOORS_STEP + place->x, 
+			                  mapPosY * OUTDOORS_STEP + place->y );
+		map->setPosition( mapPosX * OUTDOORS_STEP + place->x, 
+		                  mapPosY * OUTDOORS_STEP + place->y, 
 		                  0, 
 		                  shapePal->findShapeByName( "GATE_DOWN_OUTDOORS" ) );
 	}
 	
+	// add any cities
+	// todo: cities may extend into neighboring regions
+	int params[8];	
+	vector<MapCity*> *cities = shapePal->getSession()->getBoard()->getCitiesForRegion( regionX, regionY );
+	for( unsigned i = 0; cities && i < cities->size(); i++ ) {
+		MapCity *city = cities->at(i);
+		params[0] = city->rx;
+		params[1] = city->ry;
+		params[2] = city->x;
+		params[3] = city->y;
+		params[4] = city->w;
+		params[5] = city->h;
+		shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_city", 6, params );
+	}	
+	
 	// event handler for custom map processing
-	int params[8];
 	params[0] = regionX;
 	params[1] = regionY;
 	params[2] = mapPosX * OUTDOORS_STEP;

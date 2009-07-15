@@ -116,6 +116,8 @@ public:
 	static int _addOutdoorTexture( HSQUIRRELVM vm );
 
 	static int _mt_rand( HSQUIRRELVM vm );
+	
+	static int _getCityName( HSQUIRRELVM vm );
 };
 
 #endif

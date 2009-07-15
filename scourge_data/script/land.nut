@@ -8,10 +8,11 @@ REGION_DEPTH <- ( 74 * 4 );
 function generate_land( region_x, region_y, offset_x, offset_y ) {
 	print( "Generate land at " + region_x.tostring() + "," + region_y.tostring() + 
 	       " offset=" + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
-	if( region_x == 38 && region_y == 20 ) {
-		drawVillage( offset_x + MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT, 15, 15 );
-		return true;
-	} else if( region_x == 37 && region_y == 18 ) {
+//	if( region_x == 38 && region_y == 20 ) {
+//		drawVillage( offset_x + MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT, 15, 15 );
+//		return true;
+//	} else 
+	if( region_x == 37 && region_y == 18 ) {
 		//drawRandomHouse( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 		drawHouseTower( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 	} else if( region_x == 40 && region_y == 21 ) {
@@ -20,6 +21,10 @@ function generate_land( region_x, region_y, offset_x, offset_y ) {
 		drawHorghh_part2( offset_x, offset_y + MAP_UNIT + MAP_UNIT );
 	}
 	return false;
+}
+
+function generate_city( region_x, region_y, offset_x, offset_y, w, h ) {
+	drawVillage( offset_x, offset_y, w * 4, h * 4 );
 }
 
 function generate_tree( region_x, region_y, offset_x, offset_y, x, y, climate_value, vegetation_value ) {
@@ -109,7 +114,7 @@ function inHq( region_x, region_y, x, y ) {
 }
 
 function inCity( region_x, region_y, x, y ) {
-	return inHorggh( region_x, region_y, x, y );
+	return scourgeGame.getMission().getCityName( region_x, region_y, x, y ) != null || inHorggh( region_x, region_y, x, y );
 }
 
 function inHorggh( region_x, region_y, x, y ) {

@@ -707,7 +707,7 @@ function drawRoadTile( x, y, ref ) {
 }
 
 function drawVillage( x, y, village_width, village_height ) {
-	
+	print( "Starting to draw village...\n" );
 	drawRoads( x, y, village_width, village_height );
 	
 	scourgeGame.getMission().clearHouses();
@@ -722,25 +722,33 @@ function drawVillage( x, y, village_width, village_height ) {
 		vx = pos[h] % 4;
 		vy = pos[h] / 4;
 		
-		xp = x + vx * 4 * MAP_UNIT;
-		yp = y + (( vy * 4 ) + 1 ) * MAP_UNIT;
+		vxx <- vx * 4;
+		vyy <- (( vy * 4 ) + 1 );
+		
+		print( "\th=" + h.tostring() + " vx/y=" + vx.tostring() + "," + vy.tostring() + " vxx/yy=" + vxx.tostring() + "," + vyy.tostring() + "\n" ); 
+		
+		if( vxx >= village_width || vyy >= village_height ) continue;
+		
+		xp = x + vxx * MAP_UNIT;
+		yp = y + vyy * MAP_UNIT;
+		
 		
 		if( h == 0 ) {
 			print( "amor shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawArmorShop( xp, yp )
-		} else if( h == 1 ) {
+		} else if( h == 3 ) {
 			print( "weapon shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawWeaponShop( xp, yp )
-		} else if( h == 2 ) {
+		} else if( h == 6 ) {
 			print( "inn at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawInn( xp, yp )
-		} else if( h == 3 ) {
+		} else if( h == 9 ) {
 			print( "market at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawMarket( xp, yp );
-		} else if( h == 4 ) {
+		} else if( h == 12 ) {
 			print( "garden at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawGarden( xp, yp );			
-		} else if( h == 5 ) {
+		} else if( h == 15 ) {
 			print( "church at " + vx.tostring() + "," + vy.tostring() + "\n" );
 			drawChurch( xp, yp );			
 		} else {
@@ -753,7 +761,8 @@ function drawVillage( x, y, village_width, village_height ) {
 			                                            yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
 			                                            0, getVillageNpcType() );
 		}		
-	}	
+	}
+	print( "Done drawing village.\n" );
 }
 
 function mixHouseCoordinates( pos ) {

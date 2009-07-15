@@ -75,6 +75,18 @@ public:
 	Mission *findOrCreateMission( Board *board, MissionInfo *info = NULL );
 };
 
+class MapCity {
+public:
+	char name[80], display_name[80];
+	int rx, ry, x, y, w, h; // w,h are in city blocks (a city block=4x16 map units)
+	int level;
+	
+	MapCity() {
+	}
+	~MapCity() {
+	}
+};
+
 /// Extra info associated with npc-s on an edited level.
 
 class NpcInfo {
@@ -341,6 +353,7 @@ private:
 	std::vector<Mission*> storylineMissions;
 	int storylineIndex;
 
+	std::map<std::string, std::vector<MapCity*>*> cities;
 	std::map<std::string, std::vector<MapPlace*>*> places;
 	std::map<std::string, MapPlace*> placesByShortName;
 
@@ -363,6 +376,17 @@ public:
 			return NULL;
 		} else {
 			return places[key];
+		}
+	}
+	
+	inline std::vector<MapCity*> *getCitiesForRegion( int rx, int ry ) {
+		char tmp[80];
+		sprintf( tmp, "%d,%d", rx, ry );
+		std::string key = tmp;
+		if( cities.find( key ) == cities.end() ) {
+			return NULL;
+		} else {
+			return cities[key];
 		}
 	}
 

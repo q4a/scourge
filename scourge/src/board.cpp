@@ -139,7 +139,7 @@ void Board::initMissions() {
 void Board::initLocations() {
 	char tmp[200];
 	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
-	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "place" );
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "dungeon" );
 	for ( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = ( *v )[i];
 
@@ -183,6 +183,48 @@ void Board::initLocations() {
 		string s = place->short_name;
 		placesByShortName[ s ] = place;
 	}
+	
+	v = config->getDocument()->getChildrenByName( "city" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		config->setUpdate( _( "Loading Locations" ), i, v->size() );
+		
+		MapCity *city = new MapCity();
+		strcpy( city->name, node->getValueAsString( "name" ) );
+		strcpy( city->display_name, node->getValueAsString( "display_name" ) );
+		strcpy( tmp, node->getValueAsString( "region" ) );
+		city->rx = atoi( strtok( tmp, "," ) );
+		city->ry = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "location" ) );
+		city->x = atoi( strtok( tmp, "," ) );
+		city->y = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "dimensions" ) );
+		city->w = atoi( strtok( tmp, "," ) );
+		city->h = atoi( strtok( NULL, "," ) );		
+		city->level = node->getValueAsInt( "level" );
+		
+		// sanity check
+		if( city->x + city->w * 4 * MAP_UNIT > MAP_WIDTH / 2 || 
+				city->y + city->h * 4 * MAP_UNIT > MAP_DEPTH / 2 ||
+				city->x < 0 || city->x > MAP_WIDTH / 2 ||
+				city->y < 0 || city->y > MAP_DEPTH / 2 ) {
+			cerr << "*** Error: city \"" << city->name << "\" won't fit in a region." << endl;
+			delete city;
+			continue;
+		}
+		
+		sprintf( tmp, "%d,%d", city->rx, city->ry );
+		string key = tmp;
+		vector<MapCity*> *v;
+		if( cities.find( key ) == cities.end() ) {
+			v = new vector<MapCity*>();
+			cities[key] = v;
+		} else {
+			v = cities[key];
+		}
+		v->push_back( city );
+	}	
 	delete config;
 }
 
@@ -198,6 +240,15 @@ Board::~Board() {
 	}
 	places.clear();
 	placesByShortName.clear();
+	for ( map<string, vector<MapCity*>* >::iterator e = cities.begin(); e != cities.end(); ++e ) {
+		vector<MapCity*> *v = e->second;
+		for( unsigned int i = 0; i < v->size(); i++ ) {
+			MapCity *city = v->at( i );
+			delete( city );
+		}
+		delete( v );
+	}
+	cities.clear();
 	for ( size_t i = 0; i < storylineMissions.size(); ++i ) {
 		delete storylineMissions[i];
 	}

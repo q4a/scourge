@@ -247,8 +247,7 @@ float RenderedLocation::getHeightPos() {
 
 void RenderedLocation::findOccludedSides( bool *sides ) {
 	if ( !this->pos || !this->pos->shape || !this->pos->shape->isStencil() || map->isDoor( this->pos->shape ) ) {
-		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] =
-			sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
+		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
 		return;
 	}
 
@@ -402,7 +401,10 @@ void RenderedLocation::drawEffect() {
 
 void RenderedLocation::drawShape() {
 	bool sides[6];
-	findOccludedSides( sides );
+	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
+	if( !map->isHeightMapEnabled() ) {
+		findOccludedSides( sides );
+	}
 	pos->shape->setOccludedSides( sides );
 	if ( pos->outlineColor && !useShadow ) {
 		pos->shape->outline( pos->outlineColor );
