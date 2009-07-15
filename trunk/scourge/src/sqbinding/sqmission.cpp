@@ -79,6 +79,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "addOutdoorTexture", SqMission::_addOutdoorTexture, 0, 0, "Set an outdoor texture (like a road)." },
 	{ "float", "mt_rand", SqMission::_mt_rand, 0, 0, "Return a random float between 0 and 1." },
 	{ "Creature", "addWanderingHero", SqMission::_addWanderingHero, 0, 0, "Create a wandering hero." },
+	{ "String", "getCityName", SqMission::_getCityName, 0, 0, "Get the name of city at this position." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -515,5 +516,24 @@ int SqMission::_addOutdoorTexture( HSQUIRRELVM vm ) {
 
 int SqMission::_mt_rand( HSQUIRRELVM vm ) {
 	sq_pushfloat( vm, Util::mt_rand() );
+	return 1;
+}
+
+int SqMission::_getCityName( HSQUIRRELVM vm ) {
+	GET_INT( offset_y )
+	GET_INT( offset_x )
+	GET_INT( region_y )
+	GET_INT( region_x )
+	
+	vector<MapCity*> *cities = SqBinding::sessionRef->getShapePalette()->getSession()->getBoard()->getCitiesForRegion( region_x, region_y );
+	for( unsigned i = 0; cities && i < cities->size(); i++ ) {
+		MapCity *city = cities->at(i);
+		if( city->x <= offset_x && offset_x < city->x + city->w * MAP_UNIT * 4 &&
+				city->y <= offset_y && offset_y < city->y + city->h * MAP_UNIT * 4 ) {
+			sq_pushstring( vm, city->name, -1 );
+			return 1;
+		}
+	}
+	sq_pushnull( vm );
 	return 1;
 }

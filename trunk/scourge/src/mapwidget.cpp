@@ -62,6 +62,15 @@ bool MapWidget::handleEvent( Window* parent, SDL_Event* event, int x, int y ) {
 		if ( editable && isInside( x, y ) ) {
 			markedX = selX + x - getX();
 			markedY = selY + y - getY();
+
+			// print to console for info purposes
+			cerr << "map selection: " << markedX << "," << markedY << endl;
+			int rx = markedX / REGION_SIZE;
+			if( rx >= REGIONS_PER_ROW - 1 ) rx = REGIONS_PER_ROW - 2;
+			int ry = markedY / REGION_SIZE;
+			if( ry >= REGIONS_PER_COL - 1 ) ry = REGIONS_PER_COL - 2;
+			cerr << "region selection: " << rx << "," << ry << endl;			
+			
 		}
 		this->parent->setMouseLock( NULL );
 		return isInside( x, y );
