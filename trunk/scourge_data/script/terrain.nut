@@ -512,9 +512,9 @@ function drawInn( x, y ) {
 	}
 
 	for( i <- 0; i < 5; i++ ) {
-		scourgeGame.getMission().addCreatureAround( x + MAP_UNIT + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
+		scourgeGame.getMission().addCreatureBounded( x + MAP_UNIT + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
 		                                            y + 2 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 2.0 - 4.0) ).tointeger(),
-		                                            0, getVillageNpcType() );
+		                                            8, getVillageNpcType() );
 	}
 	
 	hero_count <- ( scourgeGame.getMission().mt_rand() * 3 ).tointeger();
@@ -615,9 +615,9 @@ function drawMarket( x, y ) {
 	// add merchants
 	merchant <- null;
 	for( i <- 0; i < 5; i++ ) {
-		merchant = scourgeGame.getMission().addCreatureAround( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
+		merchant = scourgeGame.getMission().addCreatureBounded( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
 		                                                       yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
-		                                                       0, getVillageNpcType() );
+		                                                       8, getVillageNpcType() );
 		if( merchant != null ) {
 			merchant.setNpcInfo( _("the Traveling Merchant"), "merchant", getRandomMerchantType() );
 		}
@@ -707,7 +707,7 @@ function drawRoadTile( x, y, ref ) {
 }
 
 function drawVillage( x, y, village_width, village_height ) {
-	print( "Starting to draw village...\n" );
+	print( "Starting to draw village... size=" + village_width.tostring() + "," + village_height.tostring() );
 	drawRoads( x, y, village_width, village_height );
 	
 	scourgeGame.getMission().clearHouses();
@@ -722,45 +722,50 @@ function drawVillage( x, y, village_width, village_height ) {
 		vx = pos[h] % 4;
 		vy = pos[h] / 4;
 		
-		vxx <- vx * 4;
-		vyy <- (( vy * 4 ) + 1 );
+		print( "h=" + h.tostring() + " vx/y=" + vx.tostring() + "," + vy.tostring() ); 
+		if( vx * 4 < village_width && vy * 4 < village_height ) { 		
 		
-		print( "\th=" + h.tostring() + " vx/y=" + vx.tostring() + "," + vy.tostring() + " vxx/yy=" + vxx.tostring() + "," + vyy.tostring() + "\n" ); 
-		
-		if( vxx >= village_width || vyy >= village_height ) continue;
-		
-		xp = x + vxx * MAP_UNIT;
-		yp = y + vyy * MAP_UNIT;
-		
-		
-		if( h == 0 ) {
-			print( "amor shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawArmorShop( xp, yp )
-		} else if( h == 3 ) {
-			print( "weapon shop at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawWeaponShop( xp, yp )
-		} else if( h == 6 ) {
-			print( "inn at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawInn( xp, yp )
-		} else if( h == 9 ) {
-			print( "market at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawMarket( xp, yp );
-		} else if( h == 12 ) {
-			print( "garden at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawGarden( xp, yp );			
-		} else if( h == 15 ) {
-			print( "church at " + vx.tostring() + "," + vy.tostring() + "\n" );
-			drawChurch( xp, yp );			
+			vxx <- vx * 4;
+			vyy <- (( vy * 4 ) + 1 );
+			
+			xp = x + vxx * MAP_UNIT;
+			yp = y + vyy * MAP_UNIT;
+			
+			
+			if( h == 0 ) {
+				print( "\tamor shop at " + vx.tostring() + "," + vy.tostring() );
+				drawArmorShop( xp, yp )
+			} else if( h == 3 ) {
+				print( "\tweapon shop at " + vx.tostring() + "," + vy.tostring() );
+				drawWeaponShop( xp, yp )
+			} else if( h == 6 ) {
+				print( "\tinn at " + vx.tostring() + "," + vy.tostring() );
+				drawInn( xp, yp )
+			} else if( h == 9 ) {
+				print( "\tmarket at " + vx.tostring() + "," + vy.tostring() );
+				drawMarket( xp, yp );
+			} else if( h == 12 ) {
+				print( "\tgarden at " + vx.tostring() + "," + vy.tostring() );
+				drawGarden( xp, yp );			
+			} else if( h == 15 ) {
+				print( "\tchurch at " + vx.tostring() + "," + vy.tostring() );
+				drawChurch( xp, yp );			
+			} else {
+				print( "\trandom house at " + vx.tostring() + "," + vy.tostring() );
+				drawRandomHouse( xp, yp );
+			}
+			
+			// add some peeps
+			print( "\tadding npcs at " + vx.tostring() + "," + vy.tostring() );
+			for( i <- 0; i < 5; i++ ) {
+				scourgeGame.getMission().addCreatureBounded( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
+				                                            yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
+				                                            8, getVillageNpcType() );
+			}
+			print( "\tdone with " + vx.tostring() + "," + vy.tostring() );
 		} else {
-			drawRandomHouse( xp, yp );
+			print( "\tskipping " + vx.tostring() + "," + vy.tostring() );
 		}
-		
-		// add some peeps
-		for( i <- 0; i < 5; i++ ) {
-			scourgeGame.getMission().addCreatureAround( xp + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
-			                                            yp - MAP_UNIT + 5 + ( scourgeGame.getMission().mt_rand() * (MAP_UNIT * 3.0 - 10.0) ).tointeger(),
-			                                            0, getVillageNpcType() );
-		}		
 	}
 	print( "Done drawing village.\n" );
 }
