@@ -318,7 +318,7 @@ Creature *Session::addWanderingHeroFromScript( int level, int cx, int cy, int cz
 	return creature;
 }
 
-Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, int *fx, int *fy ) {
+Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, int *fx, int *fy, int r ) {
 	Monster *monster = Monster::getMonsterByName( creatureType );
 	if ( !monster ) {
 		cerr << "*** Error: no monster named " << creatureType << endl;
@@ -337,14 +337,21 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 		getSquirrel()->registerItem( replacement->getBackpackItem( i ) );
 	}
 
-	if ( fx && fy ) {
-		replacement->findPlace( cx, cy, fx, fy );
+	bool b = true;
+	if( r > 0 ) {
+		cerr << "Adding creature bounded-radial...";
+		b = replacement->findPlaceBoundedRadial( cx, cy, r );
+	} else if ( fx && fy ) {
+		cerr << "Adding creature findPlace...";
+		b = replacement->findPlace( cx, cy, fx, fy );
 	} else {
+		cerr << "Adding creature direct...";
 		//int ffx, ffy;
 		//replacement->findPlace( cx, cy, &ffx, &ffy );
 		replacement->moveTo( cx, cy, 0 );
 		getMap()->setCreature( cx, cy, 0, replacement );
 	}
+	cerr << " result=" << b << endl;
 	replacement->cancelTarget();
 
 	return replacement;

@@ -160,9 +160,13 @@ void RenderedLocation::resetAfterDraw() {
 
 // fog test for creatures
 bool RenderedLocation::isCreatureInFog() {
+#if FOG_ENABLED	
 	return map->getHelper() && pos && pos->creature &&
 		!map->getAdapter()->isInMovieMode() &&
 		!map->getHelper()->isVisible( pos->x, pos->y, pos->creature->getShape() );
+#else
+		return false;
+#endif
 }
 
 void RenderedLocation::setupTransforms() {

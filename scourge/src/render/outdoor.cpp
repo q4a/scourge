@@ -31,9 +31,6 @@
 
 using namespace std;
 
-// comment-out!!!
-#define DEBUG_OUTDOOR 1
-
 // ###### MS Visual C++ specific ###### 
 #if defined(_MSC_VER) && defined(_DEBUG)
 # define new DEBUG_NEW
@@ -136,7 +133,7 @@ void Outdoor::drawMap() {
 	drawWaterLevel();
 	
 	// draw the fog of war or shading
-#ifndef DEBUG_OUTDOOR
+#if FOG_ENABLED
 	if ( map->helper && !map->adapter->isInMovieMode() && !( map->isCurrentlyUnderRoof && !map->groundVisible ) ) {
 		glsDisable( GLS_DEPTH_MASK );
 		glsEnable( GLS_BLEND );

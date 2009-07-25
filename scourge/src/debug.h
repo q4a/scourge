@@ -89,5 +89,7 @@
 // set to 1 to enable bounding box and ground grid drawing
 #define DEBUG_MOUSE_POS 0
 
+#define FOG_ENABLED 0
+
 #endif
 
