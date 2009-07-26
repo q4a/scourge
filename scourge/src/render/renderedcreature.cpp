@@ -106,7 +106,7 @@ bool RenderedCreature::findPlaceBounded( int startx, int starty, int endx, int e
 			//cerr << "--- checking: " << x << "," << y << endl;
 			if ( levelMap->canFit( x, y, getShape() ) ) {
 				moveTo( x, y, 0 );
-				setSelXY( x, y );
+				if( levelMap->getSettings()->isPlayerEnabled() ) setSelXY( x, y );
 				levelMap->setCreature( x, y, 0, this );
 				return true;
 			}
