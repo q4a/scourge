@@ -223,7 +223,7 @@ DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
 OutdoorTextureInfo *createOutdoorTextureInfo( Uint16 x, Uint16 y, Uint16 z );
 void saveMap( File *file, MapInfo *info );
 MapInfo *loadMap( File *file );
-void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
+void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY, Uint32 *version );
 void deleteMapInfo( MapInfo *info );
 
 void saveCreature( File *file, CreatureInfo *info );
