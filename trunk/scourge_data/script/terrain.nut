@@ -684,7 +684,7 @@ function drawRoads( x, y, village_width, village_height ) {
 			}
 		}
 	}
-	for( xx <- 3; xx <= village_height - 1; xx += 4 ) {
+	for( xx <- 3; xx <= village_width - 1; xx += 4 ) {
 		vx = x + ( xx * MAP_UNIT );
 		for ( i <- 1; i <= village_height; i++ ) {
 			vy = y + ( i * MAP_UNIT );
