@@ -3303,6 +3303,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 void Map::loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth ) {
 	Uint16 tmpX, tmpY;
+	Uint32 ver;
 	if ( name.empty() ) {
 		result = _( "Enter a name of a map to load." );
 		return;
@@ -3322,7 +3323,7 @@ void Map::loadMapLocation( const std::string& name, std::string& result, int *gr
 		return;
 	}
 	File *file = new ZipFile( fp, ZipFile::ZIP_READ );
-	Persist::loadMapHeader( file, &tmpX, &tmpY );
+	Persist::loadMapHeader( file, &tmpX, &tmpY, &ver );
 	delete file;
 
 	*gridX = static_cast<int>( tmpX );

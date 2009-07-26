@@ -55,6 +55,7 @@
 #include "textscroller.h"
 #include "containerview.h"
 #include "landgenerator.h"
+#include "io/zipfile.h"
 
 using namespace std;
 
@@ -846,10 +847,25 @@ void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 	cerr << "**********************************************************" << endl;
 	string map_file = getSavedRegionFile( rx, ry );
+
+	/* Load maps where the version number is the latest.
+	 * This is so when improvements are made to scripts (better towns, etc.)
+	 * new maps are generated rather than loading the old ones.
+	 */
+	bool will_load_map = false;
 	FILE *fp = fopen( map_file.c_str(), "rb" );
-	if( fp ) {
+	if ( fp ) {
+		File *file = new ZipFile( fp, ZipFile::ZIP_READ );
+		Uint16 gridX, gridY;
+		Uint32 ver;
+		Persist::loadMapHeader( file, &gridX, &gridY, &ver );
+		delete file;
+		will_load_map = ver >= PERSIST_VERSION;
+		cerr << "\tload map? " << will_load_map << " version=" << ver << " vs. " << PERSIST_VERSION << endl;
+	}
+	
+	if( will_load_map ) {
 		cerr << "LOADING map region: " << rx << "," << ry << endl;
-		fclose( fp );
 		string result;
 		bool loaded = levelMap->loadRegionMap( map_file, result, this, posX, posY );
 		cerr << "LOAD MAP loaded?=" << loaded << " result=" << result << endl;
