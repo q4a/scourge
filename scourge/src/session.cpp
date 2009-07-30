@@ -339,13 +339,10 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 
 	bool b = true;
 	if( r > 0 ) {
-		cerr << "Adding creature bounded-radial...";
 		b = replacement->findPlaceBoundedRadial( cx, cy, r );
 	} else if ( fx && fy ) {
-		cerr << "Adding creature findPlace...";
 		b = replacement->findPlace( cx, cy, fx, fy );
 	} else {
-		cerr << "Adding creature direct...";
 		//int ffx, ffy;
 		//replacement->findPlace( cx, cy, &ffx, &ffy );
 		replacement->moveTo( cx, cy, 0 );

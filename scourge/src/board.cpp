@@ -224,6 +224,34 @@ void Board::initLocations() {
 			v = cities[key];
 		}
 		v->push_back( city );
+	}
+	
+	v = config->getDocument()->getChildrenByName( "generator" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		config->setUpdate( _( "Loading Locations" ), i, v->size() );
+		
+		CreatureGenerator *generator = new CreatureGenerator();
+		strcpy( generator->monster, node->getValueAsString( "monster" ) );
+		strcpy( tmp, node->getValueAsString( "region" ) );
+		generator->rx = atoi( strtok( tmp, "," ) );
+		generator->ry = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "location" ) );
+		generator->x = atoi( strtok( tmp, "," ) );
+		generator->y = atoi( strtok( NULL, "," ) );
+		generator->count = node->getValueAsInt( "count" );
+		
+		sprintf( tmp, "%d,%d", generator->rx, generator->ry );
+		string key = tmp;
+		vector<CreatureGenerator*> *v;
+		if( generators.find( key ) == generators.end() ) {
+			v = new vector<CreatureGenerator*>();
+			generators[key] = v;
+		} else {
+			v = generators[key];
+		}
+		v->push_back( generator );
 	}	
 	delete config;
 }
@@ -290,6 +318,35 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 			break;
 		}
 	}
+}
+
+std::vector<CreatureGenerator*> *Board::getGeneratorsForRegion( int rx, int ry ) {
+	std::vector<CreatureGenerator*> *v = NULL;
+	char tmp[80];
+	sprintf( tmp, "%d,%d", rx, ry );
+	std::string key = tmp;
+	if( generators.find( key ) != generators.end() ) {
+		v = generators[key];
+	} else {
+		// if no generators were given (and there is no city) create some now
+		v = new vector<CreatureGenerator*>();
+		generators[key] = v;
+		
+		if( getCitiesForRegion( rx, ry ) == NULL ) {
+			int count = Util::dice( 5 ); 
+			for( int i = 0; i < count; i++ ) {
+				CreatureGenerator *generator = new CreatureGenerator();
+				generator->rx = rx;
+				generator->ry = ry;
+				generator->x = Util::pickOne( MAP_UNIT * 2, MAP_WIDTH / 2 - MAP_UNIT * 2 );
+				generator->y = Util::pickOne( MAP_UNIT * 2, MAP_WIDTH / 2 - MAP_UNIT * 2 );
+				generator->count = Util::pickOne( 1, 10 );
+				strcpy( generator->monster, Monster::getRandomMonsterType( 1 ) );
+				v->push_back( generator );
+			}
+		}
+	}
+	return v;
 }
 
 Mission::Mission( Board *board, int level, int depth, bool replayable,

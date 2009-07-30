@@ -87,6 +87,19 @@ public:
 	}
 };
 
+class CreatureGenerator {
+public:
+	char monster[255];
+	int rx, ry, x, y;
+	int count;
+	
+	CreatureGenerator() {
+	}
+	
+	~CreatureGenerator() {
+	}	
+};
+
 /// Extra info associated with npc-s on an edited level.
 
 class NpcInfo {
@@ -353,6 +366,7 @@ private:
 	std::vector<Mission*> storylineMissions;
 	int storylineIndex;
 
+	std::map<std::string, std::vector<CreatureGenerator*>*> generators;
 	std::map<std::string, std::vector<MapCity*>*> cities;
 	std::map<std::string, std::vector<MapPlace*>*> places;
 	std::map<std::string, MapPlace*> placesByShortName;
@@ -389,6 +403,8 @@ public:
 			return cities[key];
 		}
 	}
+	
+	std::vector<CreatureGenerator*> *getGeneratorsForRegion( int rx, int ry );
 
 	inline Session *getSession() {
 		return session;
