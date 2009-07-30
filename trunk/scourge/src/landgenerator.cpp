@@ -122,17 +122,44 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	
 	// add any cities
 	// todo: cities may extend into neighboring regions
-	int params[8];	
+	int params[8];
 	vector<MapCity*> *cities = shapePal->getSession()->getBoard()->getCitiesForRegion( regionX, regionY );
 	for( unsigned i = 0; cities && i < cities->size(); i++ ) {
 		MapCity *city = cities->at(i);
 		params[0] = city->rx;
 		params[1] = city->ry;
-		params[2] = city->x;
-		params[3] = city->y;
+		params[2] = mapPosX * OUTDOORS_STEP + city->x;
+		params[3] = mapPosY * OUTDOORS_STEP + city->y;
 		params[4] = city->w;
 		params[5] = city->h;
 		shapePal->getSession()->getSquirrel()->callIntArgMethod( "generate_city", 6, params );
+	}	
+	
+	// add any generators
+	vector<CreatureGenerator*> *generators = shapePal->getSession()->getBoard()->getGeneratorsForRegion( regionX, regionY );
+	for( unsigned i = 0; generators && i < generators->size(); i++ ) {
+		CreatureGenerator *generator = generators->at( i );
+		
+		// add monsters with generator to clone themselves upon their demise
+		Monster *monster = Monster::getMonsterByName( generator->monster );
+		if ( !monster ) {
+			cerr << "Warning: can't find monster for generator: " << generator->monster << endl;
+			break;
+		}
+		GLShape *shape =
+		  shapePal->getCreatureShape( monster->getModelName(),
+		                              monster->getSkinName(),
+		                              monster->getScale(),
+		                              monster );
+		Creature *creature = shapePal->getSession()->newCreature( monster, shape );
+		creature->findPlaceBoundedRadial( mapPosX * OUTDOORS_STEP + generator->x, mapPosY * OUTDOORS_STEP + generator->y, MAP_UNIT );
+		// creature->setGenerator( generator );
+		
+		// register with squirrel: this is only need in the land generator b/c no new level is started between maps
+		shapePal->getSession()->getSquirrel()->registerCreature( creature );
+		for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
+			shapePal->getSession()->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+		}				
 	}	
 	
 	// event handler for custom map processing

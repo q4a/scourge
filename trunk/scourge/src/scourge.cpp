@@ -3522,22 +3522,22 @@ bool Scourge::isLevelShaded() {
 }
 
 void Scourge::printToConsole( const char *s ) {
-//	if ( squirrelLabel && squirrelWin ) {
-//		if ( squirrelWin->isVisible() ) {
-//			//cerr << s << endl;
-//			string q( s );
-//			// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
-//			size_t pos = q.find_first_of( "\n\r" );
-//			while ( pos != string::npos ) {
-//				q[pos] = '|';
-//				pos = q.find_first_of( "\n\r", pos );
-//			}
-//			// cerr << s << endl;
-//			squirrelLabel->appendText( q.c_str() );
-//		}
-//	} else {
+	if ( squirrelLabel && squirrelWin ) {
+		if ( squirrelWin->isVisible() ) {
+			//cerr << s << endl;
+			string q( s );
+			// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
+			size_t pos = q.find_first_of( "\n\r" );
+			while ( pos != string::npos ) {
+				q[pos] = '|';
+				pos = q.find_first_of( "\n\r", pos );
+			}
+			// cerr << s << endl;
+			squirrelLabel->appendText( q.c_str() );
+		}
+	} else {
 		cerr << "&&& SQUIRREL: " << s << endl;
-//	}
+	}
 }
 
 char const* Scourge::getDeityLocation( Location *pos ) {
