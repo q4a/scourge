@@ -139,27 +139,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	vector<CreatureGenerator*> *generators = shapePal->getSession()->getBoard()->getGeneratorsForRegion( regionX, regionY );
 	for( unsigned i = 0; generators && i < generators->size(); i++ ) {
 		CreatureGenerator *generator = generators->at( i );
-		
-		// add monsters with generator to clone themselves upon their demise
-		Monster *monster = Monster::getMonsterByName( generator->monster );
-		if ( !monster ) {
-			cerr << "Warning: can't find monster for generator: " << generator->monster << endl;
-			break;
-		}
-		GLShape *shape =
-		  shapePal->getCreatureShape( monster->getModelName(),
-		                              monster->getSkinName(),
-		                              monster->getScale(),
-		                              monster );
-		Creature *creature = shapePal->getSession()->newCreature( monster, shape );
-		creature->findPlaceBoundedRadial( mapPosX * OUTDOORS_STEP + generator->x, mapPosY * OUTDOORS_STEP + generator->y, MAP_UNIT );
-		// creature->setGenerator( generator );
-		
-		// register with squirrel: this is only need in the land generator b/c no new level is started between maps
-		shapePal->getSession()->getSquirrel()->registerCreature( creature );
-		for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
-			shapePal->getSession()->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
-		}				
+		shapePal->getSession()->addGenerator( generator );
 	}	
 	
 	// event handler for custom map processing

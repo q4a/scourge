@@ -943,3 +943,33 @@ Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
 	cerr << "\t\tmission id=" << mission->getMissionId() << endl;
 	return mission;
 }
+
+void CreatureGenerator::generate( Session *session, int offsetX, int offsetY ) {
+	// remove the dead creatures
+	for( unsigned int i = 0; i < creatures.size(); i++ ) {
+		if ( creatures[i]->getStateMod( StateMod::dead ) ) {
+			creatures.erase( creatures.begin() + i );
+			i--;
+		}
+	}
+	
+	// generate new ones
+	int n = this->count - creatures.size();
+	for( int i = 0; i < n; i++ ) {
+		// add monsters with generator to clone themselves upon their demise
+		Monster *monster = Monster::getMonsterByName( this->monster );
+		if ( !monster ) {
+			cerr << "Warning: can't find monster for generator: " << monster << endl;
+			break;
+		}
+		GLShape *shape = session->getShapePalette()->getCreatureShape( monster->getModelName(), 
+		                                                               monster->getSkinName(), 
+		                                                               monster->getScale(),
+		                                                               monster );
+		Creature *creature = session->newCreature( monster, shape );
+		creature->findPlaceBoundedRadial( offsetX + this->x, offsetY + this->y, MAP_UNIT );
+		creature->startEffect( Constants::EFFECT_TELEPORT, Constants::DAMAGE_DURATION * 4 );
+		session->registerWithSquirrel( creature );
+		creatures.push_back( creature );
+	}
+}

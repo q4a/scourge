@@ -854,7 +854,7 @@ protected:
 	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
 	void loadOrGenerateLargeMap();
 	void generateRegion( int rx, int ry, int posX, int posY );
-	void cleanUpAfterMission();
+	void cleanUpAfterMission( bool hide_ui = true );
 	bool changeLevel();
 	void endGame();
 	std::string getCurrentMapName( const std::string& dirName, int depth = -1, std::string *mapFileName = NULL );

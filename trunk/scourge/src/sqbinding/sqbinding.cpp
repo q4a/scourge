@@ -344,6 +344,7 @@ bool SqBinding::startLevel( const char *methodName ) {
 }
 
 bool SqBinding::endLevel( bool callMapEvents ) {
+	cerr << ">>>>>>>>>>>>>>>>>>> END LEVEL <<<<<<<<<<<<<<<<<" << endl;
 	bool ret = ( callMapEvents ? callMapMethod( "exitMap", session->getMap()->getName() ) : true );
 
 	// destroy the creatures of the level

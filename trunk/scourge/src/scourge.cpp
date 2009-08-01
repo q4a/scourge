@@ -477,7 +477,7 @@ void Scourge::startMission( bool startInHq ) {
 			
 			// run mission
 			getSDLHandler()->mainLoop();
-
+			
 			setAmbientPaused( true );
 			getSession()->getSound()->stopRain();
 			// Save the current map (except HQ)
@@ -581,7 +581,6 @@ bool Scourge::saveCurrentMap( const string& dirName ) {
 	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
 	string result;
 	levelMap->saveMap( path, result, true, REF_TYPE_OBJECT );
-	cerr << "\tresult=" << result << endl;
 
 	return true;
 }
@@ -806,8 +805,6 @@ std::string Scourge::getSavedRegionFile( int regionX, int regionY ) {
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	
-	session->deleteCreaturesAndItems( true );
-	
 	loadOrGenerateLargeMap();
 	
 //	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
@@ -896,6 +893,9 @@ void Scourge::loadOrGenerateLargeMap() {
 			                          toint( getParty()->getParty( r )->getZ() ) );
 		}
 	}
+	
+	// reset things but don't hide the ui
+	cleanUpAfterMission( false );
 
 	// if landGenerator already exists, it may not be the sessions terrainGenerator (and it needs to be if getClimate is going to work)
 	if ( landGenerator )
@@ -906,6 +906,12 @@ void Scourge::loadOrGenerateLargeMap() {
 	generateRegion( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, QUARTER_DEPTH_IN_NODES );
 	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 
                   QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
+	
+	// register creatures/items
+	getSession()->getSquirrel()->startLevel( NULL );
+	
+	// run the generators both on generate and load; it will create monsters as needed
+	getSession()->runGenerators();	
 	
 	// when done, set up the ground textures
 	landGenerator->initOutdoorsGroundTexture( levelMap );
@@ -975,11 +981,14 @@ void Scourge::showLevelInfo() {
 	}
 }
 
-void Scourge::cleanUpAfterMission() {
+void Scourge::cleanUpAfterMission( bool hide_ui ) {
+	// remove the generators
+	getSession()->clearGenerators();
+	
 	// clean up after the mission
 	resetInfos();
 
-	hideGui();
+	if( hide_ui ) hideGui();
 
 	resetBattles();
 
