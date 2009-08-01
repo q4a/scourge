@@ -56,6 +56,7 @@ class Sound;
 class Cutscene;
 class TerrainGenerator;
 class Weather;
+class CreatureGenerator;
 
 /**
  *@author Gabor Torok
@@ -87,6 +88,7 @@ private:
 	std::vector<Creature*> creatures;
 	std::set<Creature*> nonVisibleCreatures;
 	std::set<Uint16> visitedRegions;
+	std::vector<CreatureGenerator*> generators;
 
 	SqBinding *squirrel;
 	std::map<RpgItem*, Item*> special;
@@ -128,6 +130,12 @@ public:
 	virtual ~Session();
 
 	void initialize();
+	
+	inline void addGenerator( CreatureGenerator *generator ) { generators.push_back( generator ); }
+	inline void clearGenerators() { generators.clear(); }
+	void runGenerators();
+	void runGenerators( int rx, int ry, int offsetX, int offsetY );
+	void registerWithSquirrel( Creature *creature );
 	
 	inline void setExiting( bool b ) { exiting = b; }
 	inline bool isExiting() { return exiting; }

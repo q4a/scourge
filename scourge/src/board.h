@@ -93,11 +93,17 @@ public:
 	int rx, ry, x, y;
 	int count;
 	
+	// transient
+	std::vector<Creature*> creatures;
+	
 	CreatureGenerator() {
 	}
 	
 	~CreatureGenerator() {
-	}	
+	}
+	
+	void generate( Session *session, int offsetX, int offsetY );
+	
 };
 
 /// Extra info associated with npc-s on an edited level.

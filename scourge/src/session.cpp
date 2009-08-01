@@ -299,10 +299,7 @@ Creature *Session::addWanderingHeroFromScript( int level, int cx, int cy, int cz
 	Creature *creature = (Creature*)SqBinding::sessionRef->getGameAdapter()->createWanderingHero( level );
 
 	// register with squirrel
-	getSquirrel()->registerCreature( creature );
-	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
-		getSquirrel()->registerItem( creature->getBackpackItem( i ) );
-	}
+	registerWithSquirrel( creature );
 
 //	if ( fx && fy ) {
 		int fx, fy;
@@ -332,10 +329,7 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 	Creature *replacement = newCreature( monster, shape );
 
 	// register with squirrel
-	getSquirrel()->registerCreature( replacement );
-	for ( int i = 0; i < replacement->getBackpackContentsCount(); i++ ) {
-		getSquirrel()->registerItem( replacement->getBackpackItem( i ) );
-	}
+	registerWithSquirrel( replacement );
 
 	bool b = true;
 	if( r > 0 ) {
@@ -348,7 +342,6 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 		replacement->moveTo( cx, cy, 0 );
 		getMap()->setCreature( cx, cy, 0, replacement );
 	}
-	cerr << " result=" << b << endl;
 	replacement->cancelTarget();
 
 	return replacement;
@@ -599,6 +592,8 @@ void Session::creatureDeath( Creature *creature ) {
 		item->addContainedItem( creature->removeFromBackpack( 0 ), true );
 	}
 	creature->setStateMod( StateMod::dead, true );
+	
+	runGenerators();
 
 	creature->setCauseOfDeath( creature->getPendingCauseOfDeath() );
 
@@ -873,4 +868,32 @@ void Session::clearMissions() {
 	}
 	missions.clear();
 	currentMission = -1;
+}
+
+void Session::runGenerators() {
+	if( !getMap()->isHeightMapEnabled() ) return;
+	
+	int orx = getMap()->getRegionX();
+	int ory = getMap()->getRegionY();
+	runGenerators( orx, ory, 0, 0 );
+	runGenerators( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, QUARTER_WIDTH_IN_NODES, 0 );	
+	runGenerators( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, QUARTER_DEPTH_IN_NODES );
+	runGenerators( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 
+                  QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
+}
+	
+void Session::runGenerators( int rx, int ry, int offsetX, int offsetY ) {
+	for( unsigned int i = 0; i < generators.size(); i++ ) {
+		CreatureGenerator *generator = generators[i];
+		if( generator->rx == rx && generator->ry == ry ) {
+			generator->generate( this, offsetX, offsetY );
+		}
+	}
+}
+
+void Session::registerWithSquirrel( Creature *creature ) {
+	getSquirrel()->registerCreature( creature );
+	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
+		getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+	}
 }
