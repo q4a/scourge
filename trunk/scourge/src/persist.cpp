@@ -192,6 +192,32 @@ void deleteTrapInfo( TrapInfo *info ) {
 	delete info;
 }
 
+void saveGenerator( File *file, GeneratorInfo *info ) {
+	file->write( &( info->version ) );
+	file->write( &( info->rx ) );
+	file->write( &( info->ry ) );
+	file->write( &( info->x ) );
+	file->write( &( info->y ) );
+	file->write( &( info->count ) );
+	file->write( info->monster, 255 );
+}
+
+GeneratorInfo *loadGenerator( File *file ) {
+	GeneratorInfo *info = new GeneratorInfo;
+	file->read( &( info->version ) );
+	file->read( &( info->rx ) );
+	file->read( &( info->ry ) );
+	file->read( &( info->x ) );
+	file->read( &( info->y ) );
+	file->read( &( info->count ) );
+	file->read( info->monster, 255 );
+	return info;
+}
+
+void deleteGeneratorInfo( GeneratorInfo *info ) {
+	delete info;
+}
+
 void deleteDiceInfo( DiceInfo *info ) {
 	delete info;
 }
@@ -240,6 +266,18 @@ TrapInfo *Persist::createTrapInfo( int x, int y, int w, int h, int type, bool di
 	info->type = ( Uint8 )type;
 	info->discovered = ( Uint8 )discovered;
 	info->enabled = ( Uint8 )enabled;
+	return info;
+}
+
+GeneratorInfo *Persist::createGeneratorInfo( int rx, int ry, int x, int y, int count, char *monster ) {
+	GeneratorInfo *info = new GeneratorInfo;
+	info->version = PERSIST_VERSION;
+	info->rx = ( Uint16 )rx;
+	info->ry = ( Uint16 )ry;
+	info->x = ( Uint16 )x;
+	info->y = ( Uint16 )y;
+	info->count = ( Uint8 )count;
+	strncpy( (char*)info->monster, monster, 254 );
 	return info;
 }
 
@@ -380,6 +418,10 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 	file->write( &( info->trapCount ) );
 	for ( int i = 0; i < info->trapCount; i++ ) {
 		saveTrap( file, info->trap[ i ] );
+	}
+	file->write( &( info->generatorCount ) );
+	for( int i = 0; i < info->generatorCount; i++ ) {
+		saveGenerator( file, info->generator[ i ] );
 	}
 	file->write( &( info->outdoorTextureInfoCount ) );
 	for ( int x = 0; x < static_cast<int>( info->outdoorTextureInfoCount ); x++ ) {
@@ -611,6 +653,14 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->trapCount = 0;
 	}
+	if( info->version >= 49 ) {
+		file->read( &( info->generatorCount ) );
+		for( int i = 0; i < info->generatorCount; i++ ) {
+			info->generator[i] = loadGenerator( file );
+		}
+	} else {
+		info->generatorCount = 0;
+	}
 	if ( info->version >= 40 ) {
 		file->read( &( info->outdoorTextureInfoCount ) );
 		for ( int x = 0; x < static_cast<int>( info->outdoorTextureInfoCount ); x++ ) {
@@ -653,6 +703,9 @@ void Persist::deleteMapInfo( MapInfo *info ) {
 	}
 	for ( int i = 0; i < static_cast<int>( info->trapCount ); i++ ) {
 		deleteTrapInfo( info->trap[i] );
+	}
+	for ( int i = 0; i < static_cast<int>( info->generatorCount ); i++ ) {
+		deleteGeneratorInfo( info->generator[i] );
 	}
 	for ( int i = 0; i < static_cast<int>( info->outdoorTextureInfoCount ); i++ ) {
 		delete info->outdoorTexture[i];

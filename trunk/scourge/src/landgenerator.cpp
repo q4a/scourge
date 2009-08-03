@@ -139,6 +139,9 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	vector<CreatureGenerator*> *generators = shapePal->getSession()->getBoard()->getGeneratorsForRegion( regionX, regionY );
 	for( unsigned i = 0; generators && i < generators->size(); i++ ) {
 		CreatureGenerator *generator = generators->at( i );
+		// adjust the generator's coordinates: this assumes that each region is only generated once
+		generator->x += mapPosX * OUTDOORS_STEP;
+		generator->y += mapPosY * OUTDOORS_STEP;
 		shapePal->getSession()->addGenerator( generator );
 	}	
 	

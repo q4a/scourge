@@ -279,6 +279,10 @@ public:
 	 * 5 - vegetation (if includeClimateAndVegetation)
 	 */
 	virtual void getMapRegionAndPos( int *mapPos, bool includeClimateAndVegetation=false ) {}
+	
+	virtual int getGeneratorCount( int region_x, int region_y );
+	virtual GeneratorInfo *getGeneratorInfo( int region_x, int region_y, int index );
+	virtual void loadGenerator( GeneratorInfo *info );
 };
 
 /// SDL/OpenGL related extensions to GameAdapter.

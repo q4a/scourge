@@ -2724,7 +2724,8 @@ void Map::handleEvent( SDL_Event *event ) {
 
 #define NEG_GROUND_HEIGHT 0x00100000
 void Map::saveMap( const string& name, string& result, bool absolutePath, int referenceType, 
-                   int save_start_x, int save_end_x, int save_start_y, int save_end_y ) {
+                   int save_start_x, int save_end_x, int save_start_y, int save_end_y, 
+                   int region_x, int region_y ) {
 
 	if ( name.length() == 0 ) {
 		result = _( "You need to name the map first." );
@@ -2912,6 +2913,12 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 		Trap trap = trapList[ i ];
 		info->trap[i] = Persist::createTrapInfo( trap.r.x, trap.r.y, trap.r.w, trap.r.h, trap.type, trap.discovered, trap.enabled );
 	}
+	
+	// save the generators
+	info->generatorCount = (Uint8)adapter->getGeneratorCount( region_x, region_y );
+	for( int i = 0; i < adapter->getGeneratorCount( region_x, region_y ); i++ ) {
+		info->generator[i] = adapter->getGeneratorInfo( region_x, region_y, i );
+	}
 
 	string fileName;
 	if ( absolutePath ) {
@@ -2953,8 +2960,8 @@ void Map::initForCave( char *themeName ) {
 	setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
-bool Map::loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY ) {
-	return loadMap( name, result, report, 1, 0, false, false, false, false, NULL, NULL, true, NULL, posX, posY, false );
+bool Map::loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY, int region_x, int region_y ) {
+	return loadMap( name, result, report, 1, 0, false, false, false, false, NULL, NULL, true, NULL, posX, posY, false, region_x, region_y );
 }
 
 bool Map::loadMap( const string& name, std::string& result, StatusReport *report,
@@ -2965,7 +2972,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
                    vector< RenderedCreature* > *creatures,
                    bool absolutePath,
                    char *templateMapName, 
-                   int posX, int posY, bool resetMap ) {
+                   int posX, int posY, bool resetMap,
+                   int region_x, int region_y ) {
 	if ( !name.length() ) {
 		result = _( "Enter a name of a map to load." );
 		return false;
@@ -3222,6 +3230,15 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		trap->discovered = ( trapInfo->discovered != 0 );
 		trap->enabled = ( trapInfo->enabled != 0 );
 		trap->type = static_cast<int>( trapInfo->type );
+	}
+	
+	// load the generators
+	for( int i = 0; i < info->generatorCount; i++ ) {
+		int x = info->generator[i]->x - info->map_start_x + posX * OUTDOORS_STEP;
+		int y = info->generator[i]->y - info->map_start_y + posY * OUTDOORS_STEP; 
+		info->generator[i]->x = x;
+		info->generator[i]->y = y;		
+		adapter->loadGenerator( info->generator[i] );
 	}
 
 	// load doors

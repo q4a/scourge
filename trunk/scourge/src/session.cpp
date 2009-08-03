@@ -873,27 +873,117 @@ void Session::clearMissions() {
 void Session::runGenerators() {
 	if( !getMap()->isHeightMapEnabled() ) return;
 	
-	int orx = getMap()->getRegionX();
-	int ory = getMap()->getRegionY();
-	runGenerators( orx, ory, 0, 0 );
-	runGenerators( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, QUARTER_WIDTH_IN_NODES, 0 );	
-	runGenerators( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, QUARTER_DEPTH_IN_NODES );
-	runGenerators( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 
-                  QUARTER_WIDTH_IN_NODES, QUARTER_DEPTH_IN_NODES );
-}
-	
-void Session::runGenerators( int rx, int ry, int offsetX, int offsetY ) {
 	for( unsigned int i = 0; i < generators.size(); i++ ) {
 		CreatureGenerator *generator = generators[i];
-		if( generator->rx == rx && generator->ry == ry ) {
-			generator->generate( this, offsetX, offsetY );
-		}
-	}
+		generator->generate( this );
+	}	
 }
-
+	
 void Session::registerWithSquirrel( Creature *creature ) {
 	getSquirrel()->registerCreature( creature );
 	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
 		getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+	}
+}
+
+int Session::getGeneratorCount( int rx, int ry ) {
+	int count = 0;
+	for( unsigned int i = 0; i < generators.size(); i++ ) {
+		CreatureGenerator *generator = generators[i];
+		if( generator->rx == rx && generator->ry == ry ) {
+			count++;
+		}
+	}
+	//cerr << "++++ getGeneratorCount: region " << rx << "," << ry << " has " << count << " generators." << endl;
+	return count;
+}
+
+GeneratorInfo *Session::getGeneratorInfo( int rx, int ry, int index ) {
+	//cerr << "++++ getGeneratorInfo: looking for generator in region " << rx << "," << ry << " index " << index << " generators." << endl;
+	int count = 0;
+	for( unsigned int i = 0; i < generators.size(); i++ ) {
+		CreatureGenerator *generator = generators[i];
+		if( generator->rx == rx && generator->ry == ry ) {
+			if( count == index ) {
+				//cerr << "\t++++ found it." << endl; 
+				return Persist::createGeneratorInfo( generator->rx, generator->ry, generator->x, generator->y, generator->count, generator->monster );
+			}
+			count++;
+		}
+	}
+	cerr << "*** Error: couldn't find generator index=" << index << " for region: " << rx << "," << ry << endl;
+	return NULL;
+}
+
+void Session::loadGenerator( GeneratorInfo *info ) {
+	CreatureGenerator *generator = new CreatureGenerator();
+	generator->rx = info->rx;
+	generator->ry = info->ry;
+	generator->x = info->x;
+	generator->y = info->y;
+	generator->count = info->count;
+	strcpy( generator->monster, (char*)info->monster );
+	//cerr << "++++ loadGenerator: Loaded generator at " << generator->x << "," << generator->y << " count=" << generator->count << endl;
+	generators.push_back( generator );
+}
+
+void Session::assignCreaturesToGenerators() {
+	if( !getMap()->isHeightMapEnabled() ) return;
+	
+	// find the creatures not assigned to a generator
+	std::vector<Creature*> c;
+	for( unsigned int i = 0; i < creatures.size(); i++ ) {
+		Creature *creature = creatures[i];
+		if( creature->isMonster() && !creature->getStateMod( StateMod::dead ) ) { 
+			bool found = false;
+			for( unsigned int t = 0; !found && t < generators.size(); t++ ) {
+				CreatureGenerator *generator = generators[t];
+				for( unsigned int r = 0; !found && r < generator->creatures.size(); r++ ) {
+					if( creature == generator->creatures[r] ) {
+						found = true;
+					}
+				}
+			}
+			if( !found ) {
+				c.push_back( creature );
+			}
+		}
+	}
+
+	//cerr << "assigning " << c.size() << " creatures to " << generators.size() << " generators..." << endl;
+	
+	// remove the dead creatures from each generator (maybe there can't be any dead creatures at this point?)
+	for( unsigned int t = 0; t < generators.size(); t++ ) {
+		CreatureGenerator *generator = generators[t];
+		//cerr << "\tgenerator at " << generator->x << "," << generator->y << " count=" << generator->count << endl;
+		generator->removeDead();
+	}
+		
+	// assign creatures to closest generator
+	for( unsigned int i = 0; i < c.size(); i++ ) {
+		Creature *creature = c[i];
+		
+		CreatureGenerator *closest = NULL;
+		float dist = 0;
+		for( unsigned int t = 0; t < generators.size(); t++ ) {
+			CreatureGenerator *generator = generators[t];
+			if( generator->count - generator->creatures.size() > 0 ) {
+				float d = Constants::distance( creature->getX(), creature->getY(), creature->getShape()->getWidth(), creature->getShape()->getDepth(), 
+				                               generator->x, generator->y, 1, 1 );
+				if( closest == NULL || d < dist ) {
+					closest = generator;
+					dist = d;
+				}
+			}
+		}
+		
+		if( closest ) {
+			//cerr << "\t\tadding " << creature->getType() << " at " << creature->getX() << "," << creature->getY() << 
+			//	" to generator at " << closest->x << "," << closest->y << endl; 
+			closest->creatures.push_back( creature );
+		} else {
+			//cerr << "\t\tno generators w/o creatures were found." << endl;
+			break;
+		}
 	}
 }
