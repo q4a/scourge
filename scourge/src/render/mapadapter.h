@@ -105,6 +105,11 @@ public:
 	
 	virtual void saveMapRegions() = 0;
 	virtual void mapRegionsChanged( float party_x, float party_y ) = 0;
+	
+	// save/load generators
+	virtual int getGeneratorCount( int region_x, int region_y ) = 0;
+	virtual GeneratorInfo *getGeneratorInfo( int region_x, int region_y, int index ) = 0;
+	virtual void loadGenerator( GeneratorInfo *info ) = 0;
 };
 
 #endif

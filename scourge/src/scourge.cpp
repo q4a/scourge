@@ -784,16 +784,16 @@ void Scourge::saveMapRegions() {
 	string s, result;
 
 	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() );
-	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, 0, MAP_DEPTH / 2 );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, 0, MAP_DEPTH / 2, levelMap->getRegionX(), levelMap->getRegionY() );
 	
 	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() );
-	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, 0, MAP_DEPTH / 2 );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, 0, MAP_DEPTH / 2, levelMap->getRegionX() + 1, levelMap->getRegionY() );
 	
 	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() + 1 );	
-	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, MAP_DEPTH / 2, MAP_DEPTH );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, MAP_DEPTH / 2, MAP_DEPTH, levelMap->getRegionX(), levelMap->getRegionY() + 1 );
 	
 	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() + 1 );	
-	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, MAP_DEPTH / 2, MAP_DEPTH );
+	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, MAP_DEPTH / 2, MAP_DEPTH, levelMap->getRegionX() + 1, levelMap->getRegionY() + 1 );
 }
 
 std::string Scourge::getSavedRegionFile( int regionX, int regionY ) {
@@ -864,7 +864,7 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 	if( will_load_map ) {
 		cerr << "LOADING map region: " << rx << "," << ry << endl;
 		string result;
-		bool loaded = levelMap->loadRegionMap( map_file, result, this, posX, posY );
+		bool loaded = levelMap->loadRegionMap( map_file, result, this, posX, posY, rx, ry );
 		cerr << "LOAD MAP loaded?=" << loaded << " result=" << result << endl;
 	} else {
 		cerr << "GENERATING map region: " << rx << "," << ry << endl;
@@ -909,6 +909,9 @@ void Scourge::loadOrGenerateLargeMap() {
 	
 	// register creatures/items
 	getSession()->getSquirrel()->startLevel( NULL );
+	
+	// assign monsters to generators
+	getSession()->assignCreaturesToGenerators();
 	
 	// run the generators both on generate and load; it will create monsters as needed
 	getSession()->runGenerators();	

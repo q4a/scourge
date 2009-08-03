@@ -348,8 +348,9 @@ public:
 
 
 	void saveMap( const std::string& name, std::string& result, bool absolutePath = false, int referenceType = REF_TYPE_NAME,
-	              int save_start_x=0, int save_end_x=MAP_WIDTH, int save_start_y=0, int save_end_y=MAP_DEPTH );
-	bool loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY );
+	              int save_start_x=0, int save_end_x=MAP_WIDTH, int save_start_y=0, int save_end_y=MAP_DEPTH, 
+	              int region_x = -1, int region_y = -1 );
+	bool loadRegionMap( const string& name, std::string& result, StatusReport *report, int posX, int posY, int region_x, int region_y );
 	bool loadMap( const std::string& name, std::string& result, StatusReport *report = NULL,
 	              int level = 1, int depth = 0,
 	              bool changingStory = false, bool fromRandom = false,
@@ -359,7 +360,8 @@ public:
 	              bool absolutePath = false,
 	              char *templateMapName = NULL,
 	              int posX = 0, int posY = 0,
-	              bool resetMap = true );
+	              bool resetMap = true,
+	              int region_x = -1, int region_y = -1 );
 	void loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth = 0 );
 	void initForCave( char *themeName = NULL );
 

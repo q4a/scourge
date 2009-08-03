@@ -102,7 +102,8 @@ public:
 	~CreatureGenerator() {
 	}
 	
-	void generate( Session *session, int offsetX, int offsetY );
+	void removeDead();
+	void generate( Session *session );
 	
 };
 

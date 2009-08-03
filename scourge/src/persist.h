@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 48
+#define PERSIST_VERSION 49
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -156,6 +156,13 @@ struct TrapInfo {
 	Uint8 type, discovered, enabled;
 };
 
+struct GeneratorInfo {
+	Uint32 version;
+	Uint8 count;
+	Uint16 rx, ry, x, y;
+	Uint8 monster[255];
+};
+
 /// Info on the ground texturing at an outdoor map position.
 struct OutdoorTextureInfo {
 	Uint16 x, y, z;
@@ -193,6 +200,8 @@ struct MapInfo {
 	Uint8 vegetation[ MAP_TILES_X ][ MAP_TILES_Y ];
 	Uint8 trapCount;
 	TrapInfo *trap[ 255 ];
+	Uint8 generatorCount;
+	GeneratorInfo *generator[ 255 ];
 	Uint32 outdoorTextureInfoCount;
 	OutdoorTextureInfo *outdoorTexture[ ( MAP_TILES_X ) * ( MAP_TILES_Y ) * ( MAX_OUTDOOR_LAYER ) ];
 };
@@ -218,6 +227,7 @@ namespace Persist {
 LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
 RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
 TrapInfo *createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled );
+GeneratorInfo *createGeneratorInfo( int rx, int ry, int x, int y, int count, char *monster );
 LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
 DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
 OutdoorTextureInfo *createOutdoorTextureInfo( Uint16 x, Uint16 y, Uint16 z );

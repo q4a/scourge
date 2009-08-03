@@ -944,7 +944,7 @@ Mission *MapPlace::findOrCreateMission( Board *board, MissionInfo *info ) {
 	return mission;
 }
 
-void CreatureGenerator::generate( Session *session, int offsetX, int offsetY ) {
+void CreatureGenerator::removeDead() {
 	// remove the dead creatures
 	for( unsigned int i = 0; i < creatures.size(); i++ ) {
 		if ( creatures[i]->getStateMod( StateMod::dead ) ) {
@@ -952,6 +952,10 @@ void CreatureGenerator::generate( Session *session, int offsetX, int offsetY ) {
 			i--;
 		}
 	}
+}
+
+void CreatureGenerator::generate( Session *session ) {
+	removeDead();
 	
 	// generate new ones
 	int n = this->count - creatures.size();
@@ -967,7 +971,7 @@ void CreatureGenerator::generate( Session *session, int offsetX, int offsetY ) {
 		                                                               monster->getScale(),
 		                                                               monster );
 		Creature *creature = session->newCreature( monster, shape );
-		creature->findPlaceBoundedRadial( offsetX + this->x, offsetY + this->y, MAP_UNIT );
+		creature->findPlaceBoundedRadial( this->x, this->y, MAP_UNIT );
 		creature->startEffect( Constants::EFFECT_TELEPORT, Constants::DAMAGE_DURATION * 4 );
 		session->registerWithSquirrel( creature );
 		creatures.push_back( creature );

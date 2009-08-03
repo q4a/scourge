@@ -99,6 +99,18 @@ RenderedCreature *GameAdapter::createMonster( CreatureInfo *info ) {
 	return Creature::load( session, info );
 }
 
+int GameAdapter::getGeneratorCount( int region_x, int region_y ) {
+	return getSession()->getGeneratorCount( region_x, region_y );
+}
+
+GeneratorInfo *GameAdapter::getGeneratorInfo( int region_x, int region_y, int index ) {
+	return getSession()->getGeneratorInfo( region_x, region_y, index );
+}
+
+void GameAdapter::loadGenerator( GeneratorInfo *info ) {
+	getSession()->loadGenerator( info );
+}
+
 /// Fills a container with random goodness.
 
 void GameAdapter::fillContainer( Item *container, int level, int depth ) {

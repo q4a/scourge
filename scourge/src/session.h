@@ -134,7 +134,11 @@ public:
 	inline void addGenerator( CreatureGenerator *generator ) { generators.push_back( generator ); }
 	inline void clearGenerators() { generators.clear(); }
 	void runGenerators();
-	void runGenerators( int rx, int ry, int offsetX, int offsetY );
+	int getGeneratorCount( int region_x, int region_y );
+	GeneratorInfo *getGeneratorInfo( int region_x, int region_y, int index );
+	void loadGenerator( GeneratorInfo *info );
+	void assignCreaturesToGenerators();
+	
 	void registerWithSquirrel( Creature *creature );
 	
 	inline void setExiting( bool b ) { exiting = b; }
