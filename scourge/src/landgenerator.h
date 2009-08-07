@@ -32,6 +32,7 @@ class Mission;
 class GLShape;
 class CellularAutomaton;
 class Texture;
+class Road;
 
 /// Outdoor specific terrain generator.
 class LandGenerator : public TerrainGenerator {
@@ -79,6 +80,7 @@ private:
 	
 	
 protected:
+	void drawRoad( Road *road, Map *map, ShapePalette *shapePal );
 	void loadMapGridBitmap();
 	void loadMapGridBitmapRegion();
 	void packMapData( std::vector<GLubyte> &image );

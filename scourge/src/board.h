@@ -87,6 +87,30 @@ public:
 	}
 };
 
+class RoadWalker;
+
+class Road {
+public:
+	char name[80], display_name[80];
+	int start_rx, start_ry, start_x, start_y;
+	int end_rx, end_ry, end_x, end_y;
+	bool straight;
+	
+	Road() {
+	}
+	~Road() {
+	}
+	
+	void walk( RoadWalker *walker );
+};
+
+class RoadWalker {
+public:	
+	RoadWalker() {}
+	virtual ~RoadWalker() {}
+	virtual void walk( Road *road, int rx, int ry, int x, int y ) = 0;
+};
+
 class CreatureGenerator {
 public:
 	char monster[255];
@@ -366,7 +390,7 @@ private:
 
 
 /// Manages the list of missions, and the advancement of the story line.
-class Board {
+class Board : public RoadWalker {
 private:
 	Session *session;
 //	std::vector<MissionTemplate *> templates;
@@ -377,9 +401,12 @@ private:
 	std::map<std::string, std::vector<MapCity*>*> cities;
 	std::map<std::string, std::vector<MapPlace*>*> places;
 	std::map<std::string, MapPlace*> placesByShortName;
+	std::map<std::string, std::set<Road*>*> roads;
+	std::set<Road*> allRoads;
 
 public:
-
+	void walk( Road *road, int rx, int ry, int x, int y );
+	
 	enum {
 		EVENT_HANDLED = 0,
 		EVENT_PLAY_MISSION = 1,
@@ -408,6 +435,17 @@ public:
 			return NULL;
 		} else {
 			return cities[key];
+		}
+	}
+	
+	inline std::set<Road*> *getRoadsForRegion( int rx, int ry ) {
+		char tmp[80];
+		sprintf( tmp, "%d,%d", rx, ry );
+		std::string key = tmp;
+		if( roads.find( key ) == roads.end() ) {
+			return NULL;
+		} else {
+			return roads[key];
 		}
 	}
 	

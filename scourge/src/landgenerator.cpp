@@ -120,6 +120,36 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		                  shapePal->findShapeByName( "GATE_DOWN_OUTDOORS" ) );
 	}
 	
+	// add roads
+	class MyRoadWalker : public RoadWalker {
+public:		
+		LandGenerator *generator;
+		
+		MyRoadWalker( LandGenerator *generator ) {
+			this->generator = generator;
+		}
+		
+		void walk( Road *road, int rx, int ry, int x, int y ) {
+			if( rx == generator->getRegionX() && ry == generator->getRegionY() ) {
+				cerr << "adding road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << endl;
+				int mapx = generator->getMapPositionX() * OUTDOORS_STEP + x;
+				int mapy = generator->getMapPositionY() * OUTDOORS_STEP + y;
+				Session::instance->getMap()->flattenChunk( mapx, mapy - MAP_UNIT );
+				string name = "road";
+				Session::instance->getMap()->addOutdoorTexture( mapx, mapy, name, 0, false, false );
+			}
+		}
+	};
+	MyRoadWalker walker( this );
+			
+	set<Road*> *roads = shapePal->getSession()->getBoard()->getRoadsForRegion( regionX, regionY );
+	if( roads ) {
+		for( set<Road*>::iterator e = roads->begin(); e != roads->end(); ++e ) {
+			Road *road = *e;
+			road->walk( &walker );
+		}
+	}
+	
 	// add any cities
 	// todo: cities may extend into neighboring regions
 	int params[8];
@@ -182,6 +212,11 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	monsters = true;
 
 	return true;
+}
+
+void LandGenerator::drawRoad( Road *road, Map *map, ShapePalette *shapePal ) {
+	
+	
 }
 
 MapRenderHelper* LandGenerator::getMapRenderHelper() {

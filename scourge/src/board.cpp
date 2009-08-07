@@ -136,6 +136,22 @@ void Board::initMissions() {
 	delete( config );	
 }
 
+void Board::walk( Road *road, int rx, int ry, int x, int y ) {
+	cerr << "+++ storing road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << endl;
+	char tmp[200];
+	sprintf( tmp, "%d,%d", rx, ry );
+	string key = tmp;
+	set<Road*> *v;
+	if( roads.find( key ) == roads.end() ) {
+		v = new set<Road*>();
+		roads[key] = v;
+	} else {
+		v = roads[key];
+	}
+	v->insert( road );
+	allRoads.insert( road );
+}
+
 void Board::initLocations() {
 	char tmp[200];
 	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
@@ -252,7 +268,33 @@ void Board::initLocations() {
 			v = generators[key];
 		}
 		v->push_back( generator );
-	}	
+	}
+	
+	v = config->getDocument()->getChildrenByName( "road" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		config->setUpdate( _( "Loading Locations" ), i, v->size() );
+		
+		Road *road = new Road();
+		strcpy( road->name, node->getValueAsString( "name" ) );
+		strcpy( road->display_name, node->getValueAsString( "display_name" ) );
+		strcpy( tmp, node->getValueAsString( "start_region" ) );
+		road->start_rx = atoi( strtok( tmp, "," ) );
+		road->start_ry = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "start_location" ) );
+		road->start_x = atoi( strtok( tmp, "," ) );
+		road->start_y = atoi( strtok( NULL, "," ) ) + MAP_UNIT;
+		strcpy( tmp, node->getValueAsString( "end_region" ) );
+		road->end_rx = atoi( strtok( tmp, "," ) );
+		road->end_ry = atoi( strtok( NULL, "," ) );
+		strcpy( tmp, node->getValueAsString( "end_location" ) );
+		road->end_x = atoi( strtok( tmp, "," ) );
+		road->end_y = atoi( strtok( NULL, "," ) ) + MAP_UNIT;
+		road->straight = node->getValueAsBool( "straight" );
+
+		road->walk( this );
+	}
 	delete config;
 }
 
@@ -277,6 +319,12 @@ Board::~Board() {
 		delete( v );
 	}
 	cities.clear();
+	for( set<Road*>::iterator e = allRoads.begin(); e != allRoads.end(); ++e ) {
+		Road *road = *e;
+		delete( road );
+	}
+	roads.clear();	
+	allRoads.clear();
 	for ( size_t i = 0; i < storylineMissions.size(); ++i ) {
 		delete storylineMissions[i];
 	}
@@ -975,5 +1023,89 @@ void CreatureGenerator::generate( Session *session ) {
 		creature->startEffect( Constants::EFFECT_TELEPORT, Constants::DAMAGE_DURATION * 4 );
 		session->registerWithSquirrel( creature );
 		creatures.push_back( creature );
+	}
+}
+
+void Road::walk( RoadWalker *walker ) {
+	cerr << "+++ Road: " << name << 
+		" START region: " << start_rx << "," << start_ry << " pos: " << start_x << "," << start_y <<
+		" END region: " << end_rx << "," << end_ry << " pos: " << end_x << "," << end_y << endl;
+	
+	int region_width_in_units = MAP_WIDTH / 2 / MAP_UNIT;
+	int region_depth_in_units = MAP_DEPTH / 2 / MAP_UNIT;
+	int abs_start_x = start_rx * region_width_in_units + start_x / MAP_UNIT;
+	int abs_start_y = start_ry * region_depth_in_units + start_y / MAP_UNIT;
+	int abs_end_x = end_rx * region_width_in_units + end_x / MAP_UNIT;
+	int abs_end_y = end_ry * region_depth_in_units + end_y / MAP_UNIT;
+	
+	cerr << "+++ abs START=" << abs_start_x << "," << abs_start_y <<
+	" END=" << abs_end_x << "," << abs_end_y << endl;
+	
+	// store road sections for each region
+	float ydiff = (float)( abs_start_y - abs_end_y );
+	float xdiff = (float)( abs_start_x - abs_end_x );
+	cerr << "+++ xdiff=" << xdiff << " ydiff=" << ydiff << endl;
+	if( ydiff == 0 ) {
+		cerr << "+++ moving vertically on x axis" << endl;
+		if( abs_start_x > abs_end_x ) {
+			int tmp_n = abs_start_x;
+			abs_start_x = abs_end_x;
+			abs_end_x = tmp_n;
+		}
+		for( int x = abs_start_x; x <= abs_end_x; x++ ) {
+			walker->walk( this, 
+			             (int)(x / (float)region_width_in_units), (int)(abs_start_y / (float)region_depth_in_units),
+			             (int)(x % region_width_in_units) * MAP_UNIT, (int)(abs_start_y % region_depth_in_units) * MAP_UNIT );
+		}
+	} else if( xdiff == 0 ) {
+		cerr << "+++ moving horizontally on x axis" << endl;
+		if( abs_start_y > abs_end_y ) {
+			int tmp_n = abs_start_y;
+			abs_start_y = abs_end_y;
+			abs_end_y = tmp_n;
+		}
+		for( int y = abs_start_y; y <= abs_end_y; y++ ) {
+			walker->walk( this, 
+			             (int)(abs_start_x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units), 
+			             (int)(abs_start_x % region_width_in_units) * MAP_UNIT, (int)(y % region_depth_in_units) * MAP_UNIT );
+		}
+	} else {
+		if( fabs( ydiff ) < fabs( xdiff ) ) {
+			float m = ydiff / xdiff;
+			cerr << "+++ moving on x axis delta y is " << m << endl;
+			if( abs_start_x > abs_end_x ) {
+				int tmp_n = abs_start_x;
+				abs_start_x = abs_end_x;
+				abs_end_x = tmp_n;
+				tmp_n = abs_start_y;
+				abs_start_y = abs_end_y;
+				abs_end_y = tmp_n;
+			}
+			float y = abs_start_y;
+			for( int x = abs_start_x; x <= abs_end_x; x++ ) {
+				walker->walk( this, 
+				           (int)(x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units),
+				           ( x % region_width_in_units )  * MAP_UNIT, ( (int)y % region_depth_in_units ) * MAP_UNIT );
+				y += m; 
+			}
+		} else {
+			float m = xdiff / ydiff;
+			cerr << "+++ moving on y axis delta x is " << m << endl;
+			if( abs_start_y > abs_end_y ) {
+				int tmp_n = abs_start_x;
+				abs_start_x = abs_end_x;
+				abs_end_x = tmp_n;
+				tmp_n = abs_start_y;
+				abs_start_y = abs_end_y;
+				abs_end_y = tmp_n;
+			}
+			float x = abs_start_x;
+			for( int y = abs_start_y; y <= abs_end_y; y++ ) {
+				walker->walk( this, 
+				           (int)(x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units),
+				           ( (int)x % region_width_in_units ) * MAP_UNIT, ( y % region_depth_in_units ) * MAP_UNIT );
+				x += m; 
+			}				
+		}
 	}
 }
