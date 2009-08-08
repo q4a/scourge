@@ -108,7 +108,7 @@ class RoadWalker {
 public:	
 	RoadWalker() {}
 	virtual ~RoadWalker() {}
-	virtual void walk( Road *road, int rx, int ry, int x, int y ) = 0;
+	virtual void walk( Road *road, int rx, int ry, int x, int y, float angle ) = 0;
 };
 
 class CreatureGenerator {
@@ -405,7 +405,7 @@ private:
 	std::set<Road*> allRoads;
 
 public:
-	void walk( Road *road, int rx, int ry, int x, int y );
+	void walk( Road *road, int rx, int ry, int x, int y, float angle );
 	
 	enum {
 		EVENT_HANDLED = 0,
