@@ -124,20 +124,55 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	class MyRoadWalker : public RoadWalker {
 public:		
 		LandGenerator *generator;
+		int last_abs_x, last_abs_y;
 		
 		MyRoadWalker( LandGenerator *generator ) {
 			this->generator = generator;
+			last_abs_x = last_abs_y = -1;
 		}
 		
-		void walk( Road *road, int rx, int ry, int x, int y ) {
-			if( rx == generator->getRegionX() && ry == generator->getRegionY() ) {
-				cerr << "adding road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << endl;
+		void drawRoad( int x, int y, const char *name, float angle ) {
+			if( x >= 0 && y >= 0 && x < MAP_WIDTH && y < MAP_DEPTH ) {
 				int mapx = generator->getMapPositionX() * OUTDOORS_STEP + x;
 				int mapy = generator->getMapPositionY() * OUTDOORS_STEP + y;
 				Session::instance->getMap()->flattenChunk( mapx, mapy - MAP_UNIT );
-				string name = "road";
-				Session::instance->getMap()->addOutdoorTexture( mapx, mapy, name, 0, false, false );
+				string name_str = name;
+				Session::instance->getMap()->addOutdoorTexture( mapx, mapy, name_str, angle, false, false );
 			}
+		}
+		
+		const char *roadTurn() {
+			return Util::pickOne( 0, 1 ) == 0 ? "road_turn" : "road_cutoff";
+		}
+		
+		void walk( Road *road, int rx, int ry, int x, int y, float angle ) {
+			int abs_x = rx * ( MAP_WIDTH / 2 ) + x;
+			int abs_y = ry * ( MAP_DEPTH / 2 ) + y;
+							
+			if( rx == generator->getRegionX() && ry == generator->getRegionY() ) {
+				cerr << "adding road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << " angle=" << angle << endl;
+				
+				if( abs_x == last_abs_x ) {
+					drawRoad( x, y, "road", 0 );
+				} else if( abs_y == last_abs_y ) {
+					drawRoad( x, y, "road", 90 );					
+				} else if( abs_y < last_abs_y && abs_x < last_abs_x ) {
+					drawRoad( x, y, roadTurn(), 0 );
+					drawRoad( x, y + MAP_UNIT, roadTurn(), 180 );
+				} else if( abs_y < last_abs_y && abs_x > last_abs_x ) {
+					drawRoad( x, y, roadTurn(), 90 );
+					drawRoad( x, y + MAP_UNIT, roadTurn(), 270 );
+				} else if( abs_y > last_abs_y && abs_x < last_abs_x ) {
+					drawRoad( x, y, roadTurn(), 180 );
+					drawRoad( x, y - MAP_UNIT, roadTurn(), 0 );
+				} else if( abs_y > last_abs_y && abs_x > last_abs_x ) {
+					drawRoad( x, y, roadTurn(), 270 );
+					drawRoad( x, y - MAP_UNIT, roadTurn(), 90 );
+				}
+			}
+			
+			last_abs_x = abs_x;
+			last_abs_y = abs_y;
 		}
 	};
 	MyRoadWalker walker( this );
