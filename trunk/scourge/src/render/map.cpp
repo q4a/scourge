@@ -165,6 +165,11 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	this->debugGridFlag = false;
 	this->drawGridFlag = false;
 
+	for( int x = 0; x < MAP_CHUNK_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_CHUNK_DEPTH; y++ ) {
+			roadChunks[x][y] = false;
+		}
+	}
 
 	// initialize shape graph of "in view shapes"
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -362,6 +367,12 @@ void Map::reset() {
 		mapMemoryManager.deleteLocation( p );
 	}
 	water.clear();
+
+	for( int x = 0; x < MAP_CHUNK_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_CHUNK_DEPTH; y++ ) {	
+			roadChunks[x][y] = false;
+		}
+	}	
 
 	//cerr << "reset 5" << endl;
 	zoom = 1.0f;
@@ -1381,11 +1392,33 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 
 /// Returns true if any of the tiles in the specified area is textured.
 
+bool Map::isRoad( int mapx, int mapy ) {
+	int cx = mapx / MAP_UNIT;
+	int cy = mapy / MAP_UNIT;
+	if( cx >= 0 && cy >= 0 && cx < MAP_CHUNK_WIDTH && cy < MAP_CHUNK_DEPTH ) {
+		return roadChunks[cx][cy];
+	} else {
+		return false;
+	}
+}
+
+void Map::setRoadChunk( int mapx, int mapy ) {
+	int cx = mapx / MAP_UNIT;
+	int cy = mapy / MAP_UNIT;
+	if( cx >= 0 && cy >= 0 && cx < MAP_CHUNK_WIDTH && cy < MAP_CHUNK_DEPTH ) {
+		roadChunks[cx][cy] = true;
+	}
+}
+
 bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 	for ( int xx = x; xx < x + width; xx++ ) {
 		for ( int yy = y - height - 1; yy <= y; yy++ ) {
 			int tx = x / OUTDOORS_STEP;
 			int ty = y / OUTDOORS_STEP;
+			
+			// skip out of bounds values
+			if( tx < 0 || ty < 0 || tx >= MAP_WIDTH / OUTDOORS_STEP || ty >= MAP_DEPTH / OUTDOORS_STEP ) continue;
+			
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				if ( outdoorTex[tx][ty][z].texture.isSpecified() ) return true;
 			}
@@ -1399,6 +1432,10 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height, int z ) {
 		for ( int yy = y - height - 1; yy <= y; yy++ ) {
 			int tx = x / OUTDOORS_STEP;
 			int ty = y / OUTDOORS_STEP;
+			
+			// skip out of bounds values
+			if( tx < 0 || ty < 0 || tx >= MAP_WIDTH / OUTDOORS_STEP || ty >= MAP_DEPTH / OUTDOORS_STEP ) continue;
+			
 			if ( outdoorTex[tx][ty][z].texture.isSpecified() ) return true;
 		}
 	}
@@ -1429,6 +1466,10 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, string 
 	outdoorTex[tx][ty][z].height = th;
 	outdoorTex[tx][ty][z].texture = ( parts ? gt->getBlendedTexture( parts, shapes ) : gt->getRandomTexture() );
 	mapChanged = true;
+	
+	if( z == ROAD_LAYER ) {
+		setRoadChunk( x + MAP_UNIT / 2, y - MAP_UNIT / 2 );
+	}
 }
 
 /// Deletes the outdoor ground texture at the specified coordinates.
@@ -3748,10 +3789,6 @@ void Map::endHouse() {
 
 void Map::clearHouses() {
 	houses.clear();
-}
-
-bool Map::isRoad( int mapx, int mapy ) {
-	return hasOutdoorTexture( mapx, mapy + 1, OUTDOORS_STEP, OUTDOORS_STEP, ROAD_LAYER );
 }
 
 void Map::addOutdoorTexture( int mapx, int mapy, std::string groundTextureName, float angle, bool horiz, bool vert ) {
