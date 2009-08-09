@@ -64,6 +64,8 @@ public:
 	Texture tex;
 };
 
+#define MAP_CHUNK_WIDTH ( MAP_WIDTH / MAP_UNIT )
+#define MAP_CHUNK_DEPTH ( MAP_DEPTH / MAP_UNIT )
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
 #define POS_CACHE_WIDTH    5
@@ -135,6 +137,7 @@ private:
 	Sint16 y;
 	int viewX, viewY, viewWidth, viewHeight;
 	float mapx, mapy;
+	bool roadChunks[MAP_CHUNK_WIDTH][MAP_CHUNK_DEPTH];
 	Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
 	Location *itemPos[MAP_WIDTH][MAP_DEPTH];
 	EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
@@ -852,6 +855,7 @@ public:
 	void clearHouses();
 	void addOutdoorTexture( int mapx, int mapy, std::string groundTextureName, float angle = 0.0f, bool horiz = false, bool vert = false );
 	bool isRoad( int mapx, int mapy );
+	void setRoadChunk( int mapx, int mapy );
 	void flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
 
 	inline float distance( Location *pos1, Location *pos2 ) {
