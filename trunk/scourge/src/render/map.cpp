@@ -1391,15 +1391,18 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 }
 
 /// Returns true if any of the tiles in the specified area is textured.
-
-bool Map::isRoad( int mapx, int mapy ) {
+bool Map::isRoad( int mapx, int mapy, bool forTree ) {
 	int cx = mapx / MAP_UNIT;
 	int cy = mapy / MAP_UNIT;
-	if( cx >= 0 && cy >= 0 && cx < MAP_CHUNK_WIDTH && cy < MAP_CHUNK_DEPTH ) {
-		return roadChunks[cx][cy];
-	} else {
-		return false;
+	if( cx >= 0 && cy >= 0 && cx < MAP_CHUNK_WIDTH && cy < MAP_CHUNK_DEPTH && roadChunks[cx][cy] ) {
+		//if( forTree ) {
+			// trees are offsetted
+			//return (mapx % MAP_UNIT >= MAP_UNIT / 4);
+		//} else {
+			return true;
+		//}
 	}
+	return false;	
 }
 
 void Map::setRoadChunk( int mapx, int mapy ) {
@@ -3753,11 +3756,11 @@ void Map::flattenChunk( Sint16 mapX, Sint16 mapY, float height ) {
 	}
 }
 
-void Map::flattenChunkWalkable( Sint16 mapX, Sint16 mapY ) {
+void Map::flattenChunkWalkable( Sint16 mapX, Sint16 mapY, int border ) {
 	int chunkX = ( mapX ) / MAP_UNIT;
 	int chunkY = ( mapY ) / MAP_UNIT;
-	for ( int x = -OUTDOORS_STEP; x <= MAP_UNIT + OUTDOORS_STEP; x++ ) {
-		for ( int y = -OUTDOORS_STEP; y <= MAP_UNIT + OUTDOORS_STEP; y++ ) {
+	for ( int x = -border; x <= MAP_UNIT + border; x++ ) {
+		for ( int y = -border; y <= MAP_UNIT + border; y++ ) {
 			int xx = ( ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
 			int yy = ( ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
 			if( xx >= 0 && xx < MAP_WIDTH / OUTDOORS_STEP && 

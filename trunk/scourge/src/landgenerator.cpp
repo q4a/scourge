@@ -135,7 +135,7 @@ public:
 			int mapx = generator->getMapPositionX() * OUTDOORS_STEP + x;
 			int mapy = generator->getMapPositionY() * OUTDOORS_STEP + y;
 			if( mapx >= 0 && mapy >= 0 && mapx < MAP_WIDTH && mapy < MAP_DEPTH ) {
-				Session::instance->getMap()->flattenChunkWalkable( mapx + MAP_UNIT / 2, mapy - MAP_UNIT / 2 );
+				Session::instance->getMap()->flattenChunkWalkable( mapx + MAP_UNIT / 2, mapy - MAP_UNIT / 2, 0 );
 				string name_str = name;
 				Session::instance->getMap()->addOutdoorTexture( mapx, mapy, name_str, angle, false, false );
 			}
@@ -173,7 +173,7 @@ public:
 				} else if( abs_y > last_abs_y && abs_x > last_abs_x ) {
 					cerr << "4, angle=" << angle << endl;
 					drawRoad( x, y, roadTurn(), 270 );
-					drawRoad( x - MAP_UNIT, y, roadTurn(), 90 );
+					drawRoad( x, y - MAP_UNIT, roadTurn(), 90 );
 				} else {
 					cerr << "*** unknown, angle=" << angle << endl;
 				}
@@ -230,10 +230,9 @@ public:
 		for ( int x = 0; x < QUARTER_WIDTH_IN_NODES; x++ ) {
 			for ( int y = 0; y < QUARTER_DEPTH_IN_NODES; y++ ) {
 				if ( !cellular->getNode( x, y )->water && 
-						!map->isRoad( ( mapPosX + x ) * OUTDOORS_STEP - MAP_UNIT / 2, 
-						              ( mapPosY + y ) * OUTDOORS_STEP - MAP_UNIT / 2 ) &&
-            !map->isRoad( ( mapPosX + x ) * OUTDOORS_STEP + MAP_UNIT / 2, 
-                          ( mapPosY + y ) * OUTDOORS_STEP - MAP_UNIT / 2 )	) {
+						!map->isRoad( ( mapPosX + x ) * OUTDOORS_STEP, 
+						              ( mapPosY + y ) * OUTDOORS_STEP, 
+						              true )	) {
 					params[4] = x * OUTDOORS_STEP;
 					params[5] = y * OUTDOORS_STEP;
 					params[6] = cellular->getNode( x, y )->climate;
