@@ -849,12 +849,12 @@ public:
 	bool isValidPosition( int x, int y, int z );
 	inline MapRender *getRender() { return helper->isIndoors() ? indoor : outdoor; }
 	void flattenChunk( Sint16 mapX, Sint16 mapY, float height = 0 );
-	void flattenChunkWalkable( Sint16 mapX, Sint16 mapY );
+	void flattenChunkWalkable( Sint16 mapX, Sint16 mapY, int border=OUTDOORS_STEP );
 	void startHouse();
 	void endHouse();
 	void clearHouses();
 	void addOutdoorTexture( int mapx, int mapy, std::string groundTextureName, float angle = 0.0f, bool horiz = false, bool vert = false );
-	bool isRoad( int mapx, int mapy );
+	bool isRoad( int mapx, int mapy, bool forTree=false );
 	void setRoadChunk( int mapx, int mapy );
 	void flattenChunkWithLimits( int mapX, int mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit );
 
