@@ -4,6 +4,9 @@
 //
 
 MAP_UNIT <- 16;
+MAP_WIDTH <- 576;
+MAP_DEPTH <- 576;
+OUTDOORS_STEP <- 4;
 
 function pickOne( arg_list ) {
 	selected_index <- ( scourgeGame.getMission().mt_rand() * arg_list.len().tofloat() ).tointeger();
