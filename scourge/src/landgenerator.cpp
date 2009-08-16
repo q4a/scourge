@@ -124,63 +124,23 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	class MyRoadWalker : public RoadWalker {
 public:		
 		LandGenerator *generator;
-		int last_abs_x, last_abs_y;
 		
 		MyRoadWalker( LandGenerator *generator ) {
 			this->generator = generator;
-			last_abs_x = last_abs_y = -1;
 		}
 		
-		void drawRoad( int x, int y, const char *name, float angle ) {
-			int mapx = generator->getMapPositionX() * OUTDOORS_STEP + x;
-			int mapy = generator->getMapPositionY() * OUTDOORS_STEP + y;
-			if( mapx >= 0 && mapy >= 0 && mapx < MAP_WIDTH && mapy < MAP_DEPTH ) {
-				Session::instance->getMap()->flattenChunkWalkable( mapx + MAP_UNIT / 2, mapy - MAP_UNIT / 2, 0 );
-				string name_str = name;
-				Session::instance->getMap()->addOutdoorTexture( mapx, mapy, name_str, angle, false, false );
-			}
-		}
-		
-		const char *roadTurn() {
-			return Util::pickOne( 0, 1 ) == 0 ? "road_turn" : "road_cutoff";
-		}
-		
-		void walk( Road *road, int rx, int ry, int x, int y, float angle ) {
-			int abs_x = rx * ( MAP_WIDTH / 2 ) + x;
-			int abs_y = ry * ( MAP_DEPTH / 2 ) + y;
-							
-			if( rx == generator->getRegionX() && ry == generator->getRegionY() ) {
-				cerr << "adding road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << " angle=" << angle << endl;
-				
-				if( abs_x == last_abs_x ) {
-					cerr << "horiz, angle=" << angle << endl;
-					drawRoad( x, y, "road", 0 );
-				} else if( abs_y == last_abs_y ) {
-					cerr << "vert, angle=" << angle << endl;
-					drawRoad( x, y, "road", 90 );					
-				} else if( abs_y < last_abs_y && abs_x < last_abs_x ) {
-					cerr << "1, angle=" << angle << endl;
-					drawRoad( x, y, roadTurn(), 0 );
-					drawRoad( x, y + MAP_UNIT, roadTurn(), 180 );
-				} else if( abs_y < last_abs_y && abs_x > last_abs_x ) {
-					cerr << "2, angle=" << angle << endl;
-					drawRoad( x, y, roadTurn(), 90 );
-					drawRoad( x, y + MAP_UNIT, roadTurn(), 270 );
-				} else if( abs_y > last_abs_y && abs_x < last_abs_x ) {
-					cerr << "3, angle=" << angle << endl;
-					drawRoad( x, y, roadTurn(), 180 );
-					drawRoad( x + MAP_UNIT, y, roadTurn(), 0 );
-				} else if( abs_y > last_abs_y && abs_x > last_abs_x ) {
-					cerr << "4, angle=" << angle << endl;
-					drawRoad( x, y, roadTurn(), 270 );
-					drawRoad( x, y - MAP_UNIT, roadTurn(), 90 );
-				} else {
-					cerr << "*** unknown, angle=" << angle << endl;
-				}
-			}
-			
-			last_abs_x = abs_x;
-			last_abs_y = abs_y;
+		void walk( Road *road, int rx, int ry, int x, int y, bool walksX ) {
+			int params[9];
+			params[0] = generator->getRegionX();
+			params[1] = generator->getRegionY();
+			params[2] = generator->getMapPositionX() * OUTDOORS_STEP;
+			params[3] = generator->getMapPositionY() * OUTDOORS_STEP;
+			params[4] = rx;
+			params[5] = ry;
+			params[6] = x;
+			params[7] = y;
+			params[8] = walksX ? 1 : 0;
+			generator->scourge->getShapePalette()->getSession()->getSquirrel()->callIntArgMethod( "draw_path", 9, params );
 		}
 	};
 	MyRoadWalker walker( this );
@@ -189,6 +149,8 @@ public:
 	if( roads ) {
 		for( set<Road*>::iterator e = roads->begin(); e != roads->end(); ++e ) {
 			Road *road = *e;
+			cerr << "Drawing road=" << road->name << endl; 
+			shapePal->getSession()->getSquirrel()->callNoArgMethod( "start_draw_path" );
 			road->walk( &walker );
 		}
 	}

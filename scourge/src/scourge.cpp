@@ -3548,7 +3548,7 @@ void Scourge::printToConsole( const char *s ) {
 			squirrelLabel->appendText( q.c_str() );
 		}
 	} else {
-		cerr << "&&& SQUIRREL: " << s << endl;
+		cerr << "&&& SQUIRREL: " << s;
 	}
 }
 

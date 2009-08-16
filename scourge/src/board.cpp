@@ -136,8 +136,8 @@ void Board::initMissions() {
 	delete( config );	
 }
 
-void Board::walk( Road *road, int rx, int ry, int x, int y, float angle ) {
-	cerr << "+++ storing road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << " angle=" << angle << endl;
+void Board::walk( Road *road, int rx, int ry, int x, int y, bool walksX ) {
+	//cerr << "+++ storing road=" << road->name << " region=" << rx << "," << ry << " pos=" << x << "," << y << " angle=" << angle << endl;
 	char tmp[200];
 	sprintf( tmp, "%d,%d", rx, ry );
 	string key = tmp;
@@ -1046,7 +1046,7 @@ void Road::walk( RoadWalker *walker ) {
 	float xdiff = (float)( abs_start_x - abs_end_x );
 	cerr << "+++ xdiff=" << xdiff << " ydiff=" << ydiff << endl;
 	if( ydiff == 0 ) {
-		cerr << "+++ moving vertically on x axis" << endl;
+		cerr << "+++ moving horizontally on x axis" << endl;
 		if( abs_start_x > abs_end_x ) {
 			int tmp_n = abs_start_x;
 			abs_start_x = abs_end_x;
@@ -1056,10 +1056,10 @@ void Road::walk( RoadWalker *walker ) {
 			walker->walk( this, 
 			             (int)(x / (float)region_width_in_units), (int)(abs_start_y / (float)region_depth_in_units),
 			             (int)(x % region_width_in_units) * MAP_UNIT, (int)(abs_start_y % region_depth_in_units) * MAP_UNIT, 
-			             0 );
+			             true );
 		}
 	} else if( xdiff == 0 ) {
-		cerr << "+++ moving horizontally on x axis" << endl;
+		cerr << "+++ moving vertically on y axis" << endl;
 		if( abs_start_y > abs_end_y ) {
 			int tmp_n = abs_start_y;
 			abs_start_y = abs_end_y;
@@ -1069,12 +1069,14 @@ void Road::walk( RoadWalker *walker ) {
 			walker->walk( this, 
 			             (int)(abs_start_x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units), 
 			             (int)(abs_start_x % region_width_in_units) * MAP_UNIT, (int)(y % region_depth_in_units) * MAP_UNIT,
-			             90 );
+			             false );
 		}
 	} else {
 		if( fabs( ydiff ) < fabs( xdiff ) ) {
 			float m = ydiff / xdiff;
 			float ang = atan( m ) * ( 180.0 / PI );
+			if( ang < 0 ) ang += 360;
+			if( ang >= 360 ) ang -= 360;
 			cerr << "+++ moving on x axis delta y is " << m << endl;
 			if( abs_start_x > abs_end_x ) {
 				int tmp_n = abs_start_x;
@@ -1090,12 +1092,14 @@ void Road::walk( RoadWalker *walker ) {
 				walker->walk( this, 
 				           (int)(x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units),
 				           ( x % region_width_in_units )  * MAP_UNIT, ( (int)y % region_depth_in_units ) * MAP_UNIT,
-				           ang );
+				           true );
 				y += m; 
 			}
 		} else {
 			float m = xdiff / ydiff;
 			float ang = atan( m ) * ( 180.0 / PI );
+			if( ang < 0 ) ang += 360;
+			if( ang >= 360 ) ang -= 360;
 			cerr << "+++ moving on y axis delta x is " << m << endl;
 			if( abs_start_y > abs_end_y ) {
 				int tmp_n = abs_start_x;
@@ -1110,7 +1114,7 @@ void Road::walk( RoadWalker *walker ) {
 				walker->walk( this, 
 				           (int)(x / (float)region_width_in_units), (int)(y / (float)region_depth_in_units),
 				           ( (int)x % region_width_in_units ) * MAP_UNIT, ( y % region_depth_in_units ) * MAP_UNIT,
-				           ang );
+				           false );
 				x += m; 
 			}				
 		}

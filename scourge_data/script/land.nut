@@ -1,5 +1,5 @@
-REGION_WIDTH <- ( 74 * 4 );
-REGION_DEPTH <- ( 74 * 4 );
+//REGION_WIDTH <- ( 74 * 4 );
+//REGION_DEPTH <- ( 74 * 4 );
 
 /*
  * Return true if squirrel took care of the land generation.
@@ -119,6 +119,76 @@ function inCity( region_x, region_y, x, y ) {
 
 function inHorggh( region_x, region_y, x, y ) {
 	return region_x == 40 && region_y == 21 && x >= 163 && x < 275 && y >= 20 && y < 200;
+}
+
+function draw_path_chunk( x, y, texture_name, angle ) {
+	if( x >= 0 && y >= 0 && x < MAP_WIDTH && y < MAP_DEPTH ) {
+		//print("drawing texture " + texture_name + "\n");
+		scourgeGame.getMission().flattenChunkWalkable( x + MAP_UNIT / 2, y - MAP_UNIT / 2 );
+		scourgeGame.getMission().addOutdoorTexture( x, y, texture_name, angle, false, false );
+	}
+}
+
+road_turns <- [ "road_turn", "road_cutoff" ];
+function get_road_turn() {
+	return pickOne( road_turns );
+}
+
+last_abs_x <- -1;
+last_abs_y <- -1;
+
+function start_draw_path() {
+	last_abs_x = -1;
+	last_abs_y = -1;	
+}
+
+function draw_path( current_rx, current_ry, offs_x, offs_y, rx, ry, x, y, walksX ) {
+	abs_x <- rx * ( MAP_WIDTH / 2 ) + x;
+	abs_y <- ry * ( MAP_DEPTH / 2 ) + y;
+	
+	real_x <- offs_x + x;
+	real_y <- offs_y + y;
+						
+	if( rx == current_rx && ry == current_ry ) {
+		print( "adding road, region=" + rx.tostring() + "," + ry.tostring() + " pos=" + x.tostring() + "," + y.tostring() + " walksX=" + walksX.tostring() + "\n" );
+			
+		if( abs_x == last_abs_x ) {
+			print( "horiz\n" );
+			draw_path_chunk( real_x, real_y, "road", 0 );
+		} else if( abs_y == last_abs_y ) {
+			print( "vert\n" );
+			draw_path_chunk( real_x, real_y, "road", 90 );					
+		} else if( abs_y < last_abs_y && abs_x > last_abs_x ) {
+			if( walksX ) {
+				print( "1\n" );
+				draw_path_chunk( real_x, real_y, get_road_turn(), 180 );
+				draw_path_chunk( real_x, real_y + MAP_UNIT, get_road_turn(), 0 );
+			} else {
+				print( "2\n" );
+				draw_path_chunk( real_x, real_y, get_road_turn(), 90 );
+				draw_path_chunk( real_x, real_y + MAP_UNIT, get_road_turn(), 270 );						
+			}
+		} else if( abs_y > last_abs_y && abs_x < last_abs_x ) {
+			print( "3\n" );
+			draw_path_chunk( real_x, real_y, get_road_turn(), 180 );
+			draw_path_chunk( real_x + MAP_UNIT, real_y, get_road_turn(), 0 );
+		} else if( abs_y > last_abs_y && abs_x > last_abs_x ) {
+			if( walksX ) {
+				print( "4\n" );
+				draw_path_chunk( real_x, real_y, get_road_turn(), 270 );
+				draw_path_chunk( real_x, real_y - MAP_UNIT, get_road_turn(), 90 );
+			} else {
+				print( "5\n" );
+				draw_path_chunk( real_x, real_y, get_road_turn(), 90 );
+				draw_path_chunk( real_x - MAP_UNIT, real_y, get_road_turn(), 270 );
+			}
+		} else {
+			print( "unknown!\n" );
+		}
+	}
+		
+	last_abs_x = abs_x;
+	last_abs_y = abs_y;
 }
 
 ///*
