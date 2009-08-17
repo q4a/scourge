@@ -77,7 +77,7 @@ public:
 
 class MapCity {
 public:
-	char name[80], display_name[80];
+	char name[80];
 	int rx, ry, x, y, w, h; // w,h are in city blocks (a city block=4x16 map units)
 	int level;
 	

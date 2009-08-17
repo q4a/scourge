@@ -208,7 +208,6 @@ void Board::initLocations() {
 		
 		MapCity *city = new MapCity();
 		strcpy( city->name, node->getValueAsString( "name" ) );
-		strcpy( city->display_name, node->getValueAsString( "display_name" ) );
 		strcpy( tmp, node->getValueAsString( "region" ) );
 		city->rx = atoi( strtok( tmp, "," ) );
 		city->ry = atoi( strtok( NULL, "," ) );
