@@ -222,11 +222,6 @@ public:
 	return true;
 }
 
-void LandGenerator::drawRoad( Road *road, Map *map, ShapePalette *shapePal ) {
-	
-	
-}
-
 MapRenderHelper* LandGenerator::getMapRenderHelper() {
 	// we need fog
 	return MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ];

@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 49
+#define PERSIST_VERSION 50
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -104,6 +104,8 @@ struct CreatureInfo {
 	
 	Uint32 missionId;
 	Uint32 missionObjectiveIndex;
+	
+	Uint8 conversation[255];
 };
 
 /// Level map location info for savegame.
