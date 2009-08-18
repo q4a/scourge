@@ -349,6 +349,7 @@ CreatureInfo *Creature::save() {
 	info->missionId = getMissionId();
 	info->missionObjectiveIndex = getMissionObjectiveIndex();
 
+	strcpy( (char*)info->conversation, getConversation() ? getConversation()->getFilename().c_str() : "" );
 	return info;
 }
 
@@ -485,6 +486,11 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	creature->calculateExpOfNextLevel();
 
 	creature->evalSpecialSkills();
+	
+	if( strlen( (char*)info->conversation ) > 0 ) {
+		string fn = (char*)info->conversation;
+		creature->setConversation( fn );
+	}
 
 	// recalculate skills from now on
 	loading = false;

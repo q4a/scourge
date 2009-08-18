@@ -783,6 +783,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 	}
 	file->write( &( info->missionId ) );
 	file->write( &( info->missionObjectiveIndex ) );
+	file->write( info->conversation, 255 );
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
@@ -854,6 +855,9 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 		file->read( &( info->missionObjectiveIndex ) );
 	} else {
 		info->missionId = info->missionObjectiveIndex = 0; 
+	}
+	if( info->version >= 50 ) {
+		file->read( info->conversation, 255 );
 	}
 	return info;
 }

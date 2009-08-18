@@ -80,7 +80,6 @@ private:
 	
 	
 protected:
-	void drawRoad( Road *road, Map *map, ShapePalette *shapePal );
 	void loadMapGridBitmap();
 	void loadMapGridBitmapRegion();
 	void packMapData( std::vector<GLubyte> &image );

@@ -150,40 +150,40 @@ function draw_path( current_rx, current_ry, offs_x, offs_y, rx, ry, x, y, walksX
 	real_y <- offs_y + y;
 						
 	if( rx == current_rx && ry == current_ry ) {
-		print( "adding road, region=" + rx.tostring() + "," + ry.tostring() + " pos=" + x.tostring() + "," + y.tostring() + " walksX=" + walksX.tostring() + "\n" );
+		//print( "adding road, region=" + rx.tostring() + "," + ry.tostring() + " pos=" + x.tostring() + "," + y.tostring() + " walksX=" + walksX.tostring() + "\n" );
 			
 		if( abs_x == last_abs_x ) {
-			print( "horiz\n" );
+			//print( "horiz\n" );
 			draw_path_chunk( real_x, real_y, "road", 0 );
 		} else if( abs_y == last_abs_y ) {
-			print( "vert\n" );
+			//print( "vert\n" );
 			draw_path_chunk( real_x, real_y, "road", 90 );					
 		} else if( abs_y < last_abs_y && abs_x > last_abs_x ) {
 			if( walksX ) {
-				print( "1\n" );
+				//print( "1\n" );
 				draw_path_chunk( real_x, real_y, get_road_turn(), 180 );
 				draw_path_chunk( real_x, real_y + MAP_UNIT, get_road_turn(), 0 );
 			} else {
-				print( "2\n" );
+				//print( "2\n" );
 				draw_path_chunk( real_x, real_y, get_road_turn(), 90 );
 				draw_path_chunk( real_x, real_y + MAP_UNIT, get_road_turn(), 270 );						
 			}
 		} else if( abs_y > last_abs_y && abs_x < last_abs_x ) {
-			print( "3\n" );
+			//print( "3\n" );
 			draw_path_chunk( real_x, real_y, get_road_turn(), 180 );
 			draw_path_chunk( real_x + MAP_UNIT, real_y, get_road_turn(), 0 );
 		} else if( abs_y > last_abs_y && abs_x > last_abs_x ) {
 			if( walksX ) {
-				print( "4\n" );
+				//print( "4\n" );
 				draw_path_chunk( real_x, real_y, get_road_turn(), 270 );
 				draw_path_chunk( real_x, real_y - MAP_UNIT, get_road_turn(), 90 );
 			} else {
-				print( "5\n" );
+				//print( "5\n" );
 				draw_path_chunk( real_x, real_y, get_road_turn(), 90 );
 				draw_path_chunk( real_x - MAP_UNIT, real_y, get_road_turn(), 270 );
 			}
 		} else {
-			print( "unknown!\n" );
+			print( "*** Error: unknown road section, region=" + rx.tostring() + "," + ry.tostring() + " pos=" + x.tostring() + "," + y.tostring() + " walksX=" + walksX.tostring() + "\n" );
 		}
 	}
 		
