@@ -283,13 +283,13 @@ void Board::initLocations() {
 		road->start_ry = atoi( strtok( NULL, "," ) );
 		strcpy( tmp, node->getValueAsString( "start_location" ) );
 		road->start_x = atoi( strtok( tmp, "," ) );
-		road->start_y = atoi( strtok( NULL, "," ) ) + MAP_UNIT;
+		road->start_y = atoi( strtok( NULL, "," ) );
 		strcpy( tmp, node->getValueAsString( "end_region" ) );
 		road->end_rx = atoi( strtok( tmp, "," ) );
 		road->end_ry = atoi( strtok( NULL, "," ) );
 		strcpy( tmp, node->getValueAsString( "end_location" ) );
 		road->end_x = atoi( strtok( tmp, "," ) );
-		road->end_y = atoi( strtok( NULL, "," ) ) + MAP_UNIT;
+		road->end_y = atoi( strtok( NULL, "," ) );
 		road->straight = node->getValueAsBool( "straight" );
 
 		road->walk( this );
