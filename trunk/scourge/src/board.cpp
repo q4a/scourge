@@ -1026,9 +1026,9 @@ void CreatureGenerator::generate( Session *session ) {
 }
 
 void Road::walk( RoadWalker *walker ) {
-	cerr << "+++ Road: " << name << 
-		" START region: " << start_rx << "," << start_ry << " pos: " << start_x << "," << start_y <<
-		" END region: " << end_rx << "," << end_ry << " pos: " << end_x << "," << end_y << endl;
+//	cerr << "+++ Road: " << name << 
+//		" START region: " << start_rx << "," << start_ry << " pos: " << start_x << "," << start_y <<
+//		" END region: " << end_rx << "," << end_ry << " pos: " << end_x << "," << end_y << endl;
 	
 	int region_width_in_units = MAP_WIDTH / 2 / MAP_UNIT;
 	int region_depth_in_units = MAP_DEPTH / 2 / MAP_UNIT;
@@ -1037,15 +1037,15 @@ void Road::walk( RoadWalker *walker ) {
 	int abs_end_x = end_rx * region_width_in_units + end_x / MAP_UNIT;
 	int abs_end_y = end_ry * region_depth_in_units + end_y / MAP_UNIT;
 	
-	cerr << "+++ abs START=" << abs_start_x << "," << abs_start_y <<
-	" END=" << abs_end_x << "," << abs_end_y << endl;
+//	cerr << "+++ abs START=" << abs_start_x << "," << abs_start_y <<
+//	" END=" << abs_end_x << "," << abs_end_y << endl;
 	
 	// store road sections for each region
 	float ydiff = (float)( abs_start_y - abs_end_y );
 	float xdiff = (float)( abs_start_x - abs_end_x );
-	cerr << "+++ xdiff=" << xdiff << " ydiff=" << ydiff << endl;
+//	cerr << "+++ xdiff=" << xdiff << " ydiff=" << ydiff << endl;
 	if( ydiff == 0 ) {
-		cerr << "+++ moving horizontally on x axis" << endl;
+//		cerr << "+++ moving horizontally on x axis" << endl;
 		if( abs_start_x > abs_end_x ) {
 			int tmp_n = abs_start_x;
 			abs_start_x = abs_end_x;
@@ -1058,7 +1058,7 @@ void Road::walk( RoadWalker *walker ) {
 			             true );
 		}
 	} else if( xdiff == 0 ) {
-		cerr << "+++ moving vertically on y axis" << endl;
+//		cerr << "+++ moving vertically on y axis" << endl;
 		if( abs_start_y > abs_end_y ) {
 			int tmp_n = abs_start_y;
 			abs_start_y = abs_end_y;
@@ -1076,7 +1076,7 @@ void Road::walk( RoadWalker *walker ) {
 			float ang = atan( m ) * ( 180.0 / PI );
 			if( ang < 0 ) ang += 360;
 			if( ang >= 360 ) ang -= 360;
-			cerr << "+++ moving on x axis delta y is " << m << endl;
+//			cerr << "+++ moving on x axis delta y is " << m << endl;
 			if( abs_start_x > abs_end_x ) {
 				int tmp_n = abs_start_x;
 				abs_start_x = abs_end_x;
@@ -1099,7 +1099,7 @@ void Road::walk( RoadWalker *walker ) {
 			float ang = atan( m ) * ( 180.0 / PI );
 			if( ang < 0 ) ang += 360;
 			if( ang >= 360 ) ang -= 360;
-			cerr << "+++ moving on y axis delta x is " << m << endl;
+//			cerr << "+++ moving on y axis delta x is " << m << endl;
 			if( abs_start_y > abs_end_y ) {
 				int tmp_n = abs_start_x;
 				abs_start_x = abs_end_x;

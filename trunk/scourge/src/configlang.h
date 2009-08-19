@@ -181,6 +181,9 @@ public:
 	static ConfigLang *fromString( char *str );
 	static ConfigLang *fromString( std::vector<std::string> *lines );
 	void save( std::string& file, bool absolutePath = false );
+	
+protected:
+	static bool readLines( const std::string& file, bool absolutePath, std::vector<std::string>& lines );
 };
 
 #endif

@@ -414,52 +414,52 @@ ConfigLang *ConfigLang::fromString( vector<string> *lines ) {
 	return new ConfigLang( lines );
 }
 
-#define LINE_PARSER 1
-
 /// Loads and parses a configuration file.
 
 ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
+	vector<string> lines;
+	
+	if( !readLines( file, absolutePath, lines ) ) {
+		return NULL;
+	}
+
+	ConfigLang *config  = new ConfigLang( &lines );
+	//cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
+	
+	return config;
+
+	return NULL;
+}
+
+bool ConfigLang::readLines( const string& file, bool absolutePath, vector<string>& lines ) {
 	string rootDirString;
 	if ( absolutePath ) rootDirString = "";
 	else {
 		rootDirString = rootDir;
 		rootDirString += "/";
 	}
-// cerr << "File:" << ( rootDirString + file ) << endl;
+ cerr << "Loading File: (" << ( rootDirString + file ) << ")" << endl;
 	ifstream in;
 	in.open( ( rootDirString + file ).c_str(), ios::in );
 	if ( !in ) {
 		cerr << "Cannot open file: " << file << endl;
-		return NULL;
+		return false;
 	}
 
-	Uint32 now = SDL_GetTicks();
-#if LINE_PARSER == 1
-	vector<string> lines;
+	size_t last_space;
 	while ( in.rdstate() == ifstream::goodbit ) {
 		string line;
 		getline( in, line );
+		// recursively include other files
+		if( line.substr( 0, 9 ) == "@include " ) {
+			last_space = line.find_last_of( " \n\r\t" );
+			readLines( line.substr( 9, last_space < std::string::npos ? last_space - 9 : last_space ), false, lines );
+		}
 		lines.push_back( line );
 	}
-
-// for( unsigned int i = 0; i < lines.size(); i++ ) {
-//  cerr << lines[i] << endl;
-// }
-// cerr << "read " << lines.size() << " lines." << endl;
-
-	ConfigLang *config  = new ConfigLang( &lines );
-#else
-	std::stringstream ss;
-	ss << in.rdbuf();
-
-	ConfigLang *config = fromString( ss.str().c_str() );
-#endif
-
-	//cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
-	in.close();
-	return config;
-
-	return NULL;
+	
+	in.close();	
+	return true;
 }
 
 /// Sets an onscreen message and progress value.
@@ -480,7 +480,7 @@ void ConfigLang::save( string& file, bool absolutePath ) {
 	if ( !out ) {
 		cerr << "Cannot open file: " << file << endl;
 	} else {
-		Uint32 now = SDL_GetTicks();
+		//Uint32 now = SDL_GetTicks();
 		debug( getDocument(), "", out );
 		out.close();
 		//cerr << "Saved " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
