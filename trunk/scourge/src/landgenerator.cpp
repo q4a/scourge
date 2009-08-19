@@ -121,39 +121,7 @@ bool LandGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 	
 	// add roads
-	class MyRoadWalker : public RoadWalker {
-public:		
-		LandGenerator *generator;
-		
-		MyRoadWalker( LandGenerator *generator ) {
-			this->generator = generator;
-		}
-		
-		void walk( Road *road, int rx, int ry, int x, int y, bool walksX ) {
-			int params[9];
-			params[0] = generator->getRegionX();
-			params[1] = generator->getRegionY();
-			params[2] = generator->getMapPositionX() * OUTDOORS_STEP;
-			params[3] = generator->getMapPositionY() * OUTDOORS_STEP;
-			params[4] = rx;
-			params[5] = ry;
-			params[6] = x;
-			params[7] = y;
-			params[8] = walksX ? 1 : 0;
-			generator->scourge->getShapePalette()->getSession()->getSquirrel()->callIntArgMethod( "draw_path", 9, params );
-		}
-	};
-	MyRoadWalker walker( this );
-			
-	set<Road*> *roads = shapePal->getSession()->getBoard()->getRoadsForRegion( regionX, regionY );
-	if( roads ) {
-		for( set<Road*>::iterator e = roads->begin(); e != roads->end(); ++e ) {
-			Road *road = *e;
-			cerr << "Drawing road=" << road->name << endl; 
-			shapePal->getSession()->getSquirrel()->callNoArgMethod( "start_draw_path" );
-			road->walk( &walker );
-		}
-	}
+	addRoads( shapePal );
 	
 	// add any cities
 	// todo: cities may extend into neighboring regions
@@ -220,6 +188,42 @@ public:
 	monsters = true;
 
 	return true;
+}
+
+void LandGenerator::addRoads( ShapePalette *shapePal ) {
+	class MyRoadWalker : public RoadWalker {
+public:		
+		LandGenerator *generator;
+		
+		MyRoadWalker( LandGenerator *generator ) {
+			this->generator = generator;
+		}
+		
+		void walk( Road *road, int rx, int ry, int x, int y, bool walksX ) {
+			int params[9];
+			params[0] = generator->getRegionX();
+			params[1] = generator->getRegionY();
+			params[2] = generator->getMapPositionX() * OUTDOORS_STEP;
+			params[3] = generator->getMapPositionY() * OUTDOORS_STEP;
+			params[4] = rx;
+			params[5] = ry;
+			params[6] = x;
+			params[7] = y;
+			params[8] = walksX ? 1 : 0;
+			generator->scourge->getShapePalette()->getSession()->getSquirrel()->callIntArgMethod( "draw_path", 9, params );
+		}
+	};
+	MyRoadWalker walker( this );
+			
+	set<Road*> *roads = shapePal->getSession()->getBoard()->getRoadsForRegion( regionX, regionY );
+	if( roads ) {
+		for( set<Road*>::iterator e = roads->begin(); e != roads->end(); ++e ) {
+			Road *road = *e;
+			cerr << "Drawing road=" << road->name << endl; 
+			shapePal->getSession()->getSquirrel()->callNoArgMethod( "start_draw_path" );
+			road->walk( &walker );
+		}
+	}
 }
 
 MapRenderHelper* LandGenerator::getMapRenderHelper() {

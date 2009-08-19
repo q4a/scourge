@@ -861,6 +861,14 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 		cerr << "\tload map? " << will_load_map << " version=" << ver << " vs. " << PERSIST_VERSION << endl;
 	}
 	
+	// initialize the generator for this region
+	if( !landGenerator ) {
+		landGenerator = new LandGenerator( this, 1, 1, 1, false, false, NULL );
+	}
+	landGenerator->setWillAddParty( false );
+	landGenerator->setRegion( rx, ry );
+	landGenerator->setMapPosition( posX, posY );
+	
 	if( will_load_map ) {
 		cerr << "LOADING map region: " << rx << "," << ry << endl;
 		string result;
@@ -868,16 +876,14 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 		cerr << "LOAD MAP loaded?=" << loaded << " result=" << result << endl;
 	} else {
 		cerr << "GENERATING map region: " << rx << "," << ry << endl;
-		if( !landGenerator ) {
-			landGenerator = new LandGenerator( this, 1, 1, 1, false, false, NULL );
-		}
-		landGenerator->setWillAddParty( false );
-		landGenerator->setRegion( rx, ry );
-		landGenerator->setMapPosition( posX, posY );
 		landGenerator->toMap( levelMap, getShapePalette(), false, false );
 		
 		getSession()->addVisitedRegion( rx, ry );
 	}
+
+	// retouch roads (redraws entire road to fix region's corners)
+	landGenerator->addRoads( getShapePalette() );
+	
 	cerr << "-----------------------------------------------------------" << endl;
 }
 
@@ -900,7 +906,7 @@ void Scourge::loadOrGenerateLargeMap() {
 	// if landGenerator already exists, it may not be the sessions terrainGenerator (and it needs to be if getClimate is going to work)
 	if ( landGenerator )
 		session->setTerrainGenerator(landGenerator);
-	// for now always generate (later add load/save map regions)
+	// load or generate map section
 	generateRegion( orx, ory, 0, 0 );
 	generateRegion( orx + 1 >= REGIONS_PER_ROW ? 0 : orx + 1, ory, QUARTER_WIDTH_IN_NODES, 0 );	
 	generateRegion( orx, ory + 1 >= REGIONS_PER_COL ? 0 : ory + 1, 0, QUARTER_DEPTH_IN_NODES );

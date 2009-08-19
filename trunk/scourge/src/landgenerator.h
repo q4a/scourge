@@ -71,6 +71,7 @@ public:
 	inline bool getWillAddParty() { return willAddParty; }
 	
 	void initOutdoorsGroundTexture( Map *map );
+	void addRoads( ShapePalette *shapePal );
 		
 private:	
 	void addHighVariation( Map *map, std::string ref, int z );
