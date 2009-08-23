@@ -24,7 +24,9 @@ using namespace std;
 # define new DEBUG_NEW
 # undef THIS_FILE
   static char THIS_FILE[] = __FILE__;
-#endif 
+#endif
+  
+#define MIN_WIN_Z 1000
 
 ScourgeGui::ScourgeGui() 
 	: windowCount( 0 )
@@ -44,7 +46,7 @@ ScourgeGui::~ScourgeGui() {
 
 void ScourgeGui::addWindow( Window* win ) {
 	if ( windowCount < MAX_WINDOW ) {
-		win->setZ( 50 + windowCount * 10 );
+		win->setZ( MIN_WIN_Z + windowCount * 10 );
 		window[windowCount++] = win;
 	}
 }
@@ -63,13 +65,11 @@ void ScourgeGui::removeWindow( Window* win ) {
 
 void ScourgeGui::drawVisibleWindows() {
 	glsDisable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
-
 	for ( int i = 0; i < windowCount; i++ ) {
 		if ( window[i]->isVisible() ) {
 			window[i]->drawWidget( NULL );
 		}
 	}
-
 }
 
 bool ScourgeGui::sendMousePosition( int x, int y ) {
@@ -190,7 +190,7 @@ void ScourgeGui::toTop( Window *win ) {
 				window[t]->setZ( window[t]->getZ() - 10 );
 			}
 			window[windowCount - 1] = win;
-			win->setZ( 50 + ( windowCount * 10 ) );
+			win->setZ( MIN_WIN_Z + ( windowCount * 10 ) );
 			break;
 		}
 	}
@@ -206,7 +206,7 @@ void ScourgeGui::toBottom( Window *win ) {
 				window[t]->setZ( window[t]->getZ() + 10 );
 			}
 			window[0] = win;
-			win->setZ( 50 );
+			win->setZ( MIN_WIN_Z );
 			break;
 		}
 	}
