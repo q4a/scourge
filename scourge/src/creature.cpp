@@ -1989,18 +1989,18 @@ void Creature::decideAction() {
     return;
   }
 
-  // todo: this code slows down rendering by a lot. Instead make this call per event, for example:
+  // todo: This code may slow down rendering. Instead make this call per event, for example:
   // creatureNearDeath, creatureWillAttack, etc. The current function (in map.nut) is Karzul's combat
   // behavior.
   // override from squirrel
-//  if( SQUIRREL_ENABLED ) {
-//    HSQOBJECT *cref = session->getSquirrel()->getCreatureRef( this );
-//    if ( cref ) {
-//      bool result;
-//      session->getSquirrel()->callBoolMethod( "decideAction", cref, &result );
-//      if ( result ) return;
-//    }
-//  }
+  if( SQUIRREL_ENABLED ) {
+    HSQOBJECT *cref = session->getSquirrel()->getCreatureRef( this );
+    if ( cref ) {
+      bool result;
+      session->getSquirrel()->callBoolMethod( "decideAction", cref, &result );
+      if ( result ) return;
+    }
+  }
 
   // This is the AI's decision matrix. On every decision cycle, it is walked
   // top to bottom and collects the max weights between all rows (states) that

@@ -8,17 +8,10 @@
 function generate_land( region_x, region_y, offset_x, offset_y ) {
 	print( "Generate land at " + region_x.tostring() + "," + region_y.tostring() + 
 	       " offset=" + offset_x.tostring() + "," + offset_y.tostring() + "\n" );
-//	if( region_x == 38 && region_y == 20 ) {
-//		drawVillage( offset_x + MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT, 15, 15 );
-//		return true;
-//	} else 
 	if( region_x == 37 && region_y == 18 ) {
-		//drawRandomHouse( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
 		drawHouseTower( offset_x + 8 * MAP_UNIT, offset_y + 16 * MAP_UNIT );
-	} else if( region_x == 40 && region_y == 21 ) {
-		drawHorghh_part1( offset_x + 6 * MAP_UNIT, offset_y + MAP_UNIT + MAP_UNIT );
 	} else if( region_x == 41 && region_y == 21 ) {
-		drawHorghh_part2( offset_x, offset_y + MAP_UNIT + MAP_UNIT );
+		drawHorghhHQ( offset_x, offset_y + MAP_UNIT + MAP_UNIT );
 	}
 	return false;
 }
@@ -204,57 +197,9 @@ function draw_path( current_rx, current_ry, offs_x, offs_y, rx, ry, x, y, walksX
 //}
 
 //*************************************************************
-// Horggh
+// Horggh HQ
 //
-function drawHorghh_part1( x, y ) {
-	print( ">>> Drawing Horghh part 1 " + x.tostring() + "," + y.tostring() + "\n");
-	// one road goes thru Horghh
-	vx <- x + 7 * MAP_UNIT;
-	vy <- 0;
-	for( yy <- 0; yy <= 9; yy ++ ) {
-		vy = y + ( yy * MAP_UNIT );
-		if ( yy == 0 ) {
-			drawRoadTile( vx, vy, "street_end_270" );
-		} else if ( yy >= 9  ) {
-			drawRoadTile( vx, vy, "street_end_90" );
-		} else if( yy == 3 || yy == 7 ) {
-			drawRoadTile( vx, vy, "street_cross" );			
-		} else {
-			drawRoadTile( vx, vy, "street_90" );
-		}
-	}
-	vy = y + ( 3 * MAP_UNIT );
-	for( xx <- 4; xx <= 11; xx ++ ) {
-		vx = x + ( xx * MAP_UNIT );
-		if ( xx == 4 ) {
-			drawRoadTile( vx, vy, "street_end" );
-		} else if ( xx >= 11 ) {
-			drawRoadTile( vx, vy, "street_end_180" );
-		} else if ( xx != 7 ) {
-			drawRoadTile( vx, vy, "street" );
-
-		}
-	}
-	vy = y + ( 7 * MAP_UNIT );
-	for( xx <- 6; xx <= 11; xx ++ ) {
-		vx = x + ( xx * MAP_UNIT );
-		if ( xx == 6 ) {
-			drawRoadTile( vx, vy, "street_end" );
-		} else if ( xx != 7 ) {
-			drawRoadTile( vx, vy, "street" );
-
-		}
-	}
-	
-	// some houses
-	drawRandomHouse( x + 8 * MAP_UNIT, y );
-	drawRandomHouse( x + 8 * MAP_UNIT, y + 4 * MAP_UNIT );
-	drawInn( x + 4 * MAP_UNIT, y + 4 * MAP_UNIT );
-	//drawRandomHouse( x + 11 * MAP_UNIT, y + 8 * MAP_UNIT );
-	drawGarden( x + 4 * MAP_UNIT, y + 8 * MAP_UNIT );
-}
-
-function drawHorghh_part2( x, y ) {
+function drawHorghhHQ( x, y ) {
 	print( ">>> Drawing Horghh part 2 " + x.tostring() + "," + y.tostring() + "\n");
 	// one road goes thru Horghh
 	vx <- 0;
