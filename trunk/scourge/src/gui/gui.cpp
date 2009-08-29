@@ -26,8 +26,6 @@ using namespace std;
   static char THIS_FILE[] = __FILE__;
 #endif
   
-#define MIN_WIN_Z 1000
-
 ScourgeGui::ScourgeGui() 
 	: windowCount( 0 )
 	, message_dialog( NULL )
@@ -46,7 +44,7 @@ ScourgeGui::~ScourgeGui() {
 
 void ScourgeGui::addWindow( Window* win ) {
 	if ( windowCount < MAX_WINDOW ) {
-		win->setZ( MIN_WIN_Z + windowCount * 10 );
+		win->setZ( windowCount * 10 );
 		window[windowCount++] = win;
 	}
 }
@@ -64,6 +62,7 @@ void ScourgeGui::removeWindow( Window* win ) {
 }
 
 void ScourgeGui::drawVisibleWindows() {
+	glClear( GL_DEPTH_BUFFER_BIT );
 	glsDisable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 	for ( int i = 0; i < windowCount; i++ ) {
 		if ( window[i]->isVisible() ) {
@@ -190,7 +189,7 @@ void ScourgeGui::toTop( Window *win ) {
 				window[t]->setZ( window[t]->getZ() - 10 );
 			}
 			window[windowCount - 1] = win;
-			win->setZ( MIN_WIN_Z + ( windowCount * 10 ) );
+			win->setZ( windowCount * 10 );
 			break;
 		}
 	}
@@ -206,7 +205,7 @@ void ScourgeGui::toBottom( Window *win ) {
 				window[t]->setZ( window[t]->getZ() + 10 );
 			}
 			window[0] = win;
-			win->setZ( MIN_WIN_Z );
+			win->setZ( 0 );
 			break;
 		}
 	}
