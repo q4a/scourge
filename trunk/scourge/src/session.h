@@ -294,10 +294,6 @@ public:
 		return showChapterIntro;
 	}
 
-	virtual Creature *getClosestMonster( int x, int y, int w, int h, int radius );
-	virtual Creature *getClosestGoodGuy( int x, int y, int w, int h, int radius );
-	virtual Creature *getRandomNearbyMonster( int x, int y, int w, int h, int radius );
-	virtual Creature *getRandomNearbyGoodGuy( int x, int y, int w, int h, int radius );
 	virtual void creatureDeath( Creature *creature );
 
 	inline SqBinding *getSquirrel() {

@@ -1946,23 +1946,12 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 
 	// who are the possible targets?
 	vector<Creature*> possibleTargets;
-	if ( getStateMod( StateMod::possessed ) ) {
-		if ( !isMonster() ) {
-			for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-				if ( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getParty()->getParty( i )->getX() ), toint( session->getParty()->getParty( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getParty()->getParty( i )->getX() ), toint( session->getParty()->getParty( i )->getY() ), session->getParty()->getParty( i )->getShape() ) &&  session->getParty()->getParty( i )->isWithPrereq( spell ) )
-				possibleTargets.push_back( session->getParty()->getParty( i ) );
-			}
+	for( set<Creature*>::iterator i = closestFriends.begin(); i != closestFriends.end(); ++i ) {
+		Creature *c = *i;
+		if( c->isWithPrereq( spell ) ) {
+			possibleTargets.push_back( c );				
 		}
-		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-			if ( ( !isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ), session->getCreature( i )->getShape() ) &&  session->getCreature( i )->isWithPrereq( spell ) )
-			possibleTargets.push_back( session->getCreature( i ) );
-		}
-	} else {
-		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-			if ( ( isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ), session->getCreature( i )->getShape() ) &&  session->getCreature( i )->isWithPrereq( spell ) )
-			possibleTargets.push_back( session->getCreature( i ) );
-		}
-	}
+	}	
 
 	// find the closest one that is closer than 20 spaces away.
 	Creature *closest = NULL;
@@ -2282,6 +2271,22 @@ Creature *Creature::getRandomTarget() {
 	if( closestEnemies.size() == 0 ) return NULL;
 	int n = Util::dice( closestEnemies.size() );
 	set<Creature*>::iterator i = closestEnemies.begin();
+	for( int t = 0; t < n; t++ ) {
+		++i;
+	}
+	return *i;
+}
+
+Creature *Creature::getClosestFriend() {
+	return closestFriend;
+}
+
+/// Returns a random suitable battle target, NULL if no target found.
+
+Creature *Creature::getRandomFriend() {
+	if( closestFriends.size() == 0 ) return NULL;
+	int n = Util::dice( closestFriends.size() );
+	set<Creature*>::iterator i = closestFriends.begin();
 	for( int t = 0; t < n; t++ ) {
 		++i;
 	}

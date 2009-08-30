@@ -669,21 +669,7 @@ Creature *Battle::getAvailableTarget() {
 		cerr << "*** Error: Battle::getAvailableTarget() should only be called for characters!" << endl;
 		return NULL;
 	}
-	Creature *target;
-	if ( creature->getStateMod( StateMod::possessed ) ) {
-		target = session->getParty()->getClosestPlayer( toint( creature->getX() ),
-		         toint( creature->getY() ),
-		         creature->getShape()->getWidth(),
-		         creature->getShape()->getDepth(),
-		         CREATURE_SIGHT_RADIUS );
-	} else {
-		target = session->getClosestMonster( toint( creature->getX() ),
-		         toint( creature->getY() ),
-		         creature->getShape()->getWidth(),
-		         creature->getShape()->getDepth(),
-		         CREATURE_SIGHT_RADIUS );
-	}
-	return target;
+	return creature->getClosestTarget();
 }
 
 /// Selects a new target for player characters.
@@ -1032,13 +1018,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
 	if ( max - min >= MIN_FUMBLE_RANGE && creature->getTargetCreature() && attack - min < ( ( ( max - min ) / 100.0f ) * 5.0f ) ) {
 		if ( 0 == Util::dice( 3 ) ) {
 
-			Creature *fumbleTarget;
-			if ( creature->isMonster() ) {
-				fumbleTarget = session->getClosestMonster( toint( creature->getX() ), toint( creature->getY() ), creature->getShape()->getWidth(), creature->getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
-			} else {
-				fumbleTarget = session->getClosestGoodGuy( toint( creature->getX() ), toint( creature->getY() ), creature->getShape()->getWidth(), creature->getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
-			}
-
+			Creature *fumbleTarget = creature->getClosestFriend();
 			if ( fumbleTarget ) {
 				// play item sound
 				int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
