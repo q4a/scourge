@@ -680,8 +680,10 @@ function drawRoads( x, y, village_width, village_height ) {
 			vx = x + ( i * MAP_UNIT );
 			if ( i == 0 ) {
 				drawRoadTile( vx, vy, "street_end" );
+				setPosition( vx, vy - 2, 0, "CITYSIGN_90", false );
 			} else if ( i >= village_width - 1 ) {
 				drawRoadTile( vx, vy, "street_end_180" );
+				setPosition( vx + MAP_UNIT - 2, vy - 2, 0, "CITYSIGN_90", false );
 			} else {
 				drawRoadTile( vx, vy, "street" );
 			}
@@ -693,10 +695,12 @@ function drawRoads( x, y, village_width, village_height ) {
 			vy = y + ( i * MAP_UNIT );
 			if ( i == 1 ) {
 				drawRoadTile( vx, vy, "street_end_270" );
+				setPosition( vx + 2, vy - MAP_UNIT + 4, 0, "CITYSIGN", false );
 			} else if ( i % 4 == 0 ) {
 				drawRoadTile( vx, vy, "street_cross" );
 			} else if ( i >= village_height  ) {
 				drawRoadTile( vx, vy, "street_end_90" );
+				setPosition( vx + 2, vy, 0, "CITYSIGN", false );
 			} else {
 				drawRoadTile( vx, vy, "street_90" );
 			}
