@@ -218,6 +218,8 @@ public:
 	
 	inline std::set<Creature*> *getClosestFriends() { return &closestFriends; }
 	inline std::set<Creature*> *getClosestEnemies() { return &closestEnemies; }
+	Creature *getClosestFriend();
+	Creature *getRandomFriend();
 	
 	/// The session object used to create this class instance.
 	inline Session* getSession() {
@@ -982,14 +984,13 @@ public:
 
 	void decideAction();
 
-	Creature *getClosestTarget();
-	bool attackClosestTarget();
-
-	Creature *getRandomTarget();
-	bool attackRandomTarget();
-
 	bool isWithPrereq( Item *item );
 	bool isWithPrereq( Spell *spell );
+	
+	Creature *getClosestTarget();
+	bool attackClosestTarget();
+	Creature *getRandomTarget();
+	bool attackRandomTarget();	
 	Creature *findClosestTargetWithPrereq( Spell *spell );
 	
 	void findClosestCreatures( int radius );

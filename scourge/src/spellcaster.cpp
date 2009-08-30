@@ -70,21 +70,7 @@ void SpellCaster::spellFailed() {
 	        !strcasecmp( spell->getName(), "Unholy Decimator" ) ||
 	        !strcasecmp( spell->getName(), "Blast of Fury" ) ) {
 
-		Creature *fumbleTarget;
-		if ( battle->getCreature()->isMonster() ||
-		        battle->getCreature()->getStateMod( StateMod::possessed ) ) {
-			fumbleTarget = battle->getSession()->getRandomNearbyMonster( toint( battle->getCreature()->getX() ),
-			            toint( battle->getCreature()->getY() ),
-			            battle->getCreature()->getShape()->getWidth(),
-			            battle->getCreature()->getShape()->getDepth(),
-			            CREATURE_SIGHT_RADIUS );
-		} else {
-			fumbleTarget = battle->getSession()->getRandomNearbyGoodGuy( toint( battle->getCreature()->getX() ),
-			            toint( battle->getCreature()->getY() ),
-			            battle->getCreature()->getShape()->getWidth(),
-			            battle->getCreature()->getShape()->getDepth(),
-			            CREATURE_SIGHT_RADIUS );
-		}
+		Creature *fumbleTarget = battle->getCreature()->getRandomFriend();
 		if ( fumbleTarget ) {
 			char message[200];
 			snprintf( message, 200, _( "...fumble: hits %s instead!" ), fumbleTarget->getName() );
