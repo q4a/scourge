@@ -466,7 +466,6 @@ bool Session::removeCreature( Creature *creature ) {
 	return removeCreatureRef( creature, 0 );
 }
 
-
 /// Return the closest (visible) monster within the given radius or null if none can be found.
 
 Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {

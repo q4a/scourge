@@ -166,6 +166,8 @@ private:
 	std::vector<Creature *> summoned;
 	
 	Conversation *conversation;
+	std::set<Creature*> closestFriends, closestEnemies;
+	Creature *closestEnemy, *closestFriend;
 		
 public:
 	static const int DIAMOND_FORMATION = 0;
@@ -175,9 +177,6 @@ public:
 	static const int SCOUT_FORMATION = 4;
 	static const int CROSS_FORMATION = 5;
 	static const int FORMATION_COUNT = 6;
-
-	// The creature AI
-	#define AI_DECISION_INTERVAL 1000
 
 	enum {
 		AI_STATE_STANDING_NO_ENEMY = 0,
@@ -216,6 +215,9 @@ public:
 	Creature( Session *session, Character *character, char const* name, int sex, int character_model_info_index );
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
+	
+	inline std::set<Creature*> *getClosestFriends() { return &closestFriends; }
+	inline std::set<Creature*> *getClosestEnemies() { return &closestEnemies; }
 	
 	/// The session object used to create this class instance.
 	inline Session* getSession() {
@@ -277,11 +279,14 @@ public:
 	inline bool isAutoControlled() {
 		return( !isPartyMember() || getStateMod( StateMod::possessed ) );
 	}
+	
+	inline bool isEvil() {
+		return !getStateMod( StateMod::possessed ) && isMonster();
+	}
 
 	/// Is creature c of friendly alignment?
 	inline bool isFriendly( Creature *c ) {
-		bool f = ( ( isMonster() && c->isMonster() ) || ( !isMonster() && !c->isMonster() ) );
-		return ( getStateMod( StateMod::possessed ) ? !f : f );
+		return c->isEvil() == isEvil();
 	}
 
 	inline void setBoss( bool b ) {
@@ -986,6 +991,8 @@ public:
 	bool isWithPrereq( Item *item );
 	bool isWithPrereq( Spell *spell );
 	Creature *findClosestTargetWithPrereq( Spell *spell );
+	
+	void findClosestCreatures( int radius );
 
 	bool castHealingSpell( bool checkOnly = false );
 	bool castOffensiveSpell( bool checkOnly = false );
@@ -1028,6 +1035,7 @@ public:
 	inline Conversation *getConversation() { return conversation; }
 
 protected:
+	void getClosestCreatures( int radius );
 
 	void evalTrap();
 
