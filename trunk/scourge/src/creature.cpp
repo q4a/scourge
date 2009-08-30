@@ -37,6 +37,9 @@ using namespace std;
 
 //#define DEBUG_INVENTORY 1
 
+// The creature AI
+#define AI_DECISION_INTERVAL 1000
+
 #define PERCEPTION_DELTA 2000
 
 bool loading = false;
@@ -201,6 +204,9 @@ void Creature::commonInit() {
 }
 
 Creature::~Creature() {
+	closestEnemy = closestFriend = NULL;
+	closestFriends.clear();
+	closestEnemies.clear();
 	portrait.clear();
 
 	// cancel this creature's events
@@ -1977,17 +1983,65 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 	return( closest && closestDist < (float)CREATURE_SIGHT_RADIUS ? closest : NULL );
 }
 
+
+void Creature::getClosestCreatures( int radius ) {
+	closestFriends.clear();
+	closestEnemies.clear();
+	int sx = toint( getX() ) + getShape()->getWidth() / 2 - radius;
+	int sy = toint( getY() ) - getShape()->getDepth() / 2 - radius;
+	int ex = toint( getX() ) + getShape()->getWidth() / 2 + radius;
+	int ey = toint( getY() ) - getShape()->getDepth() / 2 + radius;
+	float closestDistFriend = -1;
+	float closestDistEnemy = -1;
+	closestFriend = closestEnemy = NULL;
+	float dist = -1;
+	for( int xx = sx; xx < ex; xx++ ) {
+		for( int yy = sy; yy < ey; yy++ ) {
+			if( session->getMap()->isValidPosition( xx, yy, 0 ) ) {
+				Location *pos = session->getMap()->getLocation( xx, yy, 0 );
+				if( pos && pos->creature ) {
+					Creature *c = (Creature*)pos->creature;
+					dist = getDistance( c );
+					if ( !c->getStateMod( StateMod::dead ) && 
+							session->getMap()->isLocationVisible( toint( c->getX() ), toint( c->getY() ) ) && 
+							session->getMap()->isLocationInLight( toint( c->getX() ), toint( c->getY() ), c->getShape() ) ) {
+						if( c->isEvil() == isEvil() ) {
+							closestFriends.insert( c );
+							if( closestFriend == NULL || dist < closestDistFriend ) {
+								closestFriend = c;
+								closestDistFriend = dist;								
+							}
+						} else {
+							closestEnemies.insert( c );
+							if( closestEnemy == NULL || dist < closestDistEnemy ) {
+								closestEnemy = c;
+								closestDistEnemy = dist;								
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
 /// Basic NPC/monster AI.
 
 void Creature::decideAction() {
   Uint32 now = SDL_GetTicks();
   if( now - lastDecision < AI_DECISION_INTERVAL ) return;
+  //cerr << "decideAction for " << getName() << endl;
   lastDecision = now;
 
   if ( scripted ) {
     getShape()->setCurrentAnimation( getScriptedAnimation() );
     return;
   }
+  
+  // find the closest friends and enemies (do this only once; it's expensive)
+  getClosestCreatures( CREATURE_SIGHT_RADIUS );
+                                
 
   // todo: This code may slow down rendering. Instead make this call per event, for example:
   // creatureNearDeath, creatureWillAttack, etc. The current function (in map.nut) is Karzul's combat
@@ -2041,21 +2095,19 @@ void Creature::decideAction() {
 
   // Collect the standing and loitering states.
 
-  Creature *closestTarget = getClosestTarget();
-
-  if ( ( getMotion() == Constants::MOTION_STAND ) && !closestTarget ) {
+  if ( ( getMotion() == Constants::MOTION_STAND ) && !closestEnemy ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       if ( decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ];
     }
-  } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget && !hasTarget() ) {
+  } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestEnemy && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       if ( decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ];
     }
-  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && !closestTarget && !getPathManager()->atEndOfPath() ) {
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && !closestEnemy && !getPathManager()->atEndOfPath() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       if ( decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ];
     }
-  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget && !hasTarget() ) {
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestEnemy && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       if ( decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ];
     }
@@ -2124,27 +2176,12 @@ void Creature::decideAction() {
 
   // Get information for the last 3 states.
 
-  Creature *c;
   int numAttackers = 0;
-  int numFriendlies = 0;
-  int numFoes = 0;
-  float dist;
-
-  for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-    c = session->getCreature( i );
-
-    if ( c->getTargetCreature() == this ) numAttackers++;
-
-    dist = Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(), c->getX(), c->getY(), c->getShape()->getWidth(), c->getShape()->getDepth() );
-
-    if ( dist <= CREATURE_SIGHT_RADIUS ) {
-      if ( isFriendly( c ) ) {
-        numFriendlies++;
-      } else {
-        numFoes++;
-      }
-    }
-
+  int numFriendlies = closestFriends.size();
+  int numFoes = closestEnemies.size();
+  for( set<Creature*>::iterator i = closestEnemies.begin(); i != closestEnemies.end(); ++i ) {
+  	Creature *c = *i;
+  	if( c->getTargetCreature() == this ) numAttackers++;
   }
 
   // Collect the "surrounded" state.
@@ -2236,33 +2273,19 @@ void Creature::decideAction() {
 /// Returns the closest suitable battle target, NULL if no target found.
 
 Creature *Creature::getClosestTarget() {
-  Creature *p;
-  bool possessed = getStateMod( StateMod::possessed );
-
-  // Select a suitable target.
-  if ( isMonster() ) {
-    p = ( possessed ? session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
-  } else {
-    p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
-  }
-
-  return p;
+	return closestEnemy;
 }
 
 /// Returns a random suitable battle target, NULL if no target found.
 
 Creature *Creature::getRandomTarget() {
-  Creature *p;
-  bool possessed = getStateMod( StateMod::possessed );
-
-  // Select a suitable target.
-  if ( isMonster() ) {
-    p = ( possessed ? session->getRandomNearbyMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getRandomNearbyGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
-  } else {
-    p = ( possessed ? session->getRandomNearbyGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getRandomNearbyMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
-  }
-
-  return p;
+	if( closestEnemies.size() == 0 ) return NULL;
+	int n = Util::dice( closestEnemies.size() );
+	set<Creature*>::iterator i = closestEnemies.begin();
+	for( int t = 0; t < n; t++ ) {
+		++i;
+	}
+	return *i;
 }
 
 /// Makes the creature attack the closest suitable target. Returns true if target found.
