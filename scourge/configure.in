@@ -490,40 +490,6 @@ if test "x$has_glx_get_proc" = "xyes" ; then
     dnl fi
 fi
 
-dnl Check for glext.h 
-AC_CHECK_HEADERS( "GL/glext.h", have_glext_h=yes, have_glext_h=no )
-
-if test "x$have_glext_h" = "xno" ; then
-    AC_MSG_ERROR([
-*****************************************************************
-You are missing the file glext.h.
-You can get a copy at
-http://oss.sgi.com/projects/ogl-sample/ABI/glext.h
-Place it in the directory /usr/include/GL.
-*****************************************************************])
-fi
-
-dnl Check that glext.h version is recent enough
-AC_MSG_CHECKING([whether glext.h is recent enough]);
-AC_EGREP_CPP(yes,
-[
-#include <GL/glext.h>
-#if defined(GL_GLEXT_VERSION) && GL_GLEXT_VERSION >= 6
- yes
-#endif
-], is_glext_h_recent=yes, is_glext_h_recent=no )
-AC_MSG_RESULT([$is_glext_h_recent])
-
-if test "x$is_glext_h_recent" = "xno" ; then
-    AC_MSG_ERROR([
-*****************************************************************
-Your copy of glext.h is out of date.
-You can get a copy of the latest version at
-http://oss.sgi.com/projects/ogl-sample/ABI/glext.h
-Place it in the directory /usr/include/GL.
-*****************************************************************])
-fi
-
 CPPFLAGS="$saved_CPPFLAGS" 
 TR_CPPFLAGS="$TR_CPPFLAGS $GL_CPPFLAGS"
 
