@@ -847,6 +847,7 @@ protected:
 	bool useTeleporter( Location *pos );
 	bool useGate( Location *pos );
 	bool usePool( Location *pos );
+	bool useCitySign( Location *pos );
 
 	// called from startMission
 	void resetGame( bool resetParty );
