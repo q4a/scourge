@@ -1395,6 +1395,8 @@ bool Scourge::useItem( int x, int y, int z ) {
 				return true;
 			} else if ( useTeleporter( pos ) ) {
 				return true;
+			} else if ( useCitySign( pos ) ) {
+				return true;
 			} else if ( usePool( pos ) ) {
 				return true;
 			} else if ( pos && pos->item &&
@@ -1520,6 +1522,44 @@ int Scourge::dropItem( int x, int y ) {
 	endItemDrag();
 	getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
 	return z;
+}
+
+bool Scourge::useCitySign( Location *pos ) {
+	if ( pos->shape == getSession()->getShapePalette()->findShapeByName( "CITYSIGN" ) ||
+			pos->shape == getSession()->getShapePalette()->findShapeByName( "CITYSIGN_90" ) ) {
+		
+		int x = pos->x;
+		int y = pos->y;
+		int rx = getMap()->getRegionX();
+		int ry = getMap()->getRegionY();
+		if( x >= MAP_WIDTH / 2 ) {
+			x -= MAP_WIDTH / 2;
+			rx++;
+		}
+		if( y >= MAP_DEPTH / 2 ) {
+			y -= MAP_DEPTH / 2;
+			ry++;
+		}
+		
+		cerr << "pos: " << x << "," << y << " region: " << rx << "," << ry << endl;
+		
+		vector<MapCity*> *cities = getSession()->getBoard()->getCitiesForRegion( rx, ry );
+		for( unsigned i = 0; cities && i < cities->size(); i++ ) {
+			MapCity *city = cities->at(i);
+			cerr << "...city=" << city->name << " pos=" << city->x << "," << city->y << " size=" << city->w << "," << city->h << endl;
+			if( x >= city->x && x < city->x + city->w * 4 * MAP_UNIT &&
+					y >= city->y && y < city->y + city->h * 4 * MAP_UNIT ) {
+				cerr << "City: " << city->name << endl;
+				char tmp[3000];
+				sprintf( tmp, _( "Welcome to %s." ), city->name );
+				showMessageDialog( tmp );
+				return true;
+			}
+		}
+		
+		cerr << "City: NONE" << endl;
+	}
+	return false;
 }
 
 bool Scourge::useGate( Location *pos ) {
