@@ -2435,7 +2435,6 @@ bool Map::isLocationInLight( int x, int y, Shape *shape ) {
 /// -arrow keys / mouse at edge of screen: move map fast
 /// -SHIFT + arrow keys / mouse at edge of screen: slow move map
 /// -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
-
 void Map::moveMap( int dir ) {
 	if ( SDL_GetModState() & KMOD_CTRL ) {
 		float rot;
@@ -2453,7 +2452,6 @@ void Map::moveMap( int dir ) {
 		// stop rotating (angle of rotation is kept)
 		setYRot( 0 );
 		setZRot( 0 );
-
 		mapChanged = resortShapes = true;
 		float delta = ( SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f );
 		if ( mouseMove ) {
@@ -2495,6 +2493,18 @@ void Map::moveMap( int dir ) {
 				mapy += delta * -Constants::sinFromAngle( z );
 			}
 		}
+		
+		// limit view to around player
+		if( regionX >= 0 && regionY >= 0 && adapter->getPlayer() ) {
+			int px = toint( adapter->getPlayer()->getX() );
+			int py = toint( adapter->getPlayer()->getY() );
+			if( mapy > py ) mapy = py;
+			if( mapy < py - mapViewDepth ) mapy = py - mapViewDepth;
+			if( mapx > px ) mapx = px;
+			if( mapx < px - mapViewWidth ) mapx = px - mapViewWidth;
+		}
+		
+		
 		adjustMapCoordinatesNearEdges();
 	}
 }
