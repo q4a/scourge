@@ -57,8 +57,9 @@ Outdoor::~Outdoor() {
 
 /// Renders the 3D view for outdoor levels.
 
+vector<RenderedLocation*> shades;
 void Outdoor::drawMap() {
-	vector<RenderedLocation*> shades;
+	shades.clear();
 	bool stencilOn = !map->isCurrentlyUnderRoof && map->preferences->getStencilbuf() && map->preferences->getStencilBufInitialized();
 	
 	if( stencilOn ) {
@@ -72,7 +73,7 @@ void Outdoor::drawMap() {
 	renderFloor();
 	
 	if( map->isCurrentlyUnderRoof ) {
-		drawObjects( &shades );	
+		drawObjects( NULL );	
 	}
 	
 	glsEnable( GLS_TEXTURE_2D );
@@ -87,8 +88,8 @@ void Outdoor::drawMap() {
 	
 	// draw the creatures/objects/trees/etc.
 	if( !map->isCurrentlyUnderRoof ) {
-		drawObjects( &shades );	
-	}
+		drawObjects( &shades );
+	}	
 	
 	// draw the player and remove it from the stencil (so walls behind the player don't show thru)
 	if( !map->isCurrentlyUnderRoof ) {
@@ -101,11 +102,11 @@ void Outdoor::drawMap() {
 		for( unsigned int i = 0; i < shades.size(); i++ ) {
 			shades[i]->draw();
 		}
-
-	}
 		
-	if( !map->isCurrentlyUnderRoof && stencilOn ) {
-		glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		if( stencilOn ) {
+			glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );			
+		}
+
 	}
  
 	drawEffects();
@@ -173,27 +174,22 @@ void Outdoor::drawObjects( vector<RenderedLocation*> *shades ) {
 
 			if( map->isCurrentlyUnderRoof || !map->isOnFloorTile( px, py ) ) {
 				map->other[i].draw();
+				// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
+				// draw simple shadow in outdoors
+				if ( map->other[i].pos->creature ) {
+					setupShadowColor();
+					drawGroundTex( map->outdoorShadow, map->other[i].pos->creature->getX() + 0.25f, map->other[i].pos->creature->getY() + 0.25f, ( map->other[i].pos->creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].pos->creature->getShape()->getDepth() * 0.7f );
+				} else if ( map->other[i].pos && map->other[i].pos->shape && map->other[i].pos->shape->isOutdoorShadow() ) {
+					setupShadowColor();
+					drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
+				}
 			}
 
 		} else {
-
 			// don't draw party members yet
-			shades->push_back( &map->other[i] );
-
+			if( shades ) shades->push_back( &map->other[i] );
 		}
-
-		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
-		// draw simple shadow in outdoors
-		if ( map->other[i].pos->creature ) {
-			setupShadowColor();
-			drawGroundTex( map->outdoorShadow, map->other[i].pos->creature->getX() + 0.25f, map->other[i].pos->creature->getY() + 0.25f, ( map->other[i].pos->creature->getShape()->getWidth() + 2 ) * 0.7f, map->other[i].pos->creature->getShape()->getDepth() * 0.7f );
-		} else if ( map->other[i].pos && map->other[i].pos->shape && map->other[i].pos->shape->isOutdoorShadow() ) {
-			setupShadowColor();
-			drawGroundTex( map->outdoorShadowTree, static_cast<float>( map->other[i].pos->x ) - ( map->other[i].pos->shape->getWidth() / 2.0f ) + ( map->other[i].pos->shape->getWindValue() / 2.0f ), static_cast<float>( map->other[i].pos->y ) + ( map->other[i].pos->shape->getDepth() / 2.0f ), map->other[i].pos->shape->getWidth() * 1.7f, map->other[i].pos->shape->getDepth() * 1.7f );
-		}
-
 	}
-
 }
 
 /// Draws creature effects and damage counters.

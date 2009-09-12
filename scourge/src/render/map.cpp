@@ -1757,7 +1757,9 @@ void Map::dropItemsAbove( int x, int y, int z, RenderedItem *item ) {
 
 void Map::setCreature( Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature ) {
 	if ( creature && creature->getShape() ) {
+#if FOG_ENABLED		
 		if ( helper && creature->isPartyMember() ) helper->visit( creature );
+#endif		
 
 		// pick up any objects in the way
 		for ( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
@@ -1807,7 +1809,9 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 			}
 		}
 
+#if FOG_ENABLED		
 		if ( helper && creature->isPartyMember() ) helper->visit( creature );
+#endif		
 
 		// pick up any items in the way
 		for ( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
