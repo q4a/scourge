@@ -296,6 +296,8 @@ public:
 		}
 	}
 	bool popHandlers();
+	
+	void clearScreen(); 
 
 protected:	
 	void resizeWindow( int width, int height );

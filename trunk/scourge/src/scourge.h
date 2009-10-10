@@ -907,6 +907,13 @@ protected:
 	 * 5 - vegetation (if includeClimateAndVegetation)
 	 */
 	void getMapRegionAndPos( int *mapPos, bool includeClimateAndVegetation=false ); 
+	
+	inline void setShowProgress( bool b ) { showProgress = b; }
+	inline bool getShowProgress() { return showProgress; }
+	
+	void drawScreenWhileLoading();
+	void saveScreenBeforeLoading();
+	void freeScreenWhileLoading();
 
 private:
 	Uint32 lastLandMusicCheck;
@@ -944,6 +951,8 @@ private:
 	GLint lastTick;
 	int battleCount;
 	Battle *battle[MAX_BATTLE_COUNT];
+	
+	bool showProgress;
 
 	// multi-story levels
 	int currentStory, oldStory;
@@ -1042,6 +1051,8 @@ private:
 	const char *currentCombatMusic;
 	
 	LandGenerator *landGenerator;
+	
+	SDL_Surface *loadingSurface;
 };
 
 #endif

@@ -80,6 +80,7 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
 	this->stairsDown = stairsDown;
 	this->mission = mission;
 	this->stairsUpX = this->stairsUpY = this->stairsDownX = this->stairsDownY = 0;
+	this->showProgress = true;
 
 	progress = new Progress( scourge->getSDLHandler(),
 	                         scourge->getSession()->getShapePalette()->getProgressTexture(),
@@ -108,10 +109,12 @@ TerrainGenerator::~TerrainGenerator() {
 }
 
 void TerrainGenerator::updateStatus( const char *statusMessage ) {
-	progress->updateStatus( statusMessage );
-	Uint32 now = SDL_GetTicks();
-//  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
-	start = now;
+	if( getShowProgress() ) {
+		progress->updateStatus( statusMessage );
+		Uint32 now = SDL_GetTicks();
+	//  cerr << "+++ " << statusMessage << ". Previous task's time=" << (now - start) << endl;
+		start = now;
+	}
 }
 
 bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {
