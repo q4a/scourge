@@ -55,7 +55,7 @@
 //#define DEBUG_IDENTIFY_ITEM 1
 
 // sqbinding.cpp
-#define DEBUG_SQUIRREL 1
+//#define DEBUG_SQUIRREL 1
 #ifndef DEBUG_SQUIRREL
 # define DEBUG_SQUIRREL 0
 #endif

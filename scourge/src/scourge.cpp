@@ -132,6 +132,7 @@ Scourge::Scourge( UserConfiguration *config )
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
 
+	this->showProgress = true;
 	oldStory = currentStory = 0;
 	lastTick = 0;
 	movingX = movingY = movingZ = MAP_WIDTH + 1;
@@ -771,7 +772,56 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
+void Scourge::drawScreenWhileLoading() {
+	getSDLHandler()->clearScreen();
+	glLoadIdentity();
+	glsDisable( GLS_CULL_FACE | GLS_SCISSOR_TEST | GLS_BLEND | GLS_ALPHA_TEST | GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_TEXTURE_2D );
+	
+	glColor4f( 1, 1, 1, 1 );
+	glRasterPos2f( 0, loadingSurface->h );
+	glDrawPixels(loadingSurface->w, loadingSurface->h, GL_BGR, GL_UNSIGNED_BYTE, loadingSurface->pixels);
+	cerr << "drew screen. error: " << Util::getOpenGLError() << endl;
+	
+	glsEnable( GLS_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glColor4f( 0, 0, 0, 0.5f );
+	glBegin( GL_QUADS );
+	glVertex2d( 0, loadingSurface->h );
+	glVertex2d( 0, 0 );
+	glVertex2d( loadingSurface->w, 0 );
+	glVertex2d( loadingSurface->w, loadingSurface->h );
+	glEnd();
+	
+	SDL_GL_SwapBuffers();
+}
+
+void Scourge::saveScreenBeforeLoading() {
+	int w = getScreenWidth();
+	int h = getScreenHeight();
+//	int w = 500;
+//	int h = 500;
+	loadingSurface = SDL_CreateRGBSurface( SDL_SWSURFACE,  w, h, 24,
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	                        0xFF000000, 0x00FF0000, 0x0000FF00, 0 );
+#else
+	                        0x000000FF, 0x0000FF00, 0x00FF0000, 0 );
+#endif
+  cerr << "*** surface size=" << loadingSurface->w << "," << loadingSurface->h << endl;
+  //glRasterPos2f( 0, 0 );
+	glReadPixels( 0, getScreenHeight() - loadingSurface->h, loadingSurface->w, loadingSurface->h, GL_BGR, GL_UNSIGNED_BYTE, loadingSurface->pixels );
+//	cerr << "saved screen. error: " << Util::getOpenGLError() << endl;
+}
+
+void Scourge::freeScreenWhileLoading() {
+	SDL_FreeSurface( loadingSurface );
+}
+
 void Scourge::saveMapRegions() {
+	
+	// save the screen
+	saveScreenBeforeLoading();
+	drawScreenWhileLoading();	
+	
 	// remove the party from the map
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
@@ -805,40 +855,32 @@ std::string Scourge::getSavedRegionFile( int regionX, int regionY ) {
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	
-	loadOrGenerateLargeMap();
+	// save the screen
+//	SDL_Surface *surface = saveScreenBeforeLoading( getScreenWidth(), getScreenHeight() );
+	drawScreenWhileLoading();
 	
-//	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-//	cerr << "Looking for space for party." << endl;
+	setShowProgress( false );
+	loadOrGenerateLargeMap();
+	setShowProgress( true );
+	
+	// place the party
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
 		if ( !getParty()->getParty( r )->getStateMod( StateMod::dead ) ) {
 			px = getParty()->getParty( r )->getX() + party_x;
 			py = getParty()->getParty( r )->getY() + party_y;
-			
-//			cerr << "Looking for space for " << getParty()->getParty( r )->getName() << " at " << px << "," << py << endl;
-			
-//			// what is there now?
-//			Location *pos = getMap()->getLocation( toint( px ), toint( py ), 0 );
-//			if( pos ) {
-//				cerr << "* location: shape=" << ( pos->shape ? pos->shape->getName() : "" ) <<
-//					" item=" << ( pos->item ? pos->item->getType() : "" ) <<
-//					" creature=" << ( pos->creature ? pos->creature->getName() : "" ) <<
-//					endl;
-//			} else {
-//				cerr << "* location is empty" << endl;
-//			}
-
 			// space for the pc should be clear, but look around just in case...
 			if( !getParty()->getParty( r )->findPlaceBoundedRadial( px, py, MAP_UNIT * MAP_CHUNKS_X ) ) {
 				cerr << "\t\tERROR: couldn't find place for party member (" << getParty()->getParty( r )->getName() << ") on map!!!" << endl;
-//			} else {
-//				cerr << "\t\tparty placed at " << getParty()->getPlayer()->getX() << "," << getParty()->getPlayer()->getY() << endl;
 			}
-			
 			levelMap->center( toint( getParty()->getPlayer()->getX() ), toint( getParty()->getPlayer()->getY() ) );
 		}		
 	}
+	
 //	cerr << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+	
+	freeScreenWhileLoading();
+	glsEnable( GLS_DEPTH_TEST | GLS_DEPTH_MASK );
 }
 
 void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
@@ -868,6 +910,7 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 	landGenerator->setWillAddParty( false );
 	landGenerator->setRegion( rx, ry );
 	landGenerator->setMapPosition( posX, posY );
+	landGenerator->setShowProgress( false );
 	
 	if( will_load_map ) {
 		cerr << "LOADING map region: " << rx << "," << ry << endl;
@@ -3570,7 +3613,9 @@ bool Scourge::startTextEffect( char *message ) {
 }
 
 void Scourge::updateStatus( int status, int maxStatus, const char *message ) {
-	progress->updateStatus( message, true, status, maxStatus );
+	if( showProgress ) {
+		progress->updateStatus( message, true, status, maxStatus );
+	}
 }
 
 bool Scourge::isLevelShaded() {

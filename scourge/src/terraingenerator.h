@@ -99,6 +99,8 @@ protected:
 	int roomMaxHeight;
 	int objectCount;
 	int monsters;
+	
+	bool showProgress;
 
 public:
 	static TerrainGenerator *getGenerator( Scourge *scourge, int depth );
@@ -112,6 +114,9 @@ public:
 	                  Mission *mission,
 	                  int progressSteps );
 	virtual ~TerrainGenerator();
+	
+	inline void setShowProgress( bool b ) { showProgress = b; }
+	inline bool getShowProgress() { return showProgress; }
 
 	bool toMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
 

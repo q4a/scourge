@@ -775,11 +775,16 @@ void SDLHandler::saveScreen( string& path, bool thumbnail ) {
 	saveScreenInternal( path, thumbnail );
 }
 
-void SDLHandler::drawScreenInternal() {
+void SDLHandler::clearScreen() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	if ( stencilBufferUsed ) glClear( GL_STENCIL_BUFFER_BIT );
 	glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
-	glClearDepth( 1.0f );
+	glClearDepth( 1.0f );	
+}
+
+void SDLHandler::drawScreenInternal() {
+	clearScreen();
+	
 	screenView->drawView();
 
 	// redraw the gui

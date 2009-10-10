@@ -235,6 +235,12 @@ private:
 	// world region coordinates
 	int regionX, regionY;
 	bool continuousLandMode;
+	
+	// load next map region vars
+	int newRegionX, newRegionY;
+	float newMapX, newMapY;
+	bool reloadRegions;
+	float party_x, party_y;
 
 public:
 	bool useFrustum;
