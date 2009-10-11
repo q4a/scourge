@@ -127,7 +127,8 @@ Scourge::Scourge( UserConfiguration *config )
 		, mainMenu( NULL )
 		, guiThemes( NULL )
 		, currentCombatMusic( NULL )
-		, landGenerator( NULL ) {
+		, landGenerator( NULL )
+		, loadingSurface( NULL ) {
 	// init the random number generator
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
@@ -772,7 +773,12 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
-void Scourge::drawScreenWhileLoading() {
+#define MAX_PROGRESS_INDEX 9
+void Scourge::drawScreenWhileLoading( const char *message ) {
+	if( !loadingSurface ) return;
+	
+	progress_index++;
+	strcpy( progress_message, message );
 	getSDLHandler()->clearScreen();
 	glLoadIdentity();
 	glsDisable( GLS_CULL_FACE | GLS_SCISSOR_TEST | GLS_BLEND | GLS_ALPHA_TEST | GLS_DEPTH_TEST | GLS_DEPTH_MASK | GLS_TEXTURE_2D );
@@ -792,6 +798,28 @@ void Scourge::drawScreenWhileLoading() {
 	glVertex2d( loadingSurface->w, loadingSurface->h );
 	glEnd();
 	
+	int offs_x = ( loadingSurface->w - MAX_PROGRESS_INDEX * 50 ) / 2;
+	int offs_y = ( loadingSurface->h - 40 ) / 2;
+	glPushMatrix();
+	glTranslatef( offs_x, offs_y, 0 );
+	glColor4f( 1, 1, 1, 0.2f );
+	glBegin( GL_QUADS );
+	glVertex2d( 0, 5 );
+	glVertex2d( 0, 0 );
+	glVertex2d( progress_index * 50, 0 );
+	glVertex2d( progress_index * 50, 5 );
+	glEnd();
+	
+	glColor4f( 1, 1, 1, 0.5f );
+	glBegin( GL_LINE_LOOP );
+	glVertex2d( 0, 5 );
+	glVertex2d( 0, 0 );
+	glVertex2d( MAX_PROGRESS_INDEX * 50, 0 );
+	glVertex2d( MAX_PROGRESS_INDEX * 50, 5 );
+	glEnd();
+	getSDLHandler()->texPrint( 0, -12, "%s", progress_message );
+	glPopMatrix();
+	
 	SDL_GL_SwapBuffers();
 }
 
@@ -801,26 +829,31 @@ void Scourge::saveScreenBeforeLoading() {
 //	int w = 500;
 //	int h = 500;
 	loadingSurface = SDL_CreateRGBSurface( SDL_SWSURFACE,  w, h, 24,
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	                        0xFF000000, 0x00FF0000, 0x0000FF00, 0 );
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+	                        0x00FF0000, 0x0000FF00, 0x000000FF, 0 );
 #else
 	                        0x000000FF, 0x0000FF00, 0x00FF0000, 0 );
 #endif
+
   cerr << "*** surface size=" << loadingSurface->w << "," << loadingSurface->h << endl;
   //glRasterPos2f( 0, 0 );
 	glReadPixels( 0, getScreenHeight() - loadingSurface->h, loadingSurface->w, loadingSurface->h, GL_BGR, GL_UNSIGNED_BYTE, loadingSurface->pixels );
 //	cerr << "saved screen. error: " << Util::getOpenGLError() << endl;
+	
+	progress_index = 0;
+	strcpy( progress_message, "" );
 }
 
 void Scourge::freeScreenWhileLoading() {
+	if( !loadingSurface ) return;
 	SDL_FreeSurface( loadingSurface );
+	loadingSurface = NULL;
 }
 
 void Scourge::saveMapRegions() {
 	
 	// save the screen
 	saveScreenBeforeLoading();
-	drawScreenWhileLoading();	
 	
 	// remove the party from the map
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
@@ -833,15 +866,19 @@ void Scourge::saveMapRegions() {
 	
 	string s, result;
 
+	drawScreenWhileLoading( _( "Saving map region" ) );
 	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() );
 	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, 0, MAP_DEPTH / 2, levelMap->getRegionX(), levelMap->getRegionY() );
 	
+	drawScreenWhileLoading( _( "Saving map region" ) );
 	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() );
 	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, 0, MAP_DEPTH / 2, levelMap->getRegionX() + 1, levelMap->getRegionY() );
 	
+	drawScreenWhileLoading( _( "Saving map region" ) );
 	s = getSavedRegionFile( levelMap->getRegionX(), levelMap->getRegionY() + 1 );	
 	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, 0, MAP_WIDTH / 2, MAP_DEPTH / 2, MAP_DEPTH, levelMap->getRegionX(), levelMap->getRegionY() + 1 );
 	
+	drawScreenWhileLoading( _( "Saving map region" ) );
 	s = getSavedRegionFile( levelMap->getRegionX() + 1, levelMap->getRegionY() + 1 );	
 	levelMap->saveMap( s, result, true, REF_TYPE_OBJECT, MAP_WIDTH / 2, MAP_WIDTH, MAP_DEPTH / 2, MAP_DEPTH, levelMap->getRegionX() + 1, levelMap->getRegionY() + 1 );
 }
@@ -855,14 +892,12 @@ std::string Scourge::getSavedRegionFile( int regionX, int regionY ) {
 void Scourge::mapRegionsChanged( float party_x, float party_y ) {
 	cerr << "Scourge::mapRegionsChanged party_x=" << party_x << "," << party_y << endl;
 	
-	// save the screen
-//	SDL_Surface *surface = saveScreenBeforeLoading( getScreenWidth(), getScreenHeight() );
-	drawScreenWhileLoading();
-	
 	setShowProgress( false );
 	loadOrGenerateLargeMap();
 	setShowProgress( true );
 	
+	
+	drawScreenWhileLoading( _( "Placing party on map" ) );	
 	// place the party
 	float px, py;
 	for ( int r = 0; r < getParty()->getPartySize(); r++ ) {
@@ -913,11 +948,13 @@ void Scourge::generateRegion( int rx, int ry, int posX, int posY ) {
 	landGenerator->setShowProgress( false );
 	
 	if( will_load_map ) {
+		drawScreenWhileLoading( _( "Loading map" ) );
 		cerr << "LOADING map region: " << rx << "," << ry << endl;
 		string result;
 		bool loaded = levelMap->loadRegionMap( map_file, result, this, posX, posY, rx, ry );
 		cerr << "LOAD MAP loaded?=" << loaded << " result=" << result << endl;
 	} else {
+		drawScreenWhileLoading( _( "Generating map" ) );
 		cerr << "GENERATING map region: " << rx << "," << ry << endl;
 		landGenerator->toMap( levelMap, getShapePalette(), false, false );
 		

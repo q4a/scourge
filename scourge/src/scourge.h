@@ -911,7 +911,7 @@ protected:
 	inline void setShowProgress( bool b ) { showProgress = b; }
 	inline bool getShowProgress() { return showProgress; }
 	
-	void drawScreenWhileLoading();
+	void drawScreenWhileLoading( const char *message );
 	void saveScreenBeforeLoading();
 	void freeScreenWhileLoading();
 
@@ -1053,6 +1053,8 @@ private:
 	LandGenerator *landGenerator;
 	
 	SDL_Surface *loadingSurface;
+	int progress_index;
+	char progress_message[300];
 };
 
 #endif
