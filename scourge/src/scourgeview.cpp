@@ -1161,6 +1161,9 @@ void ScourgeView::drawAfter() {
 			showMovieConversation( scourge->getParty()->getParty( i ) );
 		}
 	}
+	
+	// this has to be the last thing because it saves the screen.
+	scourge->getMap()->changeMapRegions();
 }
 
 void ScourgeView::showMovieConversation( Creature *creature ) {
