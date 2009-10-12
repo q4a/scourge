@@ -791,7 +791,7 @@ void SDLHandler::drawScreenInternal() {
 	drawVisibleWindows();
 
 	screenView->drawAfter();
-
+	
 	if ( fadeoutTimer > 0 ) {
 		drawFadeout();
 	}

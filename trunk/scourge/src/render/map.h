@@ -263,6 +263,7 @@ public:
 	inline int getClimate( int x, int y ) { return this->climate[x][y]; }
 	inline void setVegetation( int x, int y, int n ) { this->vegetation[x][y] = n; }
 	inline int getVegetation( int x, int y ) { return this->vegetation[x][y]; }
+	void changeMapRegions();
 	
 	bool isOnFloorTile( int px, int py );
 

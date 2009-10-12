@@ -912,7 +912,39 @@ void Map::preDraw() {
 /// Draws traps, and cleans up after drawing the main 3D view.
 
 void Map::postDraw() {
+	// changeMapRegions();
+	
+	if ( adapter->isMouseIsMovingOverMap() ) {
+		// find the map coordinates (must be done after drawing is complete)
+		Location *pos = NULL;
+		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
+		cursorFlatMapX = cursorMapX;
+		cursorFlatMapY = cursorMapY;
+		cursorChunkX = cursorFlatMapX / MAP_UNIT;
+		cursorChunkY = cursorFlatMapY / MAP_UNIT;
+		if ( pos ) {
+			cursorMapX = pos->x;
+			cursorMapY = pos->y;
+			cursorMapZ = pos->z;
+		}
+	}	
 
+	glsDisable( GLS_SCISSOR_TEST );
+
+	// cancel mouse-based map movement (middle button)
+	if ( mouseRot ) {
+		setXRot( 0 );
+		setYRot( 0 );
+		setZRot( 0 );
+	}
+	if ( mouseZoom ) {
+		mouseZoom = false;
+		setZoomIn( false );
+		setZoomOut( false );
+	}
+}
+
+void Map::changeMapRegions() {
 	// after drawing the map, load the next section
 	if( reloadRegions ) {
 		reloadRegions = false;
@@ -954,36 +986,6 @@ void Map::postDraw() {
 		// cerr << "FINAL: x=" << x << " y=" << y << endl;
 		
 		refresh();		
-	}
-	
-	
-	if ( adapter->isMouseIsMovingOverMap() ) {
-		// find the map coordinates (must be done after drawing is complete)
-		Location *pos = NULL;
-		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
-		cursorFlatMapX = cursorMapX;
-		cursorFlatMapY = cursorMapY;
-		cursorChunkX = cursorFlatMapX / MAP_UNIT;
-		cursorChunkY = cursorFlatMapY / MAP_UNIT;
-		if ( pos ) {
-			cursorMapX = pos->x;
-			cursorMapY = pos->y;
-			cursorMapZ = pos->z;
-		}
-	}	
-
-	glsDisable( GLS_SCISSOR_TEST );
-
-	// cancel mouse-based map movement (middle button)
-	if ( mouseRot ) {
-		setXRot( 0 );
-		setYRot( 0 );
-		setZRot( 0 );
-	}
-	if ( mouseZoom ) {
-		mouseZoom = false;
-		setZoomIn( false );
-		setZoomOut( false );
 	}
 }
 
