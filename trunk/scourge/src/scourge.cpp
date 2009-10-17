@@ -790,7 +790,7 @@ void Scourge::drawScreenWhileLoading( const char *message ) {
 	
 	glsEnable( GLS_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glColor4f( 0, 0, 0, 0.5f );
+	glColor4f( 0, 0, 0, 0.75f );
 	glBegin( GL_QUADS );
 	glVertex2d( 0, loadingSurface->h );
 	glVertex2d( 0, 0 );

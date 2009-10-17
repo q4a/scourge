@@ -359,18 +359,23 @@ bool Outdoor::drawHeightMapFloor() {
 
 	glsDisable( GLS_CULL_FACE );
 	glsEnable( GLS_TEXTURE_2D );
-
+	
 	int startX = ( map->getX() / OUTDOORS_STEP );
 	int startY = ( map->getY() / OUTDOORS_STEP );
-	int endX = ( ( map->getX() + map->mapViewWidth ) / OUTDOORS_STEP ) - 1;
-	int endY = ( ( map->getY() + map->mapViewDepth ) / OUTDOORS_STEP ) - 1;
+	int endX =   ( ( map->getX() + map->mapViewWidth ) / OUTDOORS_STEP ) - 1;
+	int endY =   ( ( map->getY() + map->mapViewDepth ) / OUTDOORS_STEP ) - 1;
 
-	for ( int yy = startY; yy < endY; yy++ ) {
+	if( startX < 0 ) startX = 0;
+	if( startY < 0 ) startY = 0;
+	if( endX >= MAP_WIDTH / OUTDOORS_STEP ) endX = MAP_WIDTH / OUTDOORS_STEP;
+	if( endY >= MAP_DEPTH / OUTDOORS_STEP ) endY = MAP_DEPTH / OUTDOORS_STEP;
 
-		for ( int xx = startX; xx < endX; xx++ ) {
-
+	for ( int yy = startY - 6; yy < endY + 6; yy++ ) {
+		for ( int xx = startX - 6; xx < endX + 6; xx++ ) {
+			if( xx < 0 || yy < 0 || xx >= MAP_WIDTH / OUTDOORS_STEP || yy >= MAP_DEPTH / OUTDOORS_STEP ) continue;
+			
 			map->groundPos[ xx ][ yy ].tex.glBind();
-
+			
 			p[0] = &( map->groundPos[ xx ][ yy ] );
 			p[1] = &( map->groundPos[ xx + 1 ][ yy ] );
 			p[2] = &( map->groundPos[ xx ][ yy + 1 ] );
@@ -388,7 +393,6 @@ bool Outdoor::drawHeightMapFloor() {
 
 			glEnd();
 		}
-
 	}
 
 	glsDisable( GLS_DEPTH_MASK );
@@ -397,21 +401,13 @@ bool Outdoor::drawHeightMapFloor() {
 
 	// draw outdoor textures
 	for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-
 		for ( int yy = startY; yy < endY; yy++ ) {
-
 			for ( int xx = startX; xx < endX; xx++ ) {
-
 				if ( map->outdoorTex[xx][yy][z].texture.isSpecified() ) {
-
 					drawOutdoorTex( map->outdoorTex[xx][yy][z].texture, xx + map->outdoorTex[xx][yy][z].offsetX, yy + map->outdoorTex[xx][yy][z].offsetY, map->outdoorTex[xx][yy][z].width, map->outdoorTex[xx][yy][z].height, map->outdoorTex[xx][yy][z].angle );
-
 				}
-
 			}
-
 		}
-
 	}
 
 	glsDisable( GLS_BLEND );
@@ -440,14 +436,10 @@ bool Outdoor::drawHeightMapFloor() {
 					glVertex3f( gx, gy, p[i]->z + 0.05f * MUL );
 				}
 				glEnd();
-
 			}
-
 		}
-
 		glsEnable( GLS_TEXTURE_2D );
 	}
-
 	return ret;
 }
 
