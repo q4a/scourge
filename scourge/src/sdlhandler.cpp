@@ -63,7 +63,7 @@ bool SDLHandler::showDebugInfo = SHOW_FPS;
 #define DOUBLE_CLICK_TOLERANCE 5
 
 #define DEFAULT_MIN_DEPTH -3000
-#define DEFAULT_MAX_DEPTH 1000
+#define DEFAULT_MAX_DEPTH 3000
 
 SDLHandler::SDLHandler( GameAdapter *gameAdapter ) {
 	/* These are to calculate our fps */

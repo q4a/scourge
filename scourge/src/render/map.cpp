@@ -3493,7 +3493,7 @@ void Map::getMapXYAtScreenXY( Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy ) {
 }
 
 // these are arrived at by trial-and-error
-#define RAY_PICK_MIN_T 0.6f
+#define RAY_PICK_MIN_T 0.0f
 #define RAY_PICK_MAX_T 0.8f
 #define RAY_PICK_STEP_COUNT 30
 void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos ) {
