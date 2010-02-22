@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jme-ogrexml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-terrain.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-gamestates.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-scene.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-effects.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-editors.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-collada.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-font.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-swt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-awt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-audio.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jme-model.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
