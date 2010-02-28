@@ -49,7 +49,7 @@ public class Player implements NodeGenerator {
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
         player = ShapeUtil.loadMd2("./data/models/sfod8/tris.md2", "./data/models/sfod8/Rieger.png", "player", main.getDisplay(), true, frames);
         player.setLocalTranslation(new Vector3f(x * ShapeUtil.WALL_WIDTH, y * ShapeUtil.WALL_WIDTH, z * ShapeUtil.WALL_WIDTH));
-        player.setLocalScale(.25f);
+        player.setLocalScale(.2f);
 
         for(String s : frames.keySet()) {
             keyframes.put(Md2Key.valueOf(s), frames.get(s));

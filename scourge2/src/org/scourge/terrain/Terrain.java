@@ -158,7 +158,7 @@ public class Terrain implements NodeGenerator {
         q.fromAngleAxis(FastMath.DEG_TO_RAD * (dir.getAngle() + 90), Vector3f.UNIT_Y);
         ramp.getLocalRotation().multLocal(q);
 
-        ramp.getLocalTranslation().x = +Section.SECTION_WIDTH * ShapeUtil.WALL_WIDTH;
+        ramp.getLocalTranslation().x = (Section.SECTION_WIDTH - 0.25f) * ShapeUtil.WALL_WIDTH;
 //
 //        Vector3f direction = dir.getDirVector().clone();
 //        ramp.getLocalTranslation().addLocal(direction.mult(Section.SECTION_WIDTH * ShapeUtil.WALL_WIDTH / 2, direction));
