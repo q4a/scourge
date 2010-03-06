@@ -424,9 +424,9 @@ public abstract class Game extends BaseGame {
 //        /** Assign key ADD to action "step". */
 //        KeyBindingManager.getKeyBindingManager().set( "step",
 //                KeyInput.KEY_ADD );
-//        /** Assign key T to action "toggle_wire". */
-//        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
-//                KeyInput.KEY_T );
+        /** Assign key T to action "toggle_wire". */
+        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
+                KeyInput.KEY_T );
 //        /** Assign key L to action "toggle_lights". */
 //        KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
 //                KeyInput.KEY_L );
@@ -439,9 +439,9 @@ public abstract class Game extends BaseGame {
 //        /** Assign key C to action "camera_out". */
 //        KeyBindingManager.getKeyBindingManager().set( "camera_out",
 //                KeyInput.KEY_C );
-//        /** Assign key R to action "mem_report". */
-//        KeyBindingManager.getKeyBindingManager().set("mem_report",
-//                KeyInput.KEY_R);
+        /** Assign key R to action "mem_report". */
+        KeyBindingManager.getKeyBindingManager().set("mem_report",
+                KeyInput.KEY_R);
 //
         KeyBindingManager.getKeyBindingManager().set( "exit",
                 KeyInput.KEY_ESCAPE );

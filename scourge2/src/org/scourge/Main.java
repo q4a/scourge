@@ -105,31 +105,7 @@ public class Main extends Game {
         player = new Player(this, 0, Section.SECTION_HEIGHT * 3, -Section.SECTION_WIDTH);
         player.setKeyFrame(Player.Md2Key.stand);
 
-        // middle
-        terrain = new Terrain(this);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, 0);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-
-
-        // top
-        terrain.addSection((int)Section.SECTION_WIDTH, 2 * (int) Section.SECTION_HEIGHT, 0);
-        terrain.addSection(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH);
-
-
-        // low
-        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-        Section section = terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-        terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-
-        terrain.addStairs(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH, 
-                          0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-        terrain.addStairs((int)Section.SECTION_WIDTH, 2 * (int)Section.SECTION_HEIGHT, 0, 
-                          0, (int)Section.SECTION_HEIGHT, 0);
-        terrain.addStairs(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH,
-                          0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-        section.addTown();
+        buildTerrain();
 
         cameraHolder = new Node("cam_holder");
         player.getNode().attachChild(cameraHolder);
@@ -138,13 +114,6 @@ public class Main extends Game {
 
         playerController = new PlayerController(this);
         input = playerController;
-//        HashMap<String, Object> handlerProps = new HashMap<String, Object>();
-//        handlerProps.put(ThirdPersonHandler.PROP_DOGRADUAL, "true");
-//        handlerProps.put(ThirdPersonHandler.PROP_TURNSPEED, ""+(1.0f * FastMath.PI));
-//        handlerProps.put(ThirdPersonHandler.PROP_LOCKBACKWARDS, "false");
-//        handlerProps.put(ThirdPersonHandler.PROP_CAMERAALIGNEDMOVE, "true");
-//        input = new ThirdPersonHandler(player.getNode(), cam, handlerProps);
-//        input.setActionSpeed(100f);
 
         Node reflectedNode = new Node("reflectNode");
 
@@ -187,6 +156,34 @@ public class Main extends Game {
 
         rootNode.setCullHint(Spatial.CullHint.Never);
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
+    }
+
+    private void buildTerrain() {
+        // middle
+        terrain = new Terrain(this);
+        terrain.addSection(0, (int)Section.SECTION_HEIGHT, 0);
+        terrain.addSection(0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
+        terrain.addSection(0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
+
+
+        // top
+        terrain.addSection((int)Section.SECTION_WIDTH, 2 * (int) Section.SECTION_HEIGHT, 0);
+        terrain.addSection(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH);
+
+
+        // low
+        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
+        Section section = terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
+        terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
+        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
+
+        terrain.addStairs(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH,
+                          0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
+        terrain.addStairs((int)Section.SECTION_WIDTH, 2 * (int)Section.SECTION_HEIGHT, 0,
+                          0, (int)Section.SECTION_HEIGHT, 0);
+        terrain.addStairs(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH,
+                          0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
+        section.addTown();
     }
 
     public void toggleCameraAttached() {

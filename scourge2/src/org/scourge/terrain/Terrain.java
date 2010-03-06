@@ -1,14 +1,22 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.state.TextureState;
+import com.jme.util.TextureManager;
+import com.jmex.terrain.TerrainBlock;
+import com.jmex.terrain.util.AbstractHeightMap;
+import com.jmex.terrain.util.HillHeightMap;
+import com.jmex.terrain.util.ProceduralTextureGenerator;
 import org.scourge.*;
 import org.scourge.terrain.Direction;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +37,68 @@ public class Terrain implements NodeGenerator {
         this.terrain = new Node("terrain");
         terrain.setModelBound(new BoundingBox());
     }
+
+//    public Section addSection(int x, int y, int z) {
+//        OutdoorHeightMap heightMap = new OutdoorHeightMap(129, 2000, 15.0f, 40.0f, (byte) 1);
+//        float size = Section.SECTION_WIDTH * ShapeUtil.WALL_WIDTH;
+//        Vector3f terrainScale = new Vector3f(size / heightMap.getSize(),
+//                                             0.11f,
+//                                             size / heightMap.getSize());
+//        TerrainBlock groundTerrain = new TerrainBlock(ShapeUtil.newShapeName("terrain"),
+//                                   heightMap.getSize(),
+//                                   terrainScale,
+//                                   heightMap.getHeightMap(),
+//                                   new Vector3f(0, 0, 0));
+//		groundTerrain.setDetailTexture(1, 16);
+//
+//        // Some textures
+//        ProceduralTextureGenerator pt = new ProceduralTextureGenerator(heightMap);
+//        pt.addTexture(new ImageIcon("./data/textures/grass.png"), -128, 0, 128);
+//        pt.addTexture(new ImageIcon("./data/textures/subtrop.png"), 0, 128, 255);
+//        pt.addTexture(new ImageIcon("./data/textures/alpine.png"), 128, 255, 384);
+//
+//        pt.createTexture(256);
+//
+//        TextureState ts = main.getDisplay().getRenderer().createTextureState();
+//        ts.setEnabled(true);
+//        Texture t1 = TextureManager.loadTexture(pt.getImageIcon().getImage(),
+//                                                Texture.MinificationFilter.Trilinear,
+//                                                Texture.MagnificationFilter.Bilinear, true);
+//        ts.setTexture(t1, 0);
+//
+//        Texture t2 = TextureManager.loadTexture("./data/textures/detail.png",
+//                                                Texture.MinificationFilter.Trilinear,
+//                                                Texture.MagnificationFilter.Bilinear);
+//        t2.setScale(new Vector3f(0.5f, 0.5f, 0.5f));
+//        ts.setTexture(t2, 1);
+//        t2.setWrap(Texture.WrapMode.Repeat);
+//
+//        t1.setApply(Texture.ApplyMode.Combine);
+//        t1.setCombineFuncRGB(Texture.CombinerFunctionRGB.Modulate);
+//        t1.setCombineSrc0RGB(Texture.CombinerSource.CurrentTexture);
+//        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
+//        t1.setCombineSrc1RGB(Texture.CombinerSource.PrimaryColor);
+//        t1.setCombineOp1RGB(Texture.CombinerOperandRGB.SourceColor);
+//
+//        t2.setApply(Texture.ApplyMode.Combine);
+//        t2.setCombineFuncRGB(Texture.CombinerFunctionRGB.AddSigned);
+//        t2.setCombineSrc0RGB(Texture.CombinerSource.CurrentTexture);
+//        t2.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
+//        t2.setCombineSrc1RGB(Texture.CombinerSource.Previous);
+//        t2.setCombineOp1RGB(Texture.CombinerOperandRGB.SourceColor);
+//        groundTerrain.setRenderState(ts);
+//
+//        groundTerrain.getLocalTranslation().x = x * ShapeUtil.WALL_WIDTH;
+//        groundTerrain.getLocalTranslation().y = y * ShapeUtil.WALL_WIDTH;
+//        groundTerrain.getLocalTranslation().z = z * ShapeUtil.WALL_WIDTH;
+//        BoundingBox bb = new BoundingBox();
+//        groundTerrain.setModelBound(bb);
+//        groundTerrain.updateModelBound();
+//        groundTerrain.updateWorldBound();
+//        terrain.attachChild(groundTerrain);
+//        return null;
+//    }
+
 
     public Section addSection(int x, int y, int z) {
         Section section = new Section(main, x, y, z);

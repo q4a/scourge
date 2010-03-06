@@ -12,20 +12,40 @@ public enum Direction {
         public Direction opposite() {
             return SOUTH;
         }
+
+        @Override
+        public Direction next() {
+            return WEST;
+        }
     },
     EAST(0, new Vector3f(-1, 0, 0)) {
         public Direction opposite() {
             return WEST;
+        }
+
+        @Override
+        public Direction next() {
+            return NORTH;
         }
     },
     SOUTH(90, new Vector3f(0, 0, 1)) {
         public Direction opposite() {
             return NORTH;
         }
+
+        @Override
+        public Direction next() {
+            return EAST;
+        }
     },
     WEST(180, new Vector3f(1, 0, 0)) {
        public Direction opposite() {
             return EAST;
+        }
+
+        @Override
+        public Direction next() {
+            return SOUTH;
         }
     };
 
@@ -46,4 +66,6 @@ public enum Direction {
     }
 
     public abstract Direction opposite();
+
+    public abstract Direction next();
 }
