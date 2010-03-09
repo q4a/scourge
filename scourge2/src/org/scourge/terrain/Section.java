@@ -30,6 +30,8 @@ public class Section implements NodeGenerator {
     private Node section;
     public static final float SECTION_WIDTH = 8;
     public static final float SECTION_HEIGHT = 3;
+    public static final float BLOCK_WIDTH = SECTION_WIDTH / 4.0f;
+    public static final float BLOCK_HEIGHT = SECTION_HEIGHT / 2.0f;
     private Main main;
 
     public Section(Main main, int x, int y, int z) {
@@ -187,4 +189,136 @@ public class Section implements NodeGenerator {
         section.updateModelBound();
         section.updateWorldBound();
     }
+
+    public void addLedge(Ledge ledge, float angle, int x, int y, int z) {
+        Spatial spatial = ledge.getSpatial();
+        spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
+        spatial.getLocalTranslation().set((x - 1.5f) * Ledge.LEDGE_WIDTH * ShapeUtil.WALL_WIDTH,
+                                          (y + 1) * Ledge.LEDGE_HEIGHT * ShapeUtil.WALL_WIDTH,
+                                          (z - 1.5f) * Ledge.LEDGE_WIDTH * ShapeUtil.WALL_WIDTH);
+        spatial.setModelBound(new BoundingBox());
+        spatial.updateModelBound();
+        spatial.updateWorldBound();
+
+        section.attachChild(spatial);
+        section.updateModelBound();
+        section.updateWorldBound();
+    }
+
+    public void addBlock(float x, float y, float z) {
+        Node node = new Node(ShapeUtil.newShapeName("block"));
+
+        Spatial spatial = ShapeUtil.load3ds("./data/3ds/block-qtr.3ds", "./data/textures", "block-model");
+        //spatial.getLocalScale().set(0.25f, 0.5f, 0.25f);
+        node.attachChild(spatial);
+
+        Spatial ground = createBlockGround();
+        node.attachChild(ground);
+
+        node.getLocalTranslation().set(x - (1.5f * BLOCK_WIDTH * ShapeUtil.WALL_WIDTH),
+                                       (y + BLOCK_HEIGHT * ShapeUtil.WALL_WIDTH),
+                                       z - (1.5f * BLOCK_WIDTH * ShapeUtil.WALL_WIDTH));
+        node.setModelBound(new BoundingBox());
+        node.updateModelBound();
+        node.updateWorldBound();
+        section.attachChild(node);
+        section.updateModelBound();
+        section.updateWorldBound();
+    }
+
+    private Spatial createBlockGround() {
+//        Quad ground = new Quad(ShapeUtil.newShapeName("ground"), BLOCK_WIDTH * ShapeUtil.WALL_WIDTH, BLOCK_WIDTH * ShapeUtil.WALL_WIDTH);
+//        FloatBuffer normBuf = ground.getNormalBuffer();
+//        normBuf.clear();
+//        normBuf.put(0).put(1).put(0);
+//        normBuf.put(0).put(1).put(0);
+//        normBuf.put(0).put(1).put(0);
+//        normBuf.put(0).put(1).put(0);
+//
+//        Vector2f[] coords = new Vector2f[] {
+//            new Vector2f(0, 0),
+//            new Vector2f(BLOCK_WIDTH / 2, 0),
+//            new Vector2f(BLOCK_WIDTH / 2, BLOCK_WIDTH / 2),
+//            new Vector2f(0, BLOCK_WIDTH / 2)
+//        };
+//        TexCoords tc = TexCoords.makeNew(coords);
+//        ground.setTextureCoords(tc);
+//        ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
+//        ground.setModelBound(new BoundingBox());
+//        Texture texture = TextureManager.loadTexture("./data/textures/grass.png",
+//                                                     Texture.MinificationFilter.Trilinear,
+//                                                     Texture.MagnificationFilter.Bilinear);
+//        texture.setWrap(Texture.WrapMode.Repeat);
+//        TextureState ts = main.getDisplay().getRenderer().createTextureState();
+//        ts.setTexture(texture);
+//        ground.setRenderState(ts);
+//        return ground;
+
+        float size = Section.BLOCK_WIDTH * ShapeUtil.WALL_WIDTH;
+        OutdoorHeightMap heightMap = new OutdoorHeightMap((int)(size / 4.0f), 40, 0.5f, 1.0f, (byte) 1);
+        Vector3f terrainScale = new Vector3f(4.6f, 0.015f, 4.6f);
+        TerrainBlock groundTerrain = new TerrainBlock(ShapeUtil.newShapeName("terrain"),
+                                   heightMap.getSize(),
+                                   terrainScale,
+                                   heightMap.getHeightMap(),
+                                   new Vector3f(0, 0, 0));
+		groundTerrain.setDetailTexture(1, 16);
+
+        // Some textures
+        ProceduralTextureGenerator pt = new ProceduralTextureGenerator(heightMap);
+        pt.addTexture(new ImageIcon("./data/textures/grass.png"), -128, 0, 128);
+        pt.addTexture(new ImageIcon("./data/textures/subtrop.png"), 0, 128, 500); // last arg: 255
+        //pt.addTexture(new ImageIcon("./data/textures/alpine.png"), 128, 255, 384);
+
+        pt.createTexture(256);
+
+        TextureState ts = main.getDisplay().getRenderer().createTextureState();
+        ts.setEnabled(true);
+        Texture t1 = TextureManager.loadTexture(pt.getImageIcon().getImage(),
+                                                Texture.MinificationFilter.Trilinear,
+                                                Texture.MagnificationFilter.Bilinear, true);
+        ts.setTexture(t1, 0);
+
+        Texture t2 = TextureManager.loadTexture("./data/textures/detail.png",
+                                                Texture.MinificationFilter.Trilinear,
+                                                Texture.MagnificationFilter.Bilinear);
+        t2.setScale(new Vector3f(0.5f, 0.5f, 0.5f));
+        ts.setTexture(t2, 1);
+        t2.setWrap(Texture.WrapMode.Repeat);
+
+        t1.setApply(Texture.ApplyMode.Combine);
+        t1.setCombineFuncRGB(Texture.CombinerFunctionRGB.Modulate);
+        t1.setCombineSrc0RGB(Texture.CombinerSource.CurrentTexture);
+        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
+        t1.setCombineSrc1RGB(Texture.CombinerSource.PrimaryColor);
+        t1.setCombineOp1RGB(Texture.CombinerOperandRGB.SourceColor);
+
+        t2.setApply(Texture.ApplyMode.Combine);
+        t2.setCombineFuncRGB(Texture.CombinerFunctionRGB.AddSigned);
+        t2.setCombineSrc0RGB(Texture.CombinerSource.CurrentTexture);
+        t2.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
+        t2.setCombineSrc1RGB(Texture.CombinerSource.Previous);
+        t2.setCombineOp1RGB(Texture.CombinerOperandRGB.SourceColor);
+        groundTerrain.setRenderState(ts);
+
+        groundTerrain.getLocalTranslation().set( -BLOCK_WIDTH * ShapeUtil.WALL_WIDTH / 2, 0.05f, -BLOCK_WIDTH * ShapeUtil.WALL_WIDTH / 2 );
+        BoundingBox bb = new BoundingBox();
+        groundTerrain.setModelBound(bb);
+        groundTerrain.updateModelBound();
+        groundTerrain.updateWorldBound();
+        return groundTerrain;
+    }
+
+    public void addStairs(float x, float y, float z, float angle) {
+        Spatial stairs = ShapeUtil.load3ds("./data/3ds/stairs.3ds", "./data/textures", "stairs");
+        stairs.getLocalTranslation().set(x - 2 * BLOCK_WIDTH * ShapeUtil.WALL_WIDTH, y, z - 1.5f * BLOCK_WIDTH * ShapeUtil.WALL_WIDTH);
+        stairs.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
+        stairs.setModelBound(new BoundingBox());
+        stairs.updateModelBound();
+        stairs.updateWorldBound();
+        section.attachChild(stairs);
+        section.updateModelBound();
+        section.updateWorldBound();
+    }
+
 }

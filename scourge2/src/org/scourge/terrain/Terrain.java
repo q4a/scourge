@@ -4,19 +4,18 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.TexCoords;
+import com.jme.scene.shape.Quad;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
-import com.jmex.terrain.TerrainBlock;
-import com.jmex.terrain.util.AbstractHeightMap;
-import com.jmex.terrain.util.HillHeightMap;
-import com.jmex.terrain.util.ProceduralTextureGenerator;
 import org.scourge.*;
 import org.scourge.terrain.Direction;
 
-import javax.swing.*;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,11 +31,231 @@ public class Terrain implements NodeGenerator {
     private final static float STEP_SIZE = 4;
     private final static float STEP_HEIGHT = 1;
 
+    // make sure there is a border of space around the land
+    private static final String[] MAP = new String[] {
+            "                          ",
+            "        *                 ",
+            "       ***   **           ",
+            "   **************     *   ",
+            "  ****************   ** * ",
+            " ********** ******    *** ",
+            "   ********   ***     **  ",
+            "  ********** *****   **** ",
+            " ****************** ***   ",
+            "  ********************    ",
+            "  *********************   ",
+            "  **********************  ",
+            "  ********* *********     ",
+            "  ********    *********   ",
+            "  ********************    ",
+            "   *** **  ***  ****      ",
+            "    *       *     ***     ",
+            "                          ",
+    };
+
+    enum TileTexType {
+        NONE(null),
+        ROCK("./data/textures/surf1.png"),
+        GRASS("./data/textures/grass.png"),
+        GRASS2("./data/textures/grass2.png"),
+        GRASS3("./data/textures/grass3.png"),
+        ;
+
+        private String texturePath;
+
+        TileTexType(String texture_path) {
+            this.texturePath = texture_path;
+        }
+
+        public String getTexturePath() {
+            return texturePath;
+        }
+    }
+
+    enum TileType {
+        NONE {
+            @Override
+            public Spatial createSpatial(float angle) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        },
+        EDGE_BRIDGE {
+            @Override
+            public Spatial createSpatial(float angle) {
+                return addEdge(angle, "b");
+            }
+        },
+        EDGE_CORNER {
+            @Override
+            public Spatial createSpatial(float angle) {
+                return addEdge(angle, "c");
+            }
+        },
+        EDGE_TIP {
+            @Override
+            public Spatial createSpatial(float angle) {
+                return addEdge(angle, "t");
+            }
+        },
+        EDGE_SIDE {
+            @Override
+            public Spatial createSpatial(float angle) {
+                return addEdge(angle, "s");
+            }
+        },
+        QUAD {
+            @Override
+            public Spatial createSpatial(float angle) {
+                Quad ground = new Quad(ShapeUtil.newShapeName("ground"), ShapeUtil.WALL_WIDTH, ShapeUtil.WALL_WIDTH);
+                FloatBuffer normBuf = ground.getNormalBuffer();
+                normBuf.clear();
+                normBuf.put(0).put(1).put(0);
+                normBuf.put(0).put(1).put(0);
+                normBuf.put(0).put(1).put(0);
+                normBuf.put(0).put(1).put(0);
+                ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
+                ground.setModelBound(new BoundingBox());
+                return ground;
+            }
+        },
+        ;
+
+        public abstract Spatial createSpatial(float angle);
+
+        protected Spatial addEdge(float angle, String model) {
+            Spatial edge = ShapeUtil.load3ds("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
+            edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
+            edge.setModelBound(new BoundingBox());
+            edge.updateModelBound();
+            edge.updateWorldBound();
+            return edge;
+        }
+    }
+
+    class Tile {
+        public TileTexType tex;
+        public TileType type;
+        public float angle;
+        public Spatial spatial;
+
+        public Tile() {
+            this(TileTexType.NONE, TileType.NONE, 0);
+        }
+
+        public Tile(TileTexType tex, TileType type, float angle) {
+            set(tex, type, angle);
+        }
+
+        public void set(TileTexType tex, TileType type, float angle) {
+            this.tex = tex;
+            this.type = type;
+            this.angle = angle;
+        }
+
+        public void applyTexture() {
+            Vector2f[] coords = new Vector2f[] {
+                new Vector2f(0,    0),
+                new Vector2f(0.5f, 0),
+                new Vector2f(0.5f, 0.5f),
+                new Vector2f(0,    0.5f)
+            };
+            TexCoords tc = TexCoords.makeNew(coords);
+            ((Quad)spatial).setTextureCoords(tc);
+            Texture texture = TextureManager.loadTexture(tex.getTexturePath(),
+                                                         Texture.MinificationFilter.Trilinear,
+                                                         Texture.MagnificationFilter.Bilinear);
+            texture.setWrap(Texture.WrapMode.Repeat);
+            TextureState ts = main.getDisplay().getRenderer().createTextureState();
+            ts.setTexture(texture);
+            spatial.setRenderState(ts);
+        }
+
+        public void createSpatial() {
+            spatial = type.createSpatial(angle); 
+        }
+    }
+
     public Terrain(Main main) {
         this.main = main;
         this.terrain = new Node("terrain");
         terrain.setModelBound(new BoundingBox());
+
+        int rows = MAP.length;
+        int cols = MAP[0].length();
+        boolean[][] map = new boolean[rows][cols];
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                map[y][x] = MAP[y].charAt(x) != ' ';
+            }
+        }
+
+        Tile[][] tiles = new Tile[rows][cols];
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                tiles[y][x] = new Tile();
+                if(map[y][x]) {
+                    if(map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
+                    } else if(!map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
+                    } else if(map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
+                    } else if(map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
+
+                    } else if(!map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
+                    } else if(map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
+                    } else if(!map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
+                    } else if(map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
+
+                    } else if(!map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
+                    } else if(map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
+                    } else if(!map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
+                    } else if(!map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
+
+                    } else if(!map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
+                    } else if(map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
+
+                    } else {
+                        // todo: maybe use a fractal growth pattern here...
+                        int gt = (int)(Math.random() * 6.0f);
+                        TileTexType tex = gt == 0 ? TileTexType.GRASS2 : (gt == 1 ? TileTexType.GRASS3 : TileTexType.GRASS);
+                        tiles[y][x].set(tex, TileType.QUAD, 0);
+                    }
+                }
+            }
+        }
+
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.type == TileType.NONE) continue;
+
+                tile.createSpatial();
+                if(tile.type == TileType.QUAD) {
+                    tile.applyTexture();
+                }
+                tile.spatial.getLocalTranslation().set(x * 16, 20, y * 16);
+                tile.spatial.updateModelBound();
+                tile.spatial.updateWorldBound();
+                terrain.attachChild(tile.spatial);
+                terrain.updateModelBound();
+                terrain.updateWorldBound();
+            }
+        }
+
     }
+
 
 //    public Section addSection(int x, int y, int z) {
 //        OutdoorHeightMap heightMap = new OutdoorHeightMap(129, 2000, 15.0f, 40.0f, (byte) 1);

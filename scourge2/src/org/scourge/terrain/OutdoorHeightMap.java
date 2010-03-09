@@ -150,7 +150,7 @@ public class OutdoorHeightMap extends AbstractHeightMap {
             float x = randomRange(random, radius * 1, size - radius);
             float y = randomRange(random, radius * 1, size - radius);
 
-            System.err.println("x=" + x + " y=" + y + " radius=" + radius + " min=" + minRadius + " max=" + maxRadius);
+            //System.err.println("x=" + x + " y=" + y + " radius=" + radius + " min=" + minRadius + " max=" + maxRadius);
             addHill(tempBuffer, radius, x, y);
 		}
 

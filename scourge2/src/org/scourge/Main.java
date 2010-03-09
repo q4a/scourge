@@ -1,5 +1,6 @@
 package org.scourge;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
 import com.jme.light.DirectionalLight;
@@ -24,10 +25,7 @@ import com.jme.system.JmeException;
 import com.jme.util.TextureManager;
 import com.jmex.effects.water.WaterRenderPass;
 import org.scourge.input.PlayerController;
-import org.scourge.terrain.Player;
-import org.scourge.terrain.Section;
-import org.scourge.terrain.Terrain;
-import org.scourge.terrain.Town;
+import org.scourge.terrain.*;
 
 import java.nio.FloatBuffer;
 import java.util.logging.Level;
@@ -102,7 +100,7 @@ public class Main extends Game {
         dr.setEnabled(true);
         lightState.attach(dr);
 
-        player = new Player(this, 0, Section.SECTION_HEIGHT * 3, -Section.SECTION_WIDTH);
+        player = new Player(this, 8, Section.SECTION_HEIGHT * 3, 8);
         player.setKeyFrame(Player.Md2Key.stand);
 
         buildTerrain();
@@ -128,7 +126,7 @@ public class Main extends Game {
 
         // setup the water plane
         waterEffectRenderPass = new WaterRenderPass(cam, 4, false, false); // setting last param to false renders faster
-        waterEffectRenderPass.setWaterPlane(new Plane(new Vector3f(0.0f, 1.0f, 0.0f), -40.0f));
+        waterEffectRenderPass.setWaterPlane(new Plane(new Vector3f(0.0f, 1.0f, 0.0f), 0.0f));
 
         waterQuad = new Quad("waterQuad", 1, 1);
         FloatBuffer normBuf = waterQuad.getNormalBuffer();
@@ -161,29 +159,37 @@ public class Main extends Game {
     private void buildTerrain() {
         // middle
         terrain = new Terrain(this);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, 0);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-        terrain.addSection(0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-
-
-        // top
-        terrain.addSection((int)Section.SECTION_WIDTH, 2 * (int) Section.SECTION_HEIGHT, 0);
-        terrain.addSection(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH);
-
-
-        // low
-        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-        Section section = terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-        terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-
-        terrain.addStairs(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH,
-                          0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-        terrain.addStairs((int)Section.SECTION_WIDTH, 2 * (int)Section.SECTION_HEIGHT, 0,
-                          0, (int)Section.SECTION_HEIGHT, 0);
-        terrain.addStairs(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH,
-                          0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-        section.addTown();
+//        Section section = terrain.addSection(0, (int)Section.SECTION_HEIGHT, 0);
+//        section.addBlock(3 * 32, 0, 3 * 32);
+//        section.addBlock(3 * 32 + 16, 0, 2 * 32);
+//        section.addBlock(2 * 32 + 16, 0, 2 * 32);
+//        section.addBlock(3 * 32, 0, 1 * 32);
+//        section.addBlock(3 * 32, 0, 0 * 32);
+//        section.addStairs(3 * 32 - 8, 0, 1 * 32 + 16, 90);
+//        section.addBlock(3 * 32 + 12, 24, 1 * 32);
+//        section.addStairs(4 * 32 - 12, 24, 1 * 32 + 16, -90);
+//
+//        terrain.addSection(0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
+//        terrain.addSection(0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
+//
+//        // top
+//        terrain.addSection((int)Section.SECTION_WIDTH, 2 * (int) Section.SECTION_HEIGHT, 0);
+//        terrain.addSection(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH);
+//
+//
+//        // low
+//        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
+//        section = terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
+//        terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
+//        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
+//
+//        terrain.addStairs(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH,
+//                          0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
+//        terrain.addStairs((int)Section.SECTION_WIDTH, 2 * (int)Section.SECTION_HEIGHT, 0,
+//                          0, (int)Section.SECTION_HEIGHT, 0);
+//        terrain.addStairs(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH,
+//                          0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
+//        section.addTown();
     }
 
     public void toggleCameraAttached() {
