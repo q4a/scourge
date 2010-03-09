@@ -113,6 +113,16 @@ public class Terrain implements NodeGenerator {
                 normBuf.put(0).put(1).put(0);
                 normBuf.put(0).put(1).put(0);
                 normBuf.put(0).put(1).put(0);
+
+                Vector2f[] coords = new Vector2f[] {
+                    new Vector2f(0,    0),
+                    new Vector2f(0.5f, 0),
+                    new Vector2f(0.5f, 0.5f),
+                    new Vector2f(0,    0.5f)
+                };
+                TexCoords tc = TexCoords.makeNew(coords);
+                ground.setTextureCoords(tc);
+
                 ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
                 ground.setModelBound(new BoundingBox());
                 return ground;
@@ -152,26 +162,21 @@ public class Terrain implements NodeGenerator {
             this.angle = angle;
         }
 
-        public void applyTexture() {
-            Vector2f[] coords = new Vector2f[] {
-                new Vector2f(0,    0),
-                new Vector2f(0.5f, 0),
-                new Vector2f(0.5f, 0.5f),
-                new Vector2f(0,    0.5f)
-            };
-            TexCoords tc = TexCoords.makeNew(coords);
-            ((Quad)spatial).setTextureCoords(tc);
-            Texture texture = TextureManager.loadTexture(tex.getTexturePath(),
-                                                         Texture.MinificationFilter.Trilinear,
-                                                         Texture.MagnificationFilter.Bilinear);
-            texture.setWrap(Texture.WrapMode.Repeat);
-            TextureState ts = main.getDisplay().getRenderer().createTextureState();
-            ts.setTexture(texture);
-            spatial.setRenderState(ts);
+        public void createSpatial() {
+            spatial = type.createSpatial(angle);
+            applyTexture();
         }
 
-        public void createSpatial() {
-            spatial = type.createSpatial(angle); 
+        protected void applyTexture() {
+            if(tex.getTexturePath() != null) {
+                Texture texture = TextureManager.loadTexture(tex.getTexturePath(),
+                                                             Texture.MinificationFilter.Trilinear,
+                                                             Texture.MagnificationFilter.Bilinear);
+                texture.setWrap(Texture.WrapMode.Repeat);
+                TextureState ts = main.getDisplay().getRenderer().createTextureState();
+                ts.setTexture(texture);
+                spatial.setRenderState(ts);
+            }
         }
     }
 
@@ -242,9 +247,6 @@ public class Terrain implements NodeGenerator {
                 if(tile.type == TileType.NONE) continue;
 
                 tile.createSpatial();
-                if(tile.type == TileType.QUAD) {
-                    tile.applyTexture();
-                }
                 tile.spatial.getLocalTranslation().set(x * 16, 20, y * 16);
                 tile.spatial.updateModelBound();
                 tile.spatial.updateWorldBound();

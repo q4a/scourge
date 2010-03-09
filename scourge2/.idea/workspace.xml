@@ -3,18 +3,8 @@
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Section.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Section.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/ac/stairs.ac" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/3ds/stairs.3ds" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Ledge.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/OutdoorHeightMap.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/OutdoorHeightMap.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/properties.cfg" afterPath="$PROJECT_DIR$/properties.cfg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/3ds/block-qtr.3ds" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/block.3ds" afterPath="$PROJECT_DIR$/data/3ds/block.3ds" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/ac/block-qtr.ac" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -88,7 +78,7 @@
       <file leaf-file-name="Terrain.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="229" column="75" selection-start="9211" selection-end="9211" vertical-scroll-proportion="0.6599327">
+            <state line="248" column="21" selection-start="9876" selection-end="9876" vertical-scroll-proportion="0.6474227">
               <folding />
             </state>
           </provider>
@@ -334,7 +324,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="489" y="25" width="1153" height="1028" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -459,7 +449,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="229" column="75" selection-start="9211" selection-end="9211" vertical-scroll-proportion="0.6599327">
+        <state line="248" column="21" selection-start="9876" selection-end="9876" vertical-scroll-proportion="0.6474227">
           <folding />
         </state>
       </provider>
