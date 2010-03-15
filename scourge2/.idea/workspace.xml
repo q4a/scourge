@@ -3,8 +3,17 @@
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/properties.cfg" afterPath="$PROJECT_DIR$/properties.cfg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil/narrow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil/edge.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil/corner.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil/hole.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/properties.cfg" afterPath="$PROJECT_DIR$/properties.cfg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/stencil/tip.png" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -68,17 +77,44 @@
         <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="102" column="66" selection-start="3511" selection-end="3511" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="98" column="57" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Tile.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Tile.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="162" column="0" selection-start="6677" selection-end="6677" vertical-scroll-proportion="0.0">
               <folding>
-                <marker date="1268149518000" expanded="true" signature="5408:5650" placeholder="..." />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Terrain.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <file leaf-file-name="TileType.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="248" column="21" selection-start="9876" selection-end="9876" vertical-scroll-proportion="0.6474227">
+            <state line="101" column="24" selection-start="2670" selection-end="2670" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TileTexType.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="5" selection-start="96" selection-end="96" vertical-scroll-proportion="0.121212125">
               <folding />
             </state>
           </provider>
@@ -102,6 +138,10 @@
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/OutdoorHeightMap.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Section.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ImageUtils.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
       </list>
     </option>
@@ -141,12 +181,12 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Favorites" />
       <pane id="ProjectPane">
         <subPane />
       </pane>
-      <pane id="Favorites" />
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -170,6 +210,29 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.scourge2">
+    <configuration default="false" name="Tile" type="Application" factoryName="Application" temporary="true">
+      <extension name="coverage" enabled="false" merge="false">
+        <pattern>
+          <option name="PATTERN" value="org.scourge.terrain.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="snapshooter" />
+      <option name="MAIN_CLASS_NAME" value="org.scourge.terrain.Tile" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="Scourge2" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -271,8 +334,9 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Application.scourge2" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Tile" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -323,20 +387,20 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="489" y="25" width="1153" height="1028" extended-state="0" />
+    <frame x="800" y="22" width="1120" height="1176" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32971016" sideWeight="0.5653105" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959852" sideWeight="0.56746763" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32762313" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3271719" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976446" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42719486" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3993576" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902032" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42606285" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39926064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -358,7 +422,7 @@
     <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
     <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="started to work on texture blending for terrain" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -371,6 +435,7 @@
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+    <MESSAGE value="started to work on texture blending for terrain" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -400,56 +465,73 @@
         <state line="33" column="72" selection-start="925" selection-end="957" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Direction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="23" selection-start="957" selection-end="957" vertical-scroll-proportion="1.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Game.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="444" column="0" selection-start="14998" selection-end="15150" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Ledge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="58" selection-start="814" selection-end="814" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/OutdoorHeightMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="14" selection-start="5670" selection-end="5670" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="152" column="14" selection-start="5670" selection-end="5670" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="0" selection-start="2455" selection-end="2455" vertical-scroll-proportion="0.0">
+        <state line="74" column="0" selection-start="2455" selection-end="2455" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Direction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="12" selection-start="133" selection-end="133" vertical-scroll-proportion="0.020442931">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar!/java/awt/image/AffineTransformOp.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="0" selection-start="2130" selection-end="2130" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="66" selection-start="3511" selection-end="3511" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="98" column="57" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Section.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="255" column="64" selection-start="10179" selection-end="11587" vertical-scroll-proportion="0.0">
+        <state line="86" column="13" selection-start="3546" selection-end="3546" vertical-scroll-proportion="0.773821">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Tile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="162" column="0" selection-start="6677" selection-end="6677" vertical-scroll-proportion="0.0">
           <folding>
-            <marker date="1268018722000" expanded="true" signature="10137:14528" placeholder="..." />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="66" selection-start="3511" selection-end="3511" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1268149518000" expanded="true" signature="5408:5650" placeholder="..." />
-          </folding>
+        <state line="101" column="24" selection-start="2670" selection-end="2670" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="248" column="21" selection-start="9876" selection-end="9876" vertical-scroll-proportion="0.6474227">
+        <state line="7" column="5" selection-start="96" selection-end="96" vertical-scroll-proportion="0.121212125">
           <folding />
         </state>
       </provider>
