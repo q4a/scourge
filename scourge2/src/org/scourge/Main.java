@@ -159,37 +159,7 @@ public class Main extends Game {
     private void buildTerrain() {
         // middle
         terrain = new Terrain(this);
-//        Section section = terrain.addSection(0, (int)Section.SECTION_HEIGHT, 0);
-//        section.addBlock(3 * 32, 0, 3 * 32);
-//        section.addBlock(3 * 32 + 16, 0, 2 * 32);
-//        section.addBlock(2 * 32 + 16, 0, 2 * 32);
-//        section.addBlock(3 * 32, 0, 1 * 32);
-//        section.addBlock(3 * 32, 0, 0 * 32);
-//        section.addStairs(3 * 32 - 8, 0, 1 * 32 + 16, 90);
-//        section.addBlock(3 * 32 + 12, 24, 1 * 32);
-//        section.addStairs(4 * 32 - 12, 24, 1 * 32 + 16, -90);
-//
-//        terrain.addSection(0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-//        terrain.addSection(0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-//
-//        // top
-//        terrain.addSection((int)Section.SECTION_WIDTH, 2 * (int) Section.SECTION_HEIGHT, 0);
-//        terrain.addSection(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH);
-//
-//
-//        // low
-//        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-//        section = terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH);
-//        terrain.addSection(-2 * (int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-//        terrain.addSection(-(int)Section.SECTION_WIDTH, 0, -2 * (int)Section.SECTION_WIDTH);
-//
-//        terrain.addStairs(-(int)Section.SECTION_WIDTH, 0, -(int)Section.SECTION_WIDTH,
-//                          0, (int)Section.SECTION_HEIGHT, -(int)Section.SECTION_WIDTH);
-//        terrain.addStairs((int)Section.SECTION_WIDTH, 2 * (int)Section.SECTION_HEIGHT, 0,
-//                          0, (int)Section.SECTION_HEIGHT, 0);
-//        terrain.addStairs(0, 2 * (int)Section.SECTION_HEIGHT, 2 * (int)Section.SECTION_WIDTH,
-//                          0, (int)Section.SECTION_HEIGHT, (int)Section.SECTION_WIDTH);
-//        section.addTown();
+        terrain.addTown(6, 12);
     }
 
     public void toggleCameraAttached() {
