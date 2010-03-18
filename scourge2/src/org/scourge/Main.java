@@ -28,6 +28,8 @@ import org.scourge.input.PlayerController;
 import org.scourge.terrain.*;
 
 import java.nio.FloatBuffer;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,6 +46,7 @@ public class Main extends Game {
     private Quad waterQuad;
     private float farPlane = 10000.0f;
     private float textureScale = 0.02f;
+    private Random random = new Random(17L);
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -308,5 +311,9 @@ public class Main extends Game {
 
         skybox.lockBounds();
         skybox.lockMeshes();
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }

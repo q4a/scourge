@@ -4,9 +4,7 @@ import com.jme.bounding.BoundingBox;
 import com.jme.scene.Node;
 import org.scourge.*;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: gabor
@@ -95,7 +93,7 @@ public class Terrain implements NodeGenerator {
 
                     } else {
                         // todo: maybe use a fractal growth pattern here...
-                        int gt = (int)(Math.random() * 6.0f);
+                        int gt = (int)(main.getRandom().nextFloat() * 6.0f);
                         //TileTexType tex = gt == 0 ? TileTexType.GRASS2 : (gt == 1 ? TileTexType.GRASS3 : TileTexType.GRASS);
                         tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
                     }
@@ -104,7 +102,9 @@ public class Terrain implements NodeGenerator {
         }
 
         // create the ground cover
-        Map<String, GroundType> ground = getGround(tiles);
+        List<Map<String, GroundType>> ground = new ArrayList<Map<String, GroundType>>();
+        ground.add(GroundType.moss.getGround(tiles, main.getRandom()));
+        ground.add(GroundType.lichen.getGround(tiles, main.getRandom()));
 
         // create the shapes and textures
         for(int x = 0; x < cols; x++) {
@@ -131,73 +131,13 @@ public class Terrain implements NodeGenerator {
 
     }
 
-    protected Map<String, GroundType> getGround(Tile[][] tiles) {
-        int rows = tiles.length * 4;
-        int cols = tiles[0].length * 4;
-
-        // create some random points
-        Map<String, GroundType> ground = new HashMap<String, GroundType>();
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
-                Tile tile = tiles[y / 4][x / 4];
-                if(tile.type == TileType.QUAD) {
-                    ground.put(GroundType.getGroundKey(x, y), (int)(Math.random() * 2) == 0 ? GroundType.moss : GroundType.none);
-                }
-            }
-        }
-
-        //debugGround(rows, cols, ground);
-
-        // grow using cellular automaton: more then 5 neighbors = live, less than 4 = die
-        for(int i = 0; i < 1; i++) {
-            for(int x = 0; x < cols; x++) {
-                for(int y = 0; y < rows; y++) {
-                    String key = GroundType.getGroundKey(x, y);
-                    if(ground.get(key) == null) continue;
-
-                    int score = 0;
-                    if(ground.get(GroundType.getGroundKey(x - 1, y)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x - 1, y - 1)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x, y - 1)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x + 1, y - 1)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x + 1, y)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x + 1, y + 1)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x, y + 1)) == GroundType.moss) score++;
-                    if(ground.get(GroundType.getGroundKey(x - 1, y + 1)) == GroundType.moss) score++;
-                    if(score > 5) {
-                        ground.put(key, GroundType.moss);
-                    } else if(score < 4) {
-                        ground.put(key, GroundType.none);
-                    }
-                }
-            }
-            //debugGround(rows, cols, ground);
-        }
-
-        debugGround(rows, cols, ground);
-
-        return ground;
-    }
-
-    private void debugGround(int rows, int cols, Map<String, GroundType> ground) {
-        System.err.println("------------------------------------------------");
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
-                GroundType gt = ground.get(GroundType.getGroundKey(x, y));
-                System.err.print(gt == null ? " " : (gt == GroundType.none ? "." : gt.name().toUpperCase().subSequence(0, 1)));
-            }
-            System.err.println();
-        }
-
-    }
-
     @Override
     public Node getNode() {
         return terrain;
     }
 
     public void addTown(int x, int z) {
-        Town town = new Town(main, x, 0, z);
+        Town town = new Town(main, x, 0, z, main.getRandom());
         terrain.attachChild(town.getNode());
         terrain.updateModelBound();
         terrain.updateWorldBound();

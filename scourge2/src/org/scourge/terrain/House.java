@@ -14,13 +14,11 @@ import com.jme.scene.shape.Quad;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
-import org.scourge.terrain.Direction;
 import org.scourge.Main;
-import org.scourge.terrain.NodeGenerator;
-import org.scourge.terrain.ShapeUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Random;
 
 /**
  * User: gabor
@@ -33,9 +31,11 @@ public class House implements NodeGenerator {
     protected static final float ROOF_OVERHANG = 0.2f;
     private Node house;
     private Main main;
+    private Random random;
 
-    public House(Main main, float x, float y, float z, float w, float h, float levels) {
+    public House(Main main, float x, float y, float z, float w, float h, float levels, Random random) {
         this.main = main;
+        this.random = random;
         house = new Node(ShapeUtil.newShapeName("house_"));
         for(int i = 0; i < levels; i++) {
             drawLevel(house, 0, i, 0, w, h, i == 0);
@@ -45,7 +45,7 @@ public class House implements NodeGenerator {
         house.getLocalTranslation().y = y * ShapeUtil.WALL_WIDTH;
         house.getLocalTranslation().z = z * ShapeUtil.WALL_WIDTH;
         Quaternion q = new Quaternion();
-        q.fromAngleAxis(FastMath.DEG_TO_RAD * (float)(15.0f * Math.random()), Vector3f.UNIT_Y);
+        q.fromAngleAxis(FastMath.DEG_TO_RAD * (15.0f * random.nextFloat()), Vector3f.UNIT_Y);
         house.getLocalRotation().multLocal(q);
         house.setModelBound(new BoundingBox());
         house.updateModelBound();
@@ -227,7 +227,7 @@ public class House implements NodeGenerator {
 
     private void drawLevel(Node house, float x, float y, float z, float w, float h, boolean has_door) {
 
-        Direction door = Direction.values()[(int)((float)Direction.values().length * Math.random())];
+        Direction door = Direction.values()[(int)((float)Direction.values().length * random.nextFloat())];
         drawWall(house, x - (w / 2),     y, z - (h / 2 + 1), Direction.EAST, w, w - 1, door == Direction.EAST && has_door);
         drawWall(house, x - (w / 2 - 1), y, z + (h / 2 - 1), Direction.WEST, w, 0, door == Direction.WEST && has_door);
         drawWall(house, x - (w / 2),     y, z - (h / 2), Direction.SOUTH, h, 0, door == Direction.SOUTH && has_door);
@@ -269,13 +269,13 @@ public class House implements NodeGenerator {
 
 
     private void drawWall(Node house, float x, float y, float z, Direction dir, float length, float finalPos, boolean has_door) {
-        int door_pos = has_door ? 1 + (int)((float)(length - 2) * Math.random()) : -1;
+        int door_pos = has_door ? 1 + (int)((float)(length - 2) * random.nextFloat()) : -1;
         for(int i = 0; i < length; i++) {
             if(i == door_pos) {
                 addWallPiece(getDoorFrame(), i, house, x, y, z, dir, length, finalPos);
                 addWallPiece(getDoor(), i, house, x, y, z, dir, length, finalPos);
             } else {
-                addWallPiece(0 == (int)(8.0f * Math.random()) ? getWindow() : getWall(), i, house, x, y, z, dir, length, finalPos);
+                addWallPiece(0 == (int)(8.0f * random.nextFloat()) ? getWindow() : getWall(), i, house, x, y, z, dir, length, finalPos);
             }
         }
     }

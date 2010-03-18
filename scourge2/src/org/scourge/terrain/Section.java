@@ -184,7 +184,7 @@ public class Section implements NodeGenerator {
     }
 
     public void addTown() {
-        Town town = new Town(main, 0, 0, 0);
+        Town town = new Town(main, 0, 0, 0, main.getRandom());
         section.attachChild(town.getNode());
         section.updateModelBound();
         section.updateWorldBound();

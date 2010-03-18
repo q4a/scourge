@@ -12,6 +12,7 @@ import org.scourge.terrain.House;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * User: gabor
@@ -23,7 +24,7 @@ public class Town implements NodeGenerator {
     private List<House> houses = new ArrayList<House>();
 
 
-    public Town(Main main, float x, float y, float z) {
+    public Town(Main main, float x, float y, float z, Random random) {
         town = new Node(ShapeUtil.newShapeName("town"));
 
 //        houses.add(new House(main, 0, 0, 0, 3, 3, 3));
@@ -32,9 +33,9 @@ public class Town implements NodeGenerator {
 //        houses.add(new House(main, -4, 0, -4, 3, 2, 1));
 //        houses.add(new House(main, -4, 0, 6, 3, 3, 1));
 
-        houses.add(new House(main, 0, 0, 0, 2, 3, 2));
-        houses.add(new House(main, 3, 0, 0, 2, 2, 1));
-        houses.add(new House(main, 3, 0, -4, 2, 2, 1));
+        houses.add(new House(main, 0, 0, 0, 2, 3, 2, random));
+        houses.add(new House(main, 3, 0, 0, 2, 2, 1, random));
+        houses.add(new House(main, 3, 0, -4, 2, 2, 1, random));
 
         for(House house : houses) {
             town.attachChild(house.getNode());
@@ -44,7 +45,7 @@ public class Town implements NodeGenerator {
         town.getLocalTranslation().y = y * ShapeUtil.WALL_WIDTH;
         town.getLocalTranslation().z = z * ShapeUtil.WALL_WIDTH;
         Quaternion q = new Quaternion();
-        q.fromAngleAxis(FastMath.DEG_TO_RAD * (float)(45.0f * Math.random()), Vector3f.UNIT_Y);
+        q.fromAngleAxis(FastMath.DEG_TO_RAD * (float)(45.0f * random.nextFloat()), Vector3f.UNIT_Y);
         town.getLocalRotation().multLocal(q);
         BoundingBox bb = new BoundingBox();
         town.setModelBound(bb);

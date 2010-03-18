@@ -14,6 +14,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.*;
+import java.util.List;
 
 /**
 * User: gabor
@@ -43,12 +44,12 @@ class Tile {
         this.angle = angle;
     }
 
-    public void createSpatial(Map<Direction, TileTexType> around, Map<String, GroundType> ground, int x, int y) {
+    public void createSpatial(Map<Direction, TileTexType> around, List<Map<String, GroundType>> ground, int x, int y) {
         spatial = type.createSpatial(angle);
         applyTexture(around, ground, x, y);
     }
 
-    protected void applyTexture(Map<Direction, TileTexType> around, Map<String, GroundType> ground, int x, int y) {
+    protected void applyTexture(Map<Direction, TileTexType> around, List<Map<String, GroundType>> ground, int x, int y) {
         if(tex.getTexturePath() != null && !type.isTexturePreset()) {
             // remove the same textures
             for(Direction dir : Direction.values()) {
@@ -65,7 +66,13 @@ class Tile {
                 TexTile tt = new TexTile(tex.getTexturePath());
                 background = tt.img;
             }
-            Image img = createGround(ground, x, y, background, background.getWidth(null), background.getHeight(null));
+            int width = background.getWidth(null);
+            int height = background.getHeight(null);
+            Image img = background;
+            for(Map<String, GroundType> groundMap : ground) {
+                img = createGround(groundMap, x, y, background, width, height);
+                background = img;
+            }
             Texture texture = TextureManager.loadTexture(img,
                                                  Texture.MinificationFilter.Trilinear,
                                                  Texture.MagnificationFilter.Bilinear,
@@ -119,8 +126,6 @@ class Tile {
                 boolean s = south == gt;
 
 
-                AffineTransform transform = AffineTransform.getTranslateInstance(xx * width / 4.0,
-                                                                                 (4 - 1 - yy) * height / 4.0);
                 TexTile stencil = null;
                 if(!w && !e && !n && !s) {
                     stencil = new TexTile(GroundEdge.hole.getStencilPath(), true, 0);
@@ -159,13 +164,17 @@ class Tile {
                     stencil = new TexTile(GroundEdge.edge.getStencilPath(), true, 90);
                 }
 
+                AffineTransform transform = AffineTransform.getTranslateInstance(xx * width / 4.0,
+                                                                                 (4 - 1 - yy) * height / 4.0);
                 if(stencil != null) {
                     g.setComposite(AlphaComposite.Xor);
                     g.drawImage(stencil.img, transform, null);
-                    g.setComposite(AlphaComposite.DstOver);
+                    g.setComposite(AlphaComposite.DstAtop);
                 }
 
-                TexTile patch = new TexTile(gt.getTexturePath());
+                TexTile patch = new TexTile(gt.getTexturePath(), true, 0);
+                transform.concatenate(AffineTransform.getScaleInstance((width / 4.0f) / (float)patch.width,
+                                                                       (height / 4.0f) / (float)patch.height));
                 g.drawImage(patch.img, transform, null);
             }
         }
