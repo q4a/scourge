@@ -9,8 +9,6 @@ enum TileTexType {
     NONE(null),
     ROCK("./data/textures/surf1.png"),
     GRASS("./data/textures/grass.png"),
-    GRASS2("./data/textures/grass2.png"),
-    GRASS3("./data/textures/grass3.png"),
     ;
 
     private String texturePath;

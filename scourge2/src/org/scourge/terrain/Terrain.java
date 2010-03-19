@@ -101,6 +101,9 @@ public class Terrain implements NodeGenerator {
             }
         }
 
+        // create some hills
+        createHeights(tiles, rows, cols);
+
         // create the ground cover
         List<Map<String, GroundType>> ground = new ArrayList<Map<String, GroundType>>();
         ground.add(GroundType.moss.getGround(tiles, main.getRandom()));
@@ -112,11 +115,17 @@ public class Terrain implements NodeGenerator {
                 Tile tile = tiles[y][x];
                 if(tile.type == TileType.NONE) continue;
 
+                Tile eastTile = x < cols - 1 ? tiles[y][x + 1] : null;
+                Tile westTile = x > 0 ? tiles[y][x - 1] : null;
+                Tile southTile = y < rows - 1 ? tiles[y + 1][x] : null;
+                Tile northTile = y > 0 ? tiles[y - 1][x] : null;
+
                 Map<Direction, TileTexType> around = new HashMap<Direction, TileTexType>();
-                around.put(Direction.EAST, x < cols - 1 ? tiles[y][x + 1].tex : null);
-                around.put(Direction.WEST, x > 0 ? tiles[y][x - 1].tex : null);
-                around.put(Direction.SOUTH, y < rows - 1 ? tiles[y + 1][x].tex : null);
-                around.put(Direction.NORTH, y > 0 ? tiles[y - 1][x].tex : null);
+                around.put(Direction.EAST, eastTile != null ? eastTile.tex : null);
+                around.put(Direction.WEST, westTile != null ? westTile.tex : null);
+                around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
+                around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
+
                 tile.createSpatial(around, ground, x, y);
                 tile.spatial.getLocalTranslation().set(x * 16, 2, y * 16);
                 tile.spatial.updateModelBound();
@@ -126,9 +135,62 @@ public class Terrain implements NodeGenerator {
                 terrain.updateWorldBound();
             }
         }
+    }
 
-        Tile.debug();
+    private void createHeights(Tile[][] tiles, int rows, int cols) {
+        // set the heights
+        for(int y = 1; y < rows - 1; y++) {
+            for(int x = 1; x < cols - 1; x++) {
+                float h = main.getRandom().nextFloat() * 10;
+                tiles[y - 1][x - 1].setHeight(Tile.Edge.SE, h);
+                tiles[y - 1][x].setHeight(Tile.Edge.SW, h);
+                tiles[y][x - 1].setHeight(Tile.Edge.NE, h);
+                tiles[y][x].setHeight(Tile.Edge.NW, h);
+            }
+        }
 
+        // clamp heights around the edges
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.type == TileType.NONE) continue;
+
+                Tile eastTile = x < cols - 1 ? tiles[y][x + 1] : null;
+                Tile westTile = x > 0 ? tiles[y][x - 1] : null;
+                Tile southTile = y < rows - 1 ? tiles[y + 1][x] : null;
+                Tile northTile = y > 0 ? tiles[y - 1][x] : null;
+
+                boolean north = northTile != null && northTile.tex == tile.tex;
+                boolean south = southTile != null && southTile.tex == tile.tex;
+                boolean east = eastTile != null && eastTile.tex == tile.tex;
+                boolean west = westTile != null && westTile.tex == tile.tex;
+
+                if(!north) {
+                    tile.setHeight(Tile.Edge.NW, 0);
+                    if(westTile != null) westTile.setHeight(Tile.Edge.NE, 0);
+                    tile.setHeight(Tile.Edge.NE, 0);
+                    if(eastTile != null) eastTile.setHeight(Tile.Edge.NW, 0);
+                }
+                if(!west) {
+                    tile.setHeight(Tile.Edge.NW, 0);
+                    if(northTile != null) northTile.setHeight(Tile.Edge.SW, 0);
+                    tile.setHeight(Tile.Edge.SW, 0);
+                    if(southTile != null) southTile.setHeight(Tile.Edge.NW, 0);
+                }
+                if(!south) {
+                    tile.setHeight(Tile.Edge.SW, 0);
+                    if(westTile != null) westTile.setHeight(Tile.Edge.SE, 0);
+                    tile.setHeight(Tile.Edge.SE, 0);
+                    if(eastTile != null) eastTile.setHeight(Tile.Edge.SW, 0);
+                }
+                if(!east) {
+                    tile.setHeight(Tile.Edge.SE, 0);
+                    if(southTile != null) southTile.setHeight(Tile.Edge.NE, 0);
+                    tile.setHeight(Tile.Edge.NE, 0);
+                    if(northTile != null) northTile.setHeight(Tile.Edge.SE, 0);
+                }
+            }
+        }
     }
 
     @Override

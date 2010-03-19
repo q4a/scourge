@@ -26,8 +26,12 @@ class Tile {
     public TileType type;
     public float angle;
     public Spatial spatial;
+    private float[] heights = new float[4];
     private Main main;
-    private static final Map<String, Texture> textures = new HashMap<String, Texture>();
+
+    public enum Edge {
+        NW, SW, SE, NE
+    }
 
     public Tile(Main main) {
         this(main, TileTexType.NONE, TileType.NONE, 0);
@@ -35,6 +39,9 @@ class Tile {
 
     public Tile(Main main, TileTexType tex, TileType type, float angle) {
         this.main = main;
+        for(int i = 0; i < heights.length; i++) {
+            heights[i] = 0;
+        }
         set(tex, type, angle);
     }
 
@@ -44,8 +51,12 @@ class Tile {
         this.angle = angle;
     }
 
+    public void setHeight(Edge edge, float height) {
+        heights[edge.ordinal()] = height;
+    }
+
     public void createSpatial(Map<Direction, TileTexType> around, List<Map<String, GroundType>> ground, int x, int y) {
-        spatial = type.createSpatial(angle);
+        spatial = type.createSpatial(angle, heights);
         applyTexture(around, ground, x, y);
     }
 
@@ -321,9 +332,5 @@ class Tile {
             pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 
         }
-    }
-
-    public static void debug() {
-        System.err.println(textures.keySet());
     }
 }
