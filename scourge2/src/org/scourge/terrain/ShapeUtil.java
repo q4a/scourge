@@ -22,6 +22,7 @@ import com.jmex.model.converters.FormatConverter;
 import com.jmex.model.converters.MaxToJme;
 import com.jmex.model.converters.Md2ToJme;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.FloatBuffer;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * User: gabor
@@ -147,4 +149,16 @@ public class ShapeUtil {
 		return output;
 	}
 
+    private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
+    private static Map<String, ImageIcon> icons = new HashMap<String, ImageIcon>();
+
+    public static ImageIcon getImageIcon(String path) {
+        ImageIcon image = icons.get(path);
+        if(image == null) {
+            image = new ImageIcon(path);
+            icons.put(path, image);
+            logger.info("* icons count=" + icons.size());
+        }
+        return image;
+    }
 }

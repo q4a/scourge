@@ -5,6 +5,7 @@ import com.jme.math.FastMath;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
+import com.sun.corba.se.impl.orb.ParserTable;
 import org.scourge.Main;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
 * User: gabor
@@ -28,6 +30,7 @@ class Tile {
     public Spatial spatial;
     private float[] heights = new float[4];
     private Main main;
+    private static Map<String, Texture> textures = new HashMap<String, Texture>();
 
     public enum Edge {
         NW, SW, SE, NE
@@ -69,10 +72,11 @@ class Tile {
                 }
             }
 
+            StringBuffer textureKey = new StringBuffer(tex.name());
 
             Image background;
             if(!around.isEmpty()) {
-                background = createBlendedEdge(tex, around);
+                background = createBlendedEdge(tex, around, textureKey);
             } else {
                 TexTile tt = new TexTile(tex.getTexturePath());
                 background = tt.img;
@@ -81,13 +85,18 @@ class Tile {
             int height = background.getHeight(null);
             Image img = background;
             for(Map<String, GroundType> groundMap : ground) {
-                img = createGround(groundMap, x, y, background, width, height);
+                img = createGround(groundMap, x, y, background, width, height, textureKey);
                 background = img;
             }
-            Texture texture = TextureManager.loadTexture(img,
-                                                 Texture.MinificationFilter.Trilinear,
-                                                 Texture.MagnificationFilter.Bilinear,
-                                                 false);
+            String key = textureKey.toString();
+            Texture texture = textures.get(key);
+            if(texture == null) {
+                texture = TextureManager.loadTexture(img,
+                                                     Texture.MinificationFilter.Trilinear,
+                                                     Texture.MagnificationFilter.Bilinear,
+                                                     false);
+                textures.put(key, texture);
+            }
 
             TextureState ts = main.getDisplay().getRenderer().createTextureState();
             ts.setTexture(texture);
@@ -113,7 +122,7 @@ class Tile {
         }
     }
 
-    protected Image createGround(Map<String, GroundType> ground, int x, int y, Image background, int width, int height) {
+    protected Image createGround(Map<String, GroundType> ground, int x, int y, Image background, int width, int height, StringBuffer textureKey) {
         BufferedImage tmp =  new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) tmp.getGraphics();
         g.drawImage(background, null, null);
@@ -123,7 +132,10 @@ class Tile {
                 int gx = x * 4 + xx;
                 int gy = y * 4 + yy;
                 GroundType gt = ground.get(GroundType.getGroundKey(gx, gy));
-                if(gt == null || gt == GroundType.none) continue;
+                if(gt == null || gt == GroundType.none) {
+                    textureKey.append("-x");
+                    continue;
+                }
 
                 g.setComposite(AlphaComposite.SrcOver);
 
@@ -137,57 +149,77 @@ class Tile {
                 boolean s = south == gt;
 
 
-                TexTile stencil = null;
+                GroundEdge groundEdge = null;
+                float angle = 0;
                 if(!w && !e && !n && !s) {
-                    stencil = new TexTile(GroundEdge.hole.getStencilPath(), true, 0);
+                    groundEdge = GroundEdge.hole;
+                    angle = 0;
 
                 } else if(w && !e && !n && !s) {
-                    stencil = new TexTile(GroundEdge.tip.getStencilPath(), true, 180);
+                    groundEdge = GroundEdge.tip;
+                    angle = 180;
                 } else if(!w && e && !n && !s) {
-                    stencil = new TexTile(GroundEdge.tip.getStencilPath(), true, 0);
+                    groundEdge = GroundEdge.tip;
+                    angle = 0;
                 } else if(!w && !e && n && !s) {
-                    stencil = new TexTile(GroundEdge.tip.getStencilPath(), true, 90);
+                    groundEdge = GroundEdge.tip;
+                    angle = 90;
                 } else if(!w && !e && !n && s) {
-                    stencil = new TexTile(GroundEdge.tip.getStencilPath(), true, 270);
+                    groundEdge = GroundEdge.tip;
+                    angle = 270;
 
                 } else if(!w && !e && n && s) {
-                    stencil = new TexTile(GroundEdge.narrow.getStencilPath(), true, 90);
+                    groundEdge = GroundEdge.narrow;
+                    angle = 90;
                 } else if(w && e && !n && !s) {
-                    stencil = new TexTile(GroundEdge.narrow.getStencilPath(), true, 0);
+                    groundEdge = GroundEdge.narrow;
+                    angle = 0;
 
                 } else if(w && !e && n && !s) {
-                    stencil = new TexTile(GroundEdge.corner.getStencilPath(), true, 90);
+                    groundEdge = GroundEdge.corner;
+                    angle = 90;
                 } else if(!w && e && !n && s) {
-                    stencil = new TexTile(GroundEdge.corner.getStencilPath(), true, 270);
+                    groundEdge = GroundEdge.corner;
+                    angle = 270;
                 } else if(w && !e && !n && s) {
-                    stencil = new TexTile(GroundEdge.corner.getStencilPath(), true, 180);
+                    groundEdge = GroundEdge.corner;
+                    angle = 180;
                 } else if(!w && e && n && !s) {
-                    stencil = new TexTile(GroundEdge.corner.getStencilPath(), true, 0);
+                    groundEdge = GroundEdge.corner;
+                    angle = 0;
 
 
                 } else if(w & e & n & !s) {
-                    stencil = new TexTile(GroundEdge.edge.getStencilPath(), true, 0);
+                    groundEdge = GroundEdge.edge;
+                    angle = 0;
                 } else if(w & e & !n & s) {
-                    stencil = new TexTile(GroundEdge.edge.getStencilPath(), true, 180);
+                    groundEdge = GroundEdge.edge;
+                    angle = 180;
                 } else if(!w & e & n & s) {
-                    stencil = new TexTile(GroundEdge.edge.getStencilPath(), true, 270);
+                    groundEdge = GroundEdge.edge;
+                    angle = 270;
                 } else if(w & !e & n & s) {
-                    stencil = new TexTile(GroundEdge.edge.getStencilPath(), true, 90);
+                    groundEdge = GroundEdge.edge;
+                    angle = 90;
                 }
 
                 AffineTransform transform = AffineTransform.getTranslateInstance(xx * width / 4.0,
                                                                                  (4 - 1 - yy) * height / 4.0);
-                if(stencil != null) {
+                if(groundEdge != null) {
                     g.setComposite(AlphaComposite.Xor);
+                    TexTile stencil = new TexTile(groundEdge.getStencilPath(), true, angle);
                     g.drawImage(stencil.img, transform, null);
                     g.setComposite(AlphaComposite.DstAtop);
+                    textureKey.append("-").append(groundEdge.name()).append(":").append(angle);
                 }
 
                 TexTile patch = new TexTile(gt.getTexturePath(), true, 0);
                 transform.concatenate(AffineTransform.getScaleInstance((width / 4.0f) / (float)patch.width,
                                                                        (height / 4.0f) / (float)patch.height));
                 g.drawImage(patch.img, transform, null);
+                textureKey.append("-").append(gt.name());
             }
+            textureKey.append("|");
         }
         g.dispose();
 
@@ -238,7 +270,7 @@ class Tile {
 
     }
 
-    private Image createBlendedEdge(TileTexType tex, Map<Direction, TileTexType> around) {
+    private Image createBlendedEdge(TileTexType tex, Map<Direction, TileTexType> around, StringBuffer textureKey) {
         TexTile background = new TexTile(tex.getTexturePath());
         Map<Direction, TexTile> aroundTex = new HashMap<Direction, TexTile>();
         for(Direction dir : around.keySet()) {
@@ -246,59 +278,78 @@ class Tile {
         }
 
 
-        Image image = null;
+        TexEdge edge = null;
+        float angle = 0;
         if(aroundTex.size() == 4) {
-            image = TexEdge.hole.blend(background, aroundTex);
+            edge = TexEdge.hole;
 
         } else if(aroundTex.keySet().contains(Direction.NORTH) &&
                   aroundTex.keySet().contains(Direction.EAST) &&
                   aroundTex.keySet().contains(Direction.SOUTH)) {
-            image = TexEdge.tip.blend(background, aroundTex, 270);
+            edge = TexEdge.tip;
+            angle = 270;
         } else if(aroundTex.keySet().contains(Direction.EAST) &&
                   aroundTex.keySet().contains(Direction.SOUTH) &&
                   aroundTex.keySet().contains(Direction.WEST)) {
-            image = TexEdge.tip.blend(background, aroundTex, 180);
+            edge = TexEdge.tip;
+            angle = 180;
         } else if(aroundTex.keySet().contains(Direction.SOUTH) &&
                   aroundTex.keySet().contains(Direction.WEST) &&
                   aroundTex.keySet().contains(Direction.NORTH)) {
-            image = TexEdge.tip.blend(background, aroundTex, 90);
+            edge = TexEdge.tip;
+            angle = 90;
         } else if(aroundTex.keySet().contains(Direction.WEST) &&
                   aroundTex.keySet().contains(Direction.NORTH) &&
                   aroundTex.keySet().contains(Direction.EAST)) {
-            image = TexEdge.tip.blend(background, aroundTex, 0);
+            edge = TexEdge.tip;
+            angle = 0;
 
         } else if(aroundTex.keySet().contains(Direction.NORTH) &&
                   aroundTex.keySet().contains(Direction.SOUTH)) {
-            image = TexEdge.narrow.blend(background, aroundTex, 90);
+            edge = TexEdge.narrow;
+            angle = 90;
         } else if(aroundTex.keySet().contains(Direction.WEST) &&
                   aroundTex.keySet().contains(Direction.EAST)) {
-            image = TexEdge.narrow.blend(background, aroundTex);
+            edge = TexEdge.narrow;
 
         } else if(aroundTex.keySet().contains(Direction.NORTH) &&
                   aroundTex.keySet().contains(Direction.WEST)) {
-            image = TexEdge.corner.blend(background, aroundTex, 0);
+            edge = TexEdge.corner;
+            angle = 0;
         } else if(aroundTex.keySet().contains(Direction.WEST) &&
                   aroundTex.keySet().contains(Direction.SOUTH)) {
-            image = TexEdge.corner.blend(background, aroundTex, 90);
+            edge = TexEdge.corner;
+            angle = 90;
         } else if(aroundTex.keySet().contains(Direction.SOUTH) &&
                   aroundTex.keySet().contains(Direction.EAST)) {
-            image = TexEdge.corner.blend(background, aroundTex, 180);
+            edge = TexEdge.corner;
+            angle = 180;
         } else if(aroundTex.keySet().contains(Direction.EAST) &&
                   aroundTex.keySet().contains(Direction.NORTH)) {
-            image = TexEdge.corner.blend(background, aroundTex, 270);
+            edge = TexEdge.corner;
+            angle = 270;
 
         } else if(aroundTex.keySet().contains(Direction.WEST)) {
-            image = TexEdge.edge.blend(background, aroundTex, 0);
+            edge = TexEdge.edge;
+            angle = 0;
         } else if(aroundTex.keySet().contains(Direction.EAST)) {
-            image = TexEdge.edge.blend(background, aroundTex, 180);
+            edge = TexEdge.edge;
+            angle = 180;
         } else if(aroundTex.keySet().contains(Direction.NORTH)) {
-            image = TexEdge.edge.blend(background, aroundTex, 270);
+            edge = TexEdge.edge;
+            angle = 270;
         } else if(aroundTex.keySet().contains(Direction.SOUTH)) {
-            image = TexEdge.edge.blend(background, aroundTex, 90);
+            edge = TexEdge.edge;
+            angle = 90;
             
         }
 
-        return image == null ? background.img : image;
+        if(edge != null) {
+            textureKey.append("-").append(edge.name()).append(":").append(angle);
+            return edge.blend(background, aroundTex, angle);
+        } else {
+            return background.img;
+        }
     }
 
 
@@ -306,13 +357,15 @@ class Tile {
         private int width, height;
         private int[] pixels;
         private BufferedImage img;
+        private String name;
 
         public TexTile(String path) {
             this(path, false, 0);
         }
 
         public TexTile(String path, boolean hasAlpha, float angle) {
-            ImageIcon image = new ImageIcon(path);
+            name = path + ":" + angle;
+            ImageIcon image = ShapeUtil.getImageIcon(path);
             int type = hasAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
             // draw
@@ -332,5 +385,18 @@ class Tile {
             pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 
         }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+        
+    private static Logger logger = Logger.getLogger(Tile.class.toString());
+    public static void debug() {
+        logger.info("* Loaded " + textures.size() + " textures: ");
+//        for(String s : textures.keySet()) {
+//            logger.info(s);
+//        }
     }
 }

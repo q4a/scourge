@@ -2,9 +2,12 @@ package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.scene.Node;
-import org.scourge.*;
+import org.scourge.Main;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: gabor
@@ -14,9 +17,6 @@ import java.util.*;
 public class Terrain implements NodeGenerator {
     private Node terrain;
     private Main main;
-    private Map<String, Section> sections = new HashMap<String, Section>();
-    private final static float STEP_SIZE = 4;
-    private final static float STEP_HEIGHT = 1;
 
     // make sure there is a border of space around the land
     private static final String[] MAP = new String[] {
@@ -92,9 +92,6 @@ public class Terrain implements NodeGenerator {
                         tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
 
                     } else {
-                        // todo: maybe use a fractal growth pattern here...
-                        int gt = (int)(main.getRandom().nextFloat() * 6.0f);
-                        //TileTexType tex = gt == 0 ? TileTexType.GRASS2 : (gt == 1 ? TileTexType.GRASS3 : TileTexType.GRASS);
                         tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
                     }
                 }
@@ -135,6 +132,8 @@ public class Terrain implements NodeGenerator {
                 terrain.updateWorldBound();
             }
         }
+
+        Tile.debug();
     }
 
     private void createHeights(Tile[][] tiles, int rows, int cols) {
