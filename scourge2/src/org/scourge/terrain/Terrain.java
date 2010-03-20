@@ -1,6 +1,7 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.bounding.BoundingVolume;
 import com.jme.scene.Node;
 import org.scourge.Main;
 
@@ -40,13 +41,17 @@ public class Terrain implements NodeGenerator {
             "                          ",
     };
 
+    private Tile[][] tiles;
+    private int rows, cols;
+    private Town town;
+
     public Terrain(Main main) {
         this.main = main;
         this.terrain = new Node("terrain");
         terrain.setModelBound(new BoundingBox());
 
-        int rows = MAP.length;
-        int cols = MAP[0].length();
+        rows = MAP.length;
+        cols = MAP[0].length();
         boolean[][] map = new boolean[rows][cols];
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
@@ -54,7 +59,7 @@ public class Terrain implements NodeGenerator {
             }
         }
 
-        Tile[][] tiles = new Tile[rows][cols];
+        tiles = new Tile[rows][cols];
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 tiles[y][x] = new Tile(main);
@@ -103,8 +108,9 @@ public class Terrain implements NodeGenerator {
 
         // create the ground cover
         List<Map<String, GroundType>> ground = new ArrayList<Map<String, GroundType>>();
+        // enabling more than one ground cover creates a lot of textures
         ground.add(GroundType.moss.getGround(tiles, main.getRandom()));
-        ground.add(GroundType.lichen.getGround(tiles, main.getRandom()));
+        //ground.add(GroundType.lichen.getGround(tiles, main.getRandom()));
 
         // create the shapes and textures
         for(int x = 0; x < cols; x++) {
@@ -198,10 +204,87 @@ public class Terrain implements NodeGenerator {
     }
 
     public void addTown(int x, int z) {
-        Town town = new Town(main, x, 0, z, main.getRandom());
+        town = new Town(main, x, 0, z, main.getRandom());
         terrain.attachChild(town.getNode());
         terrain.updateModelBound();
         terrain.updateWorldBound();
     }
 
+    public void flatten(Node node) {
+        terrain.updateWorldBound();
+        terrain.updateWorldVectors();
+
+        BoundingBox boundingBox = (BoundingBox)node.getWorldBound();
+        float dx = boundingBox.getCenter().x - terrain.getWorldTranslation().x;
+        float dz = boundingBox.getCenter().z - terrain.getWorldTranslation().z;
+
+        int sx = (int)((dx - boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH);
+        int sy = (int)((dz - boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH);
+        int ex = (int)((dx + boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH);
+        int ey = (int)((dz + boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH);
+
+//        System.err.println("house center=" + boundingBox.getCenter());
+//        System.err.println("house size=" + boundingBox.xExtent + "," + boundingBox.zExtent);
+//        System.err.println("d=" + dx + "," + dz);
+//        System.err.println("s=" + sx + "," + sy + " e=" + ex + "," + ey);
+
+        for(int y = sy - 1; y <= ey + 1; y++) {
+            for(int x = sx - 1; x <= ex + 1; x++) {
+                flattenTile(x, y);
+            }
+        }
+        terrain.updateModelBound();
+        terrain.updateWorldBound();
+    }
+
+    private void flattenTile(int tx, int ty) {
+        if(tx >= 0 && ty >= 0 && tx < cols && ty < rows) {
+            Tile tile = tiles[ty][tx];
+            if(tile.type != TileType.NONE) {
+
+                //System.err.println("\tflattening: " + tx + "," + ty + " type=" + tile.type.name());
+
+                Tile eastTile = tx < cols - 1 ? tiles[ty][tx + 1] : null;
+                Tile westTile = tx > 0 ? tiles[ty][tx - 1] : null;
+                Tile southTile = ty < rows - 1 ? tiles[ty + 1][tx] : null;
+                Tile northTile = ty > 0 ? tiles[ty - 1][tx] : null;
+                Tile nwTile = ty > 0 && tx > 0 ? tiles[ty - 1][tx - 1] : null;
+                Tile neTile = ty > 0 && tx < cols - 1 ? tiles[ty - 1][tx + 1] : null;
+                Tile seTile = ty < rows - 1 && tx < cols - 1 ? tiles[ty + 1][tx + 1] : null;
+                Tile swTile = ty < rows - 1 && tx > 0 ? tiles[ty + 1][tx - 1] : null;
+
+                tile.setHeight(Tile.Edge.NW, 0);
+                tile.setHeight(Tile.Edge.SW, 0);
+                tile.setHeight(Tile.Edge.SE, 0);
+                tile.setHeight(Tile.Edge.NE, 0);
+
+                if(northTile != null) {
+                    northTile.setHeight(Tile.Edge.SW, 0);
+                    northTile.setHeight(Tile.Edge.SE, 0);
+                }
+                if(southTile != null) {
+                    southTile.setHeight(Tile.Edge.NE, 0);
+                    southTile.setHeight(Tile.Edge.NW, 0);
+                }
+                if(westTile != null) {
+                    westTile.setHeight(Tile.Edge.NE, 0);
+                    westTile.setHeight(Tile.Edge.SE, 0);
+                }
+                if(eastTile != null) {
+                    eastTile.setHeight(Tile.Edge.NW, 0);
+                    eastTile.setHeight(Tile.Edge.SW, 0);
+                }
+                if(nwTile != null) nwTile.setHeight(Tile.Edge.SE, 0);
+                if(swTile != null) swTile.setHeight(Tile.Edge.NE, 0);
+                if(neTile != null) neTile.setHeight(Tile.Edge.SW, 0);
+                if(seTile != null) seTile.setHeight(Tile.Edge.NW, 0);
+            }
+        }
+    }
+
+    public void moveToTopOfTerrain() {
+        if(town != null) {
+            town.moveToTopOfTerrain();
+        }
+    }
 }

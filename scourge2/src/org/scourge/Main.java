@@ -192,7 +192,7 @@ public class Main extends Game {
         // the world vectors aren't computed until the first update :-/
         if(first) {
             first = false;
-//            town.moveToTopOfTerrain();
+            terrain.moveToTopOfTerrain();
         }
 
 //        playerController.update(tpf);

@@ -56,11 +56,13 @@ public class House implements NodeGenerator {
         house.updateWorldBound();
         house.updateWorldVectors();
         System.err.println("house=" + house.getName() + " local trans=" + house.getLocalTranslation() + " world trans=" + house.getWorldTranslation() + " world bound=" + house.getWorldBound().getCenter());
+
+        main.getTerrain().flatten(house);
+
         //float height = main.getGround().getHeight(house.getWorldBound().getCenter());
-        float height = 0;
-        house.getLocalTranslation().y = height;
-        house.updateModelBound();
-        house.updateWorldBound();
+//        house.getLocalTranslation().y = height;
+//        house.updateModelBound();
+//        house.updateWorldBound();
 
         //main.getGround().flatten(house.getWorldBound(), height);
     }

@@ -431,11 +431,11 @@ public abstract class Game extends BaseGame {
 //        KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
 //                KeyInput.KEY_L );
 //        /** Assign key B to action "toggle_bounds". */
-//        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
-//                KeyInput.KEY_B );
+        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
+                KeyInput.KEY_B );
 //        /** Assign key N to action "toggle_normals". */
-//        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
-//                KeyInput.KEY_N );
+        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
+                KeyInput.KEY_N );
 //        /** Assign key C to action "camera_out". */
 //        KeyBindingManager.getKeyBindingManager().set( "camera_out",
 //                KeyInput.KEY_C );

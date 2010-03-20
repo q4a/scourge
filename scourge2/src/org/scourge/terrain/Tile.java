@@ -56,6 +56,9 @@ class Tile {
 
     public void setHeight(Edge edge, float height) {
         heights[edge.ordinal()] = height;
+        if(spatial != null) {
+            type.updateHeights(spatial, heights);
+        }
     }
 
     public void createSpatial(Map<Direction, TileTexType> around, List<Map<String, GroundType>> ground, int x, int y) {

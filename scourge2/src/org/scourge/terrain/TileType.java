@@ -27,6 +27,10 @@ enum TileType {
         public boolean isTexturePreset() {
             return false;
         }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
+        }
     },
     EDGE_BRIDGE {
         @Override
@@ -37,6 +41,10 @@ enum TileType {
         @Override
         public boolean isTexturePreset() {
             return true;
+        }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
         }
     },
     EDGE_CORNER {
@@ -49,6 +57,10 @@ enum TileType {
         public boolean isTexturePreset() {
             return true;
         }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
+        }
     },
     EDGE_TIP {
         @Override
@@ -60,6 +72,10 @@ enum TileType {
         public boolean isTexturePreset() {
             return true;
         }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
+        }
     },
     EDGE_SIDE {
         @Override
@@ -70,6 +86,10 @@ enum TileType {
         @Override
         public boolean isTexturePreset() {
             return true;
+        }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
         }
     },
     QUAD {
@@ -83,11 +103,7 @@ enum TileType {
             normBuf.put(0).put(1).put(0);
             normBuf.put(0).put(1).put(0);
 
-            FloatBuffer vertexBuf = ground.getVertexBuffer();
-            vertexBuf.put(2, heights[0]);
-            vertexBuf.put(5, heights[1]);
-            vertexBuf.put(8, heights[2]);
-            vertexBuf.put(11, heights[3]);
+            updateHeights(ground, heights);
 
 //            Vector2f[] coords = new Vector2f[] {
 //                new Vector2f(0,    0),
@@ -107,6 +123,17 @@ enum TileType {
         public boolean isTexturePreset() {
             return false;
         }
+
+        @Override
+        public void updateHeights(Spatial spatial, float[] heights) {
+            FloatBuffer vertexBuf = ((Quad)spatial).getVertexBuffer();
+            vertexBuf.put(2, heights[0]);
+            vertexBuf.put(5, heights[1]);
+            vertexBuf.put(8, heights[2]);
+            vertexBuf.put(11, heights[3]);
+            spatial.updateModelBound();
+            spatial.updateWorldBound();
+        }
     },
     ;
 
@@ -122,4 +149,7 @@ enum TileType {
     }
 
     public abstract boolean isTexturePreset();
+
+
+    public abstract void updateHeights(Spatial spatial, float[] heights);
 }
