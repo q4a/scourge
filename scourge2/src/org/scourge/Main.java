@@ -155,7 +155,7 @@ public class Main extends Game {
         statPass.add(statNode);
         pManager.add(statPass);
 
-        rootNode.setCullHint(Spatial.CullHint.Never);
+        rootNode.setCullHint(Spatial.CullHint.Dynamic);
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
     }
 

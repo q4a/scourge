@@ -7,7 +7,7 @@ case "${OS}" in
 	*) PLATFORM=windows;;
 esac	
 
-CP=out/artifacts/scourge2/scourge2.jar
+CP=bin:out/artifacts/scourge2/scourge2.jar
 for jar in lib/*.jar; do
 	CP=$CP:$jar
 done

@@ -1,22 +1,26 @@
 package org.scourge.terrain;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
+
+import org.scourge.Main;
+
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
-import com.sun.corba.se.impl.orb.ParserTable;
-import org.scourge.Main;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.*;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
 * User: gabor
