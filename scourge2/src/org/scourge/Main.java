@@ -27,6 +27,7 @@ import com.jmex.effects.water.WaterRenderPass;
 import org.scourge.input.PlayerController;
 import org.scourge.terrain.*;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Random;
 import java.util.Scanner;
@@ -106,7 +107,11 @@ public class Main extends Game {
         player = new Player(this, 8, 9, 8);
         player.setKeyFrame(Player.Md2Key.stand);
 
-        buildTerrain();
+        try {
+            buildTerrain();
+        } catch(IOException exc) {
+            throw new RuntimeException(exc);
+        }
 
         cameraHolder = new Node("cam_holder");
         player.getNode().attachChild(cameraHolder);
@@ -159,10 +164,10 @@ public class Main extends Game {
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
     }
 
-    private void buildTerrain() {
+    private void buildTerrain() throws IOException {
         // middle
         terrain = new Terrain(this);
-        terrain.addTown(6, 12);
+        terrain.addTown(14, 14);
     }
 
     public void toggleCameraAttached() {
