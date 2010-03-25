@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/moss2.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
     </list>
@@ -84,10 +82,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TileType.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TileType.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="137" column="46" selection-start="4213" selection-end="4213" vertical-scroll-proportion="0.6869919">
+            <state line="100" column="41" selection-start="2376" selection-end="2376" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -102,10 +100,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TileTexType.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TileTexType.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="30" selection-start="235" selection-end="235" vertical-scroll-proportion="0.0">
+            <state line="24" column="0" selection-start="444" selection-end="444" vertical-scroll-proportion="0.3902439">
               <folding />
             </state>
           </provider>
@@ -133,10 +131,10 @@
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/TestSplat.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/GroundType.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
       </list>
     </option>
   </component>
@@ -537,9 +535,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="30" selection-start="235" selection-end="235" vertical-scroll-proportion="0.0">
+        <state line="100" column="41" selection-start="2376" selection-end="2376" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -551,9 +549,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="137" column="46" selection-start="4213" selection-end="4213" vertical-scroll-proportion="0.6869919">
+        <state line="24" column="0" selection-start="444" selection-end="444" vertical-scroll-proportion="0.3902439">
           <folding />
         </state>
       </provider>
