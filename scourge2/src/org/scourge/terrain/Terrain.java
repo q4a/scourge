@@ -1,23 +1,17 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
-import com.jme.image.Texture;
-import com.jme.math.Vector2f;
-import com.jme.math.Vector3f;
 import com.jme.scene.Node;
-import com.jme.scene.TexCoords;
-import com.jme.scene.TriMesh;
-import com.jme.scene.state.TextureState;
-import com.jme.util.TextureManager;
-import com.jme.util.geom.BufferUtils;
+import com.jme.scene.Spatial;
+import com.jme.scene.shape.Quad;
 import org.scourge.Main;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.io.FileUtils.readLines;
 
@@ -51,7 +45,6 @@ public class Terrain implements NodeGenerator {
         }
 
         tiles = new Tile[rows][cols];
-        Set<String> meshPoints = new HashSet<String>();
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 tiles[y][x] = new Tile(main);
@@ -89,8 +82,7 @@ public class Terrain implements NodeGenerator {
                         tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
 
                     } else {
-                        //tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
-                        meshPoints.add(getMeshPointKey(x, y));
+                        tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
                     }
                 }
             }
@@ -98,12 +90,6 @@ public class Terrain implements NodeGenerator {
 
         // create some hills
         createHeights(tiles, rows, cols);
-
-        // create the ground cover
-        List<Map<String, GroundType>> ground = new ArrayList<Map<String, GroundType>>();
-        // enabling more than one ground cover creates a lot of textures
-        //ground.add(GroundType.moss.getGround(tiles, main.getRandom()));
-        //ground.add(GroundType.lichen.getGround(tiles, main.getRandom()));
 
         // create the shapes and textures
         for(int x = 0; x < cols; x++) {
@@ -122,180 +108,61 @@ public class Terrain implements NodeGenerator {
                 around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
-                tile.createSpatial(around, ground, x, y);
-                tile.spatial.getLocalTranslation().set(x * 16, 2, y * 16);
-                tile.spatial.updateModelBound();
-                tile.spatial.updateWorldBound();
-                terrain.attachChild(tile.spatial);
+                tile.createSpatial(around, x, y);
+
+                Spatial sp = tile.getRenderedSpatial();
+                sp.getLocalTranslation().set(x * 16, 2, y * 16);
+                sp.updateModelBound();
+                sp.updateWorldBound();
+                terrain.attachChild(sp);
                 terrain.updateModelBound();
                 terrain.updateWorldBound();
             }
         }
 
-
-        TriMesh mesh = createGroundMesh(meshPoints, rows, cols);
-        mesh.getLocalTranslation().set(0, 2, 0);
-        mesh.updateModelBound();
-        mesh.updateWorldBound();
-        terrain.attachChild(mesh);
-        terrain.updateModelBound();
-        terrain.updateWorldBound();
-
-        Tile.debug();
-    }
-
-    private String getMeshPointKey(int x, int y) {
-        return "" + x + "-" + y;
-    }
-
-    private TriMesh createGroundMesh(Set<String> meshPoints, int rows, int cols) {
-        Map<Vector3f, Integer> vertices = new HashMap<Vector3f, Integer>();
-        List<Vector3f> list = new ArrayList<Vector3f>();
-        List<Integer> indexes = new ArrayList<Integer>();
-        List<Float> heights = new ArrayList<Float>();
+        // copy the NW normal of each quad into the adjacent quads
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
-                String key = getMeshPointKey(x, y);
-                if(meshPoints.contains(key)) {
-                    // first triangle
-                    Vector3f v = new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH);
-                    int index;
-                    if(vertices.containsKey(v)) {
-                        index = vertices.get(v);
-                    } else {
-                        index = list.size();
-                        vertices.put(v, index);
-                        list.add(v);
-                        if(meshPoints.contains(getMeshPointKey(x - 1, y)) &&
-                           meshPoints.contains(getMeshPointKey(x - 1, y - 1)) &&
-                           meshPoints.contains(getMeshPointKey(x, y - 1)) ) {
-                            heights.add(main.getRandom().nextFloat() * 10);
-                        } else {
-                            heights.add(0.0f);
-                        }
-                    }
-                    indexes.add(index);
-                    int firstIndex = index;
+                Tile tile = tiles[y][x];
+                if(tile.type == TileType.QUAD) {
+                    Tile westTile = x > 0 ? tiles[y][x - 1] : null;
+                    Tile nwTile = x > 0 && y > 0 ? tiles[y - 1][x - 1] : null;
+                    Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
-                    v = new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, (y + 1) * ShapeUtil.WALL_WIDTH);
-                    if(vertices.containsKey(v)) {
-                        index = vertices.get(v);
-                    } else {
-                        index = list.size();
-                        vertices.put(v, index);
-                        list.add(v);
-                        if(meshPoints.contains(getMeshPointKey(x - 1, y)) &&
-                           meshPoints.contains(getMeshPointKey(x - 1, y + 1)) &&
-                           meshPoints.contains(getMeshPointKey(x, y + 1)) ) {
-                            heights.add(main.getRandom().nextFloat() * 10);
-                        } else {
-                            heights.add(0.0f);
-                        }
-                    }
-                    indexes.add(index);
-
-                    v = new Vector3f((x + 1) * ShapeUtil.WALL_WIDTH, 0, (y + 1) * ShapeUtil.WALL_WIDTH);
-                    if(vertices.containsKey(v)) {
-                        index = vertices.get(v);
-                    } else {
-                        index = list.size();
-                        vertices.put(v, index);
-                        list.add(v);
-                        if(meshPoints.contains(getMeshPointKey(x + 1, y)) &&
-                           meshPoints.contains(getMeshPointKey(x + 1, y + 1)) &&
-                           meshPoints.contains(getMeshPointKey(x, y + 1)) ) {
-                            heights.add(main.getRandom().nextFloat() * 10);
-                        } else {
-                            heights.add(0.0f);
-                        }
-                    }
-                    indexes.add(index);
-
-
-                    // second triangle
-                    indexes.add(index);
-
-                    v = new Vector3f((x + 1) * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH);
-                    if(vertices.containsKey(v)) {
-                        index = vertices.get(v);
-                    } else {
-                        index = list.size();
-                        vertices.put(v, index);
-                        list.add(v);
-                        if(meshPoints.contains(getMeshPointKey(x + 1, y)) &&
-                           meshPoints.contains(getMeshPointKey(x + 1, y - 1)) &&
-                           meshPoints.contains(getMeshPointKey(x, y - 1)) ) {
-                            heights.add(main.getRandom().nextFloat() * 10);
-                        } else {
-                            heights.add(0.0f);
-                        }
-                    }
-                    indexes.add(index);
-
-                    indexes.add(firstIndex);
+                    copyNormal(tile, westTile, Tile.Edge.NE);
+                    copyNormal(tile, westTile, Tile.Edge.SE);
+                    copyNormal(tile, northTile, Tile.Edge.SE);
+                    copyNormal(tile, northTile, Tile.Edge.SW);
+                    copyNormal(tile, nwTile, Tile.Edge.SE);
                 }
             }
         }
 
-        FloatBuffer vertexBuf = BufferUtils.createFloatBuffer(vertices.size() * 3);
-        for(int index = 0; index < list.size(); index++) {
-            Vector3f v = list.get(index);
-            v.y = heights.get(index); // needed for normals
-            vertexBuf.put(v.x - ShapeUtil.WALL_WIDTH / 2).put(v.y).put(v.z - ShapeUtil.WALL_WIDTH / 2);
-        }
-
-        IntBuffer indexBuf = BufferUtils.createIntBuffer(indexes.size());
-        for(Integer index : indexes) {
-            indexBuf.put(index);
-        }
-
-        Vector3f[] normalArray = new Vector3f[vertices.size()];
-        for(int i = 0; i < indexes.size() - 4; i += 4) {
-
-            int a = indexes.get(i);
-            int b = indexes.get(i + 1);
-            int c = indexes.get(i + 2);
-            int d = indexes.get(i + 3);
-
-            System.err.println("a=" + a + " b=" + b + " c=" + c + " max=" + vertices.size());
-            normalArray[a] = normalArray[b] = normalArray[c] =
-                    getNormal(list.get(a), list.get(b), list.get(c));
-            normalArray[d] =
-                    getNormal(list.get(c), list.get(d), list.get(a));
-
-        }
-
-        TexCoords texCoords = new TexCoords(BufferUtils.createVector2Buffer(vertices.size()));
-        FloatBuffer texs = texCoords.coords;
-        texs.clear();
-        for(Vector3f v : list) {
-            texs.put(v.x / 32);
-            texs.put(v.z / 32);
-        }
-
-        TriMesh mesh = new TriMesh(ShapeUtil.newShapeName("mesh"), vertexBuf,
-                                   BufferUtils.createFloatBuffer(normalArray),
-                                   null, texCoords, indexBuf);
-
-        Texture texture = TextureManager.loadTexture(TileTexType.GRASS.getTexturePath(),
-                                                 Texture.MinificationFilter.Trilinear,
-                                                 Texture.MagnificationFilter.Bilinear);
-        texture.setWrap(Texture.WrapMode.Repeat);
-        TextureState ts = main.getDisplay().getRenderer().createTextureState();
-        ts.setTexture(texture);
-        mesh.setRenderState(ts);
-
-        mesh.setModelBound(new BoundingBox());
-        mesh.updateModelBound();
-        mesh.updateWorldBound();
-        return mesh;
+        Tile.debug();
     }
 
-    private Vector3f getNormal(Vector3f a, Vector3f b, Vector3f c) {
-        Vector3f e1 = b.subtract(a);
-        Vector3f e2 = c.subtract(a);
-        Vector3f normal = e1.cross(e2);
-        return normal.normalizeLocal();
+    // hack... this should be in TileType.QUAD but I was lazy
+    private void copyNormal(Tile from, Tile to, Tile.Edge edge) {
+        if(to == null || to.type != TileType.QUAD ||
+           from == null || from.type != TileType.QUAD) return;
+
+        FloatBuffer fromBuf = ((Quad)from.spatial).getNormalBuffer();
+        float[] normal = new float[3];
+        // get the NW normal; the only one set explicitly
+        normal[0] = fromBuf.get(0);
+        normal[1] = fromBuf.get(1);
+        normal[2] = fromBuf.get(2);
+
+        FloatBuffer toBuf = ((Quad)to.spatial).getNormalBuffer();
+        switch(edge) {
+            case NE: toBuf.put(9, normal[0]).put(10, normal[1]).put(11, normal[2]); break;
+            case SE: toBuf.put(6, normal[0]).put(7, normal[1]).put(8, normal[2]); break;
+            case SW: toBuf.put(3, normal[0]).put(4, normal[1]).put(5, normal[2]); break;
+            default: throw new IllegalStateException("Can't set NW corner.");
+        }
+
+        to.spatial.updateModelBound();
+        to.spatial.updateWorldBound();
     }
 
     private void createHeights(Tile[][] tiles, int rows, int cols) {

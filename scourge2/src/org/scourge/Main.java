@@ -51,7 +51,7 @@ public class Main extends Game {
 
     public static void main(String[] args) {
         Main app = new Main();
-        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
+        app.setConfigShowMode(ConfigShowMode.ShowIfNoConfig);
         app.start();
     }
 
