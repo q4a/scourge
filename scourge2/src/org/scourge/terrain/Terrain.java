@@ -82,7 +82,7 @@ public class Terrain implements NodeGenerator {
                         tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
 
                     } else {
-                        tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
+                        tiles[y][x].set(main.getRandom().nextFloat() * 3 <= 1 ? TileTexType.MOSS : TileTexType.GRASS, TileType.QUAD, 0);
                     }
                 }
             }

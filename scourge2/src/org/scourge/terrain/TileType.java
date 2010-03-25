@@ -132,7 +132,10 @@ enum TileType {
             ground.setModelBound(new BoundingBox());
             ground.updateModelBound();
 
+            // w/o this magic line splat textures (PassNode) won't work. 
             ground.copyTextureCoordinates(0, 1, 1.0f);
+            ground.copyTextureCoordinates(1, 2, 1.0f);
+            ground.copyTextureCoordinates(2, 3, 1.0f);
             return ground;
         }
 

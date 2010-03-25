@@ -8,6 +8,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -86,15 +87,9 @@ class Tile {
             }
 
             TextureState background = createSplatTextureState(tex.getTexturePath(), null);
-            Stencil stencil = null;
-            if(!around.isEmpty()) {
-                stencil = getStencil(around.keySet());
-            }
-            if(stencil == null || stencil.edge == null) {
+            if(around.isEmpty()) {
                 spatial.setRenderState(background);
             } else {
-                TextureState splat = createSplatTextureState("data/textures/surf1.png", stencil);
-
                 // alpha used for blending the passnodestates together
                 BlendState as = main.getDisplay().getRenderer().createBlendState();
                 as.setBlendEnabled(true);
@@ -111,10 +106,24 @@ class Tile {
                 passNodeState.setPassState(background);
                 passNode.addPass(passNodeState);
 
-                passNodeState = new PassNodeState();
-                passNodeState.setPassState(splat);
-                passNodeState.setPassState(as);
-                passNode.addPass(passNodeState);
+                for(TileTexType ttt : TileTexType.values()) {
+                    Set<Direction> set = new HashSet<Direction>();
+                    for(Direction dir : around.keySet()) {
+                        if(around.get(dir) == ttt) {
+                            set.add(dir);
+                        }
+                    }
+                    if(!set.isEmpty()) {
+                        Stencil stencil = getStencil(set);
+                        if(stencil.edge != null) {
+                            TextureState splat = createSplatTextureState(ttt.getTexturePath(), stencil);
+                            passNodeState = new PassNodeState();
+                            passNodeState.setPassState(splat);
+                            passNodeState.setPassState(as);
+                            passNode.addPass(passNodeState);
+                        }
+                    }
+                }
             }
         }
     }
