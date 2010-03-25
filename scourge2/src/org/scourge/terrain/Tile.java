@@ -1,30 +1,21 @@
 package org.scourge.terrain;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-
-import com.jme.math.Quaternion;
-import com.jme.math.Vector3f;
-import com.jme.scene.PassNode;
-import com.jme.scene.PassNodeState;
-import com.jme.scene.state.BlendState;
 import org.scourge.Main;
 
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
+import com.jme.scene.PassNode;
+import com.jme.scene.PassNodeState;
 import com.jme.scene.Spatial;
+import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
 
@@ -128,30 +119,43 @@ class Tile {
         }
     }
 
+    static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
 
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
-        Texture t1 = TextureManager.loadTexture(stencil.edge.getStencilPath(),
+        Texture t1 = textures.get(stencil.edge.getStencilPath());
+        
+        if (t1==null)
+        {
+        	t1 = TextureManager.loadTexture(stencil.edge.getStencilPath(),
                                                 Texture.MinificationFilter.Trilinear,
                                                 Texture.MagnificationFilter.Bilinear);
-        t1.setRotation(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * stencil.angle, Vector3f.UNIT_Z));
-        t1.setWrap(Texture.WrapMode.Repeat);
-        t1.setApply(Texture.ApplyMode.Combine);
-        t1.setCombineFuncRGB(Texture.CombinerFunctionRGB.Replace);
-        t1.setCombineSrc0RGB(Texture.CombinerSource.Previous);
-        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
-        t1.setCombineFuncAlpha(Texture.CombinerFunctionAlpha.Replace);
+	        t1.setRotation(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * stencil.angle, Vector3f.UNIT_Z));
+	        t1.setWrap(Texture.WrapMode.Repeat);
+	        t1.setApply(Texture.ApplyMode.Combine);
+	        t1.setCombineFuncRGB(Texture.CombinerFunctionRGB.Replace);
+	        t1.setCombineSrc0RGB(Texture.CombinerSource.Previous);
+	        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
+	        t1.setCombineFuncAlpha(Texture.CombinerFunctionAlpha.Replace);
+	        textures.put(stencil.edge.getStencilPath(), t1);
+        }
         ts.setTexture(t1, ts.getNumberOfSetTextures());
     }
+    
 
     private TextureState createSplatTextureState(String texture, Stencil stencil) {
         TextureState ts = main.getDisplay().getRenderer().createTextureState();
 
-        Texture t0 = TextureManager.loadTexture(texture,
+        Texture t0 = textures.get(texture);
+        if (t0==null)
+        {
+        	t0 = TextureManager.loadTexture(texture,
                                                 Texture.MinificationFilter.Trilinear,
                                                 Texture.MagnificationFilter.Bilinear);
-        t0.setWrap(Texture.WrapMode.Repeat);
-        t0.setApply(Texture.ApplyMode.Modulate);
-        //t0.setScale(new Vector3f(0.5f, 0.5f, 1.0f));
+	        t0.setWrap(Texture.WrapMode.Repeat);
+	        t0.setApply(Texture.ApplyMode.Modulate);
+	        //t0.setScale(new Vector3f(0.5f, 0.5f, 1.0f));
+	        textures.put(texture, t0);
+        }
         ts.setTexture(t0, 0);
 
         if (stencil != null && stencil.edge != null) {
