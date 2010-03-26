@@ -10,6 +10,7 @@ enum TileTexType {
     ROCK("./data/textures/surf1.png"),
     GRASS("./data/textures/grass.png"),
     MOSS("./data/textures/moss2.png"),
+    LYCHEN("./data/textures/grass2.png"),
     ;
 
     private String texturePath;
@@ -22,3 +23,4 @@ enum TileTexType {
         return texturePath;
     }
 }
+    

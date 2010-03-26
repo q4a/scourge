@@ -122,7 +122,7 @@ class Tile {
     static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
 
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
-        Texture t1 = textures.get(stencil.edge.getStencilPath());
+        Texture t1 = textures.get(stencil.edge.getStencilPath() + "_" + stencil.angle);
         
         if (t1==null)
         {
