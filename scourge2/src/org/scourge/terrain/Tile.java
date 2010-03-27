@@ -19,6 +19,8 @@ import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
 
+import javax.swing.*;
+
 /**
 * User: gabor
 * Date: Mar 13, 2010
@@ -70,7 +72,6 @@ class Tile {
 
     protected void applyTexture(Map<Direction, TileTexType> around, int x, int y) {
         if(tex.getTexturePath() != null && !type.isTexturePreset()) {
-            // remove the same textures
             for(Direction dir : Direction.values()) {
                 if(around.get(dir) == null || around.get(dir).ordinal() >= tex.ordinal()) {
                     around.remove(dir);
@@ -119,17 +120,23 @@ class Tile {
         }
     }
 
-    static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
+    private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
+    private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
 
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
         String key = stencil.edge.getStencilPath() + "_" + stencil.angle;
         Texture t1 = textures.get(key);
         
-        if (t1==null)
-        {
-        	t1 = TextureManager.loadTexture(stencil.edge.getStencilPath(),
-                                                Texture.MinificationFilter.Trilinear,
-                                                Texture.MagnificationFilter.Bilinear);
+        if (t1 == null) {
+            ImageIcon icon = images.get(stencil.edge.getStencilPath());
+            if(icon == null) {
+                icon = new ImageIcon(stencil.edge.getStencilPath());
+                images.put(stencil.edge.getStencilPath(), icon);
+            }
+        	t1 = TextureManager.loadTexture(icon.getImage(),
+                                            Texture.MinificationFilter.Trilinear,
+                                            Texture.MagnificationFilter.Bilinear,
+                                            true);
 	        t1.setRotation(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * stencil.angle, Vector3f.UNIT_Z));
 	        t1.setWrap(Texture.WrapMode.Repeat);
 	        t1.setApply(Texture.ApplyMode.Combine);
@@ -147,14 +154,12 @@ class Tile {
         TextureState ts = main.getDisplay().getRenderer().createTextureState();
 
         Texture t0 = textures.get(texture);
-        if (t0==null)
-        {
+        if (t0 == null) {
         	t0 = TextureManager.loadTexture(texture,
                                                 Texture.MinificationFilter.Trilinear,
                                                 Texture.MagnificationFilter.Bilinear);
 	        t0.setWrap(Texture.WrapMode.Repeat);
 	        t0.setApply(Texture.ApplyMode.Modulate);
-	        //t0.setScale(new Vector3f(0.5f, 0.5f, 1.0f));
 	        textures.put(texture, t0);
         }
         ts.setTexture(t0, 0);
@@ -264,9 +269,6 @@ class Tile {
 
     
     public static void debug() {
-//        logger.info("* Loaded " + textures.size() + " textures: ");
-//        for(String s : textures.keySet()) {
-//            logger.info(s);
-//        }
+        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images.");
     }
 }
