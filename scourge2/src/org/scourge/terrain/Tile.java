@@ -1,9 +1,6 @@
 package org.scourge.terrain;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.scourge.Main;
@@ -124,14 +121,15 @@ class Tile {
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
 
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
-        String key = stencil.edge.getStencilPath() + "_" + stencil.angle;
+        String path = stencil.edge.getStencilPath(main.getRandom());
+        String key = path + "_" + stencil.angle;
         Texture t1 = textures.get(key);
         
         if (t1 == null) {
-            ImageIcon icon = images.get(stencil.edge.getStencilPath());
+            ImageIcon icon = images.get(path);
             if(icon == null) {
-                icon = new ImageIcon(stencil.edge.getStencilPath());
-                images.put(stencil.edge.getStencilPath(), icon);
+                icon = new ImageIcon(path);
+                images.put(path, icon);
             }
         	t1 = TextureManager.loadTexture(icon.getImage(),
                                             Texture.MinificationFilter.Trilinear,
@@ -176,20 +174,21 @@ class Tile {
     }
 
     private static enum TexEdge {
-        hole("./data/textures/stencil/hole.png"),
-        narrow("./data/textures/stencil/narrow.png"),
-        edge("./data/textures/stencil/edge.png"),
-        tip("./data/textures/stencil/tip.png"),
-        corner("./data/textures/stencil/corner.png");
+        hole("./data/textures/stencil/hole2.png"),
+        narrow("./data/textures/stencil/narrow2.png"),
+        edge("./data/textures/stencil/edge2.png", "./data/textures/stencil/edge3.png"),
+        tip("./data/textures/stencil/tip2.png"),
+        corner("./data/textures/stencil/corner2.png", "./data/textures/stencil/corner3.png");
 
-        private String stencilPath;
+        private String[] stencilPath;
 
-        TexEdge(String stencilPath) {
+        TexEdge(String ... stencilPath) {
             this.stencilPath = stencilPath;
         }
 
-        public String getStencilPath() {
-            return stencilPath;
+        public String getStencilPath(Random random) {
+            int index = (int)(random.nextFloat() * stencilPath.length);
+            return stencilPath[index];
         }
     }
 
