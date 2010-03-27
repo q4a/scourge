@@ -122,7 +122,8 @@ class Tile {
     static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
 
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
-        Texture t1 = textures.get(stencil.edge.getStencilPath() + "_" + stencil.angle);
+        String key = stencil.edge.getStencilPath() + "_" + stencil.angle;
+        Texture t1 = textures.get(key);
         
         if (t1==null)
         {
@@ -136,7 +137,7 @@ class Tile {
 	        t1.setCombineSrc0RGB(Texture.CombinerSource.Previous);
 	        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
 	        t1.setCombineFuncAlpha(Texture.CombinerFunctionAlpha.Replace);
-	        textures.put(stencil.edge.getStencilPath(), t1);
+	        textures.put(key, t1);
         }
         ts.setTexture(t1, ts.getNumberOfSetTextures());
     }
