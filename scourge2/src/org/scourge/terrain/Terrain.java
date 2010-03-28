@@ -61,7 +61,7 @@ public class Terrain implements NodeGenerator {
                 around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
-                tile.createNode(around);
+                tile.createNode(around, tile.getLevel());
 
                 Spatial sp = tile.getNode();
                 sp.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, 2 + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);

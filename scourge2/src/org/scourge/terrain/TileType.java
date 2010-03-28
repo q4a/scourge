@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
 enum TileType {
     NONE {
         @Override
-        public Node createNode(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights, int level) {
             return null;
         }
 
@@ -37,8 +37,8 @@ enum TileType {
     },
     EDGE_BRIDGE {
         @Override
-        public Node createNode(float angle, float[] heights) {
-            return addEdge(angle, "b");
+        public Node createNode(float angle, float[] heights, int level) {
+            return addEdge(angle, "b", level);
         }
 
         @Override
@@ -52,8 +52,8 @@ enum TileType {
     },
     EDGE_CORNER {
         @Override
-        public Node createNode(float angle, float[] heights) {
-            return addEdge(angle, "c");
+        public Node createNode(float angle, float[] heights, int level) {
+            return addEdge(angle, "c", level);
         }
 
         @Override
@@ -67,8 +67,8 @@ enum TileType {
     },
     EDGE_TIP {
         @Override
-        public Node createNode(float angle, float[] heights) {
-            return addEdge(angle, "t");
+        public Node createNode(float angle, float[] heights, int level) {
+            return addEdge(angle, "t", level);
         }
 
         @Override
@@ -82,8 +82,8 @@ enum TileType {
     },
     EDGE_SIDE {
         @Override
-        public Node createNode(float angle, float[] heights) {
-            return addEdge(angle, "s");
+        public Node createNode(float angle, float[] heights, int level) {
+            return addEdge(angle, "s", level);
         }
 
         @Override
@@ -97,7 +97,7 @@ enum TileType {
     },
     QUAD {
         @Override
-        public Node createNode(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights, int level) {
             Quad ground = createQuad(heights);
 
             Node groundNode = new Node(ShapeUtil.newShapeName("ground_node"));
@@ -123,34 +123,32 @@ enum TileType {
     },
     ;
 
-    public abstract Node createNode(float angle, float[] heights);
+    public abstract boolean isTexturePreset();
+    public abstract Node createNode(float angle, float[] heights, int level);
+    public abstract void updateHeights(Node node, float[] heights);
 
-    protected Node addEdge(float angle, String model) {
+    protected Node addEdge(float angle, String model, int level) {
         Spatial edge = ShapeUtil.load3ds("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
         edge.setModelBound(new BoundingBox());
         edge.updateModelBound();
         edge.updateWorldBound();
 
-        Quad ground = createQuad(new float[] { 0, 0, 0, 0 });
-        ground.getLocalTranslation().y -= ShapeUtil.WALL_HEIGHT;
-        TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-        Texture texture = ShapeUtil.loadTexture(TileTexType.ROCK.getTexturePath());
-        texture.setWrap(Texture.WrapMode.Repeat);
-        ts.setTexture(texture, 0);
-        ground.setRenderState(ts);
-
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
         edgeNode.attachChild(edge);
-        edgeNode.attachChild(ground);
+
+        if(level > 0) {
+            Quad ground = createQuad(new float[] { 0, 0, 0, 0 });
+            ground.getLocalTranslation().y -= ShapeUtil.WALL_HEIGHT;
+            TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+            Texture texture = ShapeUtil.loadTexture(TileTexType.ROCK.getTexturePath());
+            texture.setWrap(Texture.WrapMode.Repeat);
+            ts.setTexture(texture, 0);
+            ground.setRenderState(ts);
+            edgeNode.attachChild(ground);
+        }
         return edgeNode;
     }
-
-    public abstract boolean isTexturePreset();
-
-
-    public abstract void updateHeights(Node node, float[] heights);
-
 
     protected Quad createQuad(float[] heights) {
         Quad ground = new Quad(ShapeUtil.newShapeName("ground"), ShapeUtil.WALL_WIDTH, ShapeUtil.WALL_WIDTH);

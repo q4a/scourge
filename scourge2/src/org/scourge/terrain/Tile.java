@@ -70,8 +70,8 @@ class Tile {
         }
     }
 
-    public void createNode(Map<Direction, TileTexType> around) {
-        node = type.createNode(angle, heights);
+    public void createNode(Map<Direction, TileTexType> around, int level) {
+        node = type.createNode(angle, heights, level);
         applyTexture(around);
     }
 
