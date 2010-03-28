@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-b.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-b.3ds" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-s.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-s.3ds" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ac/edge-c.ac" afterPath="$PROJECT_DIR$/data/ac/edge-c.ac" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ac/edge-t.ac" afterPath="$PROJECT_DIR$/data/ac/edge-t.ac" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ac/edge-s.ac" afterPath="$PROJECT_DIR$/data/ac/edge-s.ac" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ac/edge-b.ac" afterPath="$PROJECT_DIR$/data/ac/edge-b.ac" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-c.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-c.3ds" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-t.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-t.3ds" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="scourge2.iws" />
@@ -76,10 +81,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TileType.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TileType.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="123" column="70" selection-start="3130" selection-end="3130" vertical-scroll-proportion="0.0">
+            <state line="143" column="64" selection-start="4164" selection-end="4164" vertical-scroll-proportion="0.24242425">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -96,10 +101,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Terrain.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="55" selection-start="2136" selection-end="2136" vertical-scroll-proportion="0.40117994">
+            <state line="73" column="39" selection-start="2560" selection-end="2560" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -127,10 +132,10 @@
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/GroundType.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
       </list>
     </option>
   </component>
@@ -414,7 +419,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4145343" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25486183" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39819458" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39815763" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -526,12 +531,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="123" column="70" selection-start="3130" selection-end="3130" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="73" column="39" selection-start="2560" selection-end="2560" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -542,10 +545,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="55" selection-start="2136" selection-end="2136" vertical-scroll-proportion="0.40117994">
-          <folding />
+        <state line="143" column="64" selection-start="4164" selection-end="4164" vertical-scroll-proportion="0.24242425">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
