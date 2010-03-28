@@ -130,9 +130,6 @@ enum TileType {
     protected Node addEdge(float angle, String model, int level) {
         Spatial edge = ShapeUtil.load3ds("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
-        edge.setModelBound(new BoundingBox());
-        edge.updateModelBound();
-        edge.updateWorldBound();
 
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
         edgeNode.attachChild(edge);
@@ -147,6 +144,10 @@ enum TileType {
             ground.setRenderState(ts);
             edgeNode.attachChild(ground);
         }
+
+        edgeNode.setModelBound(new BoundingBox());
+        edgeNode.updateModelBound();
+        edgeNode.updateWorldBound();
         return edgeNode;
     }
 

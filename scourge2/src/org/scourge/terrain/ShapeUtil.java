@@ -27,6 +27,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -40,6 +41,10 @@ public class ShapeUtil {
     private static int shapeCount = 0;
     public static final float WALL_WIDTH = 16.0f;
     public static final float WALL_HEIGHT = 24.0f;
+    private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
+    private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
+    private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
+    private static WeakHashMap<String, byte[]> models = new WeakHashMap<String, byte[]>();
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
@@ -83,7 +88,6 @@ public class ShapeUtil {
         return node;
     }
 
-
     /**
 	 * Imports a .3ds model from file system.
 	 * @param modelPath the path to the model file.
@@ -98,59 +102,41 @@ public class ShapeUtil {
 	 *  the scenegraph, or null instead if unable to load geometry.
 	 */
 	public static Spatial load3ds(String modelPath, String textureDir, String name_prefix) {
-		Spatial output = null; // the geometry will go here.
-		final ByteArrayOutputStream outStream =
-			new ByteArrayOutputStream(); // byte array streams don't have to be closed
-		try {
-			final File textures;
-			if(textureDir != null) { // set textureDir location
-				textures = new File( textureDir );
-			} else {// try to infer textureDir from modelPath.
-				textures = new File(modelPath.substring(0, modelPath.lastIndexOf('/')));
-			}	// Add texture URL to auto-locator
-			final SimpleResourceLocator location = new SimpleResourceLocator(textures.toURI().toURL());
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, location );
+        Spatial output = null;
+        try {
+            byte[] bytes = models.get(modelPath);
+            if(bytes == null) {
+                final File textures;
+                if(textureDir != null) { // set textureDir location
+                    textures = new File( textureDir );
+                } else {// try to infer textureDir from modelPath.
+                    textures = new File(modelPath.substring(0, modelPath.lastIndexOf('/')));
+                }	// Add texture URL to auto-locator
+                final SimpleResourceLocator location = new SimpleResourceLocator(textures.toURI().toURL());
+                ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, location );
 
-			// read .3ds file into memory & convert it to a jME usable format.
-			final FileInputStream rawIn = new FileInputStream(modelPath);
-			CONVERTER_3DS.convert(rawIn, outStream);
-			rawIn.close(); // FileInputStream s must be explicitly closed.
+                // read .3ds file into memory & convert it to a jME usable format.
+                final FileInputStream rawIn = new FileInputStream(modelPath);
+                final ByteArrayOutputStream outStream = new ByteArrayOutputStream(); // byte array streams don't have to be closed
+                CONVERTER_3DS.convert(rawIn, outStream);
+                rawIn.close(); // FileInputStream s must be explicitly closed.
+                bytes = outStream.toByteArray();
 
-			// prepare outStream for loading.
-			final ByteArrayInputStream convertedIn =
-				new ByteArrayInputStream(outStream.toByteArray());
+                // prepare outStream for loading.
+                models.put(modelPath, bytes);
+            }
 
-			// import the converted stream to jME as a Spatial
-			output = (Spatial) BinaryImporter.getInstance().load(convertedIn);
+            // import the converted stream to jME as a Spatial
+            output = (Spatial) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
             output.setName(newShapeName(name_prefix));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.err.println("File not found at: " + modelPath);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Unable read model at: " + modelPath);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			System.err.println("Invalid texture location at:" + textureDir);
-		}	/*
-		* The bounding box is an important optimization.
-		* There is no point in rendering geometry outside of the camera's
-		* field of view. However, testing whether each individual triangle
-		* is visible is nearly as expensive as actually rendering it. So you
-		* don't test every triangle. Instead, you just test the bounding box.
-		* If the box isn't in view, don't bother looking for triangles inside.
-			*/
-        if(output != null) {
-		    output.setModelBound(new BoundingBox());
-		    output.updateModelBound();
+            output.setModelBound(new BoundingBox());
+            output.updateModelBound();
+            return output;
+        } catch (Exception exc) {
+            logger.log(Level.SEVERE, exc.getMessage(), exc);
+            throw new RuntimeException(exc);
         }
-		return output;
 	}
-
-    private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
-
-    private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
-    private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
 
     public static ImageIcon loadImageIcon(String path) {
         ImageIcon icon = images.get(path);
