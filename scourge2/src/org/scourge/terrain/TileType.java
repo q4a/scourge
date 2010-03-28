@@ -5,17 +5,14 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.scene.PassNode;
-import com.jme.scene.PassNodeState;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 
 import java.nio.FloatBuffer;
-import java.util.Map;
 
 /**
 * User: gabor
@@ -25,7 +22,7 @@ import java.util.Map;
 enum TileType {
     NONE {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights) {
             return null;
         }
 
@@ -35,12 +32,12 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
+        public void updateHeights(Node node, float[] heights) {
         }
     },
     EDGE_BRIDGE {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights) {
             return addEdge(angle, "b");
         }
 
@@ -50,12 +47,12 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
+        public void updateHeights(Node node, float[] heights) {
         }
     },
     EDGE_CORNER {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights) {
             return addEdge(angle, "c");
         }
 
@@ -65,12 +62,12 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
+        public void updateHeights(Node node, float[] heights) {
         }
     },
     EDGE_TIP {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights) {
             return addEdge(angle, "t");
         }
 
@@ -80,12 +77,12 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
+        public void updateHeights(Node node, float[] heights) {
         }
     },
     EDGE_SIDE {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
+        public Node createNode(float angle, float[] heights) {
             return addEdge(angle, "s");
         }
 
@@ -95,48 +92,17 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
+        public void updateHeights(Node node, float[] heights) {
         }
     },
     QUAD {
         @Override
-        public Spatial createSpatial(float angle, float[] heights) {
-            Quad ground = new Quad(ShapeUtil.newShapeName("ground"), ShapeUtil.WALL_WIDTH, ShapeUtil.WALL_WIDTH);
+        public Node createNode(float angle, float[] heights) {
+            Quad ground = createQuad(heights);
 
-            Vector3f a = new Vector3f(-ShapeUtil.WALL_WIDTH / 2, heights[0], -ShapeUtil.WALL_WIDTH / 2);
-            Vector3f b = new Vector3f(-ShapeUtil.WALL_WIDTH / 2, heights[1], ShapeUtil.WALL_WIDTH / 2);
-            Vector3f c = new Vector3f(ShapeUtil.WALL_WIDTH / 2, heights[2], ShapeUtil.WALL_WIDTH / 2);
-            Vector3f d = new Vector3f(ShapeUtil.WALL_WIDTH / 2, heights[3], -ShapeUtil.WALL_WIDTH / 2);
-
-            FloatBuffer vertexBuf = ground.getVertexBuffer();
-            vertexBuf.clear();
-            vertexBuf.put(a.x).put(a.y).put(a.z);
-            vertexBuf.put(b.x).put(b.y).put(b.z);
-            vertexBuf.put(c.x).put(c.y).put(c.z);
-            vertexBuf.put(d.x).put(d.y).put(d.z);
-
-            Vector3f e1 = b.subtract(a);
-            Vector3f e2 = c.subtract(a);
-            Vector3f normal = e1.cross(e2).normalizeLocal();
-
-            FloatBuffer normBuf = ground.getNormalBuffer();
-            normBuf.clear();
-            normBuf.put(normal.x).put(normal.y).put(normal.z);
-            normBuf.put(0).put(1).put(0);
-            normBuf.put(0).put(1).put(0);
-            normBuf.put(0).put(1).put(0);
-
-            //updateHeights(ground, heights);
-
-//            ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
-            ground.setModelBound(new BoundingBox());
-            ground.updateModelBound();
-
-            // w/o this magic line splat textures (PassNode) won't work. 
-            ground.copyTextureCoordinates(0, 1, 1.0f);
-            ground.copyTextureCoordinates(1, 2, 1.0f);
-            ground.copyTextureCoordinates(2, 3, 1.0f);
-            return ground;
+            Node groundNode = new Node(ShapeUtil.newShapeName("ground_node"));
+            groundNode.attachChild(ground);
+            return groundNode;
         }
 
         @Override
@@ -145,31 +111,84 @@ enum TileType {
         }
 
         @Override
-        public void updateHeights(Spatial spatial, float[] heights) {
-            FloatBuffer vertexBuf = ((Quad)spatial).getVertexBuffer();
+        public void updateHeights(Node node, float[] heights) {
+            FloatBuffer vertexBuf = ((Quad) node.getChild(0)).getVertexBuffer();
             vertexBuf.put(1, heights[0]);
             vertexBuf.put(4, heights[1]);
             vertexBuf.put(7, heights[2]);
             vertexBuf.put(10, heights[3]);
-            spatial.updateModelBound();
-            spatial.updateWorldBound();
+            node.updateModelBound();
+            node.updateWorldBound();
         }
     },
     ;
 
-    public abstract Spatial createSpatial(float angle, float[] heights);
+    public abstract Node createNode(float angle, float[] heights);
 
-    protected Spatial addEdge(float angle, String model) {
+    protected Node addEdge(float angle, String model) {
         Spatial edge = ShapeUtil.load3ds("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
         edge.setModelBound(new BoundingBox());
         edge.updateModelBound();
         edge.updateWorldBound();
-        return edge;
+
+        Quad ground = createQuad(new float[] { 0, 0, 0, 0 });
+        ground.getLocalTranslation().y -= ShapeUtil.WALL_HEIGHT;
+        TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+        Texture texture = ShapeUtil.loadTexture(TileTexType.ROCK.getTexturePath());
+        texture.setWrap(Texture.WrapMode.Repeat);
+        ts.setTexture(texture, 0);
+        ground.setRenderState(ts);
+
+        Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
+        edgeNode.attachChild(edge);
+        edgeNode.attachChild(ground);
+        return edgeNode;
     }
 
     public abstract boolean isTexturePreset();
 
 
-    public abstract void updateHeights(Spatial spatial, float[] heights);
+    public abstract void updateHeights(Node node, float[] heights);
+
+
+    protected Quad createQuad(float[] heights) {
+        Quad ground = new Quad(ShapeUtil.newShapeName("ground"), ShapeUtil.WALL_WIDTH, ShapeUtil.WALL_WIDTH);
+
+        Vector3f a = new Vector3f(-ShapeUtil.WALL_WIDTH / 2, heights[0], -ShapeUtil.WALL_WIDTH / 2);
+        Vector3f b = new Vector3f(-ShapeUtil.WALL_WIDTH / 2, heights[1], ShapeUtil.WALL_WIDTH / 2);
+        Vector3f c = new Vector3f(ShapeUtil.WALL_WIDTH / 2, heights[2], ShapeUtil.WALL_WIDTH / 2);
+        Vector3f d = new Vector3f(ShapeUtil.WALL_WIDTH / 2, heights[3], -ShapeUtil.WALL_WIDTH / 2);
+
+        FloatBuffer vertexBuf = ground.getVertexBuffer();
+        vertexBuf.clear();
+        vertexBuf.put(a.x).put(a.y).put(a.z);
+        vertexBuf.put(b.x).put(b.y).put(b.z);
+        vertexBuf.put(c.x).put(c.y).put(c.z);
+        vertexBuf.put(d.x).put(d.y).put(d.z);
+
+        Vector3f e1 = b.subtract(a);
+        Vector3f e2 = c.subtract(a);
+        Vector3f normal = e1.cross(e2).normalizeLocal();
+
+        FloatBuffer normBuf = ground.getNormalBuffer();
+        normBuf.clear();
+        normBuf.put(normal.x).put(normal.y).put(normal.z);
+        normBuf.put(0).put(1).put(0);
+        normBuf.put(0).put(1).put(0);
+        normBuf.put(0).put(1).put(0);
+
+        //updateHeights(ground, heights);
+
+//            ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
+        ground.setModelBound(new BoundingBox());
+        ground.updateModelBound();
+
+        // w/o this magic line splat textures (PassNode) won't work.
+        ground.copyTextureCoordinates(0, 1, 1.0f);
+        ground.copyTextureCoordinates(1, 2, 1.0f);
+        ground.copyTextureCoordinates(2, 3, 1.0f);
+
+        return ground;
+    }
 }

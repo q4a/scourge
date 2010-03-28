@@ -37,57 +37,9 @@ public class Terrain implements NodeGenerator {
         List<String> lines = readLines(new File("./data/maps/m32m32.map"));
         rows = lines.size();
         cols = lines.get(0).length();
-        boolean[][] map = new boolean[rows][cols];
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
-                map[y][x] = lines.get(y).charAt(x) != '~';
-            }
-        }
 
         tiles = new Tile[rows][cols];
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
-                tiles[y][x] = new Tile(main);
-                if(map[y][x]) {
-                    if(map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
-                    } else if(!map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
-                    } else if(map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
-                    } else if(map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
-
-                    } else if(!map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
-                    } else if(map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
-                    } else if(!map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
-                    } else if(map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
-
-                    } else if(!map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
-                    } else if(map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
-                    } else if(!map[y - 1][x] && map[y][x - 1] && !map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
-                    } else if(!map[y - 1][x] && !map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
-
-                    } else if(!map[y - 1][x] && map[y][x - 1] && map[y][x + 1] && !map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
-                    } else if(map[y - 1][x] && !map[y][x - 1] && !map[y][x + 1] && map[y + 1][x]) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
-
-                    } else {
-                        int type = (int)(main.getRandom().nextFloat() * 5);
-                        tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
-                    }
-                }
-            }
-        }
+        makeTiles(rows, cols, tiles, lines);
 
         // create some hills
         createHeights(tiles, rows, cols);
@@ -109,10 +61,10 @@ public class Terrain implements NodeGenerator {
                 around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
-                tile.createSpatial(around, x, y);
+                tile.createNode(around);
 
-                Spatial sp = tile.getRenderedSpatial();
-                sp.getLocalTranslation().set(x * 16, 2, y * 16);
+                Spatial sp = tile.getNode();
+                sp.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, 2 + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
                 sp.updateModelBound();
                 sp.updateWorldBound();
                 terrain.attachChild(sp);
@@ -139,7 +91,70 @@ public class Terrain implements NodeGenerator {
             }
         }
 
-        Tile.debug();
+        ShapeUtil.debug();
+    }
+
+    private void makeTiles(int rows, int cols, Tile[][] tiles, List<String> lines) {
+
+        // the symbols for different levels on the map
+        String levels = "~*+-";
+
+        for(int i = 1; i < levels.length(); i++) {
+            char c = levels.charAt(i);
+            char prevC = levels.charAt(i - 1);
+            for(int x = 0; x < cols; x++) {
+                for(int y = 0; y < rows; y++) {
+                    if(i == 1) {
+                        tiles[y][x] = new Tile(main);
+                    }
+                    if(lines.get(y).charAt(x) == c) {
+
+                        tiles[y][x].setLevel(i - 1);
+
+                        if(check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
+                        } else if(!check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
+                        } else if(check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
+                        } else if(check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
+
+                        } else if(!check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
+                        } else if(check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
+                        } else if(!check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
+                        } else if(check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
+
+                        } else if(!check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
+                        } else if(check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
+                        } else if(!check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
+                        } else if(!check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
+
+                        } else if(!check(y - 1, x, prevC, lines) && check(y, x - 1, prevC, lines) && check(y, x + 1, prevC, lines) && !check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
+                        } else if(check(y - 1, x, prevC, lines) && !check(y, x - 1, prevC, lines) && !check(y, x + 1, prevC, lines) && check(y + 1, x, prevC, lines)) {
+                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
+
+                        } else {
+                            int type = (int)(main.getRandom().nextFloat() * 5);
+                            tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean check(int y, int x, char c, List<String> lines) {
+        return (y >= 0 && x >= 0 && y < lines.size() && x < lines.get(0).length() && lines.get(y).charAt(x) != c);
     }
 
     // hack... this should be in TileType.QUAD but I was lazy
@@ -147,14 +162,16 @@ public class Terrain implements NodeGenerator {
         if(to == null || to.type != TileType.QUAD ||
            from == null || from.type != TileType.QUAD) return;
 
-        FloatBuffer fromBuf = ((Quad)from.spatial).getNormalBuffer();
+        Quad fromQuad = (Quad)from.node.getChild(0);
+        Quad toQuad = (Quad)to.node.getChild(0);
+        FloatBuffer fromBuf = fromQuad.getNormalBuffer();
         float[] normal = new float[3];
         // get the NW normal; the only one set explicitly
         normal[0] = fromBuf.get(0);
         normal[1] = fromBuf.get(1);
         normal[2] = fromBuf.get(2);
 
-        FloatBuffer toBuf = ((Quad)to.spatial).getNormalBuffer();
+        FloatBuffer toBuf = toQuad.getNormalBuffer();
         switch(edge) {
             case NE: toBuf.put(9, normal[0]).put(10, normal[1]).put(11, normal[2]); break;
             case SE: toBuf.put(6, normal[0]).put(7, normal[1]).put(8, normal[2]); break;
@@ -162,15 +179,15 @@ public class Terrain implements NodeGenerator {
             default: throw new IllegalStateException("Can't set NW corner.");
         }
 
-        to.spatial.updateModelBound();
-        to.spatial.updateWorldBound();
+        toQuad.updateModelBound();
+        toQuad.updateWorldBound();
     }
 
     private void createHeights(Tile[][] tiles, int rows, int cols) {
         // set the heights
         for(int y = 1; y < rows - 1; y++) {
             for(int x = 1; x < cols - 1; x++) {
-                float h = main.getRandom().nextFloat() * 10;
+                float h = 2.0f + main.getRandom().nextFloat() * 8.0f;
                 tiles[y - 1][x - 1].setHeight(Tile.Edge.SE, h);
                 tiles[y - 1][x].setHeight(Tile.Edge.SW, h);
                 tiles[y][x - 1].setHeight(Tile.Edge.NE, h);

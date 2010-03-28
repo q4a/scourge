@@ -26,10 +26,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -42,6 +39,7 @@ public class ShapeUtil {
     private static final FormatConverter CONVERTER_3DS = new MaxToJme();
     private static int shapeCount = 0;
     public static final float WALL_WIDTH = 16.0f;
+    public static final float WALL_HEIGHT = 24.0f;
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
@@ -150,15 +148,47 @@ public class ShapeUtil {
 	}
 
     private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
-    private static Map<String, ImageIcon> icons = new HashMap<String, ImageIcon>();
 
-    public static ImageIcon getImageIcon(String path) {
-        ImageIcon image = icons.get(path);
-        if(image == null) {
-            image = new ImageIcon(path);
-            icons.put(path, image);
-            logger.info("* icons count=" + icons.size());
+    private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
+    private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
+
+    public static ImageIcon loadImageIcon(String path) {
+        ImageIcon icon = images.get(path);
+        if(icon == null) {
+            icon = new ImageIcon(path);
+            images.put(path, icon);
         }
-        return image;
+        return icon;
+    }
+
+    public static Texture loadTexture(String path) {
+        return loadTexture(path, path);
+    }
+
+    public static Texture loadTexture(String path, String textureKey) {
+        Texture t0 = textures.get(textureKey);
+        if (t0 == null) {
+        	t0 = TextureManager.loadTexture(path,
+                                            Texture.MinificationFilter.Trilinear,
+                                            Texture.MagnificationFilter.Bilinear);
+	        textures.put(textureKey, t0);
+        }
+        return t0;
+    }
+
+    public static void debug() {
+        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images.");
+    }
+
+    public static boolean isTextureLoaded(String key) {
+        return textures.keySet().contains(key);
+    }
+
+    public static void storeTexture(String key, Texture texture) {
+        textures.put(key, texture);
+    }
+
+    public static Texture getTexture(String key) {
+        return textures.get(key);
     }
 }

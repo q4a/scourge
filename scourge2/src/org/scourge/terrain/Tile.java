@@ -1,22 +1,21 @@
 package org.scourge.terrain;
 
-import java.util.*;
-import java.util.logging.Logger;
-
-import org.scourge.Main;
-
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.scene.Node;
 import com.jme.scene.PassNode;
 import com.jme.scene.PassNodeState;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
+import org.scourge.Main;
 
 import javax.swing.*;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
 * User: gabor
@@ -27,11 +26,20 @@ class Tile {
     public TileTexType tex;
     public TileType type;
     public float angle;
-    public Spatial spatial;
+    public Node node;
     public PassNode passNode;
     private float[] heights = new float[4];
     private Main main;
     private static Logger logger = Logger.getLogger(Tile.class.toString());
+    private int level;
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
     public enum Edge {
         NW, SW, SE, NE
@@ -57,17 +65,17 @@ class Tile {
 
     public void setHeight(Edge edge, float height) {
         heights[edge.ordinal()] = height;
-        if(spatial != null) {
-            type.updateHeights(spatial, heights);
+        if(node != null) {
+            type.updateHeights(node, heights);
         }
     }
 
-    public void createSpatial(Map<Direction, TileTexType> around, int x, int y) {
-        spatial = type.createSpatial(angle, heights);
-        applyTexture(around, x, y);
+    public void createNode(Map<Direction, TileTexType> around) {
+        node = type.createNode(angle, heights);
+        applyTexture(around);
     }
 
-    protected void applyTexture(Map<Direction, TileTexType> around, int x, int y) {
+    protected void applyTexture(Map<Direction, TileTexType> around) {
         if(tex.getTexturePath() != null && !type.isTexturePreset()) {
             for(Direction dir : Direction.values()) {
                 if(around.get(dir) == null || around.get(dir).ordinal() >= tex.ordinal()) {
@@ -77,7 +85,7 @@ class Tile {
 
             TextureState background = createSplatTextureState(tex.getTexturePath(), null);
             if(around.isEmpty()) {
-                spatial.setRenderState(background);
+                node.setRenderState(background);
             } else {
                 // alpha used for blending the passnodestates together
                 BlendState as = main.getDisplay().getRenderer().createBlendState();
@@ -89,7 +97,7 @@ class Tile {
                 as.setEnabled(true);
 
                 passNode = new PassNode("SplatPassNode");
-                passNode.attachChild(spatial);
+                passNode.attachChild(node);
 
                 PassNodeState passNodeState = new PassNodeState();
                 passNodeState.setPassState(background);
@@ -117,20 +125,13 @@ class Tile {
         }
     }
 
-    private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
-    private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
-
     private void addAlphaSplat(TextureState ts, Stencil stencil) {
         String path = stencil.edge.getStencilPath(main.getRandom());
         String key = path + "_" + stencil.angle;
-        Texture t1 = textures.get(key);
-        
-        if (t1 == null) {
-            ImageIcon icon = images.get(path);
-            if(icon == null) {
-                icon = new ImageIcon(path);
-                images.put(path, icon);
-            }
+        Texture t1 = ShapeUtil.getTexture(key);
+
+        if(t1 == null) {
+            ImageIcon icon = ShapeUtil.loadImageIcon(path);
         	t1 = TextureManager.loadTexture(icon.getImage(),
                                             Texture.MinificationFilter.Trilinear,
                                             Texture.MagnificationFilter.Bilinear,
@@ -142,7 +143,7 @@ class Tile {
 	        t1.setCombineSrc0RGB(Texture.CombinerSource.Previous);
 	        t1.setCombineOp0RGB(Texture.CombinerOperandRGB.SourceColor);
 	        t1.setCombineFuncAlpha(Texture.CombinerFunctionAlpha.Replace);
-	        textures.put(key, t1);
+	        ShapeUtil.storeTexture(key, t1);
         }
         ts.setTexture(t1, ts.getNumberOfSetTextures());
     }
@@ -151,15 +152,9 @@ class Tile {
     private TextureState createSplatTextureState(String texture, Stencil stencil) {
         TextureState ts = main.getDisplay().getRenderer().createTextureState();
 
-        Texture t0 = textures.get(texture);
-        if (t0 == null) {
-        	t0 = TextureManager.loadTexture(texture,
-                                                Texture.MinificationFilter.Trilinear,
-                                                Texture.MagnificationFilter.Bilinear);
-	        t0.setWrap(Texture.WrapMode.Repeat);
-	        t0.setApply(Texture.ApplyMode.Modulate);
-	        textures.put(texture, t0);
-        }
+        Texture t0 = ShapeUtil.loadTexture(texture);
+        t0.setWrap(Texture.WrapMode.Repeat);
+        t0.setApply(Texture.ApplyMode.Modulate);
         ts.setTexture(t0, 0);
 
         if (stencil != null && stencil.edge != null) {
@@ -169,8 +164,8 @@ class Tile {
         return ts;
     }
 
-    public Spatial getRenderedSpatial() {
-        return passNode != null ? passNode : spatial;
+    public Spatial getNode() {
+        return passNode != null ? passNode : node;
     }
 
     private static enum TexEdge {
@@ -264,10 +259,5 @@ class Tile {
     private class Stencil {
         TexEdge edge = null;
         float angle = 0;
-    }
-
-    
-    public static void debug() {
-        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images.");
-    }
+    }    
 }
