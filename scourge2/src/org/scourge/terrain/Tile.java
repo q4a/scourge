@@ -32,6 +32,7 @@ class Tile {
     private Main main;
     private static Logger logger = Logger.getLogger(Tile.class.toString());
     private int level;
+    private List<Model> models = new ArrayList<Model>();
 
     public void setLevel(int level) {
         this.level = level;
@@ -39,6 +40,14 @@ class Tile {
 
     public int getLevel() {
         return level;
+    }
+
+    public void addModel(Model model) {
+        models.add(model);
+    }
+
+    public boolean isEmpty() {
+        return type == TileType.NONE && models.isEmpty();
     }
 
     public enum Edge {
@@ -73,6 +82,12 @@ class Tile {
     public void createNode(Map<Direction, TileTexType> around, int level) {
         node = type.createNode(angle, heights, level);
         applyTexture(around);
+        for(Model model : models) {
+            Spatial spatial = ShapeUtil.load3ds(model.getModelPath(), "./data/textures", model.name());
+            node.attachChild(spatial);
+            node.updateModelBound();
+            node.updateWorldBound();
+        }
     }
 
     protected void applyTexture(Map<Direction, TileTexType> around) {

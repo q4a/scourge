@@ -23,7 +23,7 @@ enum TileType {
     NONE {
         @Override
         public Node createNode(float angle, float[] heights, int level) {
-            return null;
+            return new Node("empty");
         }
 
         @Override

@@ -48,7 +48,7 @@ public class Terrain implements NodeGenerator {
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 Tile tile = tiles[y][x];
-                if(tile.type == TileType.NONE) continue;
+                if(tile.isEmpty()) continue;
 
                 Tile eastTile = x < cols - 1 ? tiles[y][x + 1] : null;
                 Tile westTile = x > 0 ? tiles[y][x - 1] : null;
@@ -95,6 +95,17 @@ public class Terrain implements NodeGenerator {
     }
 
     private void makeTiles(int rows, int cols, Tile[][] tiles, List<String> lines) {
+        // create tiles and handle empty tiles with models
+        for(int y = 0; y < rows; y++) {
+            for(int x = 0; x < cols; x++) {
+                tiles[y][x] = new Tile(main);
+                if(lines.get(y).charAt(x) == 'B') {
+                    tiles[y][x].addModel(Model.bridge);
+                }
+            }
+            // turn some tiles into water
+            lines.set(y, lines.get(y).replaceAll("B", "~"));
+        }
 
         // the symbols for different levels on the map
         String levels = "~*+-";
@@ -104,9 +115,6 @@ public class Terrain implements NodeGenerator {
             char prevC = levels.charAt(i - 1);
             for(int x = 0; x < cols; x++) {
                 for(int y = 0; y < rows; y++) {
-                    if(i == 1) {
-                        tiles[y][x] = new Tile(main);
-                    }
                     if(lines.get(y).charAt(x) == c) {
 
                         tiles[y][x].setLevel(i - 1);
