@@ -2,17 +2,9 @@
 <project version="4">
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/m32m32.map" afterPath="$PROJECT_DIR$/data/maps/m32m32.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/House.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/House.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jmex/model/converters/Md2ToJme.java" afterPath="$PROJECT_DIR$/src/com/jmex/model/converters/Md2ToJme.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/birch.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Player.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Player.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="scourge2.iws" />
@@ -124,7 +116,7 @@
       <file leaf-file-name="Model.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="0" selection-start="2964" selection-end="2964" vertical-scroll-proportion="0.9376083">
+            <state line="96" column="70" selection-start="2671" selection-end="2671" vertical-scroll-proportion="0.42980936">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -586,7 +578,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="0" selection-start="2964" selection-end="2964" vertical-scroll-proportion="0.9376083">
+        <state line="96" column="70" selection-start="2671" selection-end="2671" vertical-scroll-proportion="0.42980936">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

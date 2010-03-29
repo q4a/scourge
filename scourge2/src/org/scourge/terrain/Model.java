@@ -36,9 +36,9 @@ public enum Model {
             return getAlphaSpatial(7);
         }
     },
-    birch("./data/3ds/tree12.3ds") {
+    birch("./data/3ds/birch.3ds") {
         public Spatial createSpatial() {
-            return getAlphaSpatial(7);
+            return getAlphaSpatial(4);
         }
     },
     birch2("./data/3ds/tree13.3ds") {
@@ -94,7 +94,7 @@ public enum Model {
         oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak,
         fir, fir, fir, fir, fir, fir, fir,
         willow, willow,
-        birch, birch, birch, birch,
+        birch, birch, birch, birch, birch, birch, birch, birch, birch,
         birch2, birch2, birch2, birch2,
         redOak,
         bigOak, bigOak, bigOak, bigOak, bigOak, bigOak, bigOak, bigOak,
