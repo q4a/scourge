@@ -1,6 +1,7 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -10,9 +11,7 @@ import org.scourge.Main;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.io.FileUtils.readLines;
 
@@ -27,7 +26,7 @@ public class Terrain implements NodeGenerator {
 
     private Tile[][] tiles;
     private int rows, cols;
-    private Town town;
+    private List<House> houses = new ArrayList<House>();
 
     public Terrain(Main main) throws IOException {
         this.main = main;
@@ -104,6 +103,8 @@ public class Terrain implements NodeGenerator {
     }
 
     private void makeTiles(int rows, int cols, Tile[][] tiles, List<String> lines) {
+        List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
+
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows; y++) {
             for(int x = 0; x < cols; x++) {
@@ -112,11 +113,13 @@ public class Terrain implements NodeGenerator {
                     tiles[y][x].addModel(Model.bridge);
                 } else if(lines.get(y).charAt(x) == 'F') {
                     makeForestTile(tiles[y][x]);
+                } else if(lines.get(y).charAt(x) == 'H') {
+                    storeHousePoisition(housePoints, x, y);
                 }
             }
             // turn some tiles into water
             lines.set(y, lines.get(y).replaceAll("B", "~"));
-            lines.set(y, lines.get(y).replaceAll("[HhF]", "*")); // todo: this won't work for higher levels (+,-)
+            lines.set(y, lines.get(y).replaceAll("[HF]", "*")); // todo: this won't work for higher levels (+,-)
         }
 
         // the symbols for different levels on the map
@@ -170,6 +173,54 @@ public class Terrain implements NodeGenerator {
                     }
                 }
             }
+        }
+
+        addHouses(housePoints);
+    }
+
+    private void storeHousePoisition(List<Set<Vector2f>> housePoints, int x, int y) {
+        boolean found = false;
+        for(Set<Vector2f> housePoint : housePoints) {
+            for(Vector2f point : housePoint) {
+                if((point.x == x && (point.y == y - 1 || point.y == y + 1)) ||
+                   (point.y == y && (point.x == x - 1 || point.x == x + 1))) {
+                    housePoint.add(new Vector2f(x, y));
+                    found = true;
+                    break;
+                }
+            }
+            if(found) break;
+        }
+        if(!found) {
+            Set<Vector2f> set = new HashSet<Vector2f>();
+            set.add(new Vector2f(x, y));
+            housePoints.add(set);
+        }
+    }
+
+    private void addHouses(List<Set<Vector2f>> housePoints) {
+        for(Set<Vector2f> housePoint : housePoints) {
+            float minx = 1000, miny = 1000, maxx = 0, maxy = -1;
+            for(Vector2f point : housePoint) {
+                if(point.x < minx) {
+                    minx = point.x;
+                }
+                if(point.x > maxx) {
+                    maxx = point.x;
+                }
+                if(point.y < miny) {
+                    miny = point.y;
+                }
+                if(point.y > maxy) {
+                    maxy = point.y;
+                }
+            }
+            int w = (int)(maxx - minx) + 1;
+            int h = (int)(maxy - miny) + 1;
+
+            House house = new House(main, minx, 0, miny, w, h, (int)(main.getRandom().nextFloat() * 2) + 1, main.getRandom());
+            houses.add(house);
+            terrain.attachChild(house.getNode());
         }
     }
 
@@ -271,13 +322,6 @@ public class Terrain implements NodeGenerator {
         return terrain;
     }
 
-    public void addTown(int x, int z) {
-        town = new Town(main, x, 0, z, main.getRandom());
-        terrain.attachChild(town.getNode());
-        terrain.updateModelBound();
-        terrain.updateWorldBound();
-    }
-
     public void flatten(Node node) {
         terrain.updateWorldBound();
         terrain.updateWorldVectors();
@@ -351,8 +395,8 @@ public class Terrain implements NodeGenerator {
     }
 
     public void moveToTopOfTerrain() {
-        if(town != null) {
-            town.moveToTopOfTerrain();
+        for(House house : houses) {
+            house.moveToTopOfTerrain();
         }
     }
 }

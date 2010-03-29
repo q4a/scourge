@@ -45,7 +45,7 @@ public class House implements NodeGenerator {
         house.getLocalTranslation().y = y * ShapeUtil.WALL_WIDTH;
         house.getLocalTranslation().z = z * ShapeUtil.WALL_WIDTH;
         Quaternion q = new Quaternion();
-        q.fromAngleAxis(FastMath.DEG_TO_RAD * (15.0f * random.nextFloat()), Vector3f.UNIT_Y);
+        q.fromAngleAxis(FastMath.DEG_TO_RAD * (45.0f * random.nextFloat()), Vector3f.UNIT_Y);
         house.getLocalRotation().multLocal(q);
         house.setModelBound(new BoundingBox());
         house.updateModelBound();

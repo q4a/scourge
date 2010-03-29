@@ -95,8 +95,8 @@ class Tile {
 
     public void setHeight(Edge edge, float height) {
         heights[edge.ordinal()] = height;
-        if(node != null) {
-            type.updateHeights(node, heights);
+        if(ground != null) {
+            type.updateHeights(ground, heights);
         }
     }
 
