@@ -1,6 +1,7 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
@@ -63,11 +64,11 @@ public class Terrain implements NodeGenerator {
 
                 tile.createNode(around, tile.getLevel());
 
-                Spatial sp = tile.getNode();
-                sp.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, 2 + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
-                sp.updateModelBound();
-                sp.updateWorldBound();
-                terrain.attachChild(sp);
+                Node node = tile.getNode();
+                node.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, 2 + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
+                node.updateModelBound();
+                node.updateWorldBound();
+                terrain.attachChild(node);
                 terrain.updateModelBound();
                 terrain.updateWorldBound();
             }
@@ -91,6 +92,14 @@ public class Terrain implements NodeGenerator {
             }
         }
 
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.isEmpty()) continue;
+                tile.attachModels();
+            }
+        }
+
         ShapeUtil.debug();
     }
 
@@ -101,10 +110,13 @@ public class Terrain implements NodeGenerator {
                 tiles[y][x] = new Tile(main);
                 if(lines.get(y).charAt(x) == 'B') {
                     tiles[y][x].addModel(Model.bridge);
+                } else if(lines.get(y).charAt(x) == 'F') {
+                    makeForestTile(tiles[y][x]);
                 }
             }
             // turn some tiles into water
             lines.set(y, lines.get(y).replaceAll("B", "~"));
+            lines.set(y, lines.get(y).replaceAll("[HhF]", "*")); // todo: this won't work for higher levels (+,-)
         }
 
         // the symbols for different levels on the map
@@ -161,6 +173,13 @@ public class Terrain implements NodeGenerator {
         }
     }
 
+    private void makeForestTile(Tile tile) {
+        tile.addModel(Model.getRandomTree(main.getRandom()),
+                      new Vector3f(8, 0, 8),
+                      (main.getRandom().nextFloat() * 0.3f) + 1.0f,
+                      main.getRandom().nextFloat() * 360.0f);
+    }
+
     private boolean check(int y, int x, char c, List<String> lines) {
         return (y >= 0 && x >= 0 && y < lines.size() && x < lines.get(0).length() && lines.get(y).charAt(x) != c);
     }
@@ -170,8 +189,8 @@ public class Terrain implements NodeGenerator {
         if(to == null || to.type != TileType.QUAD ||
            from == null || from.type != TileType.QUAD) return;
 
-        Quad fromQuad = (Quad)from.node.getChild(0);
-        Quad toQuad = (Quad)to.node.getChild(0);
+        Quad fromQuad = (Quad)from.ground.getChild(0);
+        Quad toQuad = (Quad)to.ground.getChild(0);
         FloatBuffer fromBuf = fromQuad.getNormalBuffer();
         float[] normal = new float[3];
         // get the NW normal; the only one set explicitly

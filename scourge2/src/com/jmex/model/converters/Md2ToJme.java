@@ -332,7 +332,7 @@ public class Md2ToJme extends FormatConverter {
             List<VectorTex> vectorTexcoords = new ArrayList<VectorTex>();
             controller = new KeyframeController();
             for (int i = 0; i < header.numFrames; i++) {
-                System.err.println("*** frame " + i + " name=" + frames[i].name);
+                //System.err.println("*** frame " + i + " name=" + frames[i].name);
                 int numOfVerts = header.numVertices;
                 int numTexVertex = header.numTexCoords;
                 if (i != 0)

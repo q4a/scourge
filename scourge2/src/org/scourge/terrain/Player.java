@@ -8,7 +8,9 @@ import com.jme.math.Ray;
 import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
+import com.jme.scene.state.CullState;
 import org.scourge.Main;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
@@ -31,7 +33,7 @@ public class Player implements NodeGenerator {
     private Quaternion q = new Quaternion();
     private Quaternion p = new Quaternion();
     private Vector3f direction = new Vector3f();
-    private Box debug;
+//    private Box debug;
 
     public enum Md2Key {
         crpain, death, pain, crstnd, run, crdeath, jump, salute, point, stand, crattak, wave, attack, taunt, flip, crwalk
@@ -55,10 +57,9 @@ public class Player implements NodeGenerator {
             keyframes.put(Md2Key.valueOf(s), frames.get(s));
         }
 
-
-        debug = new Box("debug", new Vector3f(0,0,0), new Vector3f(4, 4, 4));
-        debug.setIsCollidable(false);
-        player.attachChild(debug);
+//        debug = new Box("debug", new Vector3f(0,0,0), new Vector3f(4, 4, 4));
+//        debug.setIsCollidable(false);
+//        player.attachChild(debug);
     }
 
     @Override
@@ -82,10 +83,10 @@ public class Player implements NodeGenerator {
         player.setIsCollidable(true);
 
 
-        debug.getLocalTranslation().x = ((BoundingBox)player.getWorldBound()).xExtent / 2;
-        debug.getLocalTranslation().y = 0;
-        debug.getLocalTranslation().y -= ((BoundingBox)player.getWorldBound()).yExtent;
-        debug.getLocalTranslation().z = ((BoundingBox)player.getWorldBound()).zExtent / 2;
+//        debug.getLocalTranslation().x = ((BoundingBox)player.getWorldBound()).xExtent / 2;
+//        debug.getLocalTranslation().y = 0;
+//        debug.getLocalTranslation().y -= ((BoundingBox)player.getWorldBound()).yExtent;
+//        debug.getLocalTranslation().z = ((BoundingBox)player.getWorldBound()).zExtent / 2;
 
         player.updateModelBound();
         player.updateWorldBound();

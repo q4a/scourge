@@ -21,6 +21,7 @@ import com.jmex.model.animation.KeyframeController;
 import com.jmex.model.converters.FormatConverter;
 import com.jmex.model.converters.MaxToJme;
 import com.jmex.model.converters.Md2ToJme;
+import com.jmex.model.converters.ObjToJme;
 
 import javax.swing.*;
 import java.io.*;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
 public class ShapeUtil {
     private static final Md2ToJme CONVERTER_MD2 = new Md2ToJme();
     private static final FormatConverter CONVERTER_3DS = new MaxToJme();
+    private static final FormatConverter CONVERTER_OBJ = new ObjToJme();
     private static int shapeCount = 0;
     public static final float WALL_WIDTH = 16.0f;
     public static final float WALL_HEIGHT = 24.0f;
@@ -101,7 +103,7 @@ public class ShapeUtil {
 	 * (with provided texture, if any) that can be attached to
 	 *  the scenegraph, or null instead if unable to load geometry.
 	 */
-	public static Spatial load3ds(String modelPath, String textureDir, String name_prefix) {
+	public static Spatial importModel(String modelPath, String textureDir, String name_prefix) {
         Spatial output = null;
         try {
             byte[] bytes = models.get(modelPath);
@@ -118,7 +120,13 @@ public class ShapeUtil {
                 // read .3ds file into memory & convert it to a jME usable format.
                 final FileInputStream rawIn = new FileInputStream(modelPath);
                 final ByteArrayOutputStream outStream = new ByteArrayOutputStream(); // byte array streams don't have to be closed
-                CONVERTER_3DS.convert(rawIn, outStream);
+                if(modelPath.endsWith(".3ds")) {
+                    CONVERTER_3DS.convert(rawIn, outStream);
+                } else if(modelPath.endsWith(".obj")) {
+                    CONVERTER_OBJ.convert(rawIn, outStream);
+                } else {
+                    throw new IllegalStateException("Can't convert model: " + modelPath);
+                }
                 rawIn.close(); // FileInputStream s must be explicitly closed.
                 bytes = outStream.toByteArray();
 
@@ -163,7 +171,7 @@ public class ShapeUtil {
     }
 
     public static void debug() {
-        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images.");
+        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images and " + models.size() + " models.");
     }
 
     public static boolean isTextureLoaded(String key) {

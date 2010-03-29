@@ -1,5 +1,6 @@
 package org.scourge.terrain;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
@@ -27,32 +28,32 @@ class Tile {
     public TileType type;
     public float angle;
     public Node node;
-    public PassNode passNode;
+    public Node ground;
     private float[] heights = new float[4];
     private Main main;
     private static Logger logger = Logger.getLogger(Tile.class.toString());
     private int level;
-    private List<Model> models = new ArrayList<Model>();
+    private List<ModelOnTile> models = new ArrayList<ModelOnTile>();
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+    private class ModelOnTile {
+        public Model model;
+        public Vector3f translate;
+        public float scale;
+        public float rotate;
 
-    public int getLevel() {
-        return level;
-    }
 
-    public void addModel(Model model) {
-        models.add(model);
-    }
-
-    public boolean isEmpty() {
-        return type == TileType.NONE && models.isEmpty();
+        public ModelOnTile(Model model, Vector3f translate, float scale, float rotate) {
+            this.model = model;
+            this.translate = translate;
+            this.scale = scale;
+            this.rotate = rotate;
+        }
     }
 
     public enum Edge {
         NW, SW, SE, NE
     }
+
 
     public Tile(Main main) {
         this(main, TileTexType.NONE, TileType.NONE, 0);
@@ -64,6 +65,26 @@ class Tile {
             heights[i] = 0;
         }
         set(tex, type, angle);
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void addModel(Model model) {
+        addModel(model, new Vector3f(0, 0, 0), 1, 0);
+    }
+
+    public void addModel(Model model, Vector3f translate, float scale, float rotate) {
+        models.add(new ModelOnTile(model, translate, scale, rotate));
+    }
+
+    public boolean isEmpty() {
+        return type == TileType.NONE && models.isEmpty();
     }
 
     public void set(TileTexType tex, TileType type, float angle) {
@@ -79,11 +100,34 @@ class Tile {
         }
     }
 
+    public float getAvgHeight() {
+        float sum = 0;
+        for(float h : heights) {
+            sum += h;
+        }
+        return sum / (float)heights.length;
+    }
+
     public void createNode(Map<Direction, TileTexType> around, int level) {
-        node = type.createNode(angle, heights, level);
+        node = new Node(ShapeUtil.newShapeName("tile"));
+        ground = type.createNode(angle, heights, level);
+        node.attachChild(ground);
+        node.setModelBound(new BoundingBox());
+        node.updateModelBound();
+
         applyTexture(around);
-        for(Model model : models) {
-            Spatial spatial = ShapeUtil.load3ds(model.getModelPath(), "./data/textures", model.name());
+    }
+
+    public void attachModels() {
+        for(ModelOnTile model : models) {
+            Spatial spatial = model.model.createSpatial();
+            spatial.getLocalTranslation().addLocal(model.translate);
+            if(!model.model.isIgnoreHeightMap()) {
+                spatial.getLocalTranslation().y = getAvgHeight();
+            }
+            spatial.getLocalScale().multLocal(model.scale);
+            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, Vector3f.UNIT_Z));
+            spatial.updateModelBound();
             node.attachChild(spatial);
             node.updateModelBound();
             node.updateWorldBound();
@@ -100,7 +144,7 @@ class Tile {
 
             TextureState background = createSplatTextureState(tex.getTexturePath(), null);
             if(around.isEmpty()) {
-                node.setRenderState(background);
+                ground.setRenderState(background);
             } else {
                 // alpha used for blending the passnodestates together
                 BlendState as = main.getDisplay().getRenderer().createBlendState();
@@ -111,12 +155,14 @@ class Tile {
                 as.setTestFunction(BlendState.TestFunction.GreaterThan);
                 as.setEnabled(true);
 
-                passNode = new PassNode("SplatPassNode");
-                passNode.attachChild(node);
+                node.detachChild(ground);
+                PassNode passNode = new PassNode("SplatPassNode");
+                passNode.attachChild(ground);
 
                 PassNodeState passNodeState = new PassNodeState();
                 passNodeState.setPassState(background);
                 passNode.addPass(passNodeState);
+                node.attachChild(passNode);
 
                 for(TileTexType ttt : TileTexType.values()) {
                     Set<Direction> set = new HashSet<Direction>();
@@ -179,8 +225,12 @@ class Tile {
         return ts;
     }
 
-    public Spatial getNode() {
-        return passNode != null ? passNode : node;
+    public Node getNode() {
+        return node;
+    }
+
+    public Node getGround() {
+        return ground;
     }
 
     private static enum TexEdge {

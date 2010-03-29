@@ -92,14 +92,14 @@ public class Main extends Game {
         DirectionalLight dr = new DirectionalLight();
         dr.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         dr.setAmbient(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
-        dr.setSpecular(new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
+        dr.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         dr.setDirection(new Vector3f(1, -1, 1));
         dr.setEnabled(true);
         lightState.attach(dr);
         dr = new DirectionalLight();
-        dr.setDiffuse(new ColorRGBA(0.75f, 0.7f, 0.55f, 1.0f));
+        dr.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         dr.setAmbient(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
-        dr.setSpecular(new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
+        dr.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         dr.setDirection(new Vector3f(-1, -1, 1));
         dr.setEnabled(true);
         lightState.attach(dr);
@@ -108,7 +108,7 @@ public class Main extends Game {
         player.setKeyFrame(Player.Md2Key.stand);
 
         try {
-            buildTerrain();
+            terrain = new Terrain(this);
         } catch(IOException exc) {
             throw new RuntimeException(exc);
         }
@@ -164,11 +164,11 @@ public class Main extends Game {
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
     }
 
-    private void buildTerrain() throws IOException {
-        // middle
-        terrain = new Terrain(this);
-        terrain.addTown(14, 14);
-    }
+//    private void buildTerrain() throws IOException {
+//        // middle
+//        terrain = new Terrain(this);
+//        terrain.addTown(14, 14);
+//    }
 
     public void toggleCameraAttached() {
         if(camNode != null) {

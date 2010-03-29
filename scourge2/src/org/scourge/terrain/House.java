@@ -312,18 +312,18 @@ public class House implements NodeGenerator {
 
 
     protected Spatial getWall() {
-        return ShapeUtil.load3ds("./data/3ds/wall.3ds", "./data/textures", "wall");
+        return ShapeUtil.importModel("./data/3ds/wall.3ds", "./data/textures", "wall");
     }
 
     protected Spatial getWindow() {
-        return ShapeUtil.load3ds("./data/3ds/win.3ds", "./data/textures", "wall");
+        return ShapeUtil.importModel("./data/3ds/win.3ds", "./data/textures", "wall");
     }
 
     protected Spatial getDoorFrame() {
-        return ShapeUtil.load3ds("./data/3ds/dframe.3ds", "./data/textures", "wall");
+        return ShapeUtil.importModel("./data/3ds/dframe.3ds", "./data/textures", "wall");
     }
 
     protected Spatial getDoor() {
-        return ShapeUtil.load3ds("./data/3ds/door.3ds", "./data/textures", "wall");
+        return ShapeUtil.importModel("./data/3ds/door.3ds", "./data/textures", "wall");
     }
 }

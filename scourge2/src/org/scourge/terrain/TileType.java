@@ -10,7 +10,6 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
-import com.jme.util.TextureManager;
 
 import java.nio.FloatBuffer;
 
@@ -128,7 +127,7 @@ enum TileType {
     public abstract void updateHeights(Node node, float[] heights);
 
     protected Node addEdge(float angle, String model, int level) {
-        Spatial edge = ShapeUtil.load3ds("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
+        Spatial edge = ShapeUtil.importModel("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
 
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
