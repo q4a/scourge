@@ -35,6 +35,10 @@ class Tile {
     private int level;
     private List<ModelOnTile> models = new ArrayList<ModelOnTile>();
 
+    public void clearModels() {
+        models.clear();
+    }
+
     private class ModelOnTile {
         public Model model;
         public Vector3f translate;
@@ -125,6 +129,8 @@ class Tile {
             if(!model.model.isIgnoreHeightMap()) {
                 spatial.getLocalTranslation().y = getAvgHeight();
             }
+            spatial.getLocalTranslation().x -= ShapeUtil.WALL_WIDTH / 2;
+            spatial.getLocalTranslation().z -= ShapeUtil.WALL_WIDTH / 2;
             spatial.getLocalScale().multLocal(model.scale);
             spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, Vector3f.UNIT_Z));
             spatial.updateModelBound();

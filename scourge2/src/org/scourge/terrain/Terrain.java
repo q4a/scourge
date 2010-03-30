@@ -28,6 +28,8 @@ public class Terrain implements NodeGenerator {
     private int rows, cols;
     private List<House> houses = new ArrayList<House>();
 
+    static final float MIN_HEIGHT = 2;
+
     public Terrain(Main main) throws IOException {
         this.main = main;
         this.terrain = new Node("terrain");
@@ -64,7 +66,7 @@ public class Terrain implements NodeGenerator {
                 tile.createNode(around, tile.getLevel());
 
                 Node node = tile.getNode();
-                node.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, 2 + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
+                node.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, MIN_HEIGHT + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
                 node.updateModelBound();
                 node.updateWorldBound();
                 terrain.attachChild(node);
@@ -217,8 +219,10 @@ public class Terrain implements NodeGenerator {
             }
             int w = (int)(maxx - minx) + 1;
             int h = (int)(maxy - miny) + 1;
+            float height = tiles[(int)miny][(int)minx].getLevel();
 
-            House house = new House(main, minx, 0, miny, w, h, (int)(main.getRandom().nextFloat() * 2) + 1, main.getRandom());
+            House house = new House(main, minx + w / 2.0f - 0.5f, height, miny + h / 2.0f + 0.5f, w, h,
+                                    (int)(main.getRandom().nextFloat() * 2) + 1, main.getRandom());
             houses.add(house);
             terrain.attachChild(house.getNode());
         }
@@ -352,6 +356,7 @@ public class Terrain implements NodeGenerator {
     private void flattenTile(int tx, int ty) {
         if(tx >= 0 && ty >= 0 && tx < cols && ty < rows) {
             Tile tile = tiles[ty][tx];
+            tile.clearModels();
             if(tile.type != TileType.NONE) {
 
                 //System.err.println("\tflattening: " + tx + "," + ty + " type=" + tile.type.name());
