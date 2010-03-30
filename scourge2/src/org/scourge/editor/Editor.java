@@ -16,22 +16,25 @@ public class Editor extends JFrame {
     public Editor() throws IOException {
         super("Scourge II editor");
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
         mapEditor = new MapEditor(new File("./data/maps/m32m32.map"));
-        panel.add(new JScrollPane(mapEditor));
-        getContentPane().add(panel);
+        JScrollPane sp = new JScrollPane(mapEditor);
+        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        sp.getHorizontalScrollBar().setUnitIncrement(MapEditor.CHAR_WIDTH);
+        sp.getVerticalScrollBar().setUnitIncrement(MapEditor.CHAR_HEIGHT);
+        mapEditor.setScrollPane(sp);
+        setLayout(new BorderLayout());
+        add(sp, BorderLayout.CENTER);
 
         pack();
-        // setSize(panel.getWidth(), panel.getHeight());
+        setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        this.setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {
         try {
-            new Editor();
+            new Editor().setVisible(true);
         } catch (IOException exc) {
             exc.printStackTrace();
         }

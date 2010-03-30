@@ -16,13 +16,13 @@ import static org.apache.commons.io.FileUtils.readLines;
  * Time: 9:16:59 PM
  */
 public class MapEditor extends JPanel {
-    private int rows, cols;
+    private int rows = 1000, cols = 1000;
     private List<String> lines;
-    private static final int CHAR_HEIGHT = 11;
-    private static final int CHAR_WIDTH = 11;
+    static final int CHAR_HEIGHT = 11;
+    static final int CHAR_WIDTH = 11;
 
     private static Map<Character, Color> colors = new HashMap<Character, Color>();
-    private Dimension dimension;
+    private JScrollPane scrollPane;
 
     static {
         colors.put('~', Color.blue);
@@ -36,18 +36,48 @@ public class MapEditor extends JPanel {
     public MapEditor(File map) throws IOException {
         //noinspection unchecked
         lines = readLines(map);
-        rows = lines.size();
-        cols = lines.get(0).length();
-        dimension = new Dimension(getWidth(), getHeight());
+        int r = lines.size();
+        int c = lines.get(0).length();
+
+        // expand map
+        StringBuilder sb = new StringBuilder("");
+        for(int x = c; x < cols; x++) {
+            sb.append("~");
+        }
+        for(int y = 0; y < r; y++) {
+            lines.set(y, lines.get(y) + sb.toString());
+        }
+
+        sb = new StringBuilder("");
+        for(int x = 0; x < cols; x++) {
+            sb.append("~");
+        }
+        for(int y = r; y < rows; y++) {
+            lines.add(sb.toString());
+        }
+        setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        // why is this so hard?!
+        int xx = scrollPane.getHorizontalScrollBar().getValue();
+        int yy = scrollPane.getVerticalScrollBar().getValue();
+        Rectangle r = scrollPane.getVisibleRect();
         g.setColor(Color.black);
-        g.fillRect(0, 0, getWidth(), getHeight());
-        for(int y = 0; y < lines.size(); y++) {
+        g.fillRect(xx, yy, r.width, r.height);
+        int sx = xx / CHAR_WIDTH;
+        int ex = sx + r.width / CHAR_WIDTH;
+        int sy = yy / CHAR_HEIGHT;
+        int ey = sy + r.height / CHAR_HEIGHT;
+        // System.err.println("drawing: " + sx + "," + sy + " - " + ex + "," + ey);
+        for(int y = sy; y < ey; y++) {
+            if(y < 0 || y >= rows) continue;
             String line = lines.get(y);
-            for(int x = 0; x < line.length(); x++) {
+
+            for(int x = sx; x < ex; x++) {
+                if(x < 0 || x >= cols) continue;
+
                 char c = line.charAt(x);
                 Color color = colors.get(c);
                 if(color == null) color = Color.gray;
@@ -60,28 +90,7 @@ public class MapEditor extends JPanel {
         }
     }
 
-    @Override
-    public int getWidth() {
-        return cols * CHAR_WIDTH;
-    }
-
-    @Override
-    public int getHeight() {
-        return rows * CHAR_HEIGHT;
-    }
-
-    @Override
-    public Dimension getMinimumSize() {
-        return dimension;
-    }
-
-    @Override
-    public Dimension getMaximumSize() {
-        return dimension;
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return dimension;
+    public void setScrollPane(JScrollPane sp) {
+        this.scrollPane = sp;
     }
 }
