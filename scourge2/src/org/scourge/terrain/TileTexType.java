@@ -11,6 +11,7 @@ enum TileTexType {
     GRASS("./data/textures/grass.png"),
     MOSS("./data/textures/moss2.png"),
     LYCHEN("./data/textures/grass2.png"),
+    ROAD("./data/textures/path.png"),
     ;
 
     private String texturePath;

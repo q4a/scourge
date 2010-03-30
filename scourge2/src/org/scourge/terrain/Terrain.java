@@ -106,6 +106,7 @@ public class Terrain implements NodeGenerator {
 
     private void makeTiles(int rows, int cols, Tile[][] tiles, List<String> lines) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
+        Set<Vector2f> roadPos = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows; y++) {
@@ -117,11 +118,13 @@ public class Terrain implements NodeGenerator {
                     makeForestTile(tiles[y][x]);
                 } else if(lines.get(y).charAt(x) == 'H') {
                     storeHousePoisition(housePoints, x, y);
+                } else if(lines.get(y).charAt(x) == 'x') {
+                    roadPos.add(new Vector2f(x, y));
                 }
             }
             // turn some tiles into water
             lines.set(y, lines.get(y).replaceAll("B", "~"));
-            lines.set(y, lines.get(y).replaceAll("[HF]", "*")); // todo: this won't work for higher levels (+,-)
+            lines.set(y, lines.get(y).replaceAll("[xHF]", "*")); // todo: this won't work for higher levels (+,-)
         }
 
         // the symbols for different levels on the map
@@ -169,8 +172,13 @@ public class Terrain implements NodeGenerator {
                             tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
 
                         } else {
-                            int type = (int)(main.getRandom().nextFloat() * 5);
-                            tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
+                            Vector2f point = new Vector2f(x, y);
+                            if(roadPos.contains(point)) {
+                                tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
+                            } else {
+                                int type = (int)(main.getRandom().nextFloat() * 5);
+                                tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
+                            }
                         }
                     }
                 }
