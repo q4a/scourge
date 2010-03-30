@@ -18,7 +18,10 @@ import java.util.Random;
 public enum Model {
     bridge("./data/3ds/bridge.3ds", true) {
         public Spatial createSpatial() {
-            return getNoAlphaSpatial();
+            Spatial sp = getNoAlphaSpatial();
+            sp.getLocalTranslation().addLocal(new Vector3f(ShapeUtil.WALL_WIDTH / 2, 0, ShapeUtil.WALL_WIDTH / 2));
+            sp.updateModelBound();
+            return sp;
         }
     },
     fir("./data/3ds/fir.3ds") {
