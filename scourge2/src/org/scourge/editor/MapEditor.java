@@ -1,14 +1,14 @@
 package org.scourge.editor;
 
+import org.scourge.Climate;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.io.FileUtils.readLines;
@@ -20,11 +20,12 @@ import static org.apache.commons.io.FileUtils.readLines;
  */
 public class MapEditor extends JPanel {
     private int rows = 1000, cols = 1000;
-    private List<String> lines;
+    int[][] point;
     static final int CHAR_HEIGHT = 11;
     static final int CHAR_WIDTH = 11;
 
     private static Map<Character, Color> colors = new HashMap<Character, Color>();
+    private static Map<Character, Color> backgrounds = new HashMap<Character, Color>();
     private JScrollPane scrollPane;
 
     static {
@@ -34,6 +35,13 @@ public class MapEditor extends JPanel {
         colors.put('x', new Color(0xff, 0xe0, 0x00));
         colors.put('F', new Color(0x00, 0xf0, 0x80));
         colors.put('H', new Color(0x80, 0xff, 0x00));
+
+        backgrounds.put((char)Climate.alpine.ordinal(), new Color(0x40, 0x35, 0x00));
+        backgrounds.put((char)Climate.boreal.ordinal(), new Color(0x00, 0x40, 0x00));
+        backgrounds.put((char)Climate.temperate.ordinal(), new Color(0x00, 0x40, 0x35));
+        backgrounds.put((char)Climate.subtropical.ordinal(), new Color(0x40, 0x40, 0x35));
+        backgrounds.put((char)Climate.tropical.ordinal(), new Color(0x40, 0x00, 0x00));
+
     }
 
     public void importPng(File png) throws IOException {
@@ -51,7 +59,7 @@ public class MapEditor extends JPanel {
         int[] pixels = data.getData();
 
 
-        lines = new ArrayList<String>(rows);
+        point = new int[rows][cols];
         for(int y = 0; y < rows; y++) {
             StringBuilder sb = new StringBuilder();
             for(int x = 0; x < cols; x++) {
@@ -62,12 +70,12 @@ public class MapEditor extends JPanel {
                 // green is: 50-wastelands, 100-groves, 150-light forest, 200-deep forest
                 // blue: 50-alpine, 100-boreal, 150-temperate, 200-subtropical, 250-tropical
                 if(blue == 0) {
-                    sb.append("~");
+                    point[y][x] = '~';
                 } else {
-                    sb.append((int)((20 - (green / 10)) * Math.random()) == 0 ? "F" : "*");
+                    point[y][x] = ((int)((20 - (green / 10)) * Math.random()) == 0 ? 'F' : '*');
+                    point[y][x] += (blue / 50 << 8);
                 }
             }
-            lines.add(sb.toString());
         }
         setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
     }
@@ -87,15 +95,17 @@ public class MapEditor extends JPanel {
         // System.err.println("drawing: " + sx + "," + sy + " - " + ex + "," + ey);
         for(int y = sy; y < ey; y++) {
             if(y < 0 || y >= rows) continue;
-            String line = lines.get(y);
+            int[] line = point[y];
 
             for(int x = sx; x < ex; x++) {
                 if(x < 0 || x >= cols) continue;
 
-                char c = line.charAt(x);
+                char c = (char)(line[x] & 0xff);
+                int bg = (line[x] & 0xff00) >> 8;
                 Color color = colors.get(c);
                 if(color == null) color = Color.gray;
-                Color background = new Color(color.getRed() / 4, color.getGreen() / 4, color.getBlue() / 4);
+                Color background = backgrounds.get((char)bg);
+                if(background == null) background = Color.black;
                 g.setColor(background);
                 g.fillRect(x * CHAR_WIDTH, y * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
                 g.setColor(color);
