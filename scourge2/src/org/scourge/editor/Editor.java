@@ -14,9 +14,10 @@ public class Editor extends JFrame {
     private MapEditor mapEditor;
 
     public Editor() throws IOException {
-        super("Scourge II editor");
+        super("Scourge II Editor");
 
-        mapEditor = new MapEditor(new File("./data/maps/m32m32.map"));
+        mapEditor = new MapEditor();
+        mapEditor.importPng(new File("/Users/gabor/scourge/trunk/scourge_data/mapgrid/world/map.png"));
         JScrollPane sp = new JScrollPane(mapEditor);
         sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

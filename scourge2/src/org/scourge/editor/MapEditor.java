@@ -2,8 +2,11 @@ package org.scourge.editor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,40 @@ public class MapEditor extends JPanel {
         colors.put('H', new Color(0x80, 0xff, 0x00));
     }
 
-    public MapEditor(File map) throws IOException {
+    public void importPng(File png) throws IOException {
+        System.err.println("Importing png: " + png + "...");
+        ImageIcon image = new ImageIcon(png.getPath());
+        cols = image.getIconWidth();
+        rows = image.getIconHeight();
+        System.err.println("size: " + cols + "x" + rows);
+        BufferedImage img = new BufferedImage(cols, rows, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = (Graphics2D) img.getGraphics();
+        g.drawImage(image.getImage(), null, null);
+        g.dispose();
+
+        DataBufferInt data = (DataBufferInt) img.getRaster().getDataBuffer();
+        int[] pixels = data.getData();
+
+
+        lines = new ArrayList<String>(rows);
+        for(int y = 0; y < rows; y++) {
+            StringBuilder sb = new StringBuilder();
+            for(int x = 0; x < cols; x++) {
+                int red = (pixels[y * cols + x] & 0x00FF0000) >> 16;
+                int green = (pixels[y * cols + x] & 0x0000FF00) >> 8;
+                int blue = (pixels[y * cols + x] & 0x000000FF);
+
+                
+                sb.append(blue > 0 ? "*" : "~");
+            }
+            lines.add(sb.toString());
+        }
+        setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
+    }
+
+    public void importMap(File map) throws IOException {
+        rows = 1000;
+        cols = 1000;
         //noinspection unchecked
         lines = readLines(map);
         int r = lines.size();
