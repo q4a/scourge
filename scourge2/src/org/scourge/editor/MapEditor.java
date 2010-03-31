@@ -59,36 +59,14 @@ public class MapEditor extends JPanel {
                 int green = (pixels[y * cols + x] & 0x0000FF00) >> 8;
                 int blue = (pixels[y * cols + x] & 0x000000FF);
 
-                
-                sb.append(blue > 0 ? "*" : "~");
+                // green is: 50-wastelands, 100-groves, 150-light forest, 200-deep forest
+                // blue: 50-alpine, 100-boreal, 150-temperate, 200-subtropical, 250-tropical
+                if(blue == 0) {
+                    sb.append("~");
+                } else {
+                    sb.append((int)((20 - (green / 10)) * Math.random()) == 0 ? "F" : "*");
+                }
             }
-            lines.add(sb.toString());
-        }
-        setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
-    }
-
-    public void importMap(File map) throws IOException {
-        rows = 1000;
-        cols = 1000;
-        //noinspection unchecked
-        lines = readLines(map);
-        int r = lines.size();
-        int c = lines.get(0).length();
-
-        // expand map
-        StringBuilder sb = new StringBuilder("");
-        for(int x = c; x < cols; x++) {
-            sb.append("~");
-        }
-        for(int y = 0; y < r; y++) {
-            lines.set(y, lines.get(y) + sb.toString());
-        }
-
-        sb = new StringBuilder("");
-        for(int x = 0; x < cols; x++) {
-            sb.append("~");
-        }
-        for(int y = r; y < rows; y++) {
             lines.add(sb.toString());
         }
         setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
