@@ -1,13 +1,13 @@
 package org.scourge.editor;
 
+import com.sun.tools.javac.resources.version;
 import org.scourge.Climate;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +19,7 @@ import static org.apache.commons.io.FileUtils.readLines;
  * Time: 9:16:59 PM
  */
 public class MapEditor extends JPanel {
+    private int version = 1;
     private int rows = 1000, cols = 1000;
     int[][] point;
     static final int CHAR_HEIGHT = 11;
@@ -77,7 +78,29 @@ public class MapEditor extends JPanel {
                 }
             }
         }
+
+        saveMap();
+
         setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
+    }
+
+    public void saveMap() throws IOException {
+        String path = "./data/maps/land.bin";
+        System.err.println("Saving " + path + "...");
+        DataOutputStream out = new DataOutputStream(new FileOutputStream(path));
+        // header
+        out.writeInt(version);
+        out.writeInt(rows);
+        out.writeInt(cols);
+
+        // body
+        for(int y = 0; y < rows; y++) {
+            for(int x = 0; x < cols; x++) {
+                out.writeInt(point[y][x]);
+            }
+        }
+        out.close();
+        System.err.println("Map saved.");
     }
 
     @Override
