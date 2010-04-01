@@ -1,6 +1,5 @@
 package org.scourge;
 
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
 import com.jme.light.DirectionalLight;
@@ -30,7 +29,6 @@ import org.scourge.terrain.*;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -197,7 +195,7 @@ public class Main extends Game {
         // the world vectors aren't computed until the first update :-/
         if(first) {
             first = false;
-            terrain.moveToTopOfTerrain();
+            terrain.getCurrentRegion().moveToTopOfTerrain();
         }
 
 //        playerController.update(tpf);

@@ -42,7 +42,7 @@ public class House implements NodeGenerator {
         }
         drawRoof(house, 0, 0 + levels, 0, w, h);
         house.getLocalTranslation().x = x * ShapeUtil.WALL_WIDTH;
-        house.getLocalTranslation().y = y * ShapeUtil.WALL_HEIGHT + Terrain.MIN_HEIGHT;
+        house.getLocalTranslation().y = y * ShapeUtil.WALL_HEIGHT + Region.MIN_HEIGHT;
         house.getLocalTranslation().z = z * ShapeUtil.WALL_WIDTH;
         Quaternion q = new Quaternion();
         q.fromAngleAxis(FastMath.DEG_TO_RAD * (25.0f * random.nextFloat()), Vector3f.UNIT_Y);
@@ -57,7 +57,7 @@ public class House implements NodeGenerator {
         house.updateWorldVectors();
         System.err.println("house=" + house.getName() + " local trans=" + house.getLocalTranslation() + " world trans=" + house.getWorldTranslation() + " world bound=" + house.getWorldBound().getCenter());
 
-        main.getTerrain().flatten(house);
+        main.getTerrain().getCurrentRegion().flatten(house);
 
         //float height = main.getGround().getHeight(house.getWorldBound().getCenter());
 //        house.getLocalTranslation().y = height;

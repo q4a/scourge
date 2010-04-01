@@ -165,7 +165,7 @@ public class MapEditor extends JPanel {
         out.writeInt(rows);
         out.writeInt(cols);
 
-        // body
+        // body: todo: speed this up like MapIO
         for(int y = 0; y < rows; y++) {
             for(int x = 0; x < cols; x++) {
                 out.writeInt(point[y][x]);
