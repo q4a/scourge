@@ -1,5 +1,6 @@
 package org.scourge;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
 import com.jme.light.DirectionalLight;
@@ -15,6 +16,7 @@ import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.Skybox;
 import com.jme.scene.Spatial;
+import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.FogState;
@@ -56,7 +58,7 @@ public class Main extends Game {
     @Override
     protected void initSystem() throws JmeException {
         super.initSystem();
-        Logger.getLogger("com.jme").setLevel(Level.WARNING);
+        Logger.getLogger("com.jme").setLevel(Level.SEVERE);
         //cameraParallel();
     }
 

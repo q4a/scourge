@@ -5,12 +5,14 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
+import com.jme.scene.state.RenderState;
 import org.scourge.Main;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static org.apache.commons.io.FileUtils.readLines;
 
@@ -27,6 +29,7 @@ public class Region implements NodeGenerator {
     private int x, y, rows, cols;
     private List<House> houses = new ArrayList<House>();
     static final float MIN_HEIGHT = 2;
+    private static Logger logger = Logger.getLogger(Region.class.toString());
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -37,18 +40,30 @@ public class Region implements NodeGenerator {
     }
 
     public void load() throws IOException {
+        logger.info("----------------------------------------------------------------");
+        logger.info("Loading region: " + x + "," + y);
+        long start = System.currentTimeMillis();
+        long firstStart = start;
         this.region = new Node("region");
+        // this.region.clearRenderState(RenderState.StateType.Texture);
         region.setModelBound(new BoundingBox());
 
+        start = System.currentTimeMillis();
         MapIO.RegionPoint[][] region = terrain.getMapIO().readRegion(x, y, rows, cols);
+        logger.info("Loaded data in " + (System.currentTimeMillis() - start) + " millis.");
 
+        start = System.currentTimeMillis();
         tiles = new Tile[rows][cols];
         makeTiles(rows, cols, tiles, region);
+        logger.info("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create some hills
+        start = System.currentTimeMillis();
         createHeights(tiles, rows, cols);
+        logger.info("createHeights in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create the shapes and textures
+        start = System.currentTimeMillis();
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 Tile tile = tiles[y][x];
@@ -76,8 +91,10 @@ public class Region implements NodeGenerator {
                 this.region.updateWorldBound();
             }
         }
+        logger.info("addNodes in " + (System.currentTimeMillis() - start) + " millis.");
 
         // copy the NW normal of each quad into the adjacent quads
+        start = System.currentTimeMillis();
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 Tile tile = tiles[y][x];
@@ -94,7 +111,9 @@ public class Region implements NodeGenerator {
                 }
             }
         }
+        logger.info("copyNormals in " + (System.currentTimeMillis() - start) + " millis.");
 
+        start = System.currentTimeMillis();
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 Tile tile = tiles[y][x];
@@ -102,8 +121,10 @@ public class Region implements NodeGenerator {
                 tile.attachModels();
             }
         }
+        logger.info("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
 
         ShapeUtil.debug();
+        logger.info("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
     }
 
     private void makeTiles(int rows, int cols, Tile[][] tiles, MapIO.RegionPoint[][] region) {

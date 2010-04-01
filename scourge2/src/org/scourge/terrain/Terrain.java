@@ -24,7 +24,7 @@ public class Terrain implements NodeGenerator {
     private Main main;
     private Region currentRegion;
     private Map<String, Region> loadedRegions = new HashMap<String, Region>();
-    private static Logger logger = Logger.getLogger(Tile.class.toString());
+    private static Logger logger = Logger.getLogger(Terrain.class.toString());
 
     public Terrain(Main main) throws IOException {
         this.main = main;
@@ -93,7 +93,7 @@ public class Terrain implements NodeGenerator {
                         break;
                     case EAST:
                         currentRegion.getNode().getLocalTranslation().x -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        main.getPlayer().getNode().getLocalTranslation().x += Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
+                        main.getPlayer().getNode().getLocalTranslation().x -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
                         break;
                 }
                 currentRegion.getNode().updateModelBound();
@@ -122,7 +122,16 @@ public class Terrain implements NodeGenerator {
                 // load a new region
                 currentRegion = new Region(this, rx, ry);
                 terrain.attachChild(currentRegion.getNode());
+
+                // not sure which but one of the following is needed...
+                currentRegion.getNode().updateRenderState();
+                currentRegion.getNode().updateWorldData(0);
+                currentRegion.getNode().updateModelBound();
+                currentRegion.getNode().updateWorldBound();
+                terrain.updateRenderState();
+                terrain.updateWorldData(0);
                 terrain.updateModelBound();
+                terrain.updateWorldBound();
             }
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
