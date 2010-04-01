@@ -42,13 +42,29 @@ public class MapIO {
 
     public RegionPoint[][] readRegion(int x, int y, int w, int h) throws IOException {
         RegionPoint[][] points = new RegionPoint[w][h];
+        byte[] buff = new byte[w * 4];
         for(int yy = y; yy < y + h; yy++) {
-            for(int xx = x; xx < x + w; xx++) {
-                mapFile.seek(headerLength + ((long)yy * cols * 4L) + ((long)xx * 4L));
-                points[yy - y][xx - x] = new RegionPoint(mapFile.readInt());
+            mapFile.seek(headerLength + ((long)yy * cols * 4L) + ((long)x * 4L));
+            mapFile.read(buff, 0, w * 4);
+            for(int xx = 0; xx < w; xx++) {
+                int n = (buff[xx * 4] << 24) + (buff[xx * 4 + 1] << 16) + (buff[xx * 4 + 2] << 8) + (buff[xx * 4 + 3]);
+                points[yy - y][xx] = new RegionPoint(n);
             }
         }
         return points;
+    }
+
+    public int[][] readRaw() throws IOException {
+        mapFile.seek(headerLength);
+        int[][] values = new int[rows][cols];
+        for(int yy = 0; yy < rows; yy++) {
+            byte[] buff = new byte[cols * 4];
+            mapFile.read(buff, 0, cols * 4);
+            for(int xx = 0; xx < cols; xx++) {
+                values[yy][xx] = (buff[xx * 4] << 24) + (buff[xx * 4 + 1] << 16) + (buff[xx * 4 + 2] << 8) + (buff[xx * 4 + 3]);
+            }
+        }
+        return values;
     }
 
     public class RegionPoint {
