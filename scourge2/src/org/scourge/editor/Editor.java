@@ -22,7 +22,6 @@ public class Editor extends JFrame implements MapEditorListener {
 
         mapEditor = new MapEditor();
         mapEditor.loadMap();
-        //mapEditor.importPng(new File("/Users/gabor/scourge/trunk/scourge_data/mapgrid/world/map.png"));
         JScrollPane sp = new JScrollPane(mapEditor);
         sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -46,6 +45,7 @@ public class Editor extends JFrame implements MapEditorListener {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     mapEditor.saveMap();
+                    mapEditor.grabFocus();
                 } catch(IOException exc) {
                     exc.printStackTrace();
                 }
@@ -56,6 +56,7 @@ public class Editor extends JFrame implements MapEditorListener {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        mapEditor.grabFocus();
     }
 
     public static void main(String[] args) {

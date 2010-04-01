@@ -104,7 +104,7 @@ public class Main extends Game {
         dr.setEnabled(true);
         lightState.attach(dr);
 
-        player = new Player(this, 8, 9, 8);
+        player = new Player(this, 28, 9, 30);
         player.setKeyFrame(Player.Md2Key.stand);
 
         try {

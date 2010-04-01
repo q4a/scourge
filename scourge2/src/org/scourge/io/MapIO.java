@@ -19,13 +19,14 @@ public class MapIO {
     private int version, rows, cols;
     private long headerLength;
     private static Logger logger = Logger.getLogger(MapIO.class.toString());
+    public static final File GZIP_FILE = new File("./data/maps/land.bin.gz");
 
     public MapIO() throws IOException {
         // first decompress the map file
         File file = new File("./data/maps/land.bin");
         if(!file.exists()) {
             logger.info("Inflating map file...");
-            GZIPInputStream from = new GZIPInputStream(new FileInputStream("./data/maps/land.bin.gz"));
+            GZIPInputStream from = new GZIPInputStream(new FileInputStream(GZIP_FILE));
             FileOutputStream to = new FileOutputStream(file);
             Util.copyStream(from, to);
             from.close();

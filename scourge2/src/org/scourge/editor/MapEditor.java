@@ -6,10 +6,7 @@ import org.scourge.io.MapIO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.*;
@@ -60,19 +57,20 @@ public class MapEditor extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent mouseEvent) {
-                cursorX = mouseEvent.getX() / CHAR_WIDTH;
-                cursorY = mouseEvent.getY() / CHAR_HEIGHT;
-                point[cursorY][cursorX] = key;
-                repaint();
+                updatePoint(mouseEvent);
             }
 
             @Override
             public void mouseMoved(MouseEvent mouseEvent) {
-                cursorX = mouseEvent.getX() / CHAR_WIDTH;
-                cursorY = mouseEvent.getY() / CHAR_HEIGHT;
-//                System.err.println("event=" + mouseEvent.getX() + "," + mouseEvent.getY() +
-//                                   " cursor=" + cursorX + "," + cursorY);
-                repaint();
+                moveCursor(mouseEvent);
+            }
+        });
+
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                updatePoint(mouseEvent);
             }
         });
 
@@ -91,7 +89,27 @@ public class MapEditor extends JPanel {
         requestFocus();
     }
 
+    private void moveCursor(MouseEvent mouseEvent) {
+        cursorX = mouseEvent.getX() / CHAR_WIDTH;
+        cursorY = mouseEvent.getY() / CHAR_HEIGHT;
+//                System.err.println("event=" + mouseEvent.getX() + "," + mouseEvent.getY() +
+//                                   " cursor=" + cursorX + "," + cursorY);
+        repaint();
+    }
+
+    private void updatePoint(MouseEvent mouseEvent) {
+        cursorX = mouseEvent.getX() / CHAR_WIDTH;
+        cursorY = mouseEvent.getY() / CHAR_HEIGHT;
+        point[cursorY][cursorX] &= 0xffffff00;
+        point[cursorY][cursorX] += key;
+        repaint();
+    }
+
     public void loadMap() throws IOException {
+        if(!MapIO.GZIP_FILE.exists()) {
+            importPng(new File("/Users/gabor/scourge/trunk/scourge_data/mapgrid/world/map.png"));
+        }
+        
         MapIO mapIO = new MapIO();
         rows = mapIO.getRows();
         cols = mapIO.getCols();
@@ -226,5 +244,10 @@ public class MapEditor extends JPanel {
     @Override
     public boolean isFocusable() {
         return true;
+    }
+
+    public void grabFocus() {
+        requestFocusInWindow();
+        requestFocus();
     }
 }

@@ -44,8 +44,8 @@ public class Terrain implements NodeGenerator {
 
         mapIO = new MapIO();
         rows = cols = 48;
-        x = 490;
-        y = 485;
+        x = 470;
+        y = 460;
         MapIO.RegionPoint[][] region = mapIO.readRegion(x, y, rows, cols);
 
         tiles = new Tile[rows][cols];
