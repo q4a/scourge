@@ -112,14 +112,35 @@ class Tile {
         return sum / (float)heights.length;
     }
 
+    static List<Long> createTimes = new ArrayList<Long>();
+    static List<Long> textureTimes = new ArrayList<Long>();
+
     public void createNode(Map<Direction, TileTexType> around, int level) {
+        long start = System.currentTimeMillis();
         node = new Node(ShapeUtil.newShapeName("tile"));
         ground = type.createNode(angle, heights, level);
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
-        node.updateModelBound();
+        //node.updateModelBound();
+        createTimes.add(System.currentTimeMillis() - start);
 
+        start = System.currentTimeMillis();
         applyTexture(around);
+        textureTimes.add(System.currentTimeMillis() - start);
+    }
+
+    public static void debug() {
+        long avgCreate = 0;
+        long avgTex = 0;
+        for(int i = 0; i < createTimes.size(); i++) {
+            avgCreate += createTimes.get(i);
+            avgTex += textureTimes.get(i);
+        }
+        avgCreate = (long)(avgCreate / (float)createTimes.size());
+        avgTex = (long)(avgTex / (float)createTimes.size());
+        System.err.println("Avg time for " + createTimes.size() + " tiles: create=" + avgCreate + " tex=" + avgTex);
+        createTimes.clear();
+        textureTimes.clear();        
     }
 
     public void attachModels() {
@@ -135,9 +156,9 @@ class Tile {
             spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, Vector3f.UNIT_Z));
             spatial.updateModelBound();
             node.attachChild(spatial);
-            node.updateModelBound();
-            node.updateWorldBound();
         }
+//        node.updateModelBound();
+//        node.updateWorldBound();
     }
 
     protected void applyTexture(Map<Direction, TileTexType> around) {

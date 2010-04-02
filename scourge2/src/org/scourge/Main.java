@@ -12,10 +12,7 @@ import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.RenderPass;
-import com.jme.scene.CameraNode;
-import com.jme.scene.Node;
-import com.jme.scene.Skybox;
-import com.jme.scene.Spatial;
+import com.jme.scene.*;
 import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.CullState;
@@ -24,15 +21,20 @@ import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
 import com.jme.system.JmeException;
 import com.jme.util.TextureManager;
+import com.jme.util.stat.StatCollector;
 import com.jmex.effects.water.WaterRenderPass;
+import com.jmex.font2d.Font2D;
+import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
 import org.scourge.terrain.*;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.FloatBuffer;
+import java.util.Date;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class Main extends Game {
     private Player player;
@@ -48,6 +50,7 @@ public class Main extends Game {
     private float farPlane = 10000.0f;
     private float textureScale = 0.02f;
     private Random random = new Random(17L);
+    private Text2D positionLabel;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -104,10 +107,20 @@ public class Main extends Game {
         dr.setEnabled(true);
         lightState.attach(dr);
 
-        player = new Player(this, 28, 9, 30);
-        player.setKeyFrame(Player.Md2Key.stand);
+        Font2D font = new Font2D();
+		ZBufferState zbs = DisplaySystem.getDisplaySystem().getRenderer().createZBufferState();
+		zbs.setFunction(ZBufferState.TestFunction.Always);
+        
+        positionLabel = font.createText("", 8, 0);
+		positionLabel.setRenderQueueMode(Renderer.QUEUE_ORTHO);
+		positionLabel.setRenderState(zbs);
+		positionLabel.setTextColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+		positionLabel.updateRenderState();
+		rootNode.attachChild(positionLabel);
 
         try {
+            player = new Player(this, 498, 9, 490);
+            player.setKeyFrame(Player.Md2Key.stand);
             terrain = new Terrain(this);
         } catch(IOException exc) {
             throw new RuntimeException(exc);
@@ -203,6 +216,14 @@ public class Main extends Game {
 //        playerController.update(tpf);
 
         player.moveToTopOfTerrain();
+
+        positionLabel.setText("Player: " + player.getX() + "," + player.getZ() +
+                              " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
+                              " " + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
+                              getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE);
+        positionLabel.updateRenderState();
+	    positionLabel.updateModelBound();
+
 
         skybox.getLocalTranslation().set(cam.getLocation());
         skybox.updateGeometricState(0.0f, true);

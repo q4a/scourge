@@ -125,4 +125,12 @@ public class Player implements NodeGenerator {
     private Controller getController() {
         return player.getChild(0).getController(0);
     }
+
+    public int getX() {
+        return (int)(getNode().getLocalTranslation().x / ShapeUtil.WALL_WIDTH);
+    }
+        
+    public int getZ() {
+        return (int)(getNode().getLocalTranslation().z / ShapeUtil.WALL_WIDTH);
+    }
 }

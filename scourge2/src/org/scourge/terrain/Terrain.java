@@ -1,6 +1,7 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import org.scourge.Main;
 import org.scourge.io.MapIO;
@@ -31,9 +32,8 @@ public class Terrain implements NodeGenerator {
         this.terrain = new Node("terrain");
         terrain.setModelBound(new BoundingBox());
         mapIO = new MapIO();
-        currentRegion = new Region(this, 470, 460);
-        terrain.attachChild(currentRegion.getNode());
-        terrain.updateModelBound();
+
+        loadRegion(main.getPlayer().getX() / Region.REGION_SIZE, main.getPlayer().getZ() / Region.REGION_SIZE);
     }
 
     @Override
@@ -53,54 +53,52 @@ public class Terrain implements NodeGenerator {
         return currentRegion;
     }
 
-    public void loadRegion(Direction direction) {
+
+    protected void switchRegion() {
+        // switch current region if needed
+        int px = main.getPlayer().getX() / Region.REGION_SIZE;
+        int pz = main.getPlayer().getZ() / Region.REGION_SIZE;
+        if(px != currentRegion.getX() / Region.REGION_SIZE ||
+           pz != currentRegion.getY() / Region.REGION_SIZE) {
+            currentRegion = loadedRegions.get("" + px + "," + pz);
+        }
+    }
+
+    public void loadRegion() {
+        switchRegion();
+        int rx = currentRegion.getX() / Region.REGION_SIZE;
+        int ry = currentRegion.getY() / Region.REGION_SIZE;
+
+        int px = main.getPlayer().getX() % Region.REGION_SIZE;
+        int pz = main.getPlayer().getZ() % Region.REGION_SIZE;
+        if(px < Region.REGION_SIZE / 2) {
+            loadRegion(rx - 1, ry);
+        } else {
+            loadRegion(rx + 1, ry);
+        }
+
+        if(pz < Region.REGION_SIZE / 2) {
+            loadRegion(rx, ry - 1);
+        } else {
+            loadRegion(rx, ry + 1);
+        }
+
+        if(px < Region.REGION_SIZE / 2 && pz < Region.REGION_SIZE / 2) {
+            loadRegion(rx - 1, ry - 1);
+        } else if(px < Region.REGION_SIZE / 2 && pz >= Region.REGION_SIZE / 2) {
+            loadRegion(rx - 1, ry + 1);
+        } else if(px >= Region.REGION_SIZE / 2 && pz < Region.REGION_SIZE / 2) {
+            loadRegion(rx + 1, ry - 1);
+        } else if(px >= Region.REGION_SIZE / 2 && pz >= Region.REGION_SIZE / 2) {
+            loadRegion(rx + 1, ry + 1);
+        }
+    }
+
+    public void loadRegion(int rx, int ry) {
         try {
-
-            int rx = currentRegion.getX();
-            int ry = currentRegion.getY();
-            switch(direction) {
-                case NORTH:
-                    ry = currentRegion.getY() - Region.REGION_SIZE;
-                    break;
-                case SOUTH:
-                    ry = currentRegion.getY() + Region.REGION_SIZE;
-                    break;
-                case WEST:
-                    rx = currentRegion.getX() - Region.REGION_SIZE;
-                    break;
-                case EAST:
-                    rx = currentRegion.getX() + Region.REGION_SIZE;
-                    break;
-            }
-
             String key = "" + rx + "," + ry;
-            if(!loadedRegions.keySet().contains(key)) {
-                logger.info("Loading region: " + direction + " coord=" + rx + "," + ry);
-
-                // move the current region and player away
-                switch(direction) {
-                    case NORTH:
-                        currentRegion.getNode().getLocalTranslation().z += Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        main.getPlayer().getNode().getLocalTranslation().z += Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        break;
-                    case SOUTH:
-                        currentRegion.getNode().getLocalTranslation().z -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        main.getPlayer().getNode().getLocalTranslation().z -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        break;
-                    case WEST:
-                        currentRegion.getNode().getLocalTranslation().x += Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        main.getPlayer().getNode().getLocalTranslation().x += Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        break;
-                    case EAST:
-                        currentRegion.getNode().getLocalTranslation().x -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        main.getPlayer().getNode().getLocalTranslation().x -= Region.REGION_SIZE * ShapeUtil.WALL_WIDTH;
-                        break;
-                }
-                currentRegion.getNode().updateModelBound();
-                currentRegion.getNode().updateWorldBound();
-                main.getPlayer().getNode().updateModelBound();
-                main.getPlayer().getNode().updateWorldBound();
-                loadedRegions.put("" + currentRegion.getX() + "," + currentRegion.getY(), currentRegion);
+            if(!loadedRegions.containsKey(key)) {
+                logger.info("Loading region: " + key);
 
                 // remove far regions
                 Set<String> far = new HashSet<String>();
@@ -108,8 +106,7 @@ public class Terrain implements NodeGenerator {
                     String[] ss = s.split(",");
                     int x = Integer.valueOf(ss[0]);
                     int y = Integer.valueOf(ss[1]);
-                    if(Math.abs(x - rx) > Region.REGION_SIZE ||
-                       Math.abs(y - ry) > Region.REGION_SIZE) {
+                    if(Math.abs(x - rx) > 2 || Math.abs(y - ry) > 2) {
                         far.add(s);
                     }
                 }
@@ -118,21 +115,31 @@ public class Terrain implements NodeGenerator {
                     Region region = loadedRegions.remove(s);
                     terrain.detachChild(region.getNode());
                 }
+                System.gc();
+                Thread.yield();
 
                 // load a new region
-                currentRegion = new Region(this, rx, ry);
-                terrain.attachChild(currentRegion.getNode());
+                Region region = new Region(this, rx * Region.REGION_SIZE, ry * Region.REGION_SIZE);
+                if(currentRegion == null) {
+                    currentRegion = region;
+                }
+                loadedRegions.put(key, region);
+                terrain.attachChild(region.getNode());
 
                 // not sure which but one of the following is needed...
-                currentRegion.getNode().updateRenderState();
-                currentRegion.getNode().updateWorldData(0);
-                currentRegion.getNode().updateModelBound();
-                currentRegion.getNode().updateWorldBound();
+                region.getNode().updateRenderState();
+                region.getNode().updateWorldData(0);
+                region.getNode().updateModelBound();
+                region.getNode().updateWorldBound();
                 terrain.updateRenderState();
                 terrain.updateWorldData(0);
                 terrain.updateModelBound();
                 terrain.updateWorldBound();
+
+                logger.info("loaded regions: " + loadedRegions.keySet());
             }
+
+            switchRegion();
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
         }

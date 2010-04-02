@@ -116,8 +116,8 @@ enum TileType {
             vertexBuf.put(4, heights[1]);
             vertexBuf.put(7, heights[2]);
             vertexBuf.put(10, heights[3]);
-            node.updateModelBound();
-            node.updateWorldBound();
+//            node.updateModelBound();
+//            node.updateWorldBound();
         }
     },
     ;
@@ -144,9 +144,9 @@ enum TileType {
             edgeNode.attachChild(ground);
         }
 
-        edgeNode.setModelBound(new BoundingBox());
-        edgeNode.updateModelBound();
-        edgeNode.updateWorldBound();
+//        edgeNode.setModelBound(new BoundingBox());
+//        edgeNode.updateModelBound();
+//        edgeNode.updateWorldBound();
         return edgeNode;
     }
 
@@ -176,11 +176,8 @@ enum TileType {
         normBuf.put(0).put(1).put(0);
         normBuf.put(0).put(1).put(0);
 
-        //updateHeights(ground, heights);
-
-//            ground.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * -90.0f, Vector3f.UNIT_X));
-        ground.setModelBound(new BoundingBox());
-        ground.updateModelBound();
+//        ground.setModelBound(new BoundingBox());
+//        ground.updateModelBound();
 
         // w/o this magic line splat textures (PassNode) won't work.
         ground.copyTextureCoordinates(0, 1, 1.0f);

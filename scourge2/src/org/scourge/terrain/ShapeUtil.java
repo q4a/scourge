@@ -137,8 +137,8 @@ public class ShapeUtil {
             // import the converted stream to jME as a Spatial
             output = (Spatial) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
             output.setName(newShapeName(name_prefix));
-            output.setModelBound(new BoundingBox());
-            output.updateModelBound();
+//            output.setModelBound(new BoundingBox());
+//            output.updateModelBound();
             return output;
         } catch (Exception exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);

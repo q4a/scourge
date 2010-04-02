@@ -12,6 +12,7 @@ import org.scourge.io.MapIO;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.apache.commons.io.FileUtils.readLines;
@@ -24,7 +25,7 @@ import static org.apache.commons.io.FileUtils.readLines;
 public class Region implements NodeGenerator {
     private Terrain terrain;
     private Node region;
-    public static final int REGION_SIZE = 64;
+    public static final int REGION_SIZE = 32;
     private Tile[][] tiles;
     private int x, y, rows, cols;
     private List<House> houses = new ArrayList<House>();
@@ -40,8 +41,8 @@ public class Region implements NodeGenerator {
     }
 
     public void load() throws IOException {
-        logger.info("----------------------------------------------------------------");
-        logger.info("Loading region: " + x + "," + y);
+        logger.fine("----------------------------------------------------------------");
+        logger.fine("Loading region: " + x + "," + y);
         long start = System.currentTimeMillis();
         long firstStart = start;
         this.region = new Node("region");
@@ -50,20 +51,21 @@ public class Region implements NodeGenerator {
 
         start = System.currentTimeMillis();
         MapIO.RegionPoint[][] region = terrain.getMapIO().readRegion(x, y, rows, cols);
-        logger.info("Loaded data in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("Loaded data in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
         tiles = new Tile[rows][cols];
         makeTiles(rows, cols, tiles, region);
-        logger.info("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create some hills
         start = System.currentTimeMillis();
         createHeights(tiles, rows, cols);
-        logger.info("createHeights in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("createHeights in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create the shapes and textures
         start = System.currentTimeMillis();
+        Map<Direction, TileTexType> around = new HashMap<Direction, TileTexType>();
         for(int x = 0; x < cols; x++) {
             for(int y = 0; y < rows; y++) {
                 Tile tile = tiles[y][x];
@@ -74,24 +76,30 @@ public class Region implements NodeGenerator {
                 Tile southTile = y < rows - 1 ? tiles[y + 1][x] : null;
                 Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
-                Map<Direction, TileTexType> around = new HashMap<Direction, TileTexType>();
                 around.put(Direction.EAST, eastTile != null ? eastTile.tex : null);
                 around.put(Direction.WEST, westTile != null ? westTile.tex : null);
                 around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
                 tile.createNode(around, tile.getLevel());
+            }
+        }
+        logger.fine("createNodes in " + (System.currentTimeMillis() - start) + " millis.");
+
+        start = System.currentTimeMillis();
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.isEmpty()) continue;
 
                 Node node = tile.getNode();
                 node.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, MIN_HEIGHT + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
                 node.updateModelBound();
                 node.updateWorldBound();
                 this.region.attachChild(node);
-                this.region.updateModelBound();
-                this.region.updateWorldBound();
             }
         }
-        logger.info("addNodes in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("addNodes in " + (System.currentTimeMillis() - start) + " millis.");
 
         // copy the NW normal of each quad into the adjacent quads
         start = System.currentTimeMillis();
@@ -111,7 +119,7 @@ public class Region implements NodeGenerator {
                 }
             }
         }
-        logger.info("copyNormals in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("copyNormals in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
         for(int x = 0; x < cols; x++) {
@@ -121,10 +129,17 @@ public class Region implements NodeGenerator {
                 tile.attachModels();
             }
         }
-        logger.info("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
+        logger.fine("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
 
-        ShapeUtil.debug();
-        logger.info("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
+        this.region.getLocalTranslation().addLocal(new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH));
+        this.region.updateModelBound();
+        this.region.updateWorldBound();
+
+        if(logger.isLoggable(Level.FINE)) {
+            ShapeUtil.debug();
+            Tile.debug();
+            logger.fine("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
+        }
     }
 
     private void makeTiles(int rows, int cols, Tile[][] tiles, MapIO.RegionPoint[][] region) {

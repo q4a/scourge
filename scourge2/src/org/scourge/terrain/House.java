@@ -55,16 +55,8 @@ public class House implements NodeGenerator {
     public void moveToTopOfTerrain() {
         house.updateWorldBound();
         house.updateWorldVectors();
-        System.err.println("house=" + house.getName() + " local trans=" + house.getLocalTranslation() + " world trans=" + house.getWorldTranslation() + " world bound=" + house.getWorldBound().getCenter());
-
+        //System.err.println("house=" + house.getName() + " local trans=" + house.getLocalTranslation() + " world trans=" + house.getWorldTranslation() + " world bound=" + house.getWorldBound().getCenter());
         main.getTerrain().getCurrentRegion().flatten(house);
-
-        //float height = main.getGround().getHeight(house.getWorldBound().getCenter());
-//        house.getLocalTranslation().y = height;
-//        house.updateModelBound();
-//        house.updateWorldBound();
-
-        //main.getGround().flatten(house.getWorldBound(), height);
     }
 
     public Node getNode() {

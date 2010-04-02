@@ -31,20 +31,7 @@ class ForwardMoveAction extends KeyInputAction {
             direction.set(main.getPlayer().getDirection());
             main.getPlayer().getNode().getLocalTranslation().addLocal(direction.mult(PlayerController.PLAYER_SPEED * event.getTime(), tempVa));
 
-            int px = (int)(main.getPlayer().getNode().getLocalTranslation().x / ShapeUtil.WALL_WIDTH);
-            int py = (int)(main.getPlayer().getNode().getLocalTranslation().z / ShapeUtil.WALL_WIDTH);
-
-            if(px < 10) {
-                main.getTerrain().loadRegion(Direction.WEST);
-            } else if(px >= Region.REGION_SIZE - 10) {
-                main.getTerrain().loadRegion(Direction.EAST);
-            }
-
-            if(py < 10) {
-                main.getTerrain().loadRegion(Direction.NORTH);
-            } else if(py >= Region.REGION_SIZE - 10) {
-                main.getTerrain().loadRegion(Direction.SOUTH);
-            }
+            main.getTerrain().loadRegion();
         }
     }
 }
