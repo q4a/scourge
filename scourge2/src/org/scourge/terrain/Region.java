@@ -28,6 +28,7 @@ public class Region implements NodeGenerator {
     public static final float MIN_HEIGHT = 2;
     private static Logger logger = Logger.getLogger(Region.class.toString());
     private static final int EDGE_BUFFER = 2;
+    private boolean first = true;
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -387,10 +388,10 @@ public class Region implements NodeGenerator {
         float dx = boundingBox.getCenter().x - region.getWorldTranslation().x;
         float dz = boundingBox.getCenter().z - region.getWorldTranslation().z;
 
-        int sx = (int)((dx - boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH);
-        int sy = (int)((dz - boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH);
-        int ex = (int)((dx + boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH);
-        int ey = (int)((dz + boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH);
+        int sx = (int)((dx - boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
+        int sy = (int)((dz - boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
+        int ex = (int)((dx + boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
+        int ey = (int)((dz + boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
 
 //        System.err.println("house center=" + boundingBox.getCenter());
 //        System.err.println("house size=" + boundingBox.xExtent + "," + boundingBox.zExtent);
@@ -414,14 +415,14 @@ public class Region implements NodeGenerator {
 
                 //System.err.println("\tflattening: " + tx + "," + ty + " type=" + tile.type.name());
 
-                Tile eastTile = tx < cols - 1 ? tiles[ty][tx + 1] : null;
+                Tile eastTile = tx < cols + EDGE_BUFFER - 1 ? tiles[ty][tx + 1] : null;
                 Tile westTile = tx > 0 ? tiles[ty][tx - 1] : null;
-                Tile southTile = ty < rows - 1 ? tiles[ty + 1][tx] : null;
+                Tile southTile = ty < rows + EDGE_BUFFER - 1 ? tiles[ty + 1][tx] : null;
                 Tile northTile = ty > 0 ? tiles[ty - 1][tx] : null;
                 Tile nwTile = ty > 0 && tx > 0 ? tiles[ty - 1][tx - 1] : null;
-                Tile neTile = ty > 0 && tx < cols - 1 ? tiles[ty - 1][tx + 1] : null;
-                Tile seTile = ty < rows - 1 && tx < cols - 1 ? tiles[ty + 1][tx + 1] : null;
-                Tile swTile = ty < rows - 1 && tx > 0 ? tiles[ty + 1][tx - 1] : null;
+                Tile neTile = ty > 0 && tx < cols + EDGE_BUFFER - 1 ? tiles[ty - 1][tx + 1] : null;
+                Tile seTile = ty < rows + EDGE_BUFFER - 1 && tx < cols + EDGE_BUFFER - 1 ? tiles[ty + 1][tx + 1] : null;
+                Tile swTile = ty < rows + EDGE_BUFFER - 1 && tx > 0 ? tiles[ty + 1][tx - 1] : null;
 
                 tile.setHeight(Tile.Edge.NW, 0);
                 tile.setHeight(Tile.Edge.SW, 0);
@@ -453,8 +454,11 @@ public class Region implements NodeGenerator {
     }
 
     public void moveToTopOfTerrain() {
-        for(House house : houses) {
-            house.moveToTopOfTerrain();
+        if(first) {
+            first = false;
+            for(House house : houses) {
+                flatten(house.getNode());
+            }
         }
     }
 
@@ -464,5 +468,9 @@ public class Region implements NodeGenerator {
 
     public int getY() {
         return y;
+    }
+
+    public String getRegionKey() {
+        return "" + (x / REGION_SIZE) + "," + (y / REGION_SIZE);
     }
 }

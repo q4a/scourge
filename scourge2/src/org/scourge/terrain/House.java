@@ -52,13 +52,6 @@ public class House implements NodeGenerator {
         house.updateWorldBound();
     }
 
-    public void moveToTopOfTerrain() {
-        house.updateWorldBound();
-        house.updateWorldVectors();
-        //System.err.println("house=" + house.getName() + " local trans=" + house.getLocalTranslation() + " world trans=" + house.getWorldTranslation() + " world bound=" + house.getWorldBound().getCenter());
-        main.getTerrain().getCurrentRegion().flatten(house);
-    }
-
     public Node getNode() {
         return house;
     }

@@ -67,7 +67,7 @@ public class Terrain implements NodeGenerator {
         int pz = main.getPlayer().getZ() / Region.REGION_SIZE;
         if(px != currentRegion.getX() / Region.REGION_SIZE ||
            pz != currentRegion.getY() / Region.REGION_SIZE) {
-            currentRegion = loadedRegions.get("" + px + "," + pz);
+            currentRegion = loadedRegions.get(getRegionKey(px, pz));
         }
     }
 
@@ -102,7 +102,7 @@ public class Terrain implements NodeGenerator {
     }
 
     public void loadRegion(final int rx, final int ry) {
-        final String key = "" + rx + "," + ry;
+        final String key = getRegionKey(rx, ry);
         if(!loadedRegions.containsKey(key)) {
             if(initialized) {
                 if(!regionThreads.containsKey(key)) {
@@ -111,6 +111,7 @@ public class Terrain implements NodeGenerator {
                             doLoadRegion(rx, ry);
                         }
                     };
+                    thread.setPriority(Thread.MIN_PRIORITY);
                     regionThreads.put(key, thread);
                     thread.start();
                 }
@@ -120,34 +121,39 @@ public class Terrain implements NodeGenerator {
         }
 
         if(checkFarRegions) {
-            // remove far regions
-            Set<String> far = new HashSet<String>();
-            for(String s : loadedRegions.keySet()) {
-                String[] ss = s.split(",");
-                int x = Integer.valueOf(ss[0]);
-                int y = Integer.valueOf(ss[1]);
-                if(Math.abs(x - rx) > 1 || Math.abs(y - ry) > 1) {
-                    far.add(s);
-                }
-            }
-            for(String s : far) {
-                logger.info("Unloading region: " + s);
-                Region region = loadedRegions.remove(s);
-                terrain.detachChild(region.getNode());
-            }
-            System.gc();
-            Thread.yield();
-
+            removeFarRegions();
             checkFarRegions = false;
         }
 
         switchRegion();
     }
 
+    private void removeFarRegions() {
+        int rx = currentRegion.getX() / Region.REGION_SIZE;
+        int ry = currentRegion.getY() / Region.REGION_SIZE;
+        
+        Set<String> far = new HashSet<String>();
+        for(String s : loadedRegions.keySet()) {
+            String[] ss = s.split(",");
+            int x = Integer.valueOf(ss[0]);
+            int y = Integer.valueOf(ss[1]);
+            if(Math.abs(x - rx) > 1 || Math.abs(y - ry) > 1) {
+                far.add(s);
+            }
+        }
+        for(String s : far) {
+            logger.info("Unloading region: " + s);
+            Region region = loadedRegions.remove(s);
+            terrain.detachChild(region.getNode());
+        }
+        System.gc();
+        Thread.yield();
+    }
+
     private void doLoadRegion(int rx, int ry) {
         try {
             main.setLoading(true);
-            final String key = "" + rx + "," + ry;
+            final String key = getRegionKey(rx, ry);
             logger.info("Loading region: " + key);
 
             checkFarRegions = true;
@@ -186,5 +192,15 @@ public class Terrain implements NodeGenerator {
         } finally {
             main.setLoading(false);
         }
+    }
+
+    public Region getRegion(Vector3f v) {
+        int rx = (int)(v.x / ShapeUtil.WALL_WIDTH / Region.REGION_SIZE);
+        int rz = (int)(v.z / ShapeUtil.WALL_WIDTH / Region.REGION_SIZE);
+        return loadedRegions.get(getRegionKey(rx, rz));
+    }
+
+    private String getRegionKey(int rx, int rz) {
+        return "" + rx + "," + rz;
     }
 }

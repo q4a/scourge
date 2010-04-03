@@ -209,18 +209,10 @@ public class Main extends Game {
         }
     }
 
-
-    private boolean first = true;
-
-
-
     @Override
     protected void simpleUpdate() {
         // the world vectors aren't computed until the first update :-/
-        if(first) {
-            first = false;
-            terrain.getCurrentRegion().moveToTopOfTerrain();
-        }
+        terrain.getCurrentRegion().moveToTopOfTerrain();
 
 //        playerController.update(tpf);
 
