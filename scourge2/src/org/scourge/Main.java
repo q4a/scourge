@@ -38,7 +38,6 @@ import java.util.logging.*;
 
 public class Main extends Game {
     private Player player;
-    private Town town;
     private InputHandler playerController;
     private Node cameraHolder;
     private CameraNode camNode;
@@ -50,7 +49,7 @@ public class Main extends Game {
     private float farPlane = 10000.0f;
     private float textureScale = 0.02f;
     private Random random = new Random(17L);
-    private Text2D positionLabel;
+    private Text2D positionLabel, loadingLabel;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -114,9 +113,25 @@ public class Main extends Game {
         positionLabel = font.createText("", 8, 0);
 		positionLabel.setRenderQueueMode(Renderer.QUEUE_ORTHO);
 		positionLabel.setRenderState(zbs);
+        positionLabel.setRenderState( Text.getDefaultFontTextureState() );
+        positionLabel.setRenderState( Text.getFontBlend() );
+        positionLabel.setCullHint(Spatial.CullHint.Never);
+        positionLabel.setLocalScale(.8f);
 		positionLabel.setTextColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		positionLabel.updateRenderState();
 		rootNode.attachChild(positionLabel);
+
+        loadingLabel = font.createText("Loading...", 8, 0);
+		loadingLabel.setRenderQueueMode(Renderer.QUEUE_ORTHO);
+		loadingLabel.setRenderState(zbs);
+        loadingLabel.setRenderState( Text.getDefaultFontTextureState() );
+        loadingLabel.setRenderState( Text.getFontBlend() );
+        loadingLabel.setLocalScale(.8f);
+		loadingLabel.setTextColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+		loadingLabel.updateRenderState();
+        loadingLabel.setCullHint(Spatial.CullHint.Never);
+        loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
+		rootNode.attachChild(loadingLabel);
 
         try {
             player = new Player(this, 498, 9, 490);
@@ -176,12 +191,6 @@ public class Main extends Game {
         rootNode.setCullHint(Spatial.CullHint.Dynamic);
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
     }
-
-//    private void buildTerrain() throws IOException {
-//        // middle
-//        terrain = new Terrain(this);
-//        terrain.addTown(14, 14);
-//    }
 
     public void toggleCameraAttached() {
         if(camNode != null) {
@@ -341,5 +350,13 @@ public class Main extends Game {
 
     public Random getRandom() {
         return random;
+    }
+
+    public void setLoading(boolean loading) {
+        if(loading) {
+            rootNode.attachChild(loadingLabel);
+        } else {
+            rootNode.detachChild(loadingLabel);
+        }
     }
 }

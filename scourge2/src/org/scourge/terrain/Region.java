@@ -5,8 +5,6 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.RenderState;
-import org.scourge.Main;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
@@ -14,8 +12,6 @@ import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.apache.commons.io.FileUtils.readLines;
 
 /**
  * User: gabor
@@ -25,7 +21,7 @@ import static org.apache.commons.io.FileUtils.readLines;
 public class Region implements NodeGenerator {
     private Terrain terrain;
     private Node region;
-    public static final int REGION_SIZE = 32;
+    public static final int REGION_SIZE = 30;
     private Tile[][] tiles;
     private int x, y, rows, cols;
     private List<House> houses = new ArrayList<House>();
@@ -152,7 +148,11 @@ public class Region implements NodeGenerator {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 tiles[y][x] = new Tile(terrain.getMain());
                 if(region[y][x].getC() == 'B') {
-                    tiles[y][x].addModel(Model.bridge);
+                    if(check(y - 1, x, '~', region) && check(y + 1, x, '~', region)) {
+                        tiles[y][x].addModel(Model.bridge, new Vector3f(0, 0, 0), 1, 90, Vector3f.UNIT_Y);
+                    } else {
+                        tiles[y][x].addModel(Model.bridge);
+                    }
                     region[y][x].setC('~');
                 } else if(region[y][x].getC() == 'F') {
                     makeForestTile(tiles[y][x]);
@@ -284,7 +284,8 @@ public class Region implements NodeGenerator {
         tile.addModel(Model.getRandomTree(terrain.getMain().getRandom()),
                       new Vector3f(8, 0, 8),
                       (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
-                      terrain.getMain().getRandom().nextFloat() * 360.0f);
+                      terrain.getMain().getRandom().nextFloat() * 360.0f,
+                      Vector3f.UNIT_Z);
     }
 
     private boolean check(int y, int x, char c, MapIO.RegionPoint[][] region) {

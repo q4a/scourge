@@ -44,13 +44,15 @@ class Tile {
         public Vector3f translate;
         public float scale;
         public float rotate;
+        public Vector3f axis;
 
 
-        public ModelOnTile(Model model, Vector3f translate, float scale, float rotate) {
+        public ModelOnTile(Model model, Vector3f translate, float scale, float rotate, Vector3f axis) {
             this.model = model;
             this.translate = translate;
             this.scale = scale;
             this.rotate = rotate;
+            this.axis = axis;
         }
     }
 
@@ -80,11 +82,11 @@ class Tile {
     }
 
     public void addModel(Model model) {
-        addModel(model, new Vector3f(0, 0, 0), 1, 0);
+        addModel(model, new Vector3f(0, 0, 0), 1, 0, Vector3f.UNIT_Z);
     }
 
-    public void addModel(Model model, Vector3f translate, float scale, float rotate) {
-        models.add(new ModelOnTile(model, translate, scale, rotate));
+    public void addModel(Model model, Vector3f translate, float scale, float rotate, Vector3f axis) {
+        models.add(new ModelOnTile(model, translate, scale, rotate, axis));
     }
 
     public boolean isEmpty() {
@@ -153,7 +155,7 @@ class Tile {
             spatial.getLocalTranslation().x -= ShapeUtil.WALL_WIDTH / 2;
             spatial.getLocalTranslation().z -= ShapeUtil.WALL_WIDTH / 2;
             spatial.getLocalScale().multLocal(model.scale);
-            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, Vector3f.UNIT_Z));
+            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, model.axis));
             spatial.updateModelBound();
             node.attachChild(spatial);
         }
