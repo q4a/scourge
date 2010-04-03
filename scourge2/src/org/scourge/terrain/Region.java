@@ -29,8 +29,9 @@ public class Region implements NodeGenerator {
     private Tile[][] tiles;
     private int x, y, rows, cols;
     private List<House> houses = new ArrayList<House>();
-    static final float MIN_HEIGHT = 2;
+    public static final float MIN_HEIGHT = 2;
     private static Logger logger = Logger.getLogger(Region.class.toString());
+    private static final int EDGE_BUFFER = 2;
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -50,30 +51,30 @@ public class Region implements NodeGenerator {
         region.setModelBound(new BoundingBox());
 
         start = System.currentTimeMillis();
-        MapIO.RegionPoint[][] region = terrain.getMapIO().readRegion(x, y, rows, cols);
+        MapIO.RegionPoint[][] region = terrain.getMapIO().readRegion(x - EDGE_BUFFER, y - EDGE_BUFFER, rows + EDGE_BUFFER * 2, cols + EDGE_BUFFER * 2);
         logger.fine("Loaded data in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
-        tiles = new Tile[rows][cols];
-        makeTiles(rows, cols, tiles, region);
+        tiles = new Tile[rows + EDGE_BUFFER * 2][cols + EDGE_BUFFER * 2];
+        makeTiles(region);
         logger.fine("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create some hills
         start = System.currentTimeMillis();
-        createHeights(tiles, rows, cols);
+        createHeights();
         logger.fine("createHeights in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create the shapes and textures
         start = System.currentTimeMillis();
         Map<Direction, TileTexType> around = new HashMap<Direction, TileTexType>();
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
+        for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+            for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.isEmpty()) continue;
 
-                Tile eastTile = x < cols - 1 ? tiles[y][x + 1] : null;
+                Tile eastTile = x < cols + EDGE_BUFFER * 2 - 1 ? tiles[y][x + 1] : null;
                 Tile westTile = x > 0 ? tiles[y][x - 1] : null;
-                Tile southTile = y < rows - 1 ? tiles[y + 1][x] : null;
+                Tile southTile = y < rows + EDGE_BUFFER * 2 - 1 ? tiles[y + 1][x] : null;
                 Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
                 around.put(Direction.EAST, eastTile != null ? eastTile.tex : null);
@@ -87,8 +88,8 @@ public class Region implements NodeGenerator {
         logger.fine("createNodes in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
+        for(int x = EDGE_BUFFER; x < cols + EDGE_BUFFER; x++) {
+            for(int y = EDGE_BUFFER; y < rows + EDGE_BUFFER; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.isEmpty()) continue;
 
@@ -103,8 +104,8 @@ public class Region implements NodeGenerator {
 
         // copy the NW normal of each quad into the adjacent quads
         start = System.currentTimeMillis();
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
+        for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+            for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.type == TileType.QUAD) {
                     Tile westTile = x > 0 ? tiles[y][x - 1] : null;
@@ -122,8 +123,8 @@ public class Region implements NodeGenerator {
         logger.fine("copyNormals in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
+        for(int x = EDGE_BUFFER; x < cols + EDGE_BUFFER; x++) {
+            for(int y = EDGE_BUFFER; y < rows + EDGE_BUFFER; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.isEmpty()) continue;
                 tile.attachModels();
@@ -142,13 +143,13 @@ public class Region implements NodeGenerator {
         }
     }
 
-    private void makeTiles(int rows, int cols, Tile[][] tiles, MapIO.RegionPoint[][] region) {
+    private void makeTiles(MapIO.RegionPoint[][] region) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
-        for(int y = 0; y < rows; y++) {
-            for(int x = 0; x < cols; x++) {
+        for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
+            for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 tiles[y][x] = new Tile(terrain.getMain());
                 if(region[y][x].getC() == 'B') {
                     tiles[y][x].addModel(Model.bridge);
@@ -172,8 +173,8 @@ public class Region implements NodeGenerator {
         for(int i = 1; i < levels.length(); i++) {
             char c = levels.charAt(i);
             char prevC = levels.charAt(i - 1);
-            for(int x = 0; x < cols; x++) {
-                for(int y = 0; y < rows; y++) {
+            for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+                for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                     if(region[y][x].getC() == c) {
 
                         tiles[y][x].setLevel(i - 1);
@@ -214,6 +215,10 @@ public class Region implements NodeGenerator {
                             Vector2f point = new Vector2f(x, y);
                             if(roadPos.contains(point)) {
                                 tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
+                            } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
+                                      x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
+                                // this is so edges meet on the same type
+                                tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
                             } else {
                                 int type = (int)(terrain.getMain().getRandom().nextFloat() * 5);
                                 tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
@@ -283,7 +288,7 @@ public class Region implements NodeGenerator {
     }
 
     private boolean check(int y, int x, char c, MapIO.RegionPoint[][] region) {
-        return (y >= 0 && x >= 0 && y < region.length && x < region[0].length && region[y][x].getC() != c);
+        return (y >= 0 && x >= 0 && y < REGION_SIZE + EDGE_BUFFER * 2 && x < REGION_SIZE + EDGE_BUFFER * 2 && region[y][x].getC() != c);
     }
 
     // hack... this should be in TileType.QUAD but I was lazy
@@ -312,10 +317,10 @@ public class Region implements NodeGenerator {
         toQuad.updateWorldBound();
     }
 
-    private void createHeights(Tile[][] tiles, int rows, int cols) {
+    private void createHeights() {
         // set the heights
-        for(int y = 1; y < rows - 1; y++) {
-            for(int x = 1; x < cols - 1; x++) {
+        for(int y = EDGE_BUFFER + 1; y < rows + EDGE_BUFFER - 1; y++) {
+            for(int x = EDGE_BUFFER + 1; x < cols + EDGE_BUFFER - 1; x++) {
                 float h = 2.0f + terrain.getMain().getRandom().nextFloat() * 8.0f;
                 tiles[y - 1][x - 1].setHeight(Tile.Edge.SE, h);
                 tiles[y - 1][x].setHeight(Tile.Edge.SW, h);
@@ -325,14 +330,14 @@ public class Region implements NodeGenerator {
         }
 
         // clamp heights around the edges
-        for(int x = 0; x < cols; x++) {
-            for(int y = 0; y < rows; y++) {
+        for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+            for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.type == TileType.NONE) continue;
 
-                Tile eastTile = x < cols - 1 ? tiles[y][x + 1] : null;
+                Tile eastTile = x < cols + EDGE_BUFFER * 2 - 1 ? tiles[y][x + 1] : null;
                 Tile westTile = x > 0 ? tiles[y][x - 1] : null;
-                Tile southTile = y < rows - 1 ? tiles[y + 1][x] : null;
+                Tile southTile = y < rows + EDGE_BUFFER * 2 - 1 ? tiles[y + 1][x] : null;
                 Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
                 boolean north = northTile != null && northTile.tex == tile.tex;
