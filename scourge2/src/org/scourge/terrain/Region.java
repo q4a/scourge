@@ -80,6 +80,7 @@ public class Region implements NodeGenerator {
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
                 tile.createNode(around, tile.getLevel());
+                Thread.yield();
             }
         }
         logger.fine("createNodes in " + (System.currentTimeMillis() - start) + " millis.");
@@ -95,6 +96,7 @@ public class Region implements NodeGenerator {
                 node.updateModelBound();
                 node.updateWorldBound();
                 this.region.attachChild(node);
+                Thread.yield();
             }
         }
         logger.fine("addNodes in " + (System.currentTimeMillis() - start) + " millis.");
@@ -125,6 +127,7 @@ public class Region implements NodeGenerator {
                 Tile tile = tiles[y][x];
                 if(tile.isEmpty()) continue;
                 tile.attachModels();
+                Thread.yield();
             }
         }
         logger.fine("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
