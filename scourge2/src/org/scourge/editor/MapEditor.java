@@ -3,6 +3,7 @@ package org.scourge.editor;
 import org.apache.commons.io.FileUtils;
 import org.scourge.Climate;
 import org.scourge.io.MapIO;
+import org.scourge.terrain.Region;
 
 import javax.swing.*;
 import java.awt.*;
@@ -215,6 +216,22 @@ public class MapEditor extends JPanel {
                     g.setColor(Color.yellow);
                     g.drawRect(xp * CHAR_WIDTH, yp * CHAR_HEIGHT, CHAR_WIDTH - 1, CHAR_HEIGHT - 1);
                 }
+            }
+        }
+
+        // draw the region lines
+        g.setColor(Color.green);
+        for(int yp = sy; yp < ey; yp++) {
+            if(yp % Region.REGION_SIZE == 0) {
+                int ypos = yp * CHAR_HEIGHT;
+                g.drawLine(sx * CHAR_WIDTH, ypos, sx * CHAR_WIDTH + r.width, ypos);
+            }
+        }
+
+        for(int xp = sx; xp < ex; xp++) {
+            if(xp % Region.REGION_SIZE == 0) {
+                int xpos = xp * CHAR_WIDTH;
+                g.drawLine(xpos, sy * CHAR_HEIGHT, xpos, sy * CHAR_HEIGHT + r.height);
             }
         }
     }

@@ -1,5 +1,7 @@
 package org.scourge.editor;
 
+import org.scourge.terrain.Region;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -69,7 +71,7 @@ public class Editor extends JFrame implements MapEditorListener {
 
     @Override
     public void mapScrolled(int sx, int sy, int ex, int ey, int cursorX, int cursorY) {
-        position.setText("" + sx + "," + sy + "-" + ex + "," + ey + " cursor=" + cursorX + "," + cursorY);
+        position.setText("" + sx + "," + sy + "-" + ex + "," + ey + " cursor=" + cursorX + "," + cursorY + " (" + (cursorX / Region.REGION_SIZE) + "," + (cursorY / Region.REGION_SIZE) + ")");
     }
 
     @Override
