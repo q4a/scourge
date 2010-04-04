@@ -138,7 +138,6 @@ public class Region implements NodeGenerator {
 
         if(logger.isLoggable(Level.FINE)) {
             ShapeUtil.debug();
-            Tile.debug();
             logger.fine("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
         }
     }

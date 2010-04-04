@@ -25,9 +25,10 @@ public class Terrain implements NodeGenerator {
     private MapIO mapIO;
     private Main main;
     private Region currentRegion;
-    private Map<String, Region> loadedRegions = Collections.synchronizedMap(new HashMap<String, Region>());
+    private Map<String, Region> loadedRegions = new HashMap<String, Region>();
     private Map<String, Thread> regionThreads = Collections.synchronizedMap(new HashMap<String, Thread>());
-    private boolean checkFarRegions;
+    private Map<String, Region> pendingRegions = Collections.synchronizedMap(new HashMap<String, Region>());
+    private boolean checkPendingRegions;
     private static Logger logger = Logger.getLogger(Terrain.class.toString());
     private boolean initialized;
 
@@ -103,6 +104,8 @@ public class Terrain implements NodeGenerator {
 
     public void loadRegion(final int rx, final int ry) {
         final String key = getRegionKey(rx, ry);
+
+        // non-synchronized check
         if(!loadedRegions.containsKey(key)) {
             if(initialized) {
                 if(!regionThreads.containsKey(key)) {
@@ -113,16 +116,46 @@ public class Terrain implements NodeGenerator {
                     };
                     thread.setPriority(Thread.MIN_PRIORITY);
                     regionThreads.put(key, thread);
+                    checkPendingRegions = true;
                     thread.start();
                 }
             } else {
                 doLoadRegion(rx, ry);
+                checkPendingRegions = true;
             }
         }
 
-        if(checkFarRegions) {
+        // make an unsynchronized check (a small hack: booleans don't need to be synchronized, but pendingRegions.isEmpty() would be)
+        if(checkPendingRegions) {
+
+            // add/remove regions in the main thread to avoid concurrent mod. exceptions
+            while(!pendingRegions.isEmpty()) {
+                String pendingKey = pendingRegions.keySet().iterator().next();
+                Region region = pendingRegions.remove(pendingKey);
+                if(currentRegion == null) {
+                    currentRegion = region;
+                }
+                loadedRegions.put(pendingKey, region);
+
+                terrain.attachChild(region.getNode());
+
+                // not sure which but one of the following is needed...
+                region.getNode().updateRenderState();
+                region.getNode().updateWorldData(0);
+                region.getNode().updateModelBound();
+                region.getNode().updateWorldBound();
+                terrain.updateRenderState();
+                terrain.updateWorldData(0);
+                terrain.updateModelBound();
+                terrain.updateWorldBound();
+            }
+
             removeFarRegions();
-            checkFarRegions = false;
+
+            // keep checking if there are threads out there
+            checkPendingRegions = !regionThreads.isEmpty();
+
+            logger.info("loaded regions: " + loadedRegions.keySet());
         }
 
         switchRegion();
@@ -131,7 +164,7 @@ public class Terrain implements NodeGenerator {
     private void removeFarRegions() {
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
-        
+
         Set<String> far = new HashSet<String>();
         for(String s : loadedRegions.keySet()) {
             String[] ss = s.split(",");
@@ -155,31 +188,9 @@ public class Terrain implements NodeGenerator {
             main.setLoading(true);
             final String key = getRegionKey(rx, ry);
             logger.info("Loading region: " + key);
-
-            checkFarRegions = true;
-
-            // load a new region
             final Region region = new Region(this, rx * Region.REGION_SIZE, ry * Region.REGION_SIZE);
-            if(currentRegion == null) {
-                currentRegion = region;
-            }
-            loadedRegions.put(key, region);
-
-            terrain.attachChild(region.getNode());
-
-            // not sure which but one of the following is needed...
-            region.getNode().updateRenderState();
-            region.getNode().updateWorldData(0);
-            region.getNode().updateModelBound();
-            region.getNode().updateWorldBound();
-            terrain.updateRenderState();
-            terrain.updateWorldData(0);
-            terrain.updateModelBound();
-            terrain.updateWorldBound();
-
+            pendingRegions.put(key, region);
             regionThreads.remove(key);
-            logger.info("loaded regions: " + loadedRegions.keySet());
-
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
         } finally {

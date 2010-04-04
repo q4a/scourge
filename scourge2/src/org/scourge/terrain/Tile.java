@@ -114,35 +114,14 @@ class Tile {
         return sum / (float)heights.length;
     }
 
-    static List<Long> createTimes = new ArrayList<Long>();
-    static List<Long> textureTimes = new ArrayList<Long>();
-
     public void createNode(Map<Direction, TileTexType> around, int level) {
-        long start = System.currentTimeMillis();
         node = new Node(ShapeUtil.newShapeName("tile"));
         ground = type.createNode(angle, heights, level);
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
         //node.updateModelBound();
-        createTimes.add(System.currentTimeMillis() - start);
 
-        start = System.currentTimeMillis();
         applyTexture(around);
-        textureTimes.add(System.currentTimeMillis() - start);
-    }
-
-    public static void debug() {
-        long avgCreate = 0;
-        long avgTex = 0;
-        for(int i = 0; i < createTimes.size(); i++) {
-            avgCreate += createTimes.get(i);
-            avgTex += textureTimes.get(i);
-        }
-        avgCreate = (long)(avgCreate / (float)createTimes.size());
-        avgTex = (long)(avgTex / (float)createTimes.size());
-        System.err.println("Avg time for " + createTimes.size() + " tiles: create=" + avgCreate + " tex=" + avgTex);
-        createTimes.clear();
-        textureTimes.clear();        
     }
 
     public void attachModels() {
@@ -239,18 +218,24 @@ class Tile {
     }
     
 
+    WeakHashMap<String, TextureState> textureStates = new WeakHashMap<String, TextureState>();
+
     private TextureState createSplatTextureState(String texture, Stencil stencil) {
-        TextureState ts = main.getDisplay().getRenderer().createTextureState();
+        String key = texture + "_" + stencil;
+        TextureState ts = textureStates.get(key);
+        if(ts == null) {
+            ts = main.getDisplay().getRenderer().createTextureState();
 
-        Texture t0 = ShapeUtil.loadTexture(texture);
-        t0.setWrap(Texture.WrapMode.Repeat);
-        t0.setApply(Texture.ApplyMode.Modulate);
-        ts.setTexture(t0, 0);
+            Texture t0 = ShapeUtil.loadTexture(texture);
+            t0.setWrap(Texture.WrapMode.Repeat);
+            t0.setApply(Texture.ApplyMode.Modulate);
+            ts.setTexture(t0, 0);
 
-        if (stencil != null && stencil.edge != null) {
-            addAlphaSplat(ts, stencil);
+            if (stencil != null && stencil.edge != null) {
+                addAlphaSplat(ts, stencil);
+            }
+            textureStates.put(key, ts);
         }
-
         return ts;
     }
 
@@ -353,5 +338,10 @@ class Tile {
     private class Stencil {
         TexEdge edge = null;
         float angle = 0;
-    }    
+
+        @Override
+        public String toString() {
+            return edge.name() + "_" + angle;
+        }
+    }
 }
