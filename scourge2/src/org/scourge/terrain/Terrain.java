@@ -165,27 +165,20 @@ public class Terrain implements NodeGenerator {
             }
             loadedRegions.put(key, region);
 
+            terrain.attachChild(region.getNode());
 
-            GameTaskQueueManager.getManager().getQueue(GameTaskQueue.UPDATE).enqueue(new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    terrain.attachChild(region.getNode());
+            // not sure which but one of the following is needed...
+            region.getNode().updateRenderState();
+            region.getNode().updateWorldData(0);
+            region.getNode().updateModelBound();
+            region.getNode().updateWorldBound();
+            terrain.updateRenderState();
+            terrain.updateWorldData(0);
+            terrain.updateModelBound();
+            terrain.updateWorldBound();
 
-                    // not sure which but one of the following is needed...
-                    region.getNode().updateRenderState();
-                    region.getNode().updateWorldData(0);
-                    region.getNode().updateModelBound();
-                    region.getNode().updateWorldBound();
-                    terrain.updateRenderState();
-                    terrain.updateWorldData(0);
-                    terrain.updateModelBound();
-                    terrain.updateWorldBound();
-
-                    regionThreads.remove(key);
-                    logger.info("loaded regions: " + loadedRegions.keySet());
-                    return null;
-                }
-            });
+            regionThreads.remove(key);
+            logger.info("loaded regions: " + loadedRegions.keySet());
 
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
@@ -194,7 +187,7 @@ public class Terrain implements NodeGenerator {
         }
     }
 
-    public Region getRegion(Vector3f v) {
+    public Region getRegionAtPoint(Vector3f v) {
         int rx = (int)(v.x / ShapeUtil.WALL_WIDTH / Region.REGION_SIZE);
         int rz = (int)(v.z / ShapeUtil.WALL_WIDTH / Region.REGION_SIZE);
         return loadedRegions.get(getRegionKey(rx, rz));

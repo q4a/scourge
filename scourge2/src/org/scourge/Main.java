@@ -344,11 +344,16 @@ public class Main extends Game {
         return random;
     }
 
+    private int loadingCounter;
     public void setLoading(boolean loading) {
         if(loading) {
+            loadingCounter++;
             rootNode.attachChild(loadingLabel);
         } else {
-            rootNode.detachChild(loadingLabel);
+            loadingCounter--;
+            if(loadingCounter == 0) {
+                rootNode.detachChild(loadingLabel);
+            }
         }
     }
 }
