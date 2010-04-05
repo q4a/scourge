@@ -30,14 +30,14 @@ public class RegionLoaderThread extends Thread {
         String key = Terrain.getRegionKey(rx, ry);
         try {
             terrain.getMain().setLoading(true);
-            logger.info("Loading region: " + key);
+            logger.fine("Loading region: " + key);
             region = new Region(terrain, rx * Region.REGION_SIZE, ry * Region.REGION_SIZE);
             terrain.setRegionPending();
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
         } finally {
             terrain.getMain().setLoading(false);
-            logger.info("Loaded region: " + key);
+            logger.fine("Loaded region: " + key);
         }
     }
 

@@ -75,6 +75,8 @@ public class Terrain implements NodeGenerator {
 
     // called from the input-handler thread
     public void loadRegion() {
+        switchRegion();
+
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
 
@@ -141,7 +143,7 @@ public class Terrain implements NodeGenerator {
                     String key = e.next();
                     RegionLoaderThread thread = regionThreads.get(key);
                     if(thread.getRegion() != null) {
-                        logger.info("Attaching region " + key);
+                        logger.fine("Attaching region " + key);
 
                         e.remove();
                         Region region = thread.getRegion();
@@ -189,17 +191,16 @@ public class Terrain implements NodeGenerator {
             }
         }
         for(String s : far) {
-            logger.info("Unloading region: " + s);
+            logger.fine("Unloading region: " + s);
             Region region = loadedRegions.remove(s);
             terrain.detachChild(region.getNode());
         }
 
-        logger.info("Current: " + rx + "," + ry);
-        logger.info("loaded regions: " + loadedRegions.keySet());
-        System.err.println("terrain has " + terrain.getChildren().size() + " children: ");
-        for(Spatial sp : terrain.getChildren()) {
-            System.err.println("\t" + sp.getName());
-        }
+        logger.info("Current: " + rx + "," + ry + " loaded regions: " + loadedRegions.keySet());
+//        System.err.println("terrain has " + terrain.getChildren().size() + " children: ");
+//        for(Spatial sp : terrain.getChildren()) {
+//            System.err.println("\t" + sp.getName());
+//        }
         
         System.gc();
         Thread.yield();

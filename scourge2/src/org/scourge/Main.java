@@ -134,7 +134,7 @@ public class Main extends Game {
 		rootNode.attachChild(loadingLabel);
 
         try {
-            player = new Player(this, 498, 9, 490);
+            player = new Player(this, 498, 9, 489);
             player.setKeyFrame(Player.Md2Key.stand);
             terrain = new Terrain(this);
         } catch(IOException exc) {
@@ -221,9 +221,10 @@ public class Main extends Game {
         player.moveToTopOfTerrain();
 
         positionLabel.setText("Player: " + player.getX() + "," + player.getZ() +
+                              " (" + (player.getX() % Region.REGION_SIZE) + "," + (player.getZ() % Region.REGION_SIZE) + ")" +
                               " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
-                              " " + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-                              getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE);
+                              " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
+                              getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
         positionLabel.updateRenderState();
 	    positionLabel.updateModelBound();
 
