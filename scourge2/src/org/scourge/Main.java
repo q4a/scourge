@@ -211,6 +211,8 @@ public class Main extends Game {
 
     @Override
     protected void simpleUpdate() {
+        terrain.update();
+
         // the world vectors aren't computed until the first update :-/
         terrain.getCurrentRegion().moveToTopOfTerrain();
 
@@ -348,12 +350,16 @@ public class Main extends Game {
     public void setLoading(boolean loading) {
         if(loading) {
             loadingCounter++;
-            rootNode.attachChild(loadingLabel);
+            loadingLabel.setCullHint(Spatial.CullHint.Never);
         } else {
             loadingCounter--;
             if(loadingCounter == 0) {
-                rootNode.detachChild(loadingLabel);
+                loadingLabel.setCullHint(Spatial.CullHint.Always);
             }
         }
+    }
+
+    public boolean isLoading() {
+        return loadingCounter > 0;
     }
 }

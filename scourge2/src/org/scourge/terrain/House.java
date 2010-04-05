@@ -48,8 +48,6 @@ public class House implements NodeGenerator {
         q.fromAngleAxis(FastMath.DEG_TO_RAD * (25.0f * random.nextFloat()), Vector3f.UNIT_Y);
         house.getLocalRotation().multLocal(q);
         house.setModelBound(new BoundingBox());
-        house.updateModelBound();
-        house.updateWorldBound();
     }
 
     public Node getNode() {
@@ -102,8 +100,6 @@ public class House implements NodeGenerator {
         roof.rotateNormals(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 180, Vector3f.UNIT_X));
         roof.setRenderState(orientation ? ts : ts2);
         roof.setModelBound(new BoundingBox());
-        roof.updateModelBound();
-        roof.updateWorldBound();
         roofNode.attachChild(roof);
 
         roof = new Quad(ShapeUtil.newShapeName("roof_side_"));
@@ -128,8 +124,6 @@ public class House implements NodeGenerator {
         //roof.rotateNormals(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 180, Vector3f.UNIT_X));
         roof.setRenderState(orientation ? ts : ts2);
         roof.setModelBound(new BoundingBox());
-        roof.updateModelBound();
-        roof.updateWorldBound();
         roofNode.attachChild(roof);
 
         texture = TextureManager.loadTexture("./data/textures/floor2.png",
@@ -248,8 +242,6 @@ public class House implements NodeGenerator {
         ts.setTexture(texture);
         floor.setRenderState(ts);
         floor.setModelBound(new BoundingBox());
-        floor.updateModelBound();
-        floor.updateWorldBound();
         house.attachChild(floor);
 
     }
@@ -290,8 +282,6 @@ public class House implements NodeGenerator {
             if(i == finalPos) {
                 spatial.getLocalScale().x = FINAL_SCALE;
             }
-            spatial.updateModelBound();
-            spatial.updateWorldBound();
             house.attachChild(spatial);
     }
 

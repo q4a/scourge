@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class Region implements NodeGenerator {
     private Terrain terrain;
     private Node region;
-    public static final int REGION_SIZE = 30;
+    public static final int REGION_SIZE = 20;
     private Tile[][] tiles;
     private int x, y, rows, cols;
     private List<House> houses = new ArrayList<House>();
@@ -93,8 +93,6 @@ public class Region implements NodeGenerator {
 
                 Node node = tile.getNode();
                 node.getLocalTranslation().set(x * ShapeUtil.WALL_WIDTH, MIN_HEIGHT + (tile.getLevel() * ShapeUtil.WALL_HEIGHT), y * ShapeUtil.WALL_WIDTH);
-                node.updateModelBound();
-                node.updateWorldBound();
                 this.region.attachChild(node);
                 Thread.yield();
             }
@@ -133,8 +131,6 @@ public class Region implements NodeGenerator {
         logger.fine("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
 
         this.region.getLocalTranslation().addLocal(new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH));
-        this.region.updateModelBound();
-        this.region.updateWorldBound();
 
         if(logger.isLoggable(Level.FINE)) {
             ShapeUtil.debug();
@@ -257,7 +253,7 @@ public class Region implements NodeGenerator {
 
     private void addHouses(List<Set<Vector2f>> housePoints) {
         for(Set<Vector2f> housePoint : housePoints) {
-            float minx = 1000, miny = 1000, maxx = 0, maxy = -1;
+            float minx = 10000, miny = 10000, maxx = -1, maxy = -1;
             for(Vector2f point : housePoint) {
                 if(point.x < minx) {
                     minx = point.x;
@@ -272,6 +268,11 @@ public class Region implements NodeGenerator {
                     maxy = point.y;
                 }
             }
+
+            if(minx < EDGE_BUFFER || miny < EDGE_BUFFER || maxx >= cols + EDGE_BUFFER || maxy >= rows + EDGE_BUFFER) {
+                continue;
+            }
+
             int w = (int)(maxx - minx) + 1;
             int h = (int)(maxy - miny) + 1;
             float height = tiles[(int)miny][(int)minx].getLevel();
@@ -316,9 +317,6 @@ public class Region implements NodeGenerator {
             case SW: toBuf.put(3, normal[0]).put(4, normal[1]).put(5, normal[2]); break;
             default: throw new IllegalStateException("Can't set NW corner.");
         }
-
-        toQuad.updateModelBound();
-        toQuad.updateWorldBound();
     }
 
     private void createHeights() {
@@ -395,11 +393,6 @@ public class Region implements NodeGenerator {
         int ex = (int)((dx + boundingBox.xExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
         int ey = (int)((dz + boundingBox.zExtent / 2) / ShapeUtil.WALL_WIDTH) + EDGE_BUFFER;
 
-//        System.err.println("house center=" + boundingBox.getCenter());
-//        System.err.println("house size=" + boundingBox.xExtent + "," + boundingBox.zExtent);
-//        System.err.println("d=" + dx + "," + dz);
-//        System.err.println("s=" + sx + "," + sy + " e=" + ex + "," + ey);
-
         for(int y = sy - 1; y <= ey + 1; y++) {
             for(int x = sx - 1; x <= ex + 1; x++) {
                 flattenTile(x, y);
@@ -414,9 +407,6 @@ public class Region implements NodeGenerator {
             Tile tile = tiles[ty][tx];
             tile.clearModels();
             if(tile.type != TileType.NONE) {
-
-                //System.err.println("\tflattening: " + tx + "," + ty + " type=" + tile.type.name());
-
                 Tile eastTile = tx < cols + EDGE_BUFFER - 1 ? tiles[ty][tx + 1] : null;
                 Tile westTile = tx > 0 ? tiles[ty][tx - 1] : null;
                 Tile southTile = ty < rows + EDGE_BUFFER - 1 ? tiles[ty + 1][tx] : null;

@@ -28,7 +28,7 @@ public class Terrain implements NodeGenerator {
     private Map<String, Region> loadedRegions = new HashMap<String, Region>();
     private Map<String, Thread> regionThreads = Collections.synchronizedMap(new HashMap<String, Thread>());
     private Map<String, Region> pendingRegions = Collections.synchronizedMap(new HashMap<String, Region>());
-    private boolean checkPendingRegions;
+    private byte checkPendingRegions;
     private static Logger logger = Logger.getLogger(Terrain.class.toString());
     private boolean initialized;
 
@@ -68,12 +68,13 @@ public class Terrain implements NodeGenerator {
         int pz = main.getPlayer().getZ() / Region.REGION_SIZE;
         if(px != currentRegion.getX() / Region.REGION_SIZE ||
            pz != currentRegion.getY() / Region.REGION_SIZE) {
+            // todo: this can cause a NPE if the region is not loaded yet
             currentRegion = loadedRegions.get(getRegionKey(px, pz));
         }
     }
 
+    // called from the input-handler thread
     public void loadRegion() {
-        switchRegion();
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
 
@@ -102,10 +103,11 @@ public class Terrain implements NodeGenerator {
         }
     }
 
+    // input-handler thread
     public void loadRegion(final int rx, final int ry) {
         final String key = getRegionKey(rx, ry);
 
-        // non-synchronized check
+        // non-synchronized check (this could cause synchronization problems...)
         if(!loadedRegions.containsKey(key)) {
             if(initialized) {
                 if(!regionThreads.containsKey(key)) {
@@ -116,21 +118,25 @@ public class Terrain implements NodeGenerator {
                     };
                     thread.setPriority(Thread.MIN_PRIORITY);
                     regionThreads.put(key, thread);
-                    checkPendingRegions = true;
                     thread.start();
                 }
             } else {
                 doLoadRegion(rx, ry);
-                checkPendingRegions = true;
+                update();
             }
         }
 
-        // make an unsynchronized check (a small hack: booleans don't need to be synchronized, but pendingRegions.isEmpty() would be)
-        if(checkPendingRegions) {
+        switchRegion();
+    }
 
+    // called from the main thread
+    public void update() {
+        // make an unsynchronized check (a small hack: booleans don't need to be synchronized, but pendingRegions.isEmpty() would be)
+        if(checkPendingRegions > 0) {
             // add/remove regions in the main thread to avoid concurrent mod. exceptions
             while(!pendingRegions.isEmpty()) {
                 String pendingKey = pendingRegions.keySet().iterator().next();
+                logger.info("Attaching region " + pendingKey);
                 Region region = pendingRegions.remove(pendingKey);
                 if(currentRegion == null) {
                     currentRegion = region;
@@ -153,14 +159,15 @@ public class Terrain implements NodeGenerator {
             removeFarRegions();
 
             // keep checking if there are threads out there
-            checkPendingRegions = !regionThreads.isEmpty();
+            checkPendingRegions--;
 
-            logger.info("loaded regions: " + loadedRegions.keySet());
-        }
-
-        switchRegion();
+            if(checkPendingRegions == 0) {
+                logger.info("loaded regions: " + loadedRegions.keySet());
+            }
+        }        
     }
 
+    // main thread
     private void removeFarRegions() {
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
@@ -183,18 +190,21 @@ public class Terrain implements NodeGenerator {
         Thread.yield();
     }
 
+    // worker thread
     private void doLoadRegion(int rx, int ry) {
+        String key = getRegionKey(rx, ry);
         try {
             main.setLoading(true);
-            final String key = getRegionKey(rx, ry);
             logger.info("Loading region: " + key);
             final Region region = new Region(this, rx * Region.REGION_SIZE, ry * Region.REGION_SIZE);
             pendingRegions.put(key, region);
+            checkPendingRegions++;            
             regionThreads.remove(key);
         } catch(IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
         } finally {
             main.setLoading(false);
+            logger.info("Loaded region: " + key);
         }
     }
 

@@ -119,7 +119,6 @@ class Tile {
         ground = type.createNode(angle, heights, level);
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
-        //node.updateModelBound();
 
         applyTexture(around);
     }
@@ -138,8 +137,6 @@ class Tile {
             spatial.updateModelBound();
             node.attachChild(spatial);
         }
-//        node.updateModelBound();
-//        node.updateWorldBound();
     }
 
     protected void applyTexture(Map<Direction, TileTexType> around) {
