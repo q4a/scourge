@@ -138,6 +138,10 @@ public class Region implements NodeGenerator {
         }
     }
 
+    // the symbols for different levels on the map
+    private static final String LEVELS = "~*+-";
+    private static final String GROUND_LEVELS = LEVELS.substring(1);
+
     private void makeTiles(MapIO.RegionPoint[][] region) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
@@ -155,23 +159,20 @@ public class Region implements NodeGenerator {
                     region[y][x].setC('~');
                 } else if(region[y][x].getC() == 'F') {
                     makeForestTile(tiles[y][x]);
-                    region[y][x].setC('*');
+                    region[y][x].setC(lookAround(region, x, y));
                 } else if(region[y][x].getC() == 'H') {
                     storeHousePoisition(housePoints, x, y);
-                    region[y][x].setC('*');
+                    region[y][x].setC(lookAround(region, x, y));
                 } else if(region[y][x].getC() == 'x') {
                     roadPos.add(new Vector2f(x, y));
-                    region[y][x].setC('*');
+                    region[y][x].setC(lookAround(region, x, y));
                 }
             }
         }
 
-        // the symbols for different levels on the map
-        String levels = "~*+-";
-
-        for(int i = 1; i < levels.length(); i++) {
-            char c = levels.charAt(i);
-            char prevC = levels.charAt(i - 1);
+        for(int i = 1; i < LEVELS.length(); i++) {
+            char c = LEVELS.charAt(i);
+            char prevC = LEVELS.charAt(i - 1);
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                     if(region[y][x].getC() == c) {
@@ -229,6 +230,14 @@ public class Region implements NodeGenerator {
         }
 
         addHouses(housePoints);
+    }
+
+    private char lookAround(MapIO.RegionPoint[][] region, int x, int y) {
+        if(y - 1 >= 0 && GROUND_LEVELS.indexOf(region[y - 1][x].getC()) > -1) return region[y - 1][x].getC();
+        if(y + 1 < rows && GROUND_LEVELS.indexOf(region[y + 1][x].getC()) > -1) return region[y + 1][x].getC();
+        if(x - 1 >= 0 && GROUND_LEVELS.indexOf(region[y][x - 1].getC()) > -1) return region[y][x - 1].getC();
+        if(x + 1 < cols && GROUND_LEVELS.indexOf(region[y][x + 1].getC()) > -1) return region[y][x + 1].getC();
+        return GROUND_LEVELS.charAt(0);
     }
 
     private void storeHousePoisition(List<Set<Vector2f>> housePoints, int x, int y) {
