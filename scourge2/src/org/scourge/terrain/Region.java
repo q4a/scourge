@@ -43,7 +43,7 @@ public class Region implements NodeGenerator {
         logger.fine("Loading region: " + x + "," + y);
         long start = System.currentTimeMillis();
         long firstStart = start;
-        this.region = new Node("region");
+        this.region = new Node("region_" + (x / REGION_SIZE) + "_" + (y / REGION_SIZE));
         // this.region.clearRenderState(RenderState.StateType.Texture);
         region.setModelBound(new BoundingBox());
 
@@ -463,6 +463,6 @@ public class Region implements NodeGenerator {
     }
 
     public String getRegionKey() {
-        return "" + (x / REGION_SIZE) + "," + (y / REGION_SIZE);
+        return Terrain.getRegionKey(x / REGION_SIZE, y / REGION_SIZE);
     }
 }

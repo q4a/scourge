@@ -3,6 +3,7 @@ package org.scourge.terrain;
 import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.util.GameTaskQueue;
 import com.jme.util.GameTaskQueueManager;
 import org.scourge.Main;
@@ -26,8 +27,7 @@ public class Terrain implements NodeGenerator {
     private Main main;
     private Region currentRegion;
     private Map<String, Region> loadedRegions = new HashMap<String, Region>();
-    private Map<String, Thread> regionThreads = Collections.synchronizedMap(new HashMap<String, Thread>());
-    private Map<String, Region> pendingRegions = Collections.synchronizedMap(new HashMap<String, Region>());
+    private final Map<String, RegionLoaderThread> regionThreads = new HashMap<String, RegionLoaderThread>();
     private byte checkPendingRegions;
     private static Logger logger = Logger.getLogger(Terrain.class.toString());
     private boolean initialized;
@@ -109,20 +109,22 @@ public class Terrain implements NodeGenerator {
 
         // non-synchronized check (this could cause synchronization problems...)
         if(!loadedRegions.containsKey(key)) {
-            if(initialized) {
+
+            synchronized(regionThreads) {
                 if(!regionThreads.containsKey(key)) {
-                    Thread thread = new Thread("loader_" + key) {
-                        public void run() {
-                            doLoadRegion(rx, ry);
-                        }
-                    };
-                    thread.setPriority(Thread.MIN_PRIORITY);
+                    RegionLoaderThread thread = new RegionLoaderThread(this, rx, ry);
                     regionThreads.put(key, thread);
                     thread.start();
+
+                    if(!initialized) {
+                        try {
+                            thread.join();
+                            update();
+                        } catch (InterruptedException e) {
+                            // eh
+                        }
+                    }
                 }
-            } else {
-                doLoadRegion(rx, ry);
-                update();
             }
         }
 
@@ -131,40 +133,45 @@ public class Terrain implements NodeGenerator {
 
     // called from the main thread
     public void update() {
-        // make an unsynchronized check (a small hack: booleans don't need to be synchronized, but pendingRegions.isEmpty() would be)
+        // make an unsynchronized check (a small hack: pendingRegions.isEmpty() would have to be synchronized)
         if(checkPendingRegions > 0) {
             // add/remove regions in the main thread to avoid concurrent mod. exceptions
-            while(!pendingRegions.isEmpty()) {
-                String pendingKey = pendingRegions.keySet().iterator().next();
-                logger.info("Attaching region " + pendingKey);
-                Region region = pendingRegions.remove(pendingKey);
-                if(currentRegion == null) {
-                    currentRegion = region;
+            synchronized(regionThreads) {
+                for(Iterator<String> e = regionThreads.keySet().iterator(); e.hasNext();) {
+                    String key = e.next();
+                    RegionLoaderThread thread = regionThreads.get(key);
+                    if(thread.getRegion() != null) {
+                        logger.info("Attaching region " + key);
+
+                        e.remove();
+                        Region region = thread.getRegion();
+                        if(currentRegion == null) {
+                            currentRegion = region;
+                        }
+                        loadedRegions.put(key, region);
+
+                        // keep checking if there are threads out there
+                        checkPendingRegions--;
+
+
+                        // below this line doesn't need to be synchronized
+                        terrain.attachChild(region.getNode());
+
+                        // not sure which but one of the following is needed...
+                        region.getNode().updateRenderState();
+                        region.getNode().updateWorldData(0);
+                        region.getNode().updateModelBound();
+                        region.getNode().updateWorldBound();
+                        terrain.updateRenderState();
+                        terrain.updateWorldData(0);
+                        terrain.updateModelBound();
+                        terrain.updateWorldBound();
+                    }
                 }
-                loadedRegions.put(pendingKey, region);
-
-                terrain.attachChild(region.getNode());
-
-                // not sure which but one of the following is needed...
-                region.getNode().updateRenderState();
-                region.getNode().updateWorldData(0);
-                region.getNode().updateModelBound();
-                region.getNode().updateWorldBound();
-                terrain.updateRenderState();
-                terrain.updateWorldData(0);
-                terrain.updateModelBound();
-                terrain.updateWorldBound();
             }
 
             removeFarRegions();
-
-            // keep checking if there are threads out there
-            checkPendingRegions--;
-
-            if(checkPendingRegions == 0) {
-                logger.info("loaded regions: " + loadedRegions.keySet());
-            }
-        }        
+        }
     }
 
     // main thread
@@ -186,26 +193,16 @@ public class Terrain implements NodeGenerator {
             Region region = loadedRegions.remove(s);
             terrain.detachChild(region.getNode());
         }
+
+        logger.info("Current: " + rx + "," + ry);
+        logger.info("loaded regions: " + loadedRegions.keySet());
+        System.err.println("terrain has " + terrain.getChildren().size() + " children: ");
+        for(Spatial sp : terrain.getChildren()) {
+            System.err.println("\t" + sp.getName());
+        }
+        
         System.gc();
         Thread.yield();
-    }
-
-    // worker thread
-    private void doLoadRegion(int rx, int ry) {
-        String key = getRegionKey(rx, ry);
-        try {
-            main.setLoading(true);
-            logger.info("Loading region: " + key);
-            final Region region = new Region(this, rx * Region.REGION_SIZE, ry * Region.REGION_SIZE);
-            pendingRegions.put(key, region);
-            checkPendingRegions++;            
-            regionThreads.remove(key);
-        } catch(IOException exc) {
-            logger.log(Level.SEVERE, exc.getMessage(), exc);
-        } finally {
-            main.setLoading(false);
-            logger.info("Loaded region: " + key);
-        }
     }
 
     public Region getRegionAtPoint(Vector3f v) {
@@ -214,7 +211,11 @@ public class Terrain implements NodeGenerator {
         return loadedRegions.get(getRegionKey(rx, rz));
     }
 
-    private String getRegionKey(int rx, int rz) {
+    public static String getRegionKey(int rx, int rz) {
         return "" + rx + "," + rz;
+    }
+
+    public void setRegionPending() {
+        checkPendingRegions++;
     }
 }
