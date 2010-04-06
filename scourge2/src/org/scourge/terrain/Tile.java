@@ -5,6 +5,7 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.PassNode;
 import com.jme.scene.PassNodeState;
@@ -199,11 +200,13 @@ class Tile {
         if(t1 == null) {
             ImageIcon icon = ShapeUtil.loadImageIcon(path);
         	t1 = TextureManager.loadTexture(icon.getImage(),
-                                            Texture.MinificationFilter.Trilinear,
+                                            Texture.MinificationFilter.NearestNeighborNearestMipMap,
+                                                    //Trilinear,
                                             Texture.MagnificationFilter.Bilinear,
                                             true);
 	        t1.setRotation(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * stencil.angle, Vector3f.UNIT_Z));
 	        t1.setWrap(Texture.WrapMode.Repeat);
+            t1.setHasBorder(false);
 	        t1.setApply(Texture.ApplyMode.Combine);
 	        t1.setCombineFuncRGB(Texture.CombinerFunctionRGB.Replace);
 	        t1.setCombineSrc0RGB(Texture.CombinerSource.Previous);
@@ -225,6 +228,7 @@ class Tile {
 
             Texture t0 = ShapeUtil.loadTexture(texture);
             t0.setWrap(Texture.WrapMode.Repeat);
+            t0.setHasBorder(false);
             t0.setApply(Texture.ApplyMode.Modulate);
             ts.setTexture(t0, 0);
 
