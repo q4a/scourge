@@ -89,6 +89,11 @@ public enum Model {
             return getAlphaSpatial(7);
         }
     },
+    ladder("./data/3ds/ladder.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(1, 0);
+        }
+    }
     ;
 
     // currently optimized for a temperate forest
@@ -140,8 +145,14 @@ public enum Model {
     }
 
     protected Spatial getAlphaSpatial(float scale) {
+        return getAlphaSpatial(scale, -90.0f);
+    }
+
+    protected Spatial getAlphaSpatial(float scale, float rotateX) {
         Spatial spatial = ShapeUtil.importModel(getModelPath(), "./data/textures", name());
-        spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(-90.0f * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
+        if(rotateX != 0) {
+            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(rotateX * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
+        }
         spatial.setLocalScale(scale);
 
         BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();

@@ -145,6 +145,7 @@ public class Region implements NodeGenerator {
     private void makeTiles(MapIO.RegionPoint[][] region) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
+        Set<Vector2f> ladderPos = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
@@ -165,6 +166,9 @@ public class Region implements NodeGenerator {
                     region[y][x].setC(lookAround(region, x, y));
                 } else if(region[y][x].getC() == 'x') {
                     roadPos.add(new Vector2f(x, y));
+                    region[y][x].setC(lookAround(region, x, y));
+                } else if(region[y][x].getC() == 'L') {
+                    ladderPos.add(new Vector2f(x, y));
                     region[y][x].setC(lookAround(region, x, y));
                 }
             }
@@ -230,6 +234,36 @@ public class Region implements NodeGenerator {
         }
 
         addHouses(housePoints);
+        addLadders(ladderPos);
+    }
+
+    private void addLadders(Set<Vector2f> ladderPos) {
+        for(Vector2f point : ladderPos) {
+            int x = (int)point.getX();
+            int y = (int)point.getY();
+            
+            Tile eastTile = x < cols + EDGE_BUFFER * 2 - 1 ? tiles[y][x + 1] : null;
+            Tile westTile = x > 0 ? tiles[y][x - 1] : null;
+            Tile southTile = y < rows + EDGE_BUFFER * 2 - 1 ? tiles[y + 1][x] : null;
+            Tile northTile = y > 0 ? tiles[y - 1][x] : null;
+
+            float rotation = 0.0f;
+            Vector3f trans = new Vector3f(0, 0, 0);
+            if(eastTile != null && eastTile.getLevel() > tiles[y][x].getLevel()) {
+                rotation = 180.0f;
+                trans.x+=4;
+            } else if(westTile != null && westTile.getLevel() > tiles[y][x].getLevel()) {
+                rotation = 0.0f;
+                trans.x-=4;
+            } else if(southTile != null && southTile.getLevel() > tiles[y][x].getLevel()) {
+                rotation = 270.0f;
+                trans.z+=4;
+            } else if(northTile != null && northTile.getLevel() > tiles[y][x].getLevel()) {
+                rotation = 90.0f;
+                trans.z-=4;
+            }
+            tiles[y][x].addModel(Model.ladder, trans, 1, rotation, Vector3f.UNIT_Y);
+        }
     }
 
     private char lookAround(MapIO.RegionPoint[][] region, int x, int y) {
