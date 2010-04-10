@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Vector;
 
 /**
  * User: gabor
@@ -20,11 +21,28 @@ public class Editor extends JFrame implements MapEditorListener {
     private JLabel point = new JLabel();
     private JComboBox mapSymbol = new JComboBox(MapSymbol.values());
     private JComboBox climate = new JComboBox(Climate.values());
-    private JComboBox level = new JComboBox(new String[] { "ground", "level 1", "level 2", "level 3", "level 4"});
+    private JComboBox level = new JComboBox();
+    private JCheckBox lockSymbol = new JCheckBox("Lock");
     private JCheckBox lockClimate = new JCheckBox("Lock");
+    private JCheckBox lockLevel = new JCheckBox("Lock");
+    private Brush brush = Brush.single;
+
+    public enum Brush {
+        single, two_by_two, three_by_three, small_cloud, medium_cloud, large_cloud;
+    }
 
     public Editor() throws IOException {
         super("Scourge II Editor");
+
+        Vector<String> levels = new Vector<String>();
+        for(int i = 0; i < MapEditor.borders.length; i++) {
+            if(i == 0) {
+                levels.add("Ground level");
+            } else {
+                levels.add("Level " + i);
+            }
+        }
+        level.setModel(new DefaultComboBoxModel(levels));
 
         mapEditor = new MapEditor(this);
         mapEditor.loadMap();
@@ -56,25 +74,63 @@ public class Editor extends JFrame implements MapEditorListener {
 
         lockClimate.setSelected(true);
         JPanel right = new JPanel(new BorderLayout());
-        JPanel pp = new JPanel(new GridLayout(4, 2));
+        JPanel rightTop = new JPanel();
+        right.add(rightTop, BorderLayout.NORTH);
+        rightTop.setLayout(new BoxLayout(rightTop, BoxLayout.Y_AXIS));
+        JPanel pp = new JPanel(new GridLayout(6, 2));
         pp.add(new JLabel("Symbol:"));
         pp.add(mapSymbol);
+        pp.add(new JLabel("Lock symbol?"));
+        pp.add(lockSymbol);
         pp.add(new JLabel("Climate:"));
         pp.add(climate);
         pp.add(new JLabel("Lock climate?"));
         pp.add(lockClimate);
         pp.add(new JLabel("Level:"));
         pp.add(level);
+        pp.add(new JLabel("Lock level?"));
+        pp.add(lockLevel);
         pp.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
                                                         BorderFactory.createTitledBorder("Properties")));
-        right.add(pp, BorderLayout.NORTH);
+        rightTop.add(pp);
+
+        JPanel pp2 = new JPanel(new GridLayout(Brush.values().length, 2));
+        pp2.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                                                        BorderFactory.createTitledBorder("Brushes")));
+        rightTop.add(pp2);
+        final JToggleButton[] brushButtons = new JToggleButton[Brush.values().length];
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                int i = 0;
+                for(JToggleButton brushButton : brushButtons) {
+                    if(brushButton != event.getSource()) {
+                        brushButton.setSelected(!((JToggleButton) event.getSource()).isSelected());
+                    } else {
+                        brush = Brush.valueOf(brushButton.getText());
+                    }
+                    i++;
+                }
+            }
+        };
+        int i = 0;
+        for(Brush brush : Brush.values()) {
+            JToggleButton brushButton = new JToggleButton(brush.name());
+            pp2.add(brushButton);
+            brushButton.addActionListener(listener);
+            if(i == 0) {
+                brushButton.setSelected(true);
+            }
+            brushButtons[i++] = brushButton;            
+        }
+
 
         JSplitPane split = new JSplitPane();
         split.setLeftComponent(sp);
         split.setRightComponent(right);
         split.setContinuousLayout(true);
         split.setOneTouchExpandable(true);
-        split.setDividerLocation(800);
+        split.setDividerLocation(700);
         setLayout(new BorderLayout());
         add(split, BorderLayout.CENTER);
         add(north, BorderLayout.NORTH);
@@ -116,6 +172,14 @@ public class Editor extends JFrame implements MapEditorListener {
 
     public boolean isClimateLocked() {
         return lockClimate.isSelected();
+    }
+
+    public boolean isSymbolLocked() {
+        return lockSymbol.isSelected();
+    }
+
+    public boolean isLevelLocked() {
+        return lockLevel.isSelected();
     }
 
     public int getLevel() {

@@ -31,12 +31,21 @@ public class MapEditor extends JPanel {
     public static final int CHAR_WIDTH = 11;
     private int cursorX = 0, cursorY = 0;
     private int sx, sy, ex, ey;
-    private char key = '~';
     private JScrollPane scrollPane;
     private java.util.List<MapEditorListener> listeners = new ArrayList<MapEditorListener>();
     private Editor editor;
-    private static Map<Character, Color> backgrounds = new HashMap<Character, Color>();
+    private static final Map<Character, Color> backgrounds = new HashMap<Character, Color>();
 
+    // try to pick pairs of opposite colors
+    public static final Color[] borders = new Color[] {
+            Color.white,
+            Color.yellow,
+            Color.blue,
+            Color.red,
+            Color.green,
+            Color.magenta,
+            Color.cyan
+    };
 
     static {
         backgrounds.put((char)Climate.alpine.ordinal(), new Color(0x40, 0x35, 0x00));
@@ -87,9 +96,9 @@ public class MapEditor extends JPanel {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
 
-        point[cursorY][cursorX] = (editor.getLevel() << 16) +
+        point[cursorY][cursorX] = ((editor.isLevelLocked() ? getLevel(cursorX, cursorY) : editor.getLevel()) << 16) +
                                   ((editor.isClimateLocked() ? getClimate(cursorX, cursorY) : editor.getClimate()).ordinal() << 8) +
-                                  editor.getMapSymbol().getC();
+                                  (editor.isSymbolLocked() ? getMapSymbol(cursorX, cursorY) : editor.getMapSymbol()).getC();
         repaint();
     }
 
@@ -201,14 +210,22 @@ public class MapEditor extends JPanel {
             for(int xp = sx; xp < ex; xp++) {
                 if(xp < 0 || xp >= cols) continue;
 
-                char c = (char)(line[xp] & 0xff);
                 int bg = (line[xp] & 0xff00) >> 8;
-                MapSymbol symbol = MapSymbol.find(c);
-                Color color = symbol == null ? Color.gray : symbol.getColor();
                 Color background = backgrounds.get((char)bg);
                 if(background == null) background = Color.black;
                 g.setColor(background);
                 g.fillRect(xp * CHAR_WIDTH, yp * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
+
+                int level = (line[xp] & 0xff0000) >> 16;
+                if(level > 0) {
+                    Color borderColor = borders[level];
+                    g.setColor(borderColor);
+                    g.drawRect(xp * CHAR_WIDTH, yp * CHAR_HEIGHT, CHAR_WIDTH - 1, CHAR_HEIGHT - 1);
+                }
+
+                char c = (char)(line[xp] & 0xff);
+                MapSymbol symbol = MapSymbol.find(c);
+                Color color = symbol == null ? Color.gray : symbol.getColor();
                 g.setColor(color);
                 g.drawString("" + c, xp * CHAR_WIDTH, (yp + 1) * CHAR_HEIGHT);
 
