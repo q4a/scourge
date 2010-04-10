@@ -7,16 +7,19 @@ import org.scourge.terrain.Region;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
-
-import static org.apache.commons.io.FileUtils.readLines;
 
 /**
  * User: gabor
@@ -79,16 +82,21 @@ public class MapEditor extends JPanel {
             }
         });
 
+        setCursor(createInvisibleCursor());
         setFocusTraversalKeysEnabled(false);
         requestFocusInWindow();
         requestFocus();
     }
 
+    private Cursor createInvisibleCursor() {
+        Dimension bestCursorDim = Toolkit.getDefaultToolkit().getBestCursorSize(2, 2);
+        BufferedImage transparentImage = new BufferedImage(bestCursorDim.width, bestCursorDim.height, BufferedImage.TYPE_INT_ARGB);
+        return Toolkit.getDefaultToolkit( ).createCustomCursor(transparentImage, new Point(1, 1), "HiddenCursor");
+    }
+
     private void moveCursor(MouseEvent mouseEvent) {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
-//                System.err.println("event=" + mouseEvent.getX() + "," + mouseEvent.getY() +
-//                                   " cursor=" + cursorX + "," + cursorY);
         repaint();
     }
 
@@ -102,9 +110,9 @@ public class MapEditor extends JPanel {
                     continue;
                 }
                 
-                point[y][x] = ((editor.isLevelLocked() ? getLevel(cursorX, cursorY) : editor.getLevel()) << 16) +
-                              ((editor.isClimateLocked() ? getClimate(cursorX, cursorY) : editor.getClimate()).ordinal() << 8) +
-                              (editor.isSymbolLocked() ? getMapSymbol(cursorX, cursorY) : editor.getMapSymbol()).getC();            
+                point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
+                              ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
+                              (editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol()).getC();            
             }
         }
         repaint();
@@ -140,7 +148,7 @@ public class MapEditor extends JPanel {
         point = new int[rows][cols];
         for(int y = 0; y < rows; y++) {
             for(int x = 0; x < cols; x++) {
-                int red = (pixels[y * cols + x] & 0x00FF0000) >> 16;
+                //int red = (pixels[y * cols + x] & 0x00FF0000) >> 16;
                 int green = (pixels[y * cols + x] & 0x0000FF00) >> 8;
                 int blue = (pixels[y * cols + x] & 0x000000FF);
 
@@ -256,7 +264,11 @@ public class MapEditor extends JPanel {
         }
 
         // cursor
-        g.setColor(Color.yellow);
+        g.setColor(Color.orange);
+        g.drawRect(cursorX * CHAR_WIDTH - 1, cursorY * CHAR_HEIGHT - 1,
+                   (editor.getBrush().getW() * CHAR_WIDTH) + 1,
+                   (editor.getBrush().getH() * CHAR_HEIGHT) + 1);
+        g.setColor(Color.black);
         g.drawRect(cursorX * CHAR_WIDTH, cursorY * CHAR_HEIGHT,
                    (editor.getBrush().getW() * CHAR_WIDTH) - 1,
                    (editor.getBrush().getH() * CHAR_HEIGHT) - 1);

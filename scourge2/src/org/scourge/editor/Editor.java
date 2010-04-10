@@ -99,14 +99,12 @@ public class Editor extends JFrame implements MapEditorListener {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                int i = 0;
                 for(JToggleButton brushButton : brushButtons) {
                     if(brushButton != event.getSource()) {
                         brushButton.setSelected(!((JToggleButton) event.getSource()).isSelected());
                     } else {
                         brush = Brush.valueOf(brushButton.getText());
                     }
-                    i++;
                 }
             }
         };

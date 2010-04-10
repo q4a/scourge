@@ -6,7 +6,7 @@
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="removed unused code">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" afterPath="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/editor/Brush.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" afterPath="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -71,50 +71,10 @@
       <file leaf-file-name="MapEditor.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="16" selection-start="3391" selection-end="3391" vertical-scroll-proportion="0.8495575">
+            <state line="114" column="74" selection-start="4071" selection-end="4071" vertical-scroll-proportion="0.8259587">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Editor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Editor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="71" column="36" selection-start="2506" selection-end="2506" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Brush.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Brush.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="11" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MapSymbol.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="28" selection-start="406" selection-end="406" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MapEditorListener.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditorListener.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="0" selection-start="211" selection-end="211" vertical-scroll-proportion="0.0">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -530,13 +490,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditorListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="211" selection-end="211" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Climate.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="58" selection-start="167" selection-end="167" vertical-scroll-proportion="0.09293321">
@@ -544,9 +497,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditorListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="0" selection-start="211" selection-end="211" vertical-scroll-proportion="0.15929204">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="28" selection-start="406" selection-end="406" vertical-scroll-proportion="0.0">
+        <state line="17" column="28" selection-start="405" selection-end="406" vertical-scroll-proportion="0.30088496">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -555,14 +515,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Brush.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="11" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0">
+        <state line="9" column="11" selection-start="147" selection-end="147" vertical-scroll-proportion="0.15929204">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Editor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="36" selection-start="2506" selection-end="2506" vertical-scroll-proportion="0.0">
+        <state line="107" column="0" selection-start="4296" selection-end="4296" vertical-scroll-proportion="0.43952802">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -571,7 +531,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="16" selection-start="3391" selection-end="3391" vertical-scroll-proportion="0.8495575">
+        <state line="114" column="74" selection-start="4071" selection-end="4071" vertical-scroll-proportion="0.8259587">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
