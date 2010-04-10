@@ -27,10 +27,6 @@ public class Editor extends JFrame implements MapEditorListener {
     private JCheckBox lockLevel = new JCheckBox("Lock");
     private Brush brush = Brush.single;
 
-    public enum Brush {
-        single, two_by_two, three_by_three, small_cloud, medium_cloud, large_cloud;
-    }
-
     public Editor() throws IOException {
         super("Scourge II Editor");
 
@@ -73,6 +69,7 @@ public class Editor extends JFrame implements MapEditorListener {
         });
 
         lockClimate.setSelected(true);
+        lockLevel.setSelected(true);
         JPanel right = new JPanel(new BorderLayout());
         JPanel rightTop = new JPanel();
         right.add(rightTop, BorderLayout.NORTH);
@@ -184,5 +181,9 @@ public class Editor extends JFrame implements MapEditorListener {
 
     public int getLevel() {
         return level.getSelectedIndex();
+    }
+
+    public Brush getBrush() {
+        return brush;
     }
 }

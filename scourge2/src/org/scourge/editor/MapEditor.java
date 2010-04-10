@@ -96,9 +96,17 @@ public class MapEditor extends JPanel {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
 
-        point[cursorY][cursorX] = ((editor.isLevelLocked() ? getLevel(cursorX, cursorY) : editor.getLevel()) << 16) +
-                                  ((editor.isClimateLocked() ? getClimate(cursorX, cursorY) : editor.getClimate()).ordinal() << 8) +
-                                  (editor.isSymbolLocked() ? getMapSymbol(cursorX, cursorY) : editor.getMapSymbol()).getC();
+        for(int x = cursorX; x < cursorX + editor.getBrush().getW(); x++) {
+            for(int y = cursorY; y < cursorY + editor.getBrush().getH(); y++) {
+                if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
+                    continue;
+                }
+                
+                point[y][x] = ((editor.isLevelLocked() ? getLevel(cursorX, cursorY) : editor.getLevel()) << 16) +
+                              ((editor.isClimateLocked() ? getClimate(cursorX, cursorY) : editor.getClimate()).ordinal() << 8) +
+                              (editor.isSymbolLocked() ? getMapSymbol(cursorX, cursorY) : editor.getMapSymbol()).getC();            
+            }
+        }
         repaint();
     }
 
@@ -228,11 +236,6 @@ public class MapEditor extends JPanel {
                 Color color = symbol == null ? Color.gray : symbol.getColor();
                 g.setColor(color);
                 g.drawString("" + c, xp * CHAR_WIDTH, (yp + 1) * CHAR_HEIGHT);
-
-                if(xp == cursorX && yp == cursorY) {
-                    g.setColor(Color.yellow);
-                    g.drawRect(xp * CHAR_WIDTH, yp * CHAR_HEIGHT, CHAR_WIDTH - 1, CHAR_HEIGHT - 1);
-                }
             }
         }
 
@@ -251,6 +254,12 @@ public class MapEditor extends JPanel {
                 g.drawLine(xpos, sy * CHAR_HEIGHT, xpos, sy * CHAR_HEIGHT + r.height);
             }
         }
+
+        // cursor
+        g.setColor(Color.yellow);
+        g.drawRect(cursorX * CHAR_WIDTH, cursorY * CHAR_HEIGHT,
+                   (editor.getBrush().getW() * CHAR_WIDTH) - 1,
+                   (editor.getBrush().getH() * CHAR_HEIGHT) - 1);
     }
 
     private void fireEvent(int sx, int sy, int ex, int ey) {
