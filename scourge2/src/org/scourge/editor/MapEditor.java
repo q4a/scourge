@@ -34,17 +34,11 @@ public class MapEditor extends JPanel {
     private char key = '~';
     private JScrollPane scrollPane;
     private java.util.List<MapEditorListener> listeners = new ArrayList<MapEditorListener>();
+    private Editor editor;
+    private static Map<Character, Color> backgrounds = new HashMap<Character, Color>();
 
-    private static Map<Character, Color> colors = new HashMap<Character, Color>();
-    private static Map<Character, Color> backgrounds = new HashMap<Character, Color>();    
+
     static {
-        colors.put('~', Color.blue);
-        colors.put('*', Color.green);
-        colors.put('B', new Color(0xff, 0xe0, 0x00));
-        colors.put('x', new Color(0xff, 0xe0, 0x00));
-        colors.put('F', new Color(0x00, 0xf0, 0x80));
-        colors.put('H', new Color(0x80, 0xff, 0x00));
-
         backgrounds.put((char)Climate.alpine.ordinal(), new Color(0x40, 0x35, 0x00));
         backgrounds.put((char)Climate.boreal.ordinal(), new Color(0x00, 0x40, 0x00));
         backgrounds.put((char)Climate.temperate.ordinal(), new Color(0x00, 0x40, 0x35));
@@ -53,7 +47,8 @@ public class MapEditor extends JPanel {
 
     }
 
-    public MapEditor() {
+    public MapEditor(Editor editor) {
+        this.editor = editor;
         addMouseMotionListener(new MouseMotionAdapter() {
 
             @Override
@@ -75,16 +70,6 @@ public class MapEditor extends JPanel {
             }
         });
 
-        addKeyListener(new KeyAdapter() {
-
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-                key = keyEvent.getKeyChar();
-//                System.err.println("key=" + key);
-                fireEvent(key);
-            }
-        });
-
         setFocusTraversalKeysEnabled(false);
         requestFocusInWindow();
         requestFocus();
@@ -101,8 +86,10 @@ public class MapEditor extends JPanel {
     private void updatePoint(MouseEvent mouseEvent) {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
-        point[cursorY][cursorX] &= 0xffffff00;
-        point[cursorY][cursorX] += key;
+
+        point[cursorY][cursorX] = (editor.getLevel() << 16) +
+                                  ((editor.isClimateLocked() ? getClimate(cursorX, cursorY) : editor.getClimate()).ordinal() << 8) +
+                                  editor.getMapSymbol().getC();
         repaint();
     }
 
@@ -179,6 +166,19 @@ public class MapEditor extends JPanel {
         FileUtils.deleteQuietly(new File("./data/maps/land.bin"));
     }
 
+    public MapSymbol getMapSymbol(int x, int y) {
+        return MapSymbol.find((char)(point[y][x] & 0xff));
+    }
+
+    public Climate getClimate(int x, int y) {
+        return Climate.values()[(point[y][x] & 0xff00) >> 8];
+    }
+
+    public int getLevel(int x, int y) {
+        return (point[y][x] & 0xff0000) >> 16; 
+    }
+
+
     @Override
     protected void paintComponent(Graphics g) {
         // why is this so hard?!
@@ -203,8 +203,8 @@ public class MapEditor extends JPanel {
 
                 char c = (char)(line[xp] & 0xff);
                 int bg = (line[xp] & 0xff00) >> 8;
-                Color color = colors.get(c);
-                if(color == null) color = Color.gray;
+                MapSymbol symbol = MapSymbol.find(c);
+                Color color = symbol == null ? Color.gray : symbol.getColor();
                 Color background = backgrounds.get((char)bg);
                 if(background == null) background = Color.black;
                 g.setColor(background);
@@ -242,15 +242,8 @@ public class MapEditor extends JPanel {
         }
     }
 
-    private void fireEvent(char key) {
-        for(MapEditorListener listener : listeners) {
-            listener.keyChanged(key);
-        }
-    }
-
     public void addListener(MapEditorListener listener) {
         listeners.add(listener);
-        listener.keyChanged(key);
         listener.mapScrolled(sx, sy, ex, ey, cursorX, cursorY);
     }
 

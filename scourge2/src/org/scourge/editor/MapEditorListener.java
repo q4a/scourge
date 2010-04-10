@@ -7,5 +7,4 @@ package org.scourge.editor;
  */
 public interface MapEditorListener {
     void mapScrolled(int sx, int sy, int ex, int ey, int cursorX, int cursorY);
-    void keyChanged(char key);
 }
