@@ -38,6 +38,11 @@ public class Region implements NodeGenerator {
         load();
     }
 
+    /**
+     * When loading a region, an extra buffer of EDGE_BUFFER tiles is loaded around the edges.
+     * This is so the edge detection algorithms draw correctly for the section that is displayed.
+     * @throws IOException error loading map
+     */
     public void load() throws IOException {
         logger.fine("----------------------------------------------------------------");
         logger.fine("Loading region: " + x + "," + y);
@@ -152,7 +157,7 @@ public class Region implements NodeGenerator {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 tiles[y][x] = new Tile(terrain.getMain());
                 if(region[y][x].getC() == 'B') {
-                    if(check(y - 1, x, '~', region) && check(y + 1, x, '~', region)) {
+                    if(check(y - 1, x, region[y][x].getLevel(), region) && check(y + 1, x, region[y][x].getLevel(), region)) {
                         tiles[y][x].addModel(Model.bridge, new Vector3f(0, 0, 0), 1, 90, Vector3f.UNIT_Y);
                     } else {
                         tiles[y][x].addModel(Model.bridge);
@@ -160,81 +165,85 @@ public class Region implements NodeGenerator {
                     region[y][x].setC('~');
                 } else if(region[y][x].getC() == 'F') {
                     makeForestTile(tiles[y][x]);
-                    region[y][x].setC(lookAround(region, x, y));
+                    region[y][x].setC('*');
                 } else if(region[y][x].getC() == 'H') {
                     storeHousePoisition(housePoints, x, y);
-                    region[y][x].setC(lookAround(region, x, y));
+                    region[y][x].setC('*');
                 } else if(region[y][x].getC() == 'x') {
                     roadPos.add(new Vector2f(x, y));
-                    region[y][x].setC(lookAround(region, x, y));
+                    region[y][x].setC('*');
                 } else if(region[y][x].getC() == 'L') {
                     ladderPos.add(new Vector2f(x, y));
-                    region[y][x].setC(lookAround(region, x, y));
+                    region[y][x].setC('*');
                 }
             }
         }
 
-        for(int i = 1; i < LEVELS.length(); i++) {
-            char c = LEVELS.charAt(i);
-            char prevC = LEVELS.charAt(i - 1);
-            for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
-                for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
-                    if(region[y][x].getC() == c) {
+        char c = '*';
+        for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+            for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
+                if(region[y][x].getC() != '~') {
 
-                        tiles[y][x].setLevel(i - 1);
+                    int level = region[y][x].getLevel();
+                    tiles[y][x].setLevel(level);
 
-                        if(check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
-                        } else if(!check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
-                        } else if(check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
-                        } else if(check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
+                    if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
+                    } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
+                    } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
+                    } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
 
-                        } else if(!check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
-                        } else if(check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
-                        } else if(!check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
-                        } else if(check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
+                    } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
+                    } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
+                    } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
+                    } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
 
-                        } else if(!check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
-                        } else if(check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
-                        } else if(!check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
-                        } else if(!check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
+                    } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
+                    } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
+                    } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
+                    } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
 
-                        } else if(!check(y - 1, x, prevC, region) && check(y, x - 1, prevC, region) && check(y, x + 1, prevC, region) && !check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
-                        } else if(check(y - 1, x, prevC, region) && !check(y, x - 1, prevC, region) && !check(y, x + 1, prevC, region) && check(y + 1, x, prevC, region)) {
-                            tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
+                    } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
+                    } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
+                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
 
+                    } else {
+                        Vector2f point = new Vector2f(x, y);
+                        if(roadPos.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
+                        } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
+                                  x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
+                            // this is so edges meet on the same type
+                            tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
                         } else {
-                            Vector2f point = new Vector2f(x, y);
-                            if(roadPos.contains(point)) {
-                                tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
-                            } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
-                                      x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
-                                // this is so edges meet on the same type
-                                tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
-                            } else {
-                                int type = (int)(terrain.getMain().getRandom().nextFloat() * 5);
-                                tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
-                            }
+                            int type = (int)(terrain.getMain().getRandom().nextFloat() * 5);
+                            tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
                         }
                     }
                 }
             }
         }
 
+
         addHouses(housePoints);
         addLadders(ladderPos);
+    }
+
+    private boolean check(int y, int x, int level, MapIO.RegionPoint[][] region) {
+        return (y >= 0 && x >= 0 && y < REGION_SIZE + EDGE_BUFFER * 2 && x < REGION_SIZE + EDGE_BUFFER * 2 &&
+                region[y][x].getC() != '~' && region[y][x].getLevel() >= level);
     }
 
     private void addLadders(Set<Vector2f> ladderPos) {
@@ -266,27 +275,6 @@ public class Region implements NodeGenerator {
             }
             tiles[y][x].addModel(Model.ladder, trans, 1, rotation, Vector3f.UNIT_Y);
         }
-    }
-
-    private char lookAround(MapIO.RegionPoint[][] region, int x, int y) {
-        List<Character> points = new ArrayList<Character>();
-        if(y - 1 >= 0 && GROUND_LEVELS.indexOf(region[y - 1][x].getC()) > -1) points.add(region[y - 1][x].getC());
-        if(y + 1 < rows && GROUND_LEVELS.indexOf(region[y + 1][x].getC()) > -1) points.add(region[y + 1][x].getC());
-        if(x - 1 >= 0 && GROUND_LEVELS.indexOf(region[y][x - 1].getC()) > -1) points.add(region[y][x - 1].getC());
-        if(x + 1 < cols && GROUND_LEVELS.indexOf(region[y][x + 1].getC()) > -1) points.add(region[y][x + 1].getC());
-
-        char minChar = GROUND_LEVELS.charAt(0);
-        if(!points.isEmpty()) {
-            int minIndex = 1000;
-            for(char c : points) {
-                int n = GROUND_LEVELS.indexOf(c);
-                if(n >= 0 && n < minIndex) {
-                    minIndex = n;
-                    minChar = c;
-                }
-            }
-        }
-        return minChar;
     }
 
     private void storeHousePoisition(List<Set<Vector2f>> housePoints, int x, int y) {
@@ -348,10 +336,6 @@ public class Region implements NodeGenerator {
                       (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
                       terrain.getMain().getRandom().nextFloat() * 360.0f,
                       Vector3f.UNIT_Z);
-    }
-
-    private boolean check(int y, int x, char c, MapIO.RegionPoint[][] region) {
-        return (y >= 0 && x >= 0 && y < REGION_SIZE + EDGE_BUFFER * 2 && x < REGION_SIZE + EDGE_BUFFER * 2 && region[y][x].getC() != c);
     }
 
     // hack... this should be in TileType.QUAD but I was lazy

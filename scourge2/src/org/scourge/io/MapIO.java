@@ -71,10 +71,12 @@ public class MapIO {
     public class RegionPoint {
         private char c;
         private Climate climate;
+        private int level;
 
         public RegionPoint(int value) {
             c = (char)(value & 0xff);
             climate = Climate.values()[(value & 0xff00) >> 8];
+            level = (value & 0xff0000) >> 16;
         }
 
         public char getC() {
@@ -91,6 +93,10 @@ public class MapIO {
 
         public Climate getClimate() {
             return climate;
+        }
+
+        public int getLevel() {
+            return level;
         }
     }
 

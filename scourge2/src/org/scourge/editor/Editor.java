@@ -19,13 +19,25 @@ public class Editor extends JFrame implements MapEditorListener {
     private MapEditor mapEditor;
     private JLabel position = new JLabel();
     private JLabel point = new JLabel();
-    private JComboBox mapSymbol = new JComboBox(MapSymbol.values());
+    private JComboBox mapSymbol = new JComboBox();
     private JComboBox climate = new JComboBox(Climate.values());
     private JComboBox level = new JComboBox();
     private JCheckBox lockSymbol = new JCheckBox("Lock");
     private JCheckBox lockClimate = new JCheckBox("Lock");
     private JCheckBox lockLevel = new JCheckBox("Lock");
     private Brush brush = Brush.single;
+    private static final String HOW_TO_TEXT = "Notes on the map:\n" +
+                                              "\n" +
+                                              "The map has some limitations, including:\n" +
+                                              "- Make sure there is 1 tile space on each side of a house otherwise the door may not be accessible.\n" +
+                                              "- Do not put houses across or at the edge of a region boundary.\n" +
+                                              "- You can only have a single-level cliff edge. If you want to make a cliff at level 4, levels 1,2,3 must be in front of it like a staircase. " +
+                                              "In other words, you can not put two levels next to each other where the difference in levels is more than 1.\n" +
+                                              "- Water tiles can only go on the ground level.\n" +
+                                              "- Bridges can only span 1 water tile.\n" +
+                                              "- There is no undo, don't forget to save!\n" +
+                                              "- Ramps should be right next to the cliff and need at least 2x3 space. See map for examples.\n" +
+                                              "\nSome of these limitations may be fixed in later versions.";
 
     public Editor() throws IOException {
         super("Scourge II Editor");
@@ -39,6 +51,12 @@ public class Editor extends JFrame implements MapEditorListener {
             }
         }
         level.setModel(new DefaultComboBoxModel(levels));
+
+        Vector<String> symbols = new Vector<String>();
+        for(MapSymbol symbol : MapSymbol.values()) {
+            symbols.add(symbol.name() + " (" + symbol.getC() + ")");
+        }
+        mapSymbol.setModel(new DefaultComboBoxModel(symbols));
 
         mapEditor = new MapEditor(this);
         mapEditor.loadMap();
@@ -119,6 +137,18 @@ public class Editor extends JFrame implements MapEditorListener {
             brushButtons[i++] = brushButton;            
         }
 
+        JTextArea ta = new JTextArea(HOW_TO_TEXT);
+        ta.setEditable(false);
+        ta.setWrapStyleWord(true);
+        ta.setLineWrap(true);
+        ta.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
+        JScrollPane sp2 = new JScrollPane(ta);
+        JPanel ppp = new JPanel(new BorderLayout());
+        ppp.add(sp2);
+        ppp.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                                                        BorderFactory.createTitledBorder("Notes")));
+        right.add(ppp);
+
 
         JSplitPane split = new JSplitPane();
         split.setLeftComponent(sp);
@@ -158,7 +188,7 @@ public class Editor extends JFrame implements MapEditorListener {
     }
 
     public MapSymbol getMapSymbol() {
-        return (MapSymbol)mapSymbol.getSelectedItem();
+        return MapSymbol.values()[mapSymbol.getSelectedIndex()];
     }
 
     public Climate getClimate() {
