@@ -251,27 +251,42 @@ public class Region implements NodeGenerator {
             Vector3f trans = new Vector3f(0, 0, 0);
             if(eastTile != null && eastTile.getLevel() > tiles[y][x].getLevel()) {
                 rotation = 180.0f;
-                trans.x+=4;
+                trans.x+=2;
             } else if(westTile != null && westTile.getLevel() > tiles[y][x].getLevel()) {
                 rotation = 0.0f;
-                trans.x-=4;
+                trans.x+=14;
+                trans.z+=ShapeUtil.WALL_WIDTH;
             } else if(southTile != null && southTile.getLevel() > tiles[y][x].getLevel()) {
-                rotation = 270.0f;
-                trans.z+=4;
-            } else if(northTile != null && northTile.getLevel() > tiles[y][x].getLevel()) {
                 rotation = 90.0f;
-                trans.z-=4;
+                trans.x+=ShapeUtil.WALL_WIDTH;
+                trans.z+=2;
+            } else if(northTile != null && northTile.getLevel() > tiles[y][x].getLevel()) {
+                rotation = 270.0f;
+                trans.z+=14;                
             }
             tiles[y][x].addModel(Model.ladder, trans, 1, rotation, Vector3f.UNIT_Y);
         }
     }
 
     private char lookAround(MapIO.RegionPoint[][] region, int x, int y) {
-        if(y - 1 >= 0 && GROUND_LEVELS.indexOf(region[y - 1][x].getC()) > -1) return region[y - 1][x].getC();
-        if(y + 1 < rows && GROUND_LEVELS.indexOf(region[y + 1][x].getC()) > -1) return region[y + 1][x].getC();
-        if(x - 1 >= 0 && GROUND_LEVELS.indexOf(region[y][x - 1].getC()) > -1) return region[y][x - 1].getC();
-        if(x + 1 < cols && GROUND_LEVELS.indexOf(region[y][x + 1].getC()) > -1) return region[y][x + 1].getC();
-        return GROUND_LEVELS.charAt(0);
+        List<Character> points = new ArrayList<Character>();
+        if(y - 1 >= 0 && GROUND_LEVELS.indexOf(region[y - 1][x].getC()) > -1) points.add(region[y - 1][x].getC());
+        if(y + 1 < rows && GROUND_LEVELS.indexOf(region[y + 1][x].getC()) > -1) points.add(region[y + 1][x].getC());
+        if(x - 1 >= 0 && GROUND_LEVELS.indexOf(region[y][x - 1].getC()) > -1) points.add(region[y][x - 1].getC());
+        if(x + 1 < cols && GROUND_LEVELS.indexOf(region[y][x + 1].getC()) > -1) points.add(region[y][x + 1].getC());
+
+        char minChar = GROUND_LEVELS.charAt(0);
+        if(!points.isEmpty()) {
+            int minIndex = 1000;
+            for(char c : points) {
+                int n = GROUND_LEVELS.indexOf(c);
+                if(n >= 0 && n < minIndex) {
+                    minIndex = n;
+                    minChar = c;
+                }
+            }
+        }
+        return minChar;
     }
 
     private void storeHousePoisition(List<Set<Vector2f>> housePoints, int x, int y) {
