@@ -13,6 +13,7 @@ public enum TileTexType {
     NONE(null),
     ROCK("./data/textures/surf1.png"),
     ROAD("./data/textures/path.png"),
+    COBBLES("./data/textures/cobbles.png"),
     GRASS("./data/textures/grass.png"),
     MOSS("./data/textures/moss2.png"),
     LYCHEN("./data/textures/grass2.png"),

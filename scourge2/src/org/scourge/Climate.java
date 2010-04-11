@@ -32,7 +32,7 @@ public enum Climate {
 
     public TileTexType getRandomGround(Random random) {
         int type = (int)(random.nextFloat() * 4);
-        if(type == 0) {
+        if(type == 0 && ground.length > 1) {
             type = (int)(random.nextFloat() * (ground.length - 1)) + 1;
             return ground[type];
         } else {

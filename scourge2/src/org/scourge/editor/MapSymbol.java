@@ -15,7 +15,8 @@ public enum MapSymbol {
     tree('F', new Color(0x00, 0xf0, 0x80)),
     house('H', new Color(0x80, 0xff, 0x00)),
     bridge('B', new Color(0xff, 0xe0, 0x00)),
-    road('x', Color.orange),
+    road('x', new Color(0xff, 0x80, 0x00)),
+    paved_road('X', new Color(0xff, 0xe0, 0x00)),
     ramp('L', Color.magenta);
 
     private char c;

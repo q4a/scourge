@@ -150,6 +150,7 @@ public class Region implements NodeGenerator {
     private void makeTiles(MapIO.RegionPoint[][] region) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
+        Set<Vector2f> cobblesPos = new HashSet<Vector2f>();
         Set<Vector2f> ladderPos = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
@@ -174,6 +175,9 @@ public class Region implements NodeGenerator {
                     region[y][x].setC('*');
                 } else if(region[y][x].getC() == 'x') {
                     roadPos.add(new Vector2f(x, y));
+                    region[y][x].setC('*');
+                } else if(region[y][x].getC() == 'X') {
+                    cobblesPos.add(new Vector2f(x, y));
                     region[y][x].setC('*');
                 } else if(region[y][x].getC() == 'L') {
                     ladderPos.add(new Vector2f(x, y));
@@ -225,6 +229,8 @@ public class Region implements NodeGenerator {
                         Vector2f point = new Vector2f(x, y);
                         if(roadPos.contains(point)) {
                             tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
+                        } else if(cobblesPos.contains(point)) {
+                            tiles[y][x].set(TileTexType.COBBLES, TileType.QUAD, 0);                            
                         } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
                                   x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
                             // this is so edges meet on the same type
