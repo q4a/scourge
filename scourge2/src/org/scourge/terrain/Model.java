@@ -89,6 +89,31 @@ public enum Model {
             return getAlphaSpatial(7);
         }
     },
+    bushtree("./data/3ds/bushtree.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(3);
+        }
+    },
+    cactus("./data/3ds/cactus.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(7);
+        }
+    },
+    fern("./data/3ds/fern.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(6);
+        }
+    },
+    palm2("./data/3ds/palm2.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(4);
+        }
+    },
+    bigpalm("./data/3ds/palm.3ds") {
+        public Spatial createSpatial() {
+            return getAlphaSpatial(4);
+        }
+    },
     ladder("./data/3ds/ladder.3ds") {
         public Spatial createSpatial() {
             return getAlphaSpatial(1, 0);
@@ -96,9 +121,35 @@ public enum Model {
     }
     ;
 
-    // currently optimized for a temperate forest
-    // the more of one tree, the more likely it is to appear
-    private static final Model[] trees = new Model[] {
+    private static final Model[] BOREAL_TREES = new Model[] {
+        fir, fir, fir, fir, fir, fir, fir,
+        birch, birch, birch, birch, birch, birch, birch, birch, birch,
+        birch2, birch2, birch2, birch2,
+        fern, fern, fern, fern, fern, fern, fern, fern,
+        redOak,
+        bush, bush,
+        deadTree,
+        cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress
+    };
+    public static Model[] getBorealTrees() {
+        return BOREAL_TREES;
+    }
+
+    private static final Model[] ALPINE_TREES = new Model[] {
+        oak, oak, oak,
+        fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir,
+        birch, birch, birch, birch,
+        birch2, birch2, birch2, birch2,
+        bush, bush, bush, bush, bush, bush, bush, bush,
+        deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,
+        cypress, cypress, cypress, cypress,
+        bushtree, bushtree, bushtree, 
+    };
+    public static Model[] getAlpineTrees() {
+        return ALPINE_TREES;
+    }
+
+    private static final Model[] TEMPERATE_TREES = new Model[] {
         oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak,
         fir, fir, fir, fir, fir, fir, fir,
         willow, willow,
@@ -108,11 +159,35 @@ public enum Model {
         bigOak, bigOak, bigOak, bigOak, bigOak, bigOak, bigOak, bigOak,
         bush, bush, bush, bush, bush, bush, bush, bush,
         deadTree,
-        cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress
+        cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress,
+        fern, fern, fern, fern, fern, fern, fern
     };
+    public static Model[] getTemperateTrees() {
+        return TEMPERATE_TREES;
+    }
 
-    public static Model getRandomTree(Random random) {
-        return trees[(int)(random.nextFloat() * trees.length)];
+
+    private static final Model[] SUBTROPICAL_TREES = new Model[] {
+        deadTree,
+        bush, bush, bush, bush, bush, bush, bush, bush,
+        palm1,palm1,palm1,palm1,palm1,palm1,
+        palm2,palm2,palm2,palm2,palm2,palm2,palm2,palm2,
+        bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,
+        cactus,cactus,cactus,cactus,cactus,cactus,cactus,cactus,cactus,cactus,cactus,
+        bushtree, bushtree, bushtree, bushtree, bushtree, bushtree, bushtree, bushtree,  
+    };
+    public static Model[] getSubtropicalTrees() {
+        return SUBTROPICAL_TREES;
+    }
+
+    private static final Model[] TROPICAL_TREES = new Model[] {
+        bush, bush, bush,
+        palm1,palm1,palm1,palm1,palm1,palm1,
+        palm2,palm2,palm2,palm2,palm2,palm2,palm2,palm2,
+        bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,bigpalm,
+    };
+    public static Model[] getTropicalTrees() {
+        return TROPICAL_TREES;
     }
 
     private boolean ignoreHeightMap;

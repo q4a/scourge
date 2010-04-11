@@ -156,6 +156,9 @@ public class Region implements NodeGenerator {
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 tiles[y][x] = new Tile(terrain.getMain());
+                tiles[y][x].setClimate(region[y][x].getClimate());
+                tiles[y][x].setLevel(region[y][x].getLevel());
+
                 if(region[y][x].getC() == 'B') {
                     if(check(y - 1, x, region[y][x].getLevel(), region) && check(y + 1, x, region[y][x].getLevel(), region)) {
                         tiles[y][x].addModel(Model.bridge, new Vector3f(0, 0, 0), 1, 90, Vector3f.UNIT_Y);
@@ -184,8 +187,7 @@ public class Region implements NodeGenerator {
             for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
                 if(region[y][x].getC() != '~') {
 
-                    int level = region[y][x].getLevel();
-                    tiles[y][x].setLevel(level);
+                    int level = tiles[y][x].getLevel();
 
                     if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
                         tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
@@ -226,10 +228,9 @@ public class Region implements NodeGenerator {
                         } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
                                   x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
                             // this is so edges meet on the same type
-                            tiles[y][x].set(TileTexType.GRASS, TileType.QUAD, 0);
+                            tiles[y][x].set(region[y][x].getClimate().getDefaultGround(), TileType.QUAD, 0);
                         } else {
-                            int type = (int)(terrain.getMain().getRandom().nextFloat() * 5);
-                            tiles[y][x].set(type == 0 ? TileTexType.MOSS : (type == 1 ? TileTexType.LYCHEN : TileTexType.GRASS), TileType.QUAD, 0);
+                            tiles[y][x].set(region[y][x].getClimate().getRandomGround(terrain.getMain().getRandom()), TileType.QUAD, 0);
                         }
                     }
                 }
@@ -331,7 +332,7 @@ public class Region implements NodeGenerator {
     }
 
     private void makeForestTile(Tile tile) {
-        tile.addModel(Model.getRandomTree(terrain.getMain().getRandom()),
+        tile.addModel(tile.getClimate().getRandomTree(terrain.getMain().getRandom()),
                       new Vector3f(8, 0, 8),
                       (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
                       terrain.getMain().getRandom().nextFloat() * 360.0f,

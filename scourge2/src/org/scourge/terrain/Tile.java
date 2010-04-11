@@ -13,6 +13,7 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
+import org.scourge.Climate;
 import org.scourge.Main;
 
 import javax.swing.*;
@@ -35,6 +36,7 @@ class Tile {
     private static Logger logger = Logger.getLogger(Tile.class.toString());
     private int level;
     private List<ModelOnTile> models = new ArrayList<ModelOnTile>();
+    private Climate climate;
 
     public void clearModels() {
         models.clear();
@@ -81,6 +83,14 @@ class Tile {
     public int getLevel() {
         return level;
     }
+
+    public void setClimate(Climate climate) {
+        this.climate = climate;
+    }
+
+    public Climate getClimate() {
+        return climate;
+    }    
 
     public void addModel(Model model) {
         addModel(model, new Vector3f(0, 0, 0), 1, 0, Vector3f.UNIT_Z);

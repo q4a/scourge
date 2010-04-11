@@ -60,7 +60,7 @@ public class Main extends Game {
     @Override
     protected void initSystem() throws JmeException {
         super.initSystem();
-        Logger.getLogger("com.jme").setLevel(Level.SEVERE);
+        Logger.getLogger("com.jme").setLevel(Level.WARNING);
         //cameraParallel();
     }
 
