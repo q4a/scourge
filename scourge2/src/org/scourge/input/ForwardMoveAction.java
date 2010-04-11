@@ -18,18 +18,22 @@ class ForwardMoveAction extends KeyInputAction {
     private Vector3f tempVa;
     private Vector3f direction;
     private final Main main;
+    private Vector3f proposedLocation;
 
     public ForwardMoveAction(Main main) {
         this.main = main;
         tempVa = new Vector3f();
         direction = new Vector3f();
+        proposedLocation = new Vector3f();
     }
 
     @Override
     public void performAction(InputActionEvent event) {
-        if(main.getPlayer().canMoveForward()) {
+        proposedLocation.set(main.getPlayer().getNode().getLocalTranslation());
+        proposedLocation.addLocal(direction.mult(PlayerController.PLAYER_SPEED * event.getTime(), tempVa));
+        if(main.getPlayer().canMoveForward(proposedLocation)) {
             direction.set(main.getPlayer().getDirection());
-            main.getPlayer().getNode().getLocalTranslation().addLocal(direction.mult(PlayerController.PLAYER_SPEED * event.getTime(), tempVa));
+            main.getPlayer().getNode().getLocalTranslation().set(proposedLocation);
 
             main.getTerrain().loadRegion();
         }

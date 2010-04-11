@@ -29,7 +29,7 @@ public class Player implements NodeGenerator {
     private Map<Md2Key, Integer[]> keyframes = new HashMap<Md2Key, Integer[]>();
     private final Ray down = new Ray();
     private final Ray forward = new Ray();
-    private TrianglePickResults results;
+    private TrianglePickResults results, noDistanceResults;
     private Quaternion q = new Quaternion();
     private Quaternion p = new Quaternion();
     private Vector3f direction = new Vector3f();
@@ -47,6 +47,9 @@ public class Player implements NodeGenerator {
         down.getDirection().set(new Vector3f(0, -1, 0));
         results = new TrianglePickResults();
         results.setCheckDistance(true);
+
+        noDistanceResults = new TrianglePickResults();
+        noDistanceResults.setCheckDistance(false);
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
         player = ShapeUtil.loadMd2("./data/models/sfod8/tris.md2", "./data/models/sfod8/Rieger.png", "player", main.getDisplay(), true, frames);
@@ -92,13 +95,25 @@ public class Player implements NodeGenerator {
         player.updateWorldBound();
     }
 
-    public boolean canMoveForward() {
+    public boolean canMoveForward(Vector3f proposedLocation) {
         forward.setDirection(getDirection());
         forward.setOrigin(player.getWorldBound().getCenter());
         forward.getOrigin().y -= ((BoundingBox)player.getWorldBound()).yExtent / 2;
         results.clear();
         main.getTerrain().getNode().findPick(forward, results);
-        return results.getNumber() <= 0 || results.getPickData(0).getDistance() >= 6;
+        if(results.getNumber() <= 0 || results.getPickData(0).getDistance() >= 6) {
+            down.getOrigin().set(proposedLocation);
+            down.getOrigin().addLocal(getDirection().normalizeLocal().multLocal(2.0f));
+            down.getOrigin().y += ABOVE_PLAYER;
+            noDistanceResults.clear();
+            main.getTerrain().getNode().findPick(down, noDistanceResults);
+            for(int i = 0; i < noDistanceResults.getNumber(); i++) {
+                if(noDistanceResults.getPickData(i).getTargetTris().size() > 0) return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 
     public Vector3f getDirection() {
