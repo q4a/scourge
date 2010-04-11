@@ -82,9 +82,9 @@ public class Main extends Game {
         FogState fogState = display.getRenderer().createFogState();
         fogState.setDensity(1.0f);
         fogState.setEnabled(true);
-        fogState.setColor(new ColorRGBA(0.5f, 0.5f, 0.75f, 0.5f));
-        fogState.setEnd(cam.getFrustumFar());
-        fogState.setStart(cam.getFrustumFar() * 0.25f);
+        fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
+        fogState.setEnd(cam.getFrustumFar() * 0.2f);
+        fogState.setStart(cam.getFrustumFar() * 0.15f);
         fogState.setDensityFunction(FogState.DensityFunction.Linear);
         fogState.setQuality(FogState.Quality.PerVertex);
         //fogState.setSource(FogState.CoordinateSource.Depth);
