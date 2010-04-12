@@ -23,21 +23,15 @@ public class PlayerController extends InputHandler {
     private boolean turnLeft, turnRight, move;
     private Main main;
 
+    private MouseAction mouseAction;
+
     public PlayerController(final Main main) {
         this.main = main;
 
         // set up mouse looking around
         RelativeMouse mouse = new RelativeMouse("Mouse Input");
         mouse.registerWithInputHandler( this );
-        MouseAction mouseAction = new MouseAction(main, mouse);
-        addAction(mouseAction);
-
-        KeyBindingManager keyboard = KeyBindingManager.getKeyBindingManager();
-        keyboard.set( "scourge_left", KeyInput.KEY_A );
-        keyboard.set( "scourge_right", KeyInput.KEY_D );
-        keyboard.set( "scourge_forward", KeyInput.KEY_W );
-        keyboard.set( "scourge_look_left", KeyInput.KEY_O );
-        keyboard.set( "scourge_look_right", KeyInput.KEY_P );
+        mouseAction = new MouseAction(main, mouse);
 
         addAction(new ForwardMoveAction(main), "scourge_forward", true );
         addAction(new LeftTurnAction(main), "scourge_left", true);
@@ -88,6 +82,29 @@ public class PlayerController extends InputHandler {
                 }
             }
         } );
+
+        setUIEnabled(false);
     }
 
+
+    public void setUIEnabled(boolean b) {
+        KeyBindingManager keyboard = KeyBindingManager.getKeyBindingManager();
+        if(b) {
+            removeAction(mouseAction);
+            keyboard.remove( "scourge_left");
+            keyboard.remove( "scourge_right");
+            keyboard.remove( "scourge_forward");
+            keyboard.remove( "scourge_look_left");
+            keyboard.remove( "scourge_look_right");
+            MouseInput.get().setCursorVisible(true);
+        } else {
+            addAction(mouseAction);
+            keyboard.add( "scourge_left", KeyInput.KEY_A );
+            keyboard.add( "scourge_right", KeyInput.KEY_D );
+            keyboard.add( "scourge_forward", KeyInput.KEY_W );
+            keyboard.add( "scourge_look_left", KeyInput.KEY_O );
+            keyboard.add( "scourge_look_right", KeyInput.KEY_P );
+            MouseInput.get().setCursorVisible(false);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package org.scourge;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
+import com.jme.input.MouseInput;
 import com.jme.light.DirectionalLight;
 import com.jme.math.FastMath;
 import com.jme.math.Plane;
@@ -27,6 +28,8 @@ import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
 import org.scourge.terrain.*;
+import org.scourge.ui.Window;
+import org.scourge.ui.WindowListener;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,7 +39,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.logging.*;
 
-public class Main extends Game {
+public class Main extends Game implements WindowListener {
     private Player player;
     private InputHandler playerController;
     private Node cameraHolder;
@@ -50,6 +53,8 @@ public class Main extends Game {
     private float textureScale = 0.02f;
     private Random random = new Random(17L);
     private Text2D positionLabel, loadingLabel;
+
+    Window mainMenuWindow;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -190,6 +195,38 @@ public class Main extends Game {
 
         rootNode.setCullHint(Spatial.CullHint.Dynamic);
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
+
+        if(!"true".equalsIgnoreCase(System.getProperty("test.mode"))) {
+            showMainMenu();
+        }
+    }
+
+    public void showMainMenu() {
+        mainMenuWindow = new Window(display.getRenderer().getWidth() / 2,
+                                    display.getRenderer().getHeight() / 2,
+                                    300, 300, this);
+        mainMenuWindow.addLabel(0, 90, "Scourge II");
+        mainMenuWindow.addButton("new", 0, 30, "New Game");
+        mainMenuWindow.addButton("load", 0, -10, "Load Game");
+        mainMenuWindow.addButton("quit", 0, -50, "Quit");
+        showWindow(mainMenuWindow);
+    }
+
+    @Override
+    public void buttonClicked(String name) {
+        System.err.println("Button clicked: " + name);
+        hideWindow(mainMenuWindow);
+    }
+
+    public void showWindow(Window win) {
+        win.pack();
+        rootNode.attachChild(win.getNode());
+        ((PlayerController)input).setUIEnabled(true);
+    }
+
+    public void hideWindow(Window win) {
+        rootNode.detachChild(win.getNode());
+        ((PlayerController)input).setUIEnabled(false);
     }
 
     public void toggleCameraAttached() {

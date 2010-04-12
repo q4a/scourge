@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="removed unused code">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/WindowListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" afterPath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/textures/parchment.png" afterPath="$PROJECT_DIR$/data/textures/parchment.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" afterPath="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="scourge2.iws" />
@@ -66,19 +74,30 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="207" column="51" selection-start="7542" selection-end="7542" vertical-scroll-proportion="0.41614908">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="24" selection-start="562" selection-end="562" vertical-scroll-proportion="0.0">
+            <state line="42" column="36" selection-start="1411" selection-end="1411" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Region.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
+      <file leaf-file-name="Window.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Window.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="86" column="0" selection-start="3579" selection-end="3579" vertical-scroll-proportion="0.0">
+            <state line="141" column="45" selection-start="4840" selection-end="4840" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,62 +105,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ShapeUtil.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
+      <file leaf-file-name="PlayerController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="163" column="25" selection-start="7124" selection-end="7124" vertical-scroll-proportion="0.974359">
+            <state line="98" column="50" selection-start="3547" selection-end="3547" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Climate.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/Climate.java">
+      <file leaf-file-name="MouseAction.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/input/MouseAction.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="0" selection-start="1583" selection-end="1583" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Model.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="115" column="75" selection-start="3119" selection-end="3119" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MapSymbol.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="34" selection-start="412" selection-end="412" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TileTexType.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="36" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
+            <state line="66" column="10" selection-start="2679" selection-end="2679" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tile.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Tile.java">
+      <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="133" column="0" selection-start="3435" selection-end="3435" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="35" column="87" selection-start="1061" selection-end="1061" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -156,22 +144,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/scourge/editor/MapEditorListener.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/editor/Brush.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/io/MapIO.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/input/ForwardMoveAction.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Player.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Climate.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/WindowListener.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
       </list>
     </option>
   </component>
@@ -212,7 +200,100 @@
     <panes>
       <pane id="Favorites" />
       <pane id="ProjectPane">
-        <subPane />
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="input" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
       <pane id="PackagesPane" />
       <pane id="Scope" />
@@ -352,7 +433,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <extension name="snapshooter" />
       <option name="MAIN_CLASS_NAME" value="org.scourge.Main" />
-      <option name="VM_PARAMETERS" value="-Djava.library.path=./lib/lib/lwjgl/native/macosx" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=./lib/lib/lwjgl/native/macosx -Dui.test=true" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -430,7 +511,7 @@
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264633" sideWeight="0.66541" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3264633" sideWeight="0.66541" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37794533" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32327992" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -485,76 +566,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Brush.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="11" selection-start="147" selection-end="147" vertical-scroll-proportion="0.15929204">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/io/MapIO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="45" selection-start="2825" selection-end="2825" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="19" selection-start="1164" selection-end="1164" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Editor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="211" column="116" selection-start="8754" selection-end="8754" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="33" selection-start="1410" selection-end="1410" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="24" selection-start="562" selection-end="562" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="15" selection-start="3729" selection-end="3736" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/ForwardMoveAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="0" selection-start="1276" selection-end="1276" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="58" selection-start="1947" selection-end="1947" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Climate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="0" selection-start="1583" selection-end="1583" vertical-scroll-proportion="0.0">
+        <state line="46" column="0" selection-start="1583" selection-end="1583" vertical-scroll-proportion="0.8141593">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -563,7 +577,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="75" selection-start="3119" selection-end="3119" vertical-scroll-proportion="0.0">
+        <state line="115" column="75" selection-start="3119" selection-end="3119" vertical-scroll-proportion="0.7581121">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -572,7 +586,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="34" selection-start="412" selection-end="412" vertical-scroll-proportion="0.0">
+        <state line="17" column="34" selection-start="412" selection-end="412" vertical-scroll-proportion="0.30088496">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -581,14 +595,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="36" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Tile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="133" column="0" selection-start="3435" selection-end="3435" vertical-scroll-proportion="0.0">
+        <state line="15" column="36" selection-start="524" selection-end="524" vertical-scroll-proportion="0.26548672">
           <folding />
         </state>
       </provider>
@@ -604,8 +611,88 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="163" column="25" selection-start="7124" selection-end="7124" vertical-scroll-proportion="0.974359">
+        <state line="148" column="70" selection-start="6695" selection-end="6695" vertical-scroll-proportion="0.7028658">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Tile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="172" column="16" selection-start="4882" selection-end="5315" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="179" column="37" selection-start="5713" selection-end="5713" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/WindowListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="43" selection-start="167" selection-end="167" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Game.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="27" selection-start="1660" selection-end="1660" vertical-scroll-proportion="0.33229813">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="36" selection-start="1411" selection-end="1411" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="98" column="50" selection-start="3547" selection-end="3547" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/MouseAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="10" selection-start="2679" selection-end="2679" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="87" selection-start="1061" selection-end="1061" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Window.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="141" column="45" selection-start="4840" selection-end="4840" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="207" column="51" selection-start="7542" selection-end="7542" vertical-scroll-proportion="0.41614908">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

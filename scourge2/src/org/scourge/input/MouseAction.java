@@ -34,27 +34,27 @@ public class MouseAction extends MouseInputAction {
 
     @Override
     public void performAction(InputActionEvent evt) {
-        if(MouseInput.get().isButtonDown(0)) {
-            if(mouse.getLocalTranslation().x != 0) {
-                q.fromAngleAxis(FastMath.DEG_TO_RAD * 0.01f * -mouse.getLocalTranslation().x * PlayerController.PLAYER_ROTATE_STEP, Vector3f.UNIT_Y);
-                main.getCameraHolder().getLocalRotation().multLocal(q);
-                main.getCamera().normalize();
-                main.getCamera().update();
-            }
-            if(mouse.getLocalTranslation().y != 0) {
-                q.fromAngleAxis(FastMath.DEG_TO_RAD * 0.01f * -mouse.getLocalTranslation().y * PlayerController.PLAYER_ROTATE_STEP, Vector3f.UNIT_X);
-                p.set(main.getCameraNode().getLocalRotation());
-                p.multLocal(q);
-                p.toAngles(angles);
-
-                float angle = angles[0] * FastMath.RAD_TO_DEG;
-                if(angle > 0 && angle < 50) {
-                    main.getCameraNode().getLocalRotation().set(p);
-                    main.getCamera().normalize();
-                    main.getCamera().update();
-                }
-            }
-        } else {
+//        if(MouseInput.get().isButtonDown(0)) {
+//            if(mouse.getLocalTranslation().x != 0) {
+//                q.fromAngleAxis(FastMath.DEG_TO_RAD * 0.01f * -mouse.getLocalTranslation().x * PlayerController.PLAYER_ROTATE_STEP, Vector3f.UNIT_Y);
+//                main.getCameraHolder().getLocalRotation().multLocal(q);
+//                main.getCamera().normalize();
+//                main.getCamera().update();
+//            }
+//            if(mouse.getLocalTranslation().y != 0) {
+//                q.fromAngleAxis(FastMath.DEG_TO_RAD * 0.01f * -mouse.getLocalTranslation().y * PlayerController.PLAYER_ROTATE_STEP, Vector3f.UNIT_X);
+//                p.set(main.getCameraNode().getLocalRotation());
+//                p.multLocal(q);
+//                p.toAngles(angles);
+//
+//                float angle = angles[0] * FastMath.RAD_TO_DEG;
+//                if(angle > 0 && angle < 50) {
+//                    main.getCameraNode().getLocalRotation().set(p);
+//                    main.getCamera().normalize();
+//                    main.getCamera().update();
+//                }
+//            }
+//        } else {
             float time = 0.001f * PlayerController.PLAYER_ROTATE_STEP;
             if (mouse.getLocalTranslation().x > 0) {
                 event.setTime(time * FastMath.DEG_TO_RAD * mouse.getLocalTranslation().x);
@@ -63,6 +63,6 @@ public class MouseAction extends MouseInputAction {
                 event.setTime(time * FastMath.DEG_TO_RAD * mouse.getLocalTranslation().x * -1);
                 rotateLeft.performAction(event);
             }
-        }
+//        }
     }
 }

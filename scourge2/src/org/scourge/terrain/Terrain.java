@@ -40,7 +40,10 @@ public class Terrain implements NodeGenerator {
 
         initialized = false;
         loadRegion(main.getPlayer().getX() / Region.REGION_SIZE, main.getPlayer().getZ() / Region.REGION_SIZE);
-        loadRegion();
+        // fast start for ui testing
+        if(!"true".equals(System.getProperty("ui.test"))) {
+            loadRegion();
+        }
         initialized = true;
     }
 
