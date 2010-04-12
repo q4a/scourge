@@ -1,21 +1,15 @@
 package org.scourge.ui;
 
-import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.BlendState;
-import com.jme.scene.state.RenderState;
-import com.jme.scene.state.TextureState;
-import com.jme.system.DisplaySystem;
 import com.jmex.font2d.Text2D;
 import org.scourge.terrain.ShapeUtil;
 
 import java.awt.*;
-import java.nio.FloatBuffer;
 
 /**
  * User: gabor
@@ -48,35 +42,10 @@ class Button {
         node = new Node(ShapeUtil.newShapeName("button"));
         node.getLocalTranslation().addLocal(new Vector3f(x, y, 0));
 
-        quad = new Quad(ShapeUtil.newShapeName("button_quad"), w, h);
-
-        FloatBuffer normBuf = quad.getNormalBuffer();
-        normBuf.clear();
-        normBuf.put(0).put(1).put(0);
-        normBuf.put(0).put(1).put(0);
-        normBuf.put(0).put(1).put(0);
-        normBuf.put(0).put(1).put(0);
-
-        TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-        Texture texture = ShapeUtil.loadTexture(BUTTON_BACKGROUND);
-        texture.setWrap(Texture.WrapMode.Repeat);
-        texture.setHasBorder(false);
-        texture.setApply(Texture.ApplyMode.Modulate);
-        texture.setRotation(new Quaternion());
-        ts.setTexture(texture, 0);
-        quad.setRenderState(ts);
-
-        BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
-        as.setBlendEnabled(true);
-        as.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
-        as.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
-        as.setTestEnabled(true);
-        as.setTestFunction(BlendState.TestFunction.GreaterThan);
-        as.setEnabled(true);
-        quad.setRenderState(as);
+        quad = WinUtil.createQuad("button_quad", w, h, BUTTON_BACKGROUND);
         node.attachChild(quad);
 
-        label = window.createLabel(0, 0, text, BUTTON_TEXT_SIZE, BUTTON_TEXT_FLAGS, BUTTON_TEXT_COLOR, BUTTON_TEXT_SCALE);
+        label = WinUtil.createLabel(0, 0, text, BUTTON_TEXT_SIZE, BUTTON_TEXT_FLAGS, BUTTON_TEXT_COLOR, BUTTON_TEXT_SCALE);
         node.attachChild(label);
 
         rectangle = new Rectangle(window.getX() + x - w / 2, window.getY() + y - h / 2, w, h);
@@ -115,5 +84,21 @@ class Button {
 
     public String getName() {
         return name;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getW() {
+        return w;
+    }
+
+    public int getH() {
+        return h;
     }
 }

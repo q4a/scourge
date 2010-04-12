@@ -1,9 +1,7 @@
 package org.scourge;
 
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
-import com.jme.input.MouseInput;
 import com.jme.light.DirectionalLight;
 import com.jme.math.FastMath;
 import com.jme.math.Plane;
@@ -14,7 +12,6 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.*;
-import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.FogState;
@@ -22,22 +19,21 @@ import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
 import com.jme.system.JmeException;
 import com.jme.util.TextureManager;
-import com.jme.util.stat.StatCollector;
 import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
-import org.scourge.terrain.*;
+import org.scourge.terrain.Player;
+import org.scourge.terrain.Region;
+import org.scourge.terrain.Terrain;
 import org.scourge.ui.Window;
 import org.scourge.ui.WindowListener;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.FloatBuffer;
-import java.util.Date;
 import java.util.Random;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends Game implements WindowListener {
     private Player player;
@@ -207,7 +203,7 @@ public class Main extends Game implements WindowListener {
                                     300, 300, this);
         mainMenuWindow.addLabel(0, 90, "Scourge II");
         mainMenuWindow.addButton("new", 0, 30, "New Game");
-        mainMenuWindow.addButton("load", 0, -10, "Load Game");
+        mainMenuWindow.addButton("load", 0, -10, "Continue Game");
         mainMenuWindow.addButton("quit", 0, -50, "Quit");
         showWindow(mainMenuWindow);
     }
