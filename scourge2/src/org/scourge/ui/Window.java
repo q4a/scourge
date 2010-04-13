@@ -1,5 +1,6 @@
 package org.scourge.ui;
 
+import com.jme.input.Mouse;
 import com.jme.input.MouseInput;
 import com.jme.input.MouseInputListener;
 import com.jme.math.Vector3f;
@@ -96,7 +97,7 @@ public class Window implements NodeGenerator, MouseInputListener {
     }
 
     public void addButton(String name, int x, int y, String text) {
-        addButton(name, x, y, 130, 34, text);
+        addButton(name, x, y, 130, 28, text);
     }
 
     public void addButton(String name, int x, int y, int w, int h, String text) {

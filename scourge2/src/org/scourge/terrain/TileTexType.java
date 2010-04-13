@@ -21,6 +21,7 @@ public enum TileTexType {
     SAND("./data/textures/sand.png"),
     TROPICAL("./data/textures/tropical.png"),
     TROPICAL2("./data/textures/tropical2.png"),
+    TROPICAL3("./data/textures/tropical3.png"),
     MUD("./data/textures/mud.png"),
     BOREAL("./data/textures/boreal.png"),
     BOREAL2("./data/textures/boreal2.png"),

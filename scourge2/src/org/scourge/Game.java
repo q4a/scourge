@@ -260,9 +260,8 @@ public abstract class Game extends BaseGame {
             logger.info("Max memory: "+(maxMem>>10)+" kb");
         }
 
-        if ( KeyBindingManager.getKeyBindingManager().isValidCommand( "exit",
-                false ) ) {
-            finish();
+        if ( KeyBindingManager.getKeyBindingManager().isValidCommand( "exit", false ) ) {
+            escapePressed();
         }
 
         if ( !pause ) {
@@ -275,6 +274,10 @@ public abstract class Game extends BaseGame {
 
             pManager.updatePasses(tpf);
         }
+    }
+
+    protected void escapePressed() {
+        finish();
     }
 
     /**

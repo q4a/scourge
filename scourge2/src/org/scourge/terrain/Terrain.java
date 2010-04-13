@@ -1,19 +1,14 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-import com.jme.util.GameTaskQueue;
-import com.jme.util.GameTaskQueueManager;
 import org.scourge.Main;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -30,21 +25,58 @@ public class Terrain implements NodeGenerator {
     private final Map<String, RegionLoaderThread> regionThreads = new HashMap<String, RegionLoaderThread>();
     private byte checkPendingRegions;
     private static Logger logger = Logger.getLogger(Terrain.class.toString());
-    private boolean initialized;
+    private boolean loadAsynchronously;
 
     public Terrain(Main main) throws IOException {
         this.main = main;
         this.terrain = new Node("terrain");
         terrain.setModelBound(new BoundingBox());
         mapIO = new MapIO();
+    }
 
-        initialized = false;
+    public void gotoMainMenu() {
+        clearLoadedRegions();
+        loadAsynchronously = false;
+        loadRegion(449 / Region.REGION_SIZE, 509 / Region.REGION_SIZE);
+        loadAsynchronously = true;
+
+        main.setCameraFollowsPlayer(false);
+        Vector3f pos = new Vector3f(currentRegion.getX() * ShapeUtil.WALL_WIDTH,
+                                           2 * ShapeUtil.WALL_WIDTH,
+                                           currentRegion.getY() * ShapeUtil.WALL_WIDTH);
+        main.getCamera().getLocation().set(pos);
+        main.getCamera().lookAt(pos.addLocal(new Vector3f(10, 1, 10)), Vector3f.UNIT_Y);
+//        MouseInput.get().setCursorVisible(true);
+    }
+
+    public void gotoPlayer() {
+        clearLoadedRegions();
+        loadAsynchronously = false;
         loadRegion(main.getPlayer().getX() / Region.REGION_SIZE, main.getPlayer().getZ() / Region.REGION_SIZE);
-        // fast start for ui testing
-        if(!"true".equals(System.getProperty("ui.test"))) {
-            loadRegion();
+        loadRegion();
+        loadAsynchronously = true;
+
+//        MouseInput.get().setCursorVisible(false);
+        main.setCameraFollowsPlayer(true);
+    }
+
+    private void clearLoadedRegions() {
+        synchronized(regionThreads) {
+            for (String key : regionThreads.keySet()) {
+                RegionLoaderThread thread = regionThreads.get(key);
+                try {
+                    thread.join();
+                } catch (InterruptedException e1) {
+                    // eh
+                }
+            }
+            regionThreads.clear();
         }
-        initialized = true;
+        for(Region region : loadedRegions.values()) {
+            terrain.detachChild(region.getNode());
+        }
+        loadedRegions.clear();
+        currentRegion = null;
     }
 
     @Override
@@ -71,8 +103,8 @@ public class Terrain implements NodeGenerator {
         int pz = main.getPlayer().getZ() / Region.REGION_SIZE;
         if(px != currentRegion.getX() / Region.REGION_SIZE ||
            pz != currentRegion.getY() / Region.REGION_SIZE) {
-            // todo: this can cause a NPE if the region is not loaded yet
-            currentRegion = loadedRegions.get(getRegionKey(px, pz));
+            Region region = loadedRegions.get(getRegionKey(px, pz));
+            if(region != null) currentRegion = region; 
         }
     }
 
@@ -117,11 +149,12 @@ public class Terrain implements NodeGenerator {
 
             synchronized(regionThreads) {
                 if(!regionThreads.containsKey(key)) {
+                    System.err.println(">>> loading: " + rx + "," + ry);
                     RegionLoaderThread thread = new RegionLoaderThread(this, rx, ry);
                     regionThreads.put(key, thread);
                     thread.start();
 
-                    if(!initialized) {
+                    if(!loadAsynchronously) {
                         try {
                             thread.join();
                             update();
@@ -175,7 +208,9 @@ public class Terrain implements NodeGenerator {
                 }
             }
 
-            removeFarRegions();
+            if(loadAsynchronously) {
+                removeFarRegions();
+            }
         }
     }
 

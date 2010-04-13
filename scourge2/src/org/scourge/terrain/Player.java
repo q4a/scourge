@@ -40,7 +40,7 @@ public class Player implements NodeGenerator {
     }
 
 
-    public Player(Main main, float x, float y, float z) {
+    public Player(Main main, Vector3f pos) {
         this.main = main;
 
         // point it down
@@ -53,16 +53,16 @@ public class Player implements NodeGenerator {
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
         player = ShapeUtil.loadMd2("./data/models/sfod8/tris.md2", "./data/models/sfod8/Rieger.png", "player", main.getDisplay(), true, frames);
-        player.setLocalTranslation(new Vector3f(x * ShapeUtil.WALL_WIDTH, y * ShapeUtil.WALL_WIDTH, z * ShapeUtil.WALL_WIDTH));
+        moveTo(pos);
         player.setLocalScale(.2f);
 
         for(String s : frames.keySet()) {
             keyframes.put(Md2Key.valueOf(s), frames.get(s));
         }
+    }
 
-//        debug = new Box("debug", new Vector3f(0,0,0), new Vector3f(4, 4, 4));
-//        debug.setIsCollidable(false);
-//        player.attachChild(debug);
+    public void moveTo(Vector3f pos) {
+        player.setLocalTranslation(new Vector3f(pos.x * ShapeUtil.WALL_WIDTH, pos.y * ShapeUtil.WALL_WIDTH, pos.z * ShapeUtil.WALL_WIDTH));
     }
 
     @Override

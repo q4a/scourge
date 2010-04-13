@@ -2,6 +2,7 @@ package org.scourge;
 
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
+import com.jme.input.MouseInput;
 import com.jme.light.DirectionalLight;
 import com.jme.math.FastMath;
 import com.jme.math.Plane;
@@ -35,7 +36,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Main extends Game implements WindowListener {
+public class Main extends Game {
     private Player player;
     private InputHandler playerController;
     private Node cameraHolder;
@@ -49,8 +50,7 @@ public class Main extends Game implements WindowListener {
     private float textureScale = 0.02f;
     private Random random = new Random(17L);
     private Text2D positionLabel, loadingLabel;
-
-    Window mainMenuWindow;
+    private Session session;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -71,6 +71,8 @@ public class Main extends Game implements WindowListener {
     }
 
     protected void simpleInitGame() {
+        MouseInput.get().setCursorVisible(true);
+        
         display.setTitle("Scourge II");
         cam.setLocation(new Vector3f(0,0,0));
         cam.update();
@@ -134,8 +136,9 @@ public class Main extends Game implements WindowListener {
         loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
 		rootNode.attachChild(loadingLabel);
 
+        session = new Session(this);
         try {
-            player = new Player(this, 498, 9, 489);
+            player = new Player(this, session.PLAYER_START_LOCATION);
             player.setKeyFrame(Player.Md2Key.stand);
             terrain = new Terrain(this);
         } catch(IOException exc) {
@@ -158,8 +161,6 @@ public class Main extends Game implements WindowListener {
         rootNode.attachChild(reflectedNode);
 
         rootNode.attachChild(player.getNode());
-
-
 
         // setup the water plane
         waterEffectRenderPass = new WaterRenderPass(cam, 4, false, false); // setting last param to false renders faster
@@ -193,36 +194,22 @@ public class Main extends Game implements WindowListener {
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
 
         if(!"true".equalsIgnoreCase(System.getProperty("test.mode"))) {
-            showMainMenu();
+            session.showMainMenu();
         }
-    }
-
-    public void showMainMenu() {
-        mainMenuWindow = new Window(display.getRenderer().getWidth() / 2,
-                                    display.getRenderer().getHeight() / 2,
-                                    300, 300, this);
-        mainMenuWindow.addLabel(0, 90, "Scourge II");
-        mainMenuWindow.addButton("new", 0, 30, "New Game");
-        mainMenuWindow.addButton("load", 0, -10, "Continue Game");
-        mainMenuWindow.addButton("quit", 0, -50, "Quit");
-        showWindow(mainMenuWindow);
-    }
-
-    @Override
-    public void buttonClicked(String name) {
-        System.err.println("Button clicked: " + name);
-        hideWindow(mainMenuWindow);
     }
 
     public void showWindow(Window win) {
         win.pack();
         rootNode.attachChild(win.getNode());
-        ((PlayerController)input).setUIEnabled(true);
     }
 
     public void hideWindow(Window win) {
         rootNode.detachChild(win.getNode());
-        ((PlayerController)input).setUIEnabled(false);
+    }
+
+    public void setCameraFollowsPlayer(boolean follows) {
+        if(follows == (camNode == null)) toggleCameraAttached();
+        input = playerController;
     }
 
     public void toggleCameraAttached() {
@@ -247,19 +234,19 @@ public class Main extends Game implements WindowListener {
         terrain.update();
 
         // the world vectors aren't computed until the first update :-/
-        terrain.getCurrentRegion().moveToTopOfTerrain();
+        if(terrain.getCurrentRegion() != null) {
+            terrain.getCurrentRegion().moveToTopOfTerrain();
 
-//        playerController.update(tpf);
+            player.moveToTopOfTerrain();
 
-        player.moveToTopOfTerrain();
-
-        positionLabel.setText("Player: " + player.getX() + "," + player.getZ() +
-                              " (" + (player.getX() % Region.REGION_SIZE) + "," + (player.getZ() % Region.REGION_SIZE) + ")" +
-                              " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
-                              " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-                              getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
-        positionLabel.updateRenderState();
-	    positionLabel.updateModelBound();
+            positionLabel.setText("Player: " + player.getX() + "," + player.getZ() +
+                                  " (" + (player.getX() % Region.REGION_SIZE) + "," + (player.getZ() % Region.REGION_SIZE) + ")" +
+                                  " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
+                                  " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
+                                  getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
+            positionLabel.updateRenderState();
+            positionLabel.updateModelBound();
+        }
 
 
         skybox.getLocalTranslation().set(cam.getLocation());
@@ -395,5 +382,9 @@ public class Main extends Game implements WindowListener {
 
     public boolean isLoading() {
         return loadingCounter > 0;
+    }
+
+    protected void escapePressed() {
+        if(session.escapePressed()) finish();
     }
 }

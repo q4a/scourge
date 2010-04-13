@@ -27,7 +27,7 @@ class Button {
     private static final String BUTTON_BACKGROUND = "./data/textures/ui/button.png";
     private static final float BUTTON_TEXT_SIZE = 8;
     private static final int BUTTON_TEXT_FLAGS = 0;
-    private static final ColorRGBA BUTTON_TEXT_COLOR = new ColorRGBA(0.3f, 0.25f, 0.15f, 1);
+    private static final ColorRGBA BUTTON_TEXT_COLOR = new ColorRGBA(1, 0.8f, 0.75f, 1);
     private static final float BUTTON_TEXT_SCALE = 0.8f;
     private static final Quaternion CLICK_TEXTURE_ROTATE = new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 180, Vector3f.UNIT_Y);
     private static final Vector3f BUTTON_PRESS_TRANS = new Vector3f(2, -2, 0);
