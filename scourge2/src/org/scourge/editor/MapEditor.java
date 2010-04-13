@@ -12,10 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -178,11 +175,15 @@ public class MapEditor extends JPanel {
         out.writeInt(rows);
         out.writeInt(cols);
 
-        // body: todo: speed this up like MapIO
+        byte[] buff = new byte[cols * 4];
         for(int y = 0; y < rows; y++) {
             for(int x = 0; x < cols; x++) {
-                out.writeInt(point[y][x]);
+                buff[(x * 4)] = (byte)(point[y][x] >>> 24);
+                buff[x * 4 + 1] = (byte)(point[y][x] >>> 16);
+                buff[x * 4 + 2] = (byte)(point[y][x] >>> 8);
+                buff[x * 4 + 3] = (byte)point[y][x];
             }
+            out.write(buff, 0, buff.length);
         }
         out.close();
         System.err.println("Map saved.");
