@@ -14,7 +14,8 @@ public class Session implements WindowListener {
     private Window mainMenuWindow;
     private Main main;
     private boolean inMainMenu;
-    public static final Vector3f PLAYER_START_LOCATION = new Vector3f(498, 9, 489);
+    public static final Vector3f PLAYER_START_LOCATION = new Vector3f(693, 9, 151);
+            //498, 9, 489);
 
     public Session(Main main) {
         this.main = main;

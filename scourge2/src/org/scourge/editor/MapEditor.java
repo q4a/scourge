@@ -7,9 +7,7 @@ import org.scourge.terrain.Region;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.*;
@@ -46,6 +44,38 @@ public class MapEditor extends JPanel {
             Color.magenta,
             Color.cyan
     };
+    private BufferedImage miniMap;
+    private MiniMap miniMapComponent;
+
+    private class MiniMap extends JPanel {
+        public MiniMap(final MapEditor mapEditor) {
+            addMouseMotionListener(new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent mouseEvent) {
+                    int px = (int)(mouseEvent.getX() / (float)getWidth() * (float)mapEditor.getWidth());
+                    int py = (int)(mouseEvent.getY() / (float)getHeight() * (float)mapEditor.getHeight());
+                    scrollPane.getHorizontalScrollBar().setValue(px);
+                    scrollPane.getVerticalScrollBar().setValue(py);
+                    scrollPane.revalidate();
+                    scrollPane.getViewport().validate();
+                    MapEditor.MiniMap.this.repaint();
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent mouseEvent) {
+                }
+            });
+        }
+        @Override
+        protected void paintComponent(Graphics g) {
+            g.drawImage(miniMap, 0, 0, getWidth(), getHeight(), Color.black, this);
+            g.setColor(Color.red);
+            g.drawRect(sx * CHAR_WIDTH * getWidth() / MapEditor.this.getWidth(),
+                       sy * CHAR_HEIGHT * getHeight() / MapEditor.this.getHeight(),
+                       (ex - sx) * CHAR_WIDTH * getWidth() / MapEditor.this.getWidth(),
+                       (ey - sy) * CHAR_HEIGHT * getHeight() / MapEditor.this.getHeight());
+        }
+    }
 
     static {
         backgrounds.put((char)Climate.alpine.ordinal(), new Color(0x40, 0x35, 0x00));
@@ -58,6 +88,7 @@ public class MapEditor extends JPanel {
 
     public MapEditor(Editor editor) {
         this.editor = editor;
+        miniMapComponent = new MiniMap(this);
         addMouseMotionListener(new MouseMotionAdapter() {
 
             @Override
@@ -106,10 +137,13 @@ public class MapEditor extends JPanel {
                 if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
                     continue;
                 }
-                
+
+                MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
                 point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
                               ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
-                              (editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol()).getC();            
+                              symbol.getC();
+
+                miniMap.setRGB(x, y, symbol.getColor().getRGB());
             }
         }
         repaint();
@@ -124,7 +158,25 @@ public class MapEditor extends JPanel {
         rows = mapIO.getRows();
         cols = mapIO.getCols();
         point = mapIO.readRaw();
+        createMiniMap();
         setPreferredSize(new Dimension(cols * CHAR_WIDTH, rows * CHAR_HEIGHT));
+    }
+
+    private void createMiniMap() {
+        if(miniMap == null) {
+            miniMap = new BufferedImage(cols, rows, BufferedImage.TYPE_INT_RGB);
+        }
+        for(int x = 0; x < cols; x++) {
+            for(int y = 0; y < rows; y++) {
+                char c = (char)(point[y][x] & 0xff);
+                MapSymbol symbol = MapSymbol.find(c);
+
+                int bg = (point[y][x] & 0xff00) >> 8;
+                Color background = backgrounds.get((char)bg);
+                if(background == null) background = Color.black;
+                miniMap.setRGB(x, y, (symbol == null ? Color.gray : (symbol == MapSymbol.water || symbol == MapSymbol.ground || symbol == MapSymbol.tree ? background : symbol.getColor())).getRGB());
+            }
+        }
     }
 
     public void importPng(File png) throws IOException {
@@ -273,6 +325,8 @@ public class MapEditor extends JPanel {
         g.drawRect(cursorX * CHAR_WIDTH, cursorY * CHAR_HEIGHT,
                    (editor.getBrush().getW() * CHAR_WIDTH) - 1,
                    (editor.getBrush().getH() * CHAR_HEIGHT) - 1);
+
+        miniMapComponent.repaint();
     }
 
     private void fireEvent(int sx, int sy, int ex, int ey) {
@@ -298,5 +352,9 @@ public class MapEditor extends JPanel {
     public void grabFocus() {
         requestFocusInWindow();
         requestFocus();
+    }
+
+    public JPanel getMiniMapComponent() {
+        return miniMapComponent;
     }
 }

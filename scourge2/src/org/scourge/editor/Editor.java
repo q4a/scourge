@@ -146,8 +146,11 @@ public class Editor extends JFrame implements MapEditorListener {
         JPanel ppp = new JPanel(new BorderLayout());
         ppp.add(sp2);
         ppp.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                                                        BorderFactory.createTitledBorder("Notes")));
-        right.add(ppp);
+                                                        BorderFactory.createTitledBorder("Notes")));        
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Mini Map", mapEditor.getMiniMapComponent());
+        tabs.addTab("Notes", ppp);
+        right.add(tabs);
 
 
         JSplitPane split = new JSplitPane();
