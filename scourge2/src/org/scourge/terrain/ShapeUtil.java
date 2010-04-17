@@ -6,9 +6,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-import com.jme.scene.TriMesh;
+import com.jme.scene.*;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
@@ -46,7 +44,7 @@ public class ShapeUtil {
     private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
     private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
-    private static WeakHashMap<String, byte[]> models = new WeakHashMap<String, byte[]>();
+    private static WeakHashMap<String, Node> models = new WeakHashMap<String, Node>();
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
@@ -104,10 +102,9 @@ public class ShapeUtil {
 	 *  the scenegraph, or null instead if unable to load geometry.
 	 */
 	public static Spatial importModel(String modelPath, String textureDir, String name_prefix) {
-        Spatial output = null;
         try {
-            byte[] bytes = models.get(modelPath);
-            if(bytes == null) {
+            Node prototype = models.get(modelPath);
+            if(prototype == null) {
                 final File textures;
                 if(textureDir != null) { // set textureDir location
                     textures = new File( textureDir );
@@ -128,23 +125,50 @@ public class ShapeUtil {
                     throw new IllegalStateException("Can't convert model: " + modelPath);
                 }
                 rawIn.close(); // FileInputStream s must be explicitly closed.
-                bytes = outStream.toByteArray();
+                byte[] bytes = outStream.toByteArray();
+
+                prototype = (Node) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
 
                 // prepare outStream for loading.
-                models.put(modelPath, bytes);
+                models.put(modelPath, prototype);
             }
 
-            // import the converted stream to jME as a Spatial
-            output = (Spatial) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
-            output.setName(newShapeName(name_prefix));
-//            output.setModelBound(new BoundingBox());
-//            output.updateModelBound();
-            return output;
+            try {
+                return cloneNode(prototype, name_prefix);
+            } catch(Throwable exc) {
+                logger.log(Level.SEVERE, "Unable to clone " + modelPath, exc);
+                debugNode(prototype, "  ");
+                throw new RuntimeException(exc);
+            }
         } catch (Exception exc) {
             logger.log(Level.SEVERE, exc.getMessage(), exc);
             throw new RuntimeException(exc);
         }
 	}
+
+    private static Node cloneNode(Node prototype, String name_prefix) {
+        Node node = new Node(newShapeName(name_prefix == null ? "clone" : name_prefix));
+        for(Spatial child : prototype.getChildren()) {
+            if(child instanceof TriMesh) {
+                TriMesh mesh = new SharedMesh((TriMesh)child);
+                node.attachChild(mesh);
+            } else if(child instanceof Node) {
+                node.attachChild(cloneNode((Node)child, null));
+            } else {
+                throw new RuntimeException("Can't clone spatial of type " + child.getClass());
+            }
+        }
+        return node;
+    }
+
+    private static void debugNode(Spatial node, String indent) {
+        System.err.println(indent + node.getName() + "," + node.getClass() + "," + node.toString());
+        if(node instanceof Node) {
+            for(Spatial child : ((Node)node).getChildren()) {
+                debugNode(child, indent + "  ");
+            }
+        }
+    }
 
     public static ImageIcon loadImageIcon(String path) {
         ImageIcon icon = images.get(path);

@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="removed unused code">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Session.java" afterPath="$PROJECT_DIR$/src/org/scourge/Session.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" afterPath="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" afterPath="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="scourge2.iws" />
@@ -84,10 +81,19 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MapEditor.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="MapEditor.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="176" column="98" selection-start="6718" selection-end="6718" vertical-scroll-proportion="0.53377265">
+            <state line="184" column="120" selection-start="7060" selection-end="7060" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ShapeUtil.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="106" column="45" selection-start="4577" selection-end="4577" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -102,10 +108,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Session.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Session.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/Session.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="70" selection-start="432" selection-end="432" vertical-scroll-proportion="0.0">
+            <state line="16" column="70" selection-start="432" selection-end="432" vertical-scroll-proportion="0.15983607">
               <folding />
             </state>
           </provider>
@@ -121,7 +127,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/WindowListener.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Climate.java" />
@@ -137,6 +142,7 @@
         <option value="$PROJECT_DIR$/src/org/scourge/editor/Editor.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Session.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
       </list>
     </option>
   </component>
@@ -206,7 +212,7 @@
       <recent name="org.scourge.terrain" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Editor">
+  <component name="RunManager" selected="Application.scourge2">
     <configuration default="false" name="Editor" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -390,7 +396,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="718" y="26" width="1202" height="1070" extended-state="0" />
+    <frame x="717" y="22" width="1203" height="1098" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
@@ -401,14 +407,14 @@
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41187558" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32684427" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40936255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26593626" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52120644" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37794533" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37704918" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -450,11 +456,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$PROJECT_DIR$/lib/jme.jar!/com/jme/input/InputSystem.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="23" selection-start="457" selection-end="457" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/lib/jme.jar!/com/jme/app/BaseGame.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="29" column="28" selection-start="966" selection-end="966" vertical-scroll-proportion="0.0" />
@@ -515,6 +516,18 @@
         <state line="16" column="13" selection-start="329" selection-end="329" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="184" column="120" selection-start="7060" selection-end="7060" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="106" column="45" selection-start="4577" selection-end="4577" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/Editor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="130" column="83" selection-start="6081" selection-end="6081" vertical-scroll-proportion="0.0" />
@@ -522,14 +535,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Session.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="70" selection-start="432" selection-end="432" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/editor/MapEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="176" column="98" selection-start="6718" selection-end="6718" vertical-scroll-proportion="0.53377265">
+        <state line="16" column="70" selection-start="432" selection-end="432" vertical-scroll-proportion="0.15983607">
           <folding />
         </state>
       </provider>
