@@ -3,7 +3,6 @@ package org.scourge.terrain;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
-import com.jme.math.Plane;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.*;
@@ -12,7 +11,6 @@ import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryImporter;
-import com.jme.util.geom.BufferUtils;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.jmex.model.animation.KeyframeController;
@@ -23,8 +21,6 @@ import com.jmex.model.converters.ObjToJme;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +40,7 @@ public class ShapeUtil {
     private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
     private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
-    private static WeakHashMap<String, Node> models = new WeakHashMap<String, Node>();
+    private static final Map<String, Node> prototypes = new HashMap<String, Node>();
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
@@ -102,63 +98,83 @@ public class ShapeUtil {
 	 *  the scenegraph, or null instead if unable to load geometry.
 	 */
 	public static Spatial importModel(String modelPath, String textureDir, String name_prefix) {
-        try {
-            Node prototype = models.get(modelPath);
-            if(prototype == null) {
-                final File textures;
-                if(textureDir != null) { // set textureDir location
-                    textures = new File( textureDir );
-                } else {// try to infer textureDir from modelPath.
-                    textures = new File(modelPath.substring(0, modelPath.lastIndexOf('/')));
-                }	// Add texture URL to auto-locator
-                final SimpleResourceLocator location = new SimpleResourceLocator(textures.toURI().toURL());
-                ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, location );
-
-                // read .3ds file into memory & convert it to a jME usable format.
-                final FileInputStream rawIn = new FileInputStream(modelPath);
-                final ByteArrayOutputStream outStream = new ByteArrayOutputStream(); // byte array streams don't have to be closed
-                if(modelPath.endsWith(".3ds")) {
-                    CONVERTER_3DS.convert(rawIn, outStream);
-                } else if(modelPath.endsWith(".obj")) {
-                    CONVERTER_OBJ.convert(rawIn, outStream);
-                } else {
-                    throw new IllegalStateException("Can't convert model: " + modelPath);
-                }
-                rawIn.close(); // FileInputStream s must be explicitly closed.
-                byte[] bytes = outStream.toByteArray();
-
-                prototype = (Node) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
-
-                // prepare outStream for loading.
-                models.put(modelPath, prototype);
-            }
-
+        synchronized(prototypes) {
             try {
-                return cloneNode(prototype, name_prefix);
-            } catch(Throwable exc) {
-                logger.log(Level.SEVERE, "Unable to clone " + modelPath, exc);
-                debugNode(prototype, "  ");
+                Node prototype = prototypes.get(modelPath);
+                if(prototype == null) {
+                    final File textures;
+                    if(textureDir != null) { // set textureDir location
+                        textures = new File( textureDir );
+                    } else {// try to infer textureDir from modelPath.
+                        textures = new File(modelPath.substring(0, modelPath.lastIndexOf('/')));
+                    }	// Add texture URL to auto-locator
+                    final SimpleResourceLocator location = new SimpleResourceLocator(textures.toURI().toURL());
+                    ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, location );
+
+                    // read .3ds file into memory & convert it to a jME usable format.
+                    final FileInputStream rawIn = new FileInputStream(modelPath);
+                    final ByteArrayOutputStream outStream = new ByteArrayOutputStream(); // byte array streams don't have to be closed
+                    if(modelPath.endsWith(".3ds")) {
+                        CONVERTER_3DS.convert(rawIn, outStream);
+                    } else if(modelPath.endsWith(".obj")) {
+                        CONVERTER_OBJ.convert(rawIn, outStream);
+                    } else {
+                        throw new IllegalStateException("Can't convert model: " + modelPath);
+                    }
+                    rawIn.close(); // FileInputStream s must be explicitly closed.
+                    byte[] bytes = outStream.toByteArray();
+
+                    prototype = (Node) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
+                    prototype.setModelBound(new BoundingBox());
+                    prototype.updateModelBound();
+
+                    System.err.println(modelPath);
+                    debugNode(prototype, "");
+
+                    // prepare outStream for loading.
+                    prototypes.put(modelPath, prototype);
+                }
+
+                try {
+                    Node copy = cloneNode(prototype, name_prefix, false);
+                    copy.updateRenderState();
+                    copy.updateWorldData(0);
+                    copy.updateWorldVectors();
+                    return copy;
+                } catch(Throwable exc) {
+                    logger.log(Level.SEVERE, "Unable to clone " + modelPath, exc);
+                    debugNode(prototype, "  ");
+                    throw new RuntimeException(exc);
+                }
+            } catch (Exception exc) {
+                logger.log(Level.SEVERE, "Error loading model:" + modelPath + " error=" + exc.getMessage(), exc);
                 throw new RuntimeException(exc);
             }
-        } catch (Exception exc) {
-            logger.log(Level.SEVERE, exc.getMessage(), exc);
-            throw new RuntimeException(exc);
         }
 	}
 
-    private static Node cloneNode(Node prototype, String name_prefix) {
+    private static Node cloneNode(Node prototype, String name_prefix, boolean cloneAttributes) {
         Node node = new Node(newShapeName(name_prefix == null ? "clone" : name_prefix));
+        if(cloneAttributes) cloneAttributes(prototype, node);
         for(Spatial child : prototype.getChildren()) {
             if(child instanceof TriMesh) {
-                TriMesh mesh = new SharedMesh((TriMesh)child);
+                TriMesh mesh = new SharedMesh(ShapeUtil.newShapeName("clone"), (TriMesh)child);
+                // bug? if I enable the line below the trees look good but on subsequent loads, parts of trees disappear...
+                //cloneAttributes(child, mesh);
                 node.attachChild(mesh);
             } else if(child instanceof Node) {
-                node.attachChild(cloneNode((Node)child, null));
+                node.attachChild(cloneNode((Node)child, null, true));
             } else {
                 throw new RuntimeException("Can't clone spatial of type " + child.getClass());
             }
         }
         return node;
+    }
+
+    private static void cloneAttributes(Spatial from, Spatial to) {
+        to.setLocalTranslation(from.getLocalTranslation().clone());
+        to.setLocalRotation(from.getLocalRotation().clone());
+        to.setLocalScale(from.getLocalScale().clone());
     }
 
     private static void debugNode(Spatial node, String indent) {
@@ -195,7 +211,7 @@ public class ShapeUtil {
     }
 
     public static void debug() {
-        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images and " + models.size() + " models.");
+        logger.info("loaded " + textures.size() + " textures and " + images.size() + " images.");
     }
 
     public static boolean isTextureLoaded(String key) {

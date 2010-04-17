@@ -199,7 +199,6 @@ public class Main extends Game {
     }
 
     public void showWindow(Window win) {
-        win.pack();
         rootNode.attachChild(win.getNode());
     }
 
@@ -386,5 +385,9 @@ public class Main extends Game {
 
     protected void escapePressed() {
         if(session.escapePressed()) finish();
+    }
+
+    public PlayerController getPlayerController() {
+        return (PlayerController)playerController;
     }
 }

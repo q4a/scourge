@@ -20,18 +20,19 @@ public class PlayerController extends InputHandler {
     public final static float PLAYER_SPEED = 50.0f;
     public static boolean fixed_camera = true;
 
-    private boolean turnLeft, turnRight, move;
     private Main main;
 
     private MouseAction mouseAction;
+    private boolean mouseAdded = false;
 
     public PlayerController(final Main main) {
         this.main = main;
 
         // set up mouse looking around
-//        RelativeMouse mouse = new RelativeMouse("Mouse Input");
-//        mouse.registerWithInputHandler( this );
-//        mouseAction = new MouseAction(main, mouse);
+
+        RelativeMouse mouse = new RelativeMouse("Mouse Input");
+        mouse.registerWithInputHandler( this );
+        mouseAction = new MouseAction(main, mouse);
 
         addAction(new ForwardMoveAction(main), "scourge_forward", true );
         addAction(new LeftTurnAction(main), "scourge_left", true);
@@ -67,13 +68,29 @@ public class PlayerController extends InputHandler {
             }
         } );
 
-//        addAction(mouseAction);
-
         KeyBindingManager keyboard = KeyBindingManager.getKeyBindingManager();
         keyboard.add( "scourge_left", KeyInput.KEY_A );
         keyboard.add( "scourge_right", KeyInput.KEY_D );
         keyboard.add( "scourge_forward", KeyInput.KEY_W );
         keyboard.add( "scourge_look_left", KeyInput.KEY_O );
         keyboard.add( "scourge_look_right", KeyInput.KEY_P );
+    }
+
+    public void toggleMouseDrive(boolean desiredValue) {
+        if(mouseAdded != desiredValue) {
+            toggleMouseDrive();
+        }
+    }
+
+    public void toggleMouseDrive() {
+        if(mouseAdded) {
+            removeAction(mouseAction);
+            mouseAdded = false;
+            MouseInput.get().setCursorVisible(true);
+        } else {
+            addAction(mouseAction);
+            mouseAdded = true;
+            MouseInput.get().setCursorVisible(false);
+        }
     }
 }
