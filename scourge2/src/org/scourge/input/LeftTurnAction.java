@@ -6,7 +6,6 @@ import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import org.scourge.Main;
-import org.scourge.terrain.Player;
 
 /**
 * User: gabor
@@ -30,7 +29,7 @@ class LeftTurnAction extends KeyInputAction {
 //            main.getPlayer().setKeyFrame(Player.Md2Key.stand);
 //        }
         q.fromAngleAxis(FastMath.DEG_TO_RAD * PlayerController.PLAYER_ROTATE_STEP * event.getTime(), Vector3f.UNIT_Y);
-        main.getPlayer().getNode().getLocalRotation().multLocal(q);
+        main.getPlayer().getCreatureModel().getNode().getLocalRotation().multLocal(q);
         if(!PlayerController.fixed_camera) {
             q.fromAngleAxis(FastMath.DEG_TO_RAD * -PlayerController.PLAYER_ROTATE_STEP * event.getTime(), Vector3f.UNIT_Y);
             main.getCameraHolder().getLocalRotation().multLocal(q);

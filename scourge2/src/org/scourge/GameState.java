@@ -1,8 +1,9 @@
 package org.scourge;
 
-import com.jme.math.Vector3f;
 import com.jme.system.DisplaySystem;
 import org.scourge.io.SaveGame;
+import org.scourge.model.Creature;
+import org.scourge.model.Session;
 import org.scourge.ui.Window;
 import org.scourge.ui.WindowListener;
 
@@ -14,12 +15,12 @@ import java.util.logging.Logger;
  * Date: Apr 12, 2010
  * Time: 8:51:12 PM
  */
-public class Session implements WindowListener {
+public class GameState implements WindowListener {
     private Window mainMenuWindow, gameMenuWindow;
-    private SaveGame saveGame;
-    private Logger logger = Logger.getLogger(Session.class.toString());
+    private Logger logger = Logger.getLogger(GameState.class.toString());
+    private Session session;
 
-    public Session() {
+    public GameState() {
         mainMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                     (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() / 4.0f * 3.0f),
                                     300, 300, this);
@@ -77,8 +78,7 @@ public class Session implements WindowListener {
             Window.confirm("Delete old saved game?", new Runnable() {
                 public void run() {
                     try {
-                        saveGame = SaveGame.newGame();
-                        startGame();
+                        startNewGame();
                     } catch(Exception exc) {
                         Window.showMessage("Error: " + exc.getMessage());
                         logger.log(Level.SEVERE, "Error: " + exc.getMessage(), exc);
@@ -86,29 +86,32 @@ public class Session implements WindowListener {
                 }
             });
         } else {
-            saveGame = SaveGame.newGame();
-            startGame();
+            startNewGame();
         }
     }
 
+    private void startNewGame() throws Exception {
+        session = new Session(); 
+        session.getParty().add(new Creature());
+        SaveGame.save(session);
+        startGame();
+    }
+
     private void loadGame() throws Exception {
-        saveGame = SaveGame.loadGame();
+        session = SaveGame.loadGame();
         startGame();
     }
 
     private void startGame() {
         mainMenuWindow.setVisible(false);
-        float[] pos = saveGame.getPlayerPosition();
-        Main.getMain().getPlayer().moveTo(new Vector3f(pos[0], pos[1], pos[2]));
-        Main.getMain().getTerrain().gotoPlayer();
+        Main main = Main.getMain();
+        main.setPlayer(session.getParty().get(0));
+        main.getTerrain().gotoPlayer();
     }
 
     private void saveGame() throws Exception {
         gameMenuWindow.setVisible(false);
-        saveGame.setPlayerPosition(new float[] {
-                Main.getMain().getPlayer().getX(), 9, Main.getMain().getPlayer().getZ()
-        });
-        saveGame.save();
+        SaveGame.save(session);
     }
 
     public boolean escapePressed() {

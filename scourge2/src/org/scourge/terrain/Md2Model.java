@@ -8,11 +8,8 @@ import com.jme.math.Ray;
 import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
 import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-import com.jme.scene.shape.Box;
-import com.jme.scene.state.CullState;
+import com.jme.system.DisplaySystem;
 import org.scourge.Main;
-import org.scourge.Session;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
 
@@ -24,9 +21,8 @@ import java.util.Map;
  * Date: Feb 9, 2010
  * Time: 9:51:05 AM
  */
-public class Player implements NodeGenerator {
+public class Md2Model implements NodeGenerator {
     private Node player;
-    private Main main;
     private Map<Md2Key, Integer[]> keyframes = new HashMap<Md2Key, Integer[]>();
     private final Ray down = new Ray();
     private final Ray forward = new Ray();
@@ -41,9 +37,7 @@ public class Player implements NodeGenerator {
     }
 
 
-    public Player(Main main) {
-        this.main = main;
-
+    public Md2Model(String model, String skin) {
         // point it down
         down.getDirection().set(new Vector3f(0, -1, 0));
         results = new TrianglePickResults();
@@ -53,7 +47,7 @@ public class Player implements NodeGenerator {
         noDistanceResults.setCheckDistance(false);
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
-        player = ShapeUtil.loadMd2("./data/models/sfod8/tris.md2", "./data/models/sfod8/Rieger.png", "player", main.getDisplay(), true, frames);
+        player = ShapeUtil.loadMd2(model, skin, "player", DisplaySystem.getDisplaySystem(), true, frames);
         //moveTo(pos);
         player.setLocalScale(.2f);
 
@@ -77,7 +71,7 @@ public class Player implements NodeGenerator {
         down.getOrigin().set(player.getWorldBound().getCenter());
         down.getOrigin().y += ABOVE_PLAYER;
         results.clear();
-        main.getTerrain().getNode().findPick(down, results);
+        Main.getMain().getTerrain().getNode().findPick(down, results);
         if (results.getNumber() > 0) {
             float dist = results.getPickData(0).getDistance();
             if(!Float.isInfinite(dist) && !Float.isNaN(dist)) {
@@ -101,13 +95,13 @@ public class Player implements NodeGenerator {
         forward.setOrigin(player.getWorldBound().getCenter());
         forward.getOrigin().y -= ((BoundingBox)player.getWorldBound()).yExtent / 2;
         results.clear();
-        main.getTerrain().getNode().findPick(forward, results);
+        Main.getMain().getTerrain().getNode().findPick(forward, results);
         if(results.getNumber() <= 0 || results.getPickData(0).getDistance() >= 6) {
             down.getOrigin().set(proposedLocation);
             down.getOrigin().addLocal(getDirection().normalizeLocal().multLocal(2.0f));
             down.getOrigin().y += ABOVE_PLAYER;
             noDistanceResults.clear();
-            main.getTerrain().getNode().findPick(down, noDistanceResults);
+            Main.getMain().getTerrain().getNode().findPick(down, noDistanceResults);
             for(int i = 0; i < noDistanceResults.getNumber(); i++) {
                 if(noDistanceResults.getPickData(i).getTargetTris().size() > 0) return true;
             }

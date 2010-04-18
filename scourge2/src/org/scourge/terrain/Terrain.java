@@ -52,7 +52,7 @@ public class Terrain implements NodeGenerator {
     public void gotoPlayer() {
         clearLoadedRegions();
         loadAsynchronously = false;
-        loadRegion(main.getPlayer().getX() / Region.REGION_SIZE, main.getPlayer().getZ() / Region.REGION_SIZE);
+        loadRegion(main.getPlayer().getCreatureModel().getX() / Region.REGION_SIZE, main.getPlayer().getCreatureModel().getZ() / Region.REGION_SIZE);
         loadRegion();
         loadAsynchronously = true;
 
@@ -99,12 +99,14 @@ public class Terrain implements NodeGenerator {
 
     protected void switchRegion() {
         // switch current region if needed
-        int px = main.getPlayer().getX() / Region.REGION_SIZE;
-        int pz = main.getPlayer().getZ() / Region.REGION_SIZE;
-        if(px != currentRegion.getX() / Region.REGION_SIZE ||
-           pz != currentRegion.getY() / Region.REGION_SIZE) {
-            Region region = loadedRegions.get(getRegionKey(px, pz));
-            if(region != null) currentRegion = region; 
+        if(main.getPlayer() != null) {
+            int px = main.getPlayer().getCreatureModel().getX() / Region.REGION_SIZE;
+            int pz = main.getPlayer().getCreatureModel().getZ() / Region.REGION_SIZE;
+            if(px != currentRegion.getX() / Region.REGION_SIZE ||
+               pz != currentRegion.getY() / Region.REGION_SIZE) {
+                Region region = loadedRegions.get(getRegionKey(px, pz));
+                if(region != null) currentRegion = region;
+            }
         }
     }
 
@@ -115,8 +117,8 @@ public class Terrain implements NodeGenerator {
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
 
-        int px = main.getPlayer().getX() % Region.REGION_SIZE;
-        int pz = main.getPlayer().getZ() % Region.REGION_SIZE;
+        int px = main.getPlayer().getCreatureModel().getX() % Region.REGION_SIZE;
+        int pz = main.getPlayer().getCreatureModel().getZ() % Region.REGION_SIZE;
         if(px < Region.REGION_SIZE / 2) {
             loadRegion(rx - 1, ry);
         } else {

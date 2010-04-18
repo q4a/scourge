@@ -24,11 +24,11 @@ import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
-import org.scourge.terrain.Player;
+import org.scourge.model.Creature;
+import org.scourge.terrain.Md2Model;
 import org.scourge.terrain.Region;
 import org.scourge.terrain.Terrain;
 import org.scourge.ui.Window;
-import org.scourge.ui.WindowListener;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -37,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main extends Game {
-    private Player player;
     private InputHandler playerController;
     private Node cameraHolder;
     private CameraNode camNode;
@@ -50,7 +49,8 @@ public class Main extends Game {
     private float textureScale = 0.02f;
     private Random random = new Random(17L);
     private Text2D positionLabel, loadingLabel;
-    private Session session;
+    private GameState gameState;
+    private Creature player;
 
     private static Main main;
 
@@ -138,19 +138,14 @@ public class Main extends Game {
         loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
 		rootNode.attachChild(loadingLabel);
 
-        session = new Session();
+        gameState = new GameState();
         try {
-            player = new Player(this);
-            player.setKeyFrame(Player.Md2Key.stand);
             terrain = new Terrain(this);
         } catch(IOException exc) {
             throw new RuntimeException(exc);
         }
 
         cameraHolder = new Node("cam_holder");
-        player.getNode().attachChild(cameraHolder);
-
-        toggleCameraAttached();
 
         playerController = new PlayerController(this);
         input = playerController;
@@ -161,8 +156,6 @@ public class Main extends Game {
         reflectedNode.attachChild(skybox);
         reflectedNode.attachChild(terrain.getNode());
         rootNode.attachChild(reflectedNode);
-
-        rootNode.attachChild(player.getNode());
 
         // setup the water plane
         waterEffectRenderPass = new WaterRenderPass(cam, 4, false, false); // setting last param to false renders faster
@@ -196,7 +189,7 @@ public class Main extends Game {
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
 
         if(!"true".equalsIgnoreCase(System.getProperty("test.mode"))) {
-            session.showMainMenu();
+            gameState.showMainMenu();
         }
     }
 
@@ -238,15 +231,17 @@ public class Main extends Game {
         if(terrain.getCurrentRegion() != null) {
             terrain.getCurrentRegion().moveToTopOfTerrain();
 
-            player.moveToTopOfTerrain();
+            if(player != null) {
+                player.getCreatureModel().moveToTopOfTerrain();
 
-            positionLabel.setText("Player: " + player.getX() + "," + player.getZ() +
-                                  " (" + (player.getX() % Region.REGION_SIZE) + "," + (player.getZ() % Region.REGION_SIZE) + ")" +
-                                  " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
-                                  " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-                                  getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
-            positionLabel.updateRenderState();
-            positionLabel.updateModelBound();
+                positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
+                                      " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
+                                      " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
+                                      " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
+                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
+                positionLabel.updateRenderState();
+                positionLabel.updateModelBound();
+            }
         }
 
 
@@ -291,8 +286,21 @@ public class Main extends Game {
         return display;
     }
 
-    public Player getPlayer() {
+    public Creature getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Creature newPlayer) {
+        if(player != null) {
+           player.getCreatureModel().getNode().detachChild(cameraHolder);
+        }
+        player = newPlayer;
+        player.getCreatureModel().getNode().attachChild(cameraHolder);
+
+        // todo: this is not the right place for this
+        rootNode.attachChild(player.getCreatureModel().getNode());
+        player.getCreatureModel().getNode().updateWorldBound();
+        player.getCreatureModel().getNode().updateRenderState();
     }
 
     public Terrain getTerrain() {
@@ -386,7 +394,7 @@ public class Main extends Game {
     }
 
     protected void escapePressed() {
-        if(session.escapePressed()) finish();
+        if(gameState.escapePressed()) finish();
     }
 
     public PlayerController getPlayerController() {

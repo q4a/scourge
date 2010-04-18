@@ -8,7 +8,7 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import org.scourge.Main;
 import org.scourge.input.MouseAction;
-import org.scourge.terrain.Player;
+import org.scourge.terrain.Md2Model;
 
 /**
  * User: gabor
@@ -64,7 +64,7 @@ public class PlayerController extends InputHandler {
                 if(keyCode == KeyInput.KEY_F5 && !pressed) {
                     main.toggleCameraAttached();
                 }
-                main.getPlayer().setKeyFrame(keyInput.isKeyDown(KeyInput.KEY_W) ? Player.Md2Key.run : Player.Md2Key.stand);
+                main.getPlayer().getCreatureModel().setKeyFrame(keyInput.isKeyDown(KeyInput.KEY_W) ? Md2Model.Md2Key.run : Md2Model.Md2Key.stand);
             }
         } );
 
