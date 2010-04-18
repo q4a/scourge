@@ -52,10 +52,12 @@ public class Main extends Game {
     private Text2D positionLabel, loadingLabel;
     private Session session;
 
+    private static Main main;
+
     public static void main(String[] args) {
-        Main app = new Main();
-        app.setConfigShowMode(ConfigShowMode.ShowIfNoConfig);
-        app.start();
+        main = new Main();
+        main.setConfigShowMode(ConfigShowMode.ShowIfNoConfig);
+        main.start();
     }
 
     @Override
@@ -136,9 +138,9 @@ public class Main extends Game {
         loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
 		rootNode.attachChild(loadingLabel);
 
-        session = new Session(this);
+        session = new Session();
         try {
-            player = new Player(this, session.PLAYER_START_LOCATION);
+            player = new Player(this);
             player.setKeyFrame(Player.Md2Key.stand);
             terrain = new Terrain(this);
         } catch(IOException exc) {
@@ -389,5 +391,9 @@ public class Main extends Game {
 
     public PlayerController getPlayerController() {
         return (PlayerController)playerController;
+    }
+
+    public static Main getMain() {
+        return main;
     }
 }

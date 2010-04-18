@@ -12,6 +12,7 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
 import org.scourge.Main;
+import org.scourge.Session;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
 
@@ -40,7 +41,7 @@ public class Player implements NodeGenerator {
     }
 
 
-    public Player(Main main, Vector3f pos) {
+    public Player(Main main) {
         this.main = main;
 
         // point it down
@@ -53,7 +54,7 @@ public class Player implements NodeGenerator {
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
         player = ShapeUtil.loadMd2("./data/models/sfod8/tris.md2", "./data/models/sfod8/Rieger.png", "player", main.getDisplay(), true, frames);
-        moveTo(pos);
+        //moveTo(pos);
         player.setLocalScale(.2f);
 
         for(String s : frames.keySet()) {

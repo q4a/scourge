@@ -1,6 +1,5 @@
 package org.scourge.ui;
 
-import com.jme.input.Mouse;
 import com.jme.input.MouseInput;
 import com.jme.input.MouseInputListener;
 import com.jme.math.Vector3f;
@@ -14,12 +13,14 @@ import com.jme.scene.state.FogState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
 import com.jmex.font2d.Text2D;
+import org.scourge.Main;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * User: gabor
@@ -36,6 +37,13 @@ public class Window implements NodeGenerator, MouseInputListener {
     private WindowListener listener;
     private int x, y, w, h;
     private Button currentButton;
+    public static final float LABEL_FONT_SIZE = 8;
+
+    private static Stack<Window> windows = new Stack<Window>();
+    private static final String MESSAGE_OK = "internal_ok";
+    private static Runnable onOk;
+    private static final String MESSAGE_CONFIRM_OK = "internal_confirm_ok";
+    private static final String MESSAGE_CONFIRM_CANCEL = "internal_confirm_cancel";
 
     public Window(int x, int y, int w, int h, WindowListener listener) {
         this.listener = listener;
@@ -79,7 +87,6 @@ public class Window implements NodeGenerator, MouseInputListener {
         win.updateRenderState();
         win.lockBounds();
         win.lockMeshes();
-
     }
 
     @Override
@@ -88,7 +95,7 @@ public class Window implements NodeGenerator, MouseInputListener {
     }
 
     public void addLabel(int x, int y, String text) {
-        addLabel(x, y, text, 8, 0, TEXT_COLOR, 1);
+        addLabel(x, y, text, LABEL_FONT_SIZE, 0, TEXT_COLOR, 1);
     }
 
     public void addLabel(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
@@ -108,17 +115,31 @@ public class Window implements NodeGenerator, MouseInputListener {
 
     @Override
     public void onButton(int mouseButton, boolean pressed, int x, int y) {
-        if(mouseButton == 0) {
-            for(Rectangle r : buttons.keySet()) {
-                if(r.contains(x, y)) {
-                    Button button = buttons.get(r);
-                    if(pressed) {
-                        currentButton = button;
-                        button.pressButton();
-                    } else {
-                        currentButton = null;
-                        button.releaseButton();
-                        listener.buttonClicked(button.getName());
+        if(Window.getWindow() == this) {
+            if(mouseButton == 0) {
+                for(Rectangle r : buttons.keySet()) {
+                    if(r.contains(x, y)) {
+                        Button button = buttons.get(r);
+                        if(pressed) {
+                            currentButton = button;
+                            button.pressButton();
+                        } else {
+                            currentButton = null;
+                            button.releaseButton();
+                            if(MESSAGE_OK.equals(button.getName())) {
+                                getWindow().setVisible(false);
+                            } else if(MESSAGE_CONFIRM_OK.equals(button.getName())) {
+                                getWindow().setVisible(false);
+                                if(onOk != null) {
+                                    onOk.run();
+                                    onOk = null;
+                                }
+                            } else if(MESSAGE_CONFIRM_CANCEL.equals(button.getName())) {
+                                getWindow().setVisible(false);
+                            } else {
+                                listener.buttonClicked(button.getName());
+                            }
+                        }
                     }
                 }
             }
@@ -151,5 +172,43 @@ public class Window implements NodeGenerator, MouseInputListener {
 
     public int getH() {
         return h;
+    }
+
+    public static void showMessage(String message) {
+        Window messageWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
+                                          (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() * 0.5f),
+                                          Math.max(300, message.length() * 10 + 40), 120, null);
+        messageWindow.addLabel(0, 30, message);
+        messageWindow.addButton(MESSAGE_OK, 0, -20, "OK");
+        messageWindow.pack();
+        messageWindow.setVisible(true);
+    }
+
+    public static void confirm(String message, Runnable onOk) {
+        Window.onOk = onOk;
+        Window messageWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
+                                          (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() * 0.5f),
+                                          Math.max(350, message.length() * 10 + 40), 120, null);
+        messageWindow.addLabel(0, 30, message);
+        messageWindow.addButton(MESSAGE_CONFIRM_OK, -70, -20, "OK");
+        messageWindow.addButton(MESSAGE_CONFIRM_CANCEL, 70, -20, "Cancel");
+        messageWindow.pack();
+        messageWindow.setVisible(true);
+    }
+
+    public void setVisible(boolean visible) {
+        if(visible) {
+            windows.push(this);
+            Main.getMain().showWindow(this);
+        } else {
+            Main.getMain().hideWindow(this);
+            windows.pop();
+        }
+        // drive with the mouse if no window is open
+        Main.getMain().getPlayerController().toggleMouseDrive(getWindow() == null);
+    }
+
+    public static Window getWindow() {
+        return windows.isEmpty() ? null : windows.peek();
     }
 }
