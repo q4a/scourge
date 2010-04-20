@@ -428,4 +428,8 @@ public class Main extends Game {
             fogState.setStart(cam.getFrustumFar() * 0.15f);
         }
     }
+
+    public GameState getGameState() {
+        return gameState;
+    }
 }

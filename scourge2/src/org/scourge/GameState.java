@@ -4,6 +4,7 @@ import com.jme.system.DisplaySystem;
 import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
+import org.scourge.ui.CreatureEditor;
 import org.scourge.ui.Window;
 import org.scourge.ui.WindowListener;
 
@@ -16,7 +17,8 @@ import java.util.logging.Logger;
  * Time: 8:51:12 PM
  */
 public class GameState implements WindowListener {
-    private Window mainMenuWindow, gameMenuWindow, pcEditorWindow;
+    private Window mainMenuWindow, gameMenuWindow;
+    private CreatureEditor pcEditor;
     private Logger logger = Logger.getLogger(GameState.class.toString());
     private Session session;
 
@@ -30,7 +32,6 @@ public class GameState implements WindowListener {
         mainMenuWindow.addButton("quit", 0, -50, "Quit");
         mainMenuWindow.pack();
 
-
         gameMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                     (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() / 2.0f),
                                     300, 300, this);
@@ -40,27 +41,7 @@ public class GameState implements WindowListener {
         gameMenuWindow.addButton("back", 0, -50, "to Main Menu");
         gameMenuWindow.pack();
 
-        pcEditorWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
-                                    (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() / 2.0f),
-                                    500, 350, this);
-        pcEditorWindow.addLabel(0, 155, "Create a character");
-        pcEditorWindow.addLabel(-150, 120, "Name:");
-        pcEditorWindow.addTextfield("name", 0, 120, "", 20);
-
-        pcEditorWindow.addLabel(-150, 90, "Level: ");
-        pcEditorWindow.addLabel("level", -100, 90, "0");
-        pcEditorWindow.addLabel(-150, 60, "Exp.: ");
-        pcEditorWindow.addLabel("exp", -100, 60, "0");
-        pcEditorWindow.addLabel(-150, 30, "Hp: ");
-        pcEditorWindow.addLabel("hp", -100, 30, "0");
-        pcEditorWindow.addLabel(-50, 30, "Mp: ");
-        pcEditorWindow.addLabel("mp", 0, 30, "0");
-        pcEditorWindow.addLabel(-150, 0, "Coins: ");
-        pcEditorWindow.addLabel("coins", -100, 0, "0");
-
-        pcEditorWindow.addButton("start", -70, -150, "Start Game");
-        pcEditorWindow.addButton("cancel", 70, -150, "Cancel");
-        pcEditorWindow.pack();
+        pcEditor = new CreatureEditor(this);
     }
 
     public void showMainMenu() {
@@ -88,10 +69,8 @@ public class GameState implements WindowListener {
                     gameMenuWindow.setVisible(false);
                     showMainMenu();
                 }
-            } else if(Window.getWindow() == pcEditorWindow) {
-                if("cancel".equals(name)) {
-                    pcEditorWindow.setVisible(false);
-                } else if("start".equals(name)) {
+            } else if(Window.getWindow() == pcEditor) {
+                if(CreatureEditor.START.equals(name)) {
                     savePcAndStartGame();
                 }
             }
@@ -123,20 +102,14 @@ public class GameState implements WindowListener {
         Creature creature = new Creature();
         session.getParty().add(creature);
         SaveGame.save(session);
-        pcEditorWindow.setText("name", creature.getName());
-        pcEditorWindow.setText("level", String.valueOf(creature.getLevel()));
-        pcEditorWindow.setText("exp", String.valueOf(creature.getExperience()));
-        pcEditorWindow.setText("hp", String.valueOf(creature.getHp()));
-        pcEditorWindow.setText("mp", String.valueOf(creature.getMp()));
-        pcEditorWindow.setText("coins", String.valueOf(creature.getCoins()));
-        pcEditorWindow.setVisible(true);
+        pcEditor.load(creature);
+        pcEditor.setVisible(true);
     }
 
-    private void savePcAndStartGame() throws Exception {
-        Creature creature = session.getParty().get(0);
-        creature.setName(pcEditorWindow.getText("name"));
+    public void savePcAndStartGame() throws Exception {
+        pcEditor.save();
+        pcEditor.setVisible(false);
         SaveGame.save(session);
-        pcEditorWindow.setVisible(false);
         startGame();
     }
 

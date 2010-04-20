@@ -52,6 +52,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     private static final String MESSAGE_CONFIRM_CANCEL = "internal_confirm_cancel";
     private Textfield currentTextField;
 
+    public Window(int x, int y, int w, int h) {
+        this(x, y, w, h, null);
+    }
+
     public Window(int x, int y, int w, int h, WindowListener listener) {
         this.listener = listener;
         this.x = x;
@@ -109,10 +113,13 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     public void addTextfield(String name, int x, int y, String text, int size) {
         Textfield textfield = new Textfield(this, name, x, y, text, size);
-        components.put(name, textfield);
         textfields.put(textfield.getRectangle(), textfield);
-        win.attachChild(textfield.getNode());
         if(textfields.size() == 1) setCurrentTextField(textfield);
+        addComponent(textfield);
+    }
+
+    public void addImage(String name, String imagePath, int x, int y, int w, int h) {
+        addComponent(new ImageComponent(this, name, imagePath, x, y, w, h));
     }
 
     public void addLabel(int x, int y, String text) {
@@ -124,9 +131,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void addLabel(String name, int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
-        Label label = new Label(this, name, x, y, text, size, flags, color, scale);
-        components.put(name, label);
-		win.attachChild(label.getNode());
+        addComponent(new Label(this, name, x, y, text, size, flags, color, scale));
     }
 
     public void addButton(String name, int x, int y, String text) {
@@ -135,9 +140,13 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     public void addButton(String name, int x, int y, int w, int h, String text) {
         Button button = new Button(this, name, x, y, w, h, text);
-        components.put(name, button);
         buttons.put(button.getRectangle(), button);
-        win.attachChild(button.getNode());
+        addComponent(button);
+    }
+
+    protected void addComponent(Component c) {
+        components.put(c.getName(), c);
+        win.attachChild(c.getNode());
     }
 
     @Override
@@ -169,7 +178,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                                 }
                             } else if(MESSAGE_CONFIRM_CANCEL.equals(button.getName())) {
                                 getWindow().setVisible(false);
-                            } else {
+                            } else if(listener != null) {
                                 listener.buttonClicked(button.getName());
                             }
                         }
@@ -275,5 +284,25 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     public String getText(String name) {
         Component c = components.get(name);
         return (c == null ? null : c.getText());
+    }
+
+    public String getImage(String name) {
+        Component c = components.get(name);
+        return (c == null ? null : c.getImage());
+    }
+
+    public void setImage(String name, String imagePath) {
+        Component c = components.get(name);
+        if(c != null) {
+            c.setImage(imagePath);
+        }
+    }
+
+    public WindowListener getListener() {
+        return listener;
+    }
+
+    public void setListener(WindowListener listener) {
+        this.listener = listener;
     }
 }

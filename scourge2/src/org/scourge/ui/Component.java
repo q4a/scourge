@@ -64,7 +64,17 @@ public abstract class Component {
     }
 
     // subclass to implement
-    public abstract void setText(String value);
+    public void setText(String value) {
+    }
 
-    public abstract String getText();
+    public String getText() {
+        return null;
+    }
+
+    public String getImage() {
+        return null;
+    }
+
+    public void setImage(String imagePath) {
+    }
 }

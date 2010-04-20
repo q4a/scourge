@@ -1,6 +1,7 @@
 package org.scourge.model;
 
 import com.jme.math.Vector3f;
+import org.scourge.config.Pc;
 import org.scourge.terrain.Md2Model;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -41,6 +42,12 @@ public class Creature {
     @Element(name = "coins")
     private int coins;
 
+    @Element(name = "sex")
+    private int sex;
+
+    @Element(name = "portrait")
+    private String portrait;
+
 
     // not saved
     private Md2Model creatureModel;
@@ -59,6 +66,8 @@ public class Creature {
         hp = 10;
         mp = 8;
         coins = (int)(Math.random() * 5) + 3;
+        sex = Pc.Sex.male.ordinal();
+        portrait = Pc.PORTRAIT[sex][0];
 
         // init the model
         creatureModel = new Md2Model(model, skin);
@@ -163,5 +172,21 @@ public class Creature {
 
     public void setCoins(int coins) {
         this.coins = coins;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
     }
 }
