@@ -284,7 +284,7 @@ public abstract class Game extends BaseGame {
      * Check for key/mouse updates. Allow overriding this method to skip update in subclasses.
      */
     protected void updateInput() {
-        input.update( tpf );
+        if(input != null) input.update( tpf );
     }
 
     /**
@@ -428,23 +428,23 @@ public abstract class Game extends BaseGame {
 //        KeyBindingManager.getKeyBindingManager().set( "step",
 //                KeyInput.KEY_ADD );
         /** Assign key T to action "toggle_wire". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
-                KeyInput.KEY_T );
+//        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
+//                KeyInput.KEY_T );
 //        /** Assign key L to action "toggle_lights". */
 //        KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
 //                KeyInput.KEY_L );
 //        /** Assign key B to action "toggle_bounds". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
-                KeyInput.KEY_B );
+//        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
+//                KeyInput.KEY_B );
 //        /** Assign key N to action "toggle_normals". */
-        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
-                KeyInput.KEY_N );
+//        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
+//                KeyInput.KEY_N );
 //        /** Assign key C to action "camera_out". */
 //        KeyBindingManager.getKeyBindingManager().set( "camera_out",
 //                KeyInput.KEY_C );
         /** Assign key R to action "mem_report". */
-        KeyBindingManager.getKeyBindingManager().set("mem_report",
-                KeyInput.KEY_R);
+//        KeyBindingManager.getKeyBindingManager().set("mem_report",
+//                KeyInput.KEY_R);
 //
         KeyBindingManager.getKeyBindingManager().set( "exit",
                 KeyInput.KEY_ESCAPE );

@@ -1,5 +1,7 @@
 package org.scourge.ui;
 
+import com.jme.input.KeyInput;
+import com.jme.input.KeyInputListener;
 import com.jme.input.MouseInput;
 import com.jme.input.MouseInputListener;
 import com.jme.math.Vector3f;
@@ -27,23 +29,28 @@ import java.util.Stack;
  * Date: Apr 11, 2010
  * Time: 1:51:00 PM
  */
-public class Window implements NodeGenerator, MouseInputListener {
+public class Window implements NodeGenerator, MouseInputListener, KeyInputListener {
     private Node win;
     private static final String WINDOW_BACKGROUND = "./data/textures/ui/win.png";    
     public static final ColorRGBA TEXT_COLOR = new ColorRGBA(0, 0, 0, 1);
 
+    public static final int FONT_WIDTH = 10;
+    public static final int FONT_HEIGHT = 8;
 
     private Map<Rectangle, Button> buttons = new HashMap<Rectangle, Button>();
+    private Map<Rectangle, Textfield> textfields = new HashMap<Rectangle, Textfield>();
+    private Map<String, Component> components = new HashMap<String, Component>();
     private WindowListener listener;
     private int x, y, w, h;
     private Button currentButton;
-    public static final float LABEL_FONT_SIZE = 8;
+    public static final float LABEL_FONT_SIZE = FONT_HEIGHT;
 
     private static Stack<Window> windows = new Stack<Window>();
     private static final String MESSAGE_OK = "internal_ok";
     private static Runnable onOk;
     private static final String MESSAGE_CONFIRM_OK = "internal_confirm_ok";
     private static final String MESSAGE_CONFIRM_CANCEL = "internal_confirm_cancel";
+    private Textfield currentTextField;
 
     public Window(int x, int y, int w, int h, WindowListener listener) {
         this.listener = listener;
@@ -60,6 +67,7 @@ public class Window implements NodeGenerator, MouseInputListener {
         makeNodeOrtho(win);
 
         MouseInput.get().addListener(this);
+        KeyInput.get().addListener(this);
     }
 
     private void makeNodeOrtho(Node node) {
@@ -89,18 +97,36 @@ public class Window implements NodeGenerator, MouseInputListener {
         win.lockMeshes();
     }
 
+    public void unpack() {
+        win.unlockBounds();
+        win.unlockMeshes();
+    }
+
     @Override
     public Node getNode() {
         return win;
     }
 
-    public void addLabel(int x, int y, String text) {
-        addLabel(x, y, text, LABEL_FONT_SIZE, 0, TEXT_COLOR, 1);
+    public void addTextfield(String name, int x, int y, String text, int size) {
+        Textfield textfield = new Textfield(this, name, x, y, text, size);
+        components.put(name, textfield);
+        textfields.put(textfield.getRectangle(), textfield);
+        win.attachChild(textfield.getNode());
+        if(textfields.size() == 1) setCurrentTextField(textfield);
     }
 
-    public void addLabel(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
-        Text2D label = WinUtil.createLabel(x, y, text, size, flags, color, scale);
-		win.attachChild(label);
+    public void addLabel(int x, int y, String text) {
+        addLabel(ShapeUtil.newShapeName("label"), x, y, text);
+    }
+
+    public void addLabel(String name, int x, int y, String text) {
+        addLabel(name, x, y, text, LABEL_FONT_SIZE, 0, TEXT_COLOR, 1);
+    }
+
+    public void addLabel(String name, int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
+        Label label = new Label(this, name, x, y, text, size, flags, color, scale);
+        components.put(name, label);
+		win.attachChild(label.getNode());
     }
 
     public void addButton(String name, int x, int y, String text) {
@@ -108,7 +134,8 @@ public class Window implements NodeGenerator, MouseInputListener {
     }
 
     public void addButton(String name, int x, int y, int w, int h, String text) {
-        Button button = new Button(name, x, y, w, h, text, this);
+        Button button = new Button(this, name, x, y, w, h, text);
+        components.put(name, button);
         buttons.put(button.getRectangle(), button);
         win.attachChild(button.getNode());
     }
@@ -117,6 +144,12 @@ public class Window implements NodeGenerator, MouseInputListener {
     public void onButton(int mouseButton, boolean pressed, int x, int y) {
         if(Window.getWindow() == this) {
             if(mouseButton == 0) {
+                for(Rectangle r : textfields.keySet()) {
+                    if(r.contains(x, y)) {
+                        setCurrentTextField(textfields.get(r));
+                        break;
+                    }
+                }
                 for(Rectangle r : buttons.keySet()) {
                     if(r.contains(x, y)) {
                         Button button = buttons.get(r);
@@ -143,6 +176,26 @@ public class Window implements NodeGenerator, MouseInputListener {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void onKey(char character, int keyCode, boolean pressed) {
+        if(Window.getWindow() == this) {
+            if(currentTextField != null) {
+                if(keyCode == KeyInput.KEY_BACK) {
+                    if(!pressed) currentTextField.deleteLast();
+                } else if (character > 0) {
+                    currentTextField.addChar(character);
+                }
+            }
+        }
+    }
+
+    private void setCurrentTextField(Textfield textfield) {
+        currentTextField = textfield;
+        for(Textfield tf : textfields.values()) {
+            tf.setFocus(tf == currentTextField);
         }
     }
 
@@ -178,7 +231,7 @@ public class Window implements NodeGenerator, MouseInputListener {
         Window messageWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                           (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() * 0.5f),
                                           Math.max(300, message.length() * 10 + 40), 120, null);
-        messageWindow.addLabel(0, 30, message);
+        messageWindow.addLabel("internal_message", 0, 30, message);
         messageWindow.addButton(MESSAGE_OK, 0, -20, "OK");
         messageWindow.pack();
         messageWindow.setVisible(true);
@@ -188,8 +241,8 @@ public class Window implements NodeGenerator, MouseInputListener {
         Window.onOk = onOk;
         Window messageWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                           (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() * 0.5f),
-                                          Math.max(350, message.length() * 10 + 40), 120, null);
-        messageWindow.addLabel(0, 30, message);
+                                          Math.max(350, message.length() * FONT_WIDTH + 40), 120, null);
+        messageWindow.addLabel("internal_confirm", 0, 30, message);
         messageWindow.addButton(MESSAGE_CONFIRM_OK, -70, -20, "OK");
         messageWindow.addButton(MESSAGE_CONFIRM_CANCEL, 70, -20, "Cancel");
         messageWindow.pack();
@@ -210,5 +263,17 @@ public class Window implements NodeGenerator, MouseInputListener {
 
     public static Window getWindow() {
         return windows.isEmpty() ? null : windows.peek();
+    }
+
+    public void setText(String name, String value) {
+        Component c = components.get(name);
+        if(c != null) {
+            c.setText(value);
+        }
+    }
+
+    public String getText(String name) {
+        Component c = components.get(name);
+        return (c == null ? null : c.getText());
     }
 }

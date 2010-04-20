@@ -1,11 +1,6 @@
 package org.scourge.input;
 
 import com.jme.input.*;
-import com.jme.input.action.InputActionEvent;
-import com.jme.input.action.KeyInputAction;
-import com.jme.math.FastMath;
-import com.jme.math.Quaternion;
-import com.jme.math.Vector3f;
 import org.scourge.Main;
 import org.scourge.input.MouseAction;
 import org.scourge.terrain.Md2Model;
@@ -25,55 +20,52 @@ public class PlayerController extends InputHandler {
     private MouseAction mouseAction;
     private boolean mouseAdded = false;
 
+    private SwitchCameraListener switchCameraListener = new SwitchCameraListener();
+
     public PlayerController(final Main main) {
         this.main = main;
 
-        // set up mouse looking around
-
         RelativeMouse mouse = new RelativeMouse("Mouse Input");
-        mouse.registerWithInputHandler( this );
+        mouse.registerWithInputHandler(this);
         mouseAction = new MouseAction(main, mouse);
 
-        addAction(new ForwardMoveAction(main), "scourge_forward", true );
-        addAction(new LeftTurnAction(main), "scourge_left", true);
-        addAction(new RightTurnAction(main), "scourge_right", true);
+        setEnabled(true);
+    }
 
-        addAction(new KeyInputAction() {
-            private Quaternion q = new Quaternion();
-
-            @Override
-            public void performAction(InputActionEvent event) {
-                q.fromAngleAxis(FastMath.DEG_TO_RAD * PLAYER_ROTATE_STEP * event.getTime(), Vector3f.UNIT_Y);
-                main.getCameraHolder().getLocalRotation().multLocal(q);
-            }
-        }, "scourge_look_left", true);
-
-        addAction(new KeyInputAction() {
-            private Quaternion q = new Quaternion();
-
-            @Override
-            public void performAction(InputActionEvent event) {
-                q.fromAngleAxis(FastMath.DEG_TO_RAD * -PLAYER_ROTATE_STEP * event.getTime(), Vector3f.UNIT_Y);
-                main.getCameraHolder().getLocalRotation().multLocal(q);
-            }
-        }, "scourge_look_right", true);
-
-        final KeyInput keyInput = KeyInput.get();
-        keyInput.addListener( new KeyInputListener() {
-            public void onKey( char character, int keyCode, boolean pressed ) {
-                if(keyCode == KeyInput.KEY_F5 && !pressed) {
-                    main.toggleCameraAttached();
-                }
-                main.getPlayer().getCreatureModel().setKeyFrame(keyInput.isKeyDown(KeyInput.KEY_W) ? Md2Model.Md2Key.run : Md2Model.Md2Key.stand);
-            }
-        } );
-
+    public void setEnabled(boolean b) {
         KeyBindingManager keyboard = KeyBindingManager.getKeyBindingManager();
-        keyboard.add( "scourge_left", KeyInput.KEY_A );
-        keyboard.add( "scourge_right", KeyInput.KEY_D );
-        keyboard.add( "scourge_forward", KeyInput.KEY_W );
-        keyboard.add( "scourge_look_left", KeyInput.KEY_O );
-        keyboard.add( "scourge_look_right", KeyInput.KEY_P );
+        KeyInput keyInput = KeyInput.get();
+        if(b) {
+            addAction(new ForwardMoveAction(main), "scourge_forward", true );
+            addAction(new LeftTurnAction(main), "scourge_left", true);
+            addAction(new RightTurnAction(main), "scourge_right", true);
+
+            keyInput.addListener(switchCameraListener);
+
+            keyboard.add( "scourge_left", KeyInput.KEY_A );
+            keyboard.add( "scourge_right", KeyInput.KEY_D );
+            keyboard.add( "scourge_forward", KeyInput.KEY_W );
+        } else {
+            keyboard.remove("scourge_left");
+            keyboard.remove("scourge_right");
+            keyboard.remove("scourge_forward");
+
+            keyInput.removeListener(switchCameraListener);
+
+            removeAction("scourge_forward");
+            removeAction("scourge_left");
+            removeAction("scourge_right");
+        }
+    }
+
+    private class SwitchCameraListener implements KeyInputListener {
+        public void onKey( char character, int keyCode, boolean pressed ) {
+            KeyInput keyInput = KeyInput.get();
+            if(keyCode == KeyInput.KEY_F5 && !pressed) {
+                main.toggleCameraAttached();
+            }
+            main.getPlayer().getCreatureModel().setKeyFrame(keyInput.isKeyDown(KeyInput.KEY_W) ? Md2Model.Md2Key.run : Md2Model.Md2Key.stand);
+        }
     }
 
     public void toggleMouseDrive(boolean desiredValue) {

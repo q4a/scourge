@@ -6,6 +6,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.RenderQueue;
 import com.jme.scene.Node;
 import com.jme.scene.PassNode;
 import com.jme.scene.PassNodeState;
@@ -145,6 +146,7 @@ class Tile {
             spatial.getLocalTranslation().z -= ShapeUtil.WALL_WIDTH / 2;
             spatial.getLocalScale().multLocal(model.scale);
             spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, model.axis));
+            spatial.setRenderQueueMode(com.jme.renderer.Renderer.QUEUE_TRANSPARENT);
             spatial.updateModelBound();
             node.attachChild(spatial);
         }

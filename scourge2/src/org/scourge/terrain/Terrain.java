@@ -40,13 +40,13 @@ public class Terrain implements NodeGenerator {
         loadRegion(449 / Region.REGION_SIZE, 509 / Region.REGION_SIZE);
         loadAsynchronously = true;
 
+        main.setFogOnWater(false);
         main.setCameraFollowsPlayer(false);
         Vector3f pos = new Vector3f(currentRegion.getX() * ShapeUtil.WALL_WIDTH,
                                            2 * ShapeUtil.WALL_WIDTH,
                                            currentRegion.getY() * ShapeUtil.WALL_WIDTH);
         main.getCamera().getLocation().set(pos);
         main.getCamera().lookAt(pos.addLocal(new Vector3f(10, 1, 10)), Vector3f.UNIT_Y);
-//        MouseInput.get().setCursorVisible(true);
     }
 
     public void gotoPlayer() {
@@ -56,7 +56,7 @@ public class Terrain implements NodeGenerator {
         loadRegion();
         loadAsynchronously = true;
 
-//        MouseInput.get().setCursorVisible(false);
+        main.setFogOnWater(true);
         main.setCameraFollowsPlayer(true);
     }
 

@@ -43,6 +43,7 @@ public class Main extends Game {
     private Skybox skybox;
     private Terrain terrain;
 
+    private FogState fogState;
     private WaterRenderPass waterEffectRenderPass;
     private Quad waterQuad;
     private float farPlane = 10000.0f;
@@ -84,15 +85,11 @@ public class Main extends Game {
 		cs.setEnabled(true);
 		rootNode.setRenderState(cs);
 
-        FogState fogState = display.getRenderer().createFogState();
+        fogState = display.getRenderer().createFogState();
         fogState.setDensity(1.0f);
         fogState.setEnabled(true);
-        fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
-        fogState.setEnd(cam.getFrustumFar() * 0.2f);
-        fogState.setStart(cam.getFrustumFar() * 0.15f);
         fogState.setDensityFunction(FogState.DensityFunction.Linear);
         fogState.setQuality(FogState.Quality.PerVertex);
-        //fogState.setSource(FogState.CoordinateSource.Depth);
         rootNode.setRenderState(fogState);
 
         lightState.detachAll();
@@ -160,6 +157,7 @@ public class Main extends Game {
         // setup the water plane
         waterEffectRenderPass = new WaterRenderPass(cam, 4, false, false); // setting last param to false renders faster
         waterEffectRenderPass.setWaterPlane(new Plane(new Vector3f(0.0f, 1.0f, 0.0f), 0.0f));
+        waterEffectRenderPass.useFadeToFogColor(true);
 
         waterQuad = new Quad("waterQuad", 1, 1);
         FloatBuffer normBuf = waterQuad.getNormalBuffer();
@@ -188,6 +186,8 @@ public class Main extends Game {
         rootNode.setCullHint(Spatial.CullHint.Dynamic);
         rootNode.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
 
+        setFogOnWater(true);
+
         if(!"true".equalsIgnoreCase(System.getProperty("test.mode"))) {
             gameState.showMainMenu();
         }
@@ -202,8 +202,19 @@ public class Main extends Game {
     }
 
     public void setCameraFollowsPlayer(boolean follows) {
-        if(follows == (camNode == null)) toggleCameraAttached();
-        input = playerController;
+        if(follows) {
+            if(camNode == null) {
+                toggleCameraAttached();
+            }
+            playerController.setEnabled(true);
+            input = playerController;
+        } else {
+            if(camNode != null) {
+                toggleCameraAttached();
+            }
+            playerController.setEnabled(false);
+            input = null;
+        }
     }
 
     public void toggleCameraAttached() {
@@ -214,9 +225,9 @@ public class Main extends Game {
             camNode = null;
         } else {
             camNode = new CameraNode("camera node", cam);
-            camNode.setLocalTranslation(new Vector3f(-350, 350, 0));
+            camNode.setLocalTranslation(new Vector3f(-380, 350, 0));
             camNode.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 90.0f, Vector3f.UNIT_Y));
-            camNode.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 45.0f, Vector3f.UNIT_X));
+            camNode.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 35.0f, Vector3f.UNIT_X));
             camNode.updateWorldData(0);
             cameraHolder.attachChild(camNode);
             input = playerController;
@@ -403,5 +414,18 @@ public class Main extends Game {
 
     public static Main getMain() {
         return main;
+    }
+
+    public void setFogOnWater(boolean b) {
+        waterEffectRenderPass.useFadeToFogColor(b);
+        if(b) {
+            fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
+            fogState.setEnd(cam.getFrustumFar() * 0.25f);
+            fogState.setStart(cam.getFrustumFar() * 0.175f);
+        } else {
+            fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
+            fogState.setEnd(cam.getFrustumFar() * 0.2f);
+            fogState.setStart(cam.getFrustumFar() * 0.15f);
+        }
     }
 }

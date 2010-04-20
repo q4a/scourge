@@ -26,6 +26,22 @@ public class Creature {
     @Element(name = "position")
     private float[] position;
 
+    @Element(name = "level")
+    private int level;
+
+    @Element(name = "experience")
+    private long experience;
+
+    @Element(name = "hp")
+    private int hp;
+
+    @Element(name = "mp")
+    private int mp;
+
+    @Element(name = "coins")
+    private int coins;
+
+
     // not saved
     private Md2Model creatureModel;
 
@@ -34,10 +50,15 @@ public class Creature {
         //693, 9, 151);
         //389, 9, 349);
         //498, 9, 489);
-        position = new float[] { 498, 9, 489 };
+        position = new float[] { 651, 9, 413 };
         name = "zorro";
         model = "./data/models/sfod8/tris.md2";
         skin = "./data/models/sfod8/Rieger.png";
+        level = 1;
+        experience = 0;
+        hp = 10;
+        mp = 8;
+        coins = (int)(Math.random() * 5) + 3;
 
         // init the model
         creatureModel = new Md2Model(model, skin);
@@ -102,5 +123,45 @@ public class Creature {
 
     public void setCreatureModel(Md2Model creatureModel) {
         this.creatureModel = creatureModel;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public long getExperience() {
+        return experience;
+    }
+
+    public void setExperience(long experience) {
+        this.experience = experience;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public int getMp() {
+        return mp;
+    }
+
+    public void setMp(int mp) {
+        this.mp = mp;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 }
