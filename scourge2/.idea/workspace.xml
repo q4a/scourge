@@ -6,24 +6,9 @@
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/GameState.java" afterPath="$PROJECT_DIR$/src/org/scourge/GameState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/DejaVuLGCSansMono.ttf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Window.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/GFont.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/GText.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/DejaVuLGCSans.ttf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Textfield.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Textfield.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Button.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Label.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Label.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/ScourgeRunes.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/Essays1743.ttf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/GentiumArchaic.ttf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Button.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/GentiumAlt.ttf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/ScourgeRunes.ttf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/COPYRIGHT.TXT" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/fonts/fireflysung.ttf" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="scourge2.iws" />
@@ -98,10 +83,10 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="WinUtil.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="WinUtil.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="17" selection-start="1538" selection-end="1538" vertical-scroll-proportion="0.46216217">
+            <state line="77" column="16" selection-start="2127" selection-end="2127" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -119,7 +104,7 @@
       <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="31" selection-start="738" selection-end="738" vertical-scroll-proportion="0.0">
+            <state line="23" column="82" selection-start="707" selection-end="707" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -145,10 +130,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Label.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Label.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Label.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="13" selection-start="198" selection-end="198" vertical-scroll-proportion="0.0">
+            <state line="17" column="0" selection-start="553" selection-end="553" vertical-scroll-proportion="0.24324325">
               <folding />
             </state>
           </provider>
@@ -193,13 +178,13 @@
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/Textfield.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/FontTT.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/Label.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/GText.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/GFont.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/GameState.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/Label.java" />
       </list>
     </option>
   </component>
@@ -656,13 +641,6 @@
         <state line="28" column="11" selection-start="1268" selection-end="1268" vertical-scroll-proportion="0.3327869" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="31" selection-start="738" selection-end="738" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Textfield.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="26" column="82" selection-start="818" selection-end="838" vertical-scroll-proportion="0.0">
@@ -702,16 +680,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Label.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="13" selection-start="198" selection-end="198" vertical-scroll-proportion="0.0">
+        <state line="23" column="82" selection-start="707" selection-end="707" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="17" selection-start="1538" selection-end="1538" vertical-scroll-proportion="0.46216217">
+        <state line="77" column="16" selection-start="2127" selection-end="2127" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Label.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="0" selection-start="553" selection-end="553" vertical-scroll-proportion="0.24324325">
           <folding />
         </state>
       </provider>

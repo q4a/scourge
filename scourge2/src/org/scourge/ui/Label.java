@@ -10,34 +10,23 @@ import com.jmex.font2d.Text2D;
  * Time: 11:58:57 AM
  */
 public class Label extends Component {
-    private Node label;
-    private ColorRGBA color;
-    private float scale;
-    private String text;
+    private GText label;
 
     public Label(Window window, String name, int x, int y, String text, ColorRGBA color, float scale, WinUtil.ScourgeFont scourgeFont) {
         super(window, name, x, y, text.length() * Window.FONT_WIDTH, Window.FONT_HEIGHT);
-        this.color = color;
-        this.scale = scale;
         label = WinUtil.createLabel(0, 0, text, color, scale, scourgeFont);
-        this.text = text;
         getNode().attachChild(label);
     }
 
     @Override
     public void setText(String text) {
         getWindow().unpack();
-        if(label != null) {
-            getNode().detachChild(label);
-        }
-        label = WinUtil.createLabel(0, 0, text, color, scale, WinUtil.ScourgeFont.text);
-        this.text = text;
-        getNode().attachChild(label);
+        label.setText(text);
         getWindow().pack();
     }
 
     @Override
     public String getText() {
-        return text;
+        return label.getText();
     }    
 }

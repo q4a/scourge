@@ -21,7 +21,7 @@ class Button extends Component {
     private Quad quad;
     private static final String BUTTON_BACKGROUND = "./data/textures/ui/button.png";
     //private static final ColorRGBA BUTTON_TEXT_COLOR = new ColorRGBA(0.2f, 0.05f, 0, 1);
-    private static final ColorRGBA BUTTON_TEXT_COLOR = new ColorRGBA(1, 1, 1, 1);
+    private static final ColorRGBA BUTTON_TEXT_COLOR = new ColorRGBA(1, 0.90f, 0.75f, 1);
     private static final float BUTTON_TEXT_SCALE = 0.8f;
     private static final Quaternion CLICK_TEXTURE_ROTATE = new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * 180, Vector3f.UNIT_Y);
     private static final Vector3f BUTTON_PRESS_TRANS = new Vector3f(2, -2, 0);

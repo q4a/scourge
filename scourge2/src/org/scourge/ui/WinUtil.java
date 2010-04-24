@@ -75,7 +75,7 @@ public class WinUtil {
         }
     }
 
-    static Node createLabel(int x, int y, String text, ColorRGBA color, float scale, ScourgeFont scourgeFont) {
+    static GText createLabel(int x, int y, String text, ColorRGBA color, float scale, ScourgeFont scourgeFont) {
         GText label = new GText(scourgeFont.getGFont(), scourgeFont.getKerning(), color);
         //label.setFill(color);
         label.setText(text);
