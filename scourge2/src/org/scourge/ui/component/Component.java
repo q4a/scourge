@@ -1,9 +1,7 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jmex.font2d.Text2D;
 
 import java.awt.*;
 

@@ -1,4 +1,4 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
 import com.jme.input.KeyInput;
 import com.jme.input.KeyInputListener;
@@ -14,7 +14,6 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.FogState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
-import com.jmex.font2d.Text2D;
 import org.scourge.Main;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
@@ -37,13 +36,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     public static final int FONT_WIDTH = 10;
     public static final int FONT_HEIGHT = 8;
 
-    private Map<Rectangle, Button> buttons = new HashMap<Rectangle, Button>();
-    private Map<Rectangle, Textfield> textfields = new HashMap<Rectangle, Textfield>();
-    private Map<String, Component> components = new HashMap<String, Component>();
+    private Map<String, org.scourge.ui.component.Component> components = new HashMap<String, org.scourge.ui.component.Component>();
     private WindowListener listener;
     private int x, y, w, h;
-    private Button currentButton;
-    public static final float LABEL_FONT_SIZE = FONT_HEIGHT;
+    private org.scourge.ui.component.Button currentButton;
 
     private static Stack<Window> windows = new Stack<Window>();
     private static final String MESSAGE_OK = "internal_ok";
@@ -116,8 +112,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     public void addTextfield(String name, int x, int y, String text, int size) {
         Textfield textfield = new Textfield(this, name, x, y, text, size);
-        textfields.put(textfield.getRectangle(), textfield);
-        if(textfields.size() == 1) setCurrentTextField(textfield);
+        setCurrentTextField(textfield);
         addComponent(textfield);
     }
 
@@ -126,7 +121,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void addLabel(int x, int y, String text, WinUtil.ScourgeFont font) {
-        addLabel(ShapeUtil.newShapeName("label"), x, y, text, TEXT_COLOR, 1, font);
+        addLabel(ShapeUtil.newShapeName("label"), x, y, text, TEXT_COLOR, true, font);
     }
 
     public void addLabel(int x, int y, String text) {
@@ -134,11 +129,15 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void addLabel(String name, int x, int y, String text) {
-        addLabel(name, x, y, text, TEXT_COLOR, 1, WinUtil.ScourgeFont.text);
+        addLabel(name, x, y, text, true);
     }
 
-    public void addLabel(String name, int x, int y, String text, ColorRGBA color, float scale, WinUtil.ScourgeFont font) {
-        addComponent(new Label(this, name, x, y, text, color, scale, font));
+    public void addLabel(String name, int x, int y, String text, boolean centered) {
+        addLabel(name, x, y, text, TEXT_COLOR, centered, WinUtil.ScourgeFont.text);
+    }
+
+    public void addLabel(String name, int x, int y, String text, ColorRGBA color, boolean centered, WinUtil.ScourgeFont font) {
+        addComponent(new Label(this, name, x, y, text, color, centered, font));
     }
 
     public void addButton(String name, int x, int y, String text) {
@@ -146,12 +145,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void addButton(String name, int x, int y, int w, int h, String text) {
-        Button button = new Button(this, name, x, y, w, h, text);
-        buttons.put(button.getRectangle(), button);
-        addComponent(button);
+        addComponent(new org.scourge.ui.component.Button(this, name, x, y, w, h, text));
     }
 
-    protected void addComponent(Component c) {
+    public void addComponent(org.scourge.ui.component.Component c) {
         components.put(c.getName(), c);
         win.attachChild(c.getNode());
     }
@@ -162,36 +159,37 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     @Override
     public void onButton(int mouseButton, boolean pressed, int x, int y) {
-        if(Window.getWindow() == this) {
+        if(Window.getWindow() == this && getRectangle().contains(x, y)) {
             if(mouseButton == 0) {
-                for(Rectangle r : textfields.keySet()) {
-                    if(r.contains(x, y)) {
-                        setCurrentTextField(textfields.get(r));
-                        break;
-                    }
-                }
-                for(Rectangle r : buttons.keySet()) {
-                    if(r.contains(x, y)) {
-                        Button button = buttons.get(r);
-                        if(pressed) {
-                            currentButton = button;
-                            button.pressButton();
-                        } else {
-                            currentButton = null;
-                            button.releaseButton();
-                            if(MESSAGE_OK.equals(button.getName())) {
-                                getWindow().setVisible(false);
-                            } else if(MESSAGE_CONFIRM_OK.equals(button.getName())) {
-                                getWindow().setVisible(false);
-                                if(onOk != null) {
-                                    onOk.run();
-                                    onOk = null;
+                for(org.scourge.ui.component.Component c : components.values()) {
+                    if(c.getRectangle().contains(x, y)) {
+                        if(c instanceof Textfield) {
+                            setCurrentTextField((Textfield)c);
+                            break;
+                        } else if(c instanceof org.scourge.ui.component.Button) {
+                            org.scourge.ui.component.Button button = (org.scourge.ui.component.Button)c;
+                            if(pressed) {
+                                currentButton = button;
+                                button.pressButton();
+                            } else {
+                                currentButton = null;
+                                button.releaseButton();
+                                if(MESSAGE_OK.equals(button.getName())) {
+                                    getWindow().setVisible(false);
+                                } else if(MESSAGE_CONFIRM_OK.equals(button.getName())) {
+                                    getWindow().setVisible(false);
+                                    if(onOk != null) {
+                                        onOk.run();
+                                        onOk = null;
+                                    }
+                                } else if(MESSAGE_CONFIRM_CANCEL.equals(button.getName())) {
+                                    getWindow().setVisible(false);
+                                } else if(listener != null) {
+                                    listener.buttonClicked(button.getName());
                                 }
-                            } else if(MESSAGE_CONFIRM_CANCEL.equals(button.getName())) {
-                                getWindow().setVisible(false);
-                            } else if(listener != null) {
-                                listener.buttonClicked(button.getName());
                             }
+                        } else if(!pressed) {
+                            listener.buttonClicked(c.getName());
                         }
                     }
                 }
@@ -214,8 +212,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     private void setCurrentTextField(Textfield textfield) {
         currentTextField = textfield;
-        for(Textfield tf : textfields.values()) {
-            tf.setFocus(tf == currentTextField);
+        for(org.scourge.ui.component.Component c : components.values()) {
+            if(c instanceof Textfield) {
+                ((Textfield)c).setFocus(c == currentTextField);
+            }
         }
     }
 
@@ -284,24 +284,24 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void setText(String name, String value) {
-        Component c = components.get(name);
+        org.scourge.ui.component.Component c = components.get(name);
         if(c != null) {
             c.setText(value);
         }
     }
 
     public String getText(String name) {
-        Component c = components.get(name);
+        org.scourge.ui.component.Component c = components.get(name);
         return (c == null ? null : c.getText());
     }
 
     public String getImage(String name) {
-        Component c = components.get(name);
+        org.scourge.ui.component.Component c = components.get(name);
         return (c == null ? null : c.getImage());
     }
 
     public void setImage(String name, String imagePath) {
-        Component c = components.get(name);
+        org.scourge.ui.component.Component c = components.get(name);
         if(c != null) {
             c.setImage(imagePath);
         }

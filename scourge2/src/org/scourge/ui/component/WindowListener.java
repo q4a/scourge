@@ -1,4 +1,4 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
 /**
  * User: gabor

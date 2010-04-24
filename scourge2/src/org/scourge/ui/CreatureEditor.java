@@ -4,6 +4,8 @@ import com.jme.system.DisplaySystem;
 import org.scourge.Main;
 import org.scourge.config.Pc;
 import org.scourge.model.Creature;
+import org.scourge.ui.component.Window;
+import org.scourge.ui.component.WindowListener;
 
 /**
  * User: gabor

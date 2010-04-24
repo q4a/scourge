@@ -25,10 +25,9 @@ import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
 import org.scourge.model.Creature;
-import org.scourge.terrain.Md2Model;
 import org.scourge.terrain.Region;
 import org.scourge.terrain.Terrain;
-import org.scourge.ui.Window;
+import org.scourge.ui.component.Window;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -120,6 +119,7 @@ public class Main extends Game {
         positionLabel.setCullHint(Spatial.CullHint.Never);
         positionLabel.setLocalScale(.8f);
 		positionLabel.setTextColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        positionLabel.getLocalTranslation().addLocal(250, 0, 0);
 		positionLabel.updateRenderState();
 		rootNode.attachChild(positionLabel);
 

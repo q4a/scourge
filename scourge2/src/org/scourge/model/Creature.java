@@ -63,8 +63,8 @@ public class Creature {
         skin = "./data/models/sfod8/Rieger.png";
         level = 1;
         experience = 0;
-        hp = 10;
-        mp = 8;
+        hp = Pc.HP_PER_LEVEL;
+        mp = Pc.MP_PER_LEVEL;
         coins = (int)(Math.random() * 5) + 3;
         sex = Pc.Sex.male.ordinal();
         portrait = Pc.PORTRAIT[sex][0];
@@ -187,5 +187,13 @@ public class Creature {
 
     public void setPortrait(String portrait) {
         this.portrait = portrait;
+    }
+
+    public int getMaxHp() {
+        return getLevel() * Pc.HP_PER_LEVEL;
+    }
+
+    public int getMaxMp() {
+        return getLevel() * Pc.MP_PER_LEVEL;
     }
 }

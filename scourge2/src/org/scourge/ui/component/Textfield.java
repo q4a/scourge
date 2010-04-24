@@ -1,20 +1,15 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
-import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
 import com.jmex.font2d.Text2D;
-import org.scourge.terrain.ShapeUtil;
-
-import java.awt.*;
 
 /**
  * User: gabor
  * Date: Apr 18, 2010
  * Time: 3:44:23 PM
  */
-public class Textfield extends Component {
+public class Textfield extends org.scourge.ui.component.Component {
     private Quad quad;
     private static final String BACKGROUND = "./data/textures/ui/text.png";
     private boolean focus;
@@ -29,8 +24,8 @@ public class Textfield extends Component {
     private int maxSize;
 
 
-    public Textfield(Window window, String name, int x, int y, String text, int size) {
-        super(window, name, x, y, (size + 1) * Window.FONT_WIDTH, Window.FONT_HEIGHT * 2);
+    public Textfield(org.scourge.ui.component.Window window, String name, int x, int y, String text, int size) {
+        super(window, name, x, y, (size + 1) * org.scourge.ui.component.Window.FONT_WIDTH, org.scourge.ui.component.Window.FONT_HEIGHT * 2);
         this.maxSize = size;
 
         quad = WinUtil.createQuad("button_quad", getW(), getH(), BACKGROUND);
@@ -89,8 +84,8 @@ public class Textfield extends Component {
 
     private void attachLabel() {
         String text = sb.toString();
-        label = WinUtil.createText((maxSize - text.length()) * -Window.FONT_WIDTH / 2, 0, text,
-                                    Window.FONT_HEIGHT, TEXT_FLAGS, TEXT_COLOR, TEXT_SCALE);
+        label = WinUtil.createText((maxSize - text.length()) * -org.scourge.ui.component.Window.FONT_WIDTH / 2, 0, text,
+                                    org.scourge.ui.component.Window.FONT_HEIGHT, TEXT_FLAGS, TEXT_COLOR, TEXT_SCALE);
         getNode().attachChild(label);
     }
 }

@@ -1,9 +1,8 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Node;
 import com.jme.scene.Text;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.BlendState;
@@ -15,11 +14,7 @@ import org.scourge.terrain.ShapeUtil;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * User: gabor
@@ -75,15 +70,14 @@ public class WinUtil {
         }
     }
 
-    static GText createLabel(int x, int y, String text, ColorRGBA color, float scale, ScourgeFont scourgeFont) {
+    public static GText createLabel(int x, int y, String text, ColorRGBA color, ScourgeFont scourgeFont, boolean centered) {
         GText label = new GText(scourgeFont.getGFont(), scourgeFont.getKerning(), color);
-        //label.setFill(color);
         label.setText(text);
-        label.getLocalTranslation().addLocal(new Vector3f(x - label.getWidth() / 2, y, 0));
+        label.getLocalTranslation().addLocal(new Vector3f(x - (centered ? label.getWidth() / 2 : 0), y, 0));
         return label;
     }
 
-    static Text2D createText(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
+    public static Text2D createText(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
         Font2D font = new Font2D();
         Text2D label = font.createText(text, size, flags);
         label.setLocalScale(scale);
@@ -94,7 +88,7 @@ public class WinUtil {
         return label;
     }
 
-    static Quad createQuad(String namePrefix, int w, int h, String texturePath) {
+    public static Quad createQuad(String namePrefix, int w, int h, String texturePath) {
         Quad q = new Quad(ShapeUtil.newShapeName(namePrefix), w, h);
 
         FloatBuffer normBuf = q.getNormalBuffer();

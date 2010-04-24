@@ -39,6 +39,8 @@ public class Pc {
 
     };
 
-
     public static final String DEATH_PORTRAIT = "./data/portraits/death.png";
+
+    public static final int HP_PER_LEVEL = 10;
+    public static final int MP_PER_LEVEL = 10;
 }

@@ -1,9 +1,8 @@
-package org.scourge.ui;
+package org.scourge.ui.component;
 
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
-import com.sun.java.swing.plaf.gtk.GTKConstants;
 
 /**
  * User: gabor

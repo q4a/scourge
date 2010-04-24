@@ -4,7 +4,7 @@ import com.jme.input.*;
 import org.scourge.Main;
 import org.scourge.input.MouseAction;
 import org.scourge.terrain.Md2Model;
-import org.scourge.ui.Window;
+import org.scourge.ui.component.Window;
 
 /**
  * User: gabor

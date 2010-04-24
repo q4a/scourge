@@ -5,6 +5,9 @@ import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
 import org.scourge.ui.*;
+import org.scourge.ui.component.WinUtil;
+import org.scourge.ui.component.Window;
+import org.scourge.ui.component.WindowListener;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +44,6 @@ public class GameState implements WindowListener {
         gameMenuWindow.pack();
 
         pcEditor = new CreatureEditor(this);
-        gameUI = new GameUI(this);
     }
 
     public void showMainMenu() {
@@ -120,6 +122,7 @@ public class GameState implements WindowListener {
         Main main = Main.getMain();
         main.setPlayer(session.getParty().get(0));
         main.getTerrain().gotoPlayer();
+        gameUI = new GameUI(this);
         gameUI.setVisible(true);
     }
 
