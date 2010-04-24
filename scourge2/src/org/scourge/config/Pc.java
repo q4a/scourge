@@ -28,5 +28,17 @@ public class Pc {
               "./data/portraits/girl.png" }
     };
 
+    public static final String[] MODEL = {
+            "./data/models/sfod8/tris.md2",
+            "./data/models/alita/tris.md2"
+    };
+
+    public static final String[] SKIN = {
+            "./data/models/sfod8/Rieger.png",
+            "./data/models/alita/alita.png"
+
+    };
+
+
     public static final String DEATH_PORTRAIT = "./data/portraits/death.png";
 }

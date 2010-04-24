@@ -68,6 +68,8 @@ public class CreatureEditor extends Window implements WindowListener {
         Pc.Sex sex = getSex();
         creature.setSex(sex.ordinal());
         creature.setPortrait(Pc.PORTRAIT[sex.ordinal()][portraitIndex]);
+        creature.setModel(Pc.MODEL[sex.ordinal()]);
+        creature.setSkin(Pc.SKIN[sex.ordinal()]);
     }
 
     @Override

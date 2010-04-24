@@ -33,7 +33,7 @@ public class Md2Model implements NodeGenerator {
 //    private Box debug;
 
     public enum Md2Key {
-        crpain, death, pain, crstnd, run, crdeath, jump, salute, point, stand, crattak, wave, attack, taunt, flip, crwalk
+        crpain, death, pain, crstand, run, crdeath, jump, salute, point, stand, crattack, wave, attack, taunt, flip, crwalk, crstnd, crattak
     }
 
 

@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/model/Creature.java" afterPath="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/GameState.java" afterPath="$PROJECT_DIR$/src/org/scourge/GameState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" afterPath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Window.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/config/Pc.java" afterPath="$PROJECT_DIR$/src/org/scourge/config/Pc.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" afterPath="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
@@ -88,10 +86,10 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PlayerController.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
+      <file leaf-file-name="CreatureEditor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="41" selection-start="3077" selection-end="3077" vertical-scroll-proportion="0.0">
+            <state line="65" column="17" selection-start="2506" selection-end="2506" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -100,36 +98,52 @@
       <file leaf-file-name="GameState.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/GameState.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="139" column="54" selection-start="4953" selection-end="4953" vertical-scroll-proportion="0.0">
+            <state line="120" column="18" selection-start="4358" selection-end="4358" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameUI.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GameUI.java">
+      <file leaf-file-name="Md2Model.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="5" selection-start="1385" selection-end="1385" vertical-scroll-proportion="0.9818182">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Window.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Window.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="273" column="0" selection-start="9791" selection-end="9791" vertical-scroll-proportion="0.0">
+            <state line="35" column="140" selection-start="1177" selection-end="1177" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CreatureEditor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
+      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="66" selection-start="1753" selection-end="1790" vertical-scroll-proportion="0.0">
+            <state line="306" column="68" selection-start="11136" selection-end="11136" vertical-scroll-proportion="0.6537037">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Creature.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="73" column="0" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Session.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Session.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="36" column="21" selection-start="770" selection-end="770" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Pc.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/config/Pc.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="38" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -145,22 +159,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Tile.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/Textfield.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/FontTT.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/GText.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/GFont.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/Button.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/Label.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/input/MouseAction.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/WinUtil.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/Window.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/GameState.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/config/Pc.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/GameState.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
       </list>
     </option>
   </component>
@@ -537,19 +551,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="706" y="25" width="1207" height="1109" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3255613" sideWeight="0.58423644" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3255613" sideWeight="0.59310347" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37438422" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32118228" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.408867" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20295566" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.408867" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5191919" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -598,55 +612,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GFont.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="15" selection-start="275" selection-end="275" vertical-scroll-proportion="0.015810277">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GText.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="234" selection-end="246" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Label.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="553" selection-end="553" vertical-scroll-proportion="0.23715416">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="29" selection-start="397" selection-end="397" vertical-scroll-proportion="0.10942249">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/MouseAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="34" selection-start="904" selection-end="904" vertical-scroll-proportion="0.31007752">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/input/LeftTurnAction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="17" selection-start="1188" selection-end="1188" vertical-scroll-proportion="0.4496124">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="227" column="12" selection-start="7856" selection-end="7856" vertical-scroll-proportion="0.38603425">
           <folding />
         </state>
       </provider>
@@ -686,13 +654,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="66" selection-start="1753" selection-end="1790" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Window.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="273" column="0" selection-start="9791" selection-end="9791" vertical-scroll-proportion="0.0">
@@ -700,19 +661,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/GameState.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GameUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="54" selection-start="4953" selection-end="4953" vertical-scroll-proportion="0.0">
+        <state line="14" column="68" selection-start="311" selection-end="311" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/config/Pc.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="38" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GameUI.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="5" selection-start="1385" selection-end="1385" vertical-scroll-proportion="0.9818182">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="65" column="17" selection-start="2506" selection-end="2506" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/io/SaveGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="26" selection-start="528" selection-end="528" vertical-scroll-proportion="0.33377483">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Session.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="21" selection-start="770" selection-end="770" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="0" selection-start="1536" selection-end="1536" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="140" selection-start="1177" selection-end="1177" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/GameState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="120" column="18" selection-start="4358" selection-end="4358" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="306" column="68" selection-start="11136" selection-end="11136" vertical-scroll-proportion="0.6537037">
+          <folding />
         </state>
       </provider>
     </entry>

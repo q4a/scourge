@@ -68,21 +68,20 @@ public class Creature {
         coins = (int)(Math.random() * 5) + 3;
         sex = Pc.Sex.male.ordinal();
         portrait = Pc.PORTRAIT[sex][0];
-
-        // init the model
-        creatureModel = new Md2Model(model, skin);
-        creatureModel.setKeyFrame(Md2Model.Md2Key.stand);
-
-        afterLoad();
     }
 
     public void beforeSave() {
-        setPosition(new float[] {
-                creatureModel.getX(), 9, creatureModel.getZ()
-        });
+        if(creatureModel != null) {
+            setPosition(new float[] {
+                    creatureModel.getX(), 9, creatureModel.getZ()
+            });
+        }
     }
 
     public void afterLoad() {
+        // init the model
+        creatureModel = new Md2Model(model, skin);
+        creatureModel.setKeyFrame(Md2Model.Md2Key.stand);
         creatureModel.moveTo(new Vector3f(position[0], position[1], position[2]));
     }
 

@@ -303,7 +303,8 @@ public class Main extends Game {
 
     public void setPlayer(Creature newPlayer) {
         if(player != null) {
-           player.getCreatureModel().getNode().detachChild(cameraHolder);
+            player.getCreatureModel().getNode().detachChild(cameraHolder);
+            rootNode.detachChild(player.getCreatureModel().getNode());
         }
         player = newPlayer;
         player.getCreatureModel().getNode().attachChild(cameraHolder);

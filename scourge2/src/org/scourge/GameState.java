@@ -56,7 +56,7 @@ public class GameState implements WindowListener {
                 if("quit".equals(name)) {
                     Main.getMain().finish();
                 } else if("load".equals(name)) {
-                    loadGame();
+                    startGame();
                 } else if("new".equals(name)) {
                     newGame();
                 }
@@ -114,13 +114,9 @@ public class GameState implements WindowListener {
         startGame();
     }
 
-    private void loadGame() throws Exception {
-        session = SaveGame.loadGame();
-        startGame();
-    }
-
-    private void startGame() {
+    private void startGame() throws Exception {
         mainMenuWindow.setVisible(false);
+        session = SaveGame.loadGame();
         Main main = Main.getMain();
         main.setPlayer(session.getParty().get(0));
         main.getTerrain().gotoPlayer();
