@@ -89,7 +89,7 @@ public class Textfield extends Component {
 
     private void attachLabel() {
         String text = sb.toString();
-        label = WinUtil.createLabel((maxSize - text.length()) * -Window.FONT_WIDTH / 2, 0, text,
+        label = WinUtil.createText((maxSize - text.length()) * -Window.FONT_WIDTH / 2, 0, text,
                                     Window.FONT_HEIGHT, TEXT_FLAGS, TEXT_COLOR, TEXT_SCALE);
         getNode().attachChild(label);
     }

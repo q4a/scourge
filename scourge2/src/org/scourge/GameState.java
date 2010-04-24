@@ -5,6 +5,7 @@ import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
 import org.scourge.ui.CreatureEditor;
+import org.scourge.ui.WinUtil;
 import org.scourge.ui.Window;
 import org.scourge.ui.WindowListener;
 
@@ -26,7 +27,7 @@ public class GameState implements WindowListener {
         mainMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                     (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() / 4.0f * 3.0f),
                                     300, 300, this);
-        mainMenuWindow.addLabel(0, 90, "Scourge II");
+        mainMenuWindow.addLabel(0, 90, "Scourge II", WinUtil.ScourgeFont.large);
         mainMenuWindow.addButton("new", 0, 30, "New Game");
         mainMenuWindow.addButton("load", 0, -10, "Continue Game");
         mainMenuWindow.addButton("quit", 0, -50, "Quit");
@@ -35,7 +36,7 @@ public class GameState implements WindowListener {
         gameMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                     (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() / 2.0f),
                                     300, 300, this);
-        gameMenuWindow.addLabel(0, 90, "Scourge II");
+        gameMenuWindow.addLabel(0, 90, "Scourge II", WinUtil.ScourgeFont.large);
         gameMenuWindow.addButton("save", 0, 30, "Save Game");
         gameMenuWindow.addButton("continue", 0, -10, "Continue");
         gameMenuWindow.addButton("back", 0, -50, "to Main Menu");

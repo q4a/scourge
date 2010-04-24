@@ -3,6 +3,7 @@ package org.scourge.ui;
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Node;
 import com.jme.scene.Text;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.BlendState;
@@ -12,7 +13,13 @@ import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.terrain.ShapeUtil;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: gabor
@@ -20,7 +27,63 @@ import java.nio.FloatBuffer;
  * Time: 11:29:00 PM
  */
 public class WinUtil {
-    static Text2D createLabel(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
+    public enum ScourgeFont {
+        regular(12, "data/fonts/DejaVuLGCSans.ttf", 2, true, 0),
+        mono(12, "data/fonts/DejaVuLGCSansMono.ttf", 2, false, 0),
+        text(12, "data/fonts/DejaVuLGCSans.ttf", 2, false, 0),
+        large(32, "data/fonts/GentiumArchaic.ttf", 1, false, 0),
+        rune(16, "data/fonts/ScourgeRunes.ttf", 1, false, 0),
+        ;
+
+        private float size;
+        private String file;
+        private GFont gfont;
+        private float kerning;
+        private int repeat;
+        private boolean shadow;
+
+        ScourgeFont(float size, String file, int repeat, boolean shadow, float kerning) {
+            this.size = size;
+            this.file = file;
+            this.repeat = repeat;
+            this.shadow = shadow;
+            this.kerning = kerning;
+        }
+
+        public float getSize() {
+            return size;
+        }
+
+        public String getFile() {
+            return file;
+        }
+
+        public GFont getGFont() {
+            if(gfont == null) {
+                try {
+                    Font font = Font.createFont(Font.TRUETYPE_FONT, new File(file));
+                    gfont = new GFont(font, size, repeat, shadow);
+                } catch(Exception exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+            return gfont;
+        }
+
+        public float getKerning() {
+            return kerning;
+        }
+    }
+
+    static Node createLabel(int x, int y, String text, ColorRGBA color, float scale, ScourgeFont scourgeFont) {
+        GText label = new GText(scourgeFont.getGFont(), scourgeFont.getKerning(), color);
+        //label.setFill(color);
+        label.setText(text);
+        label.getLocalTranslation().addLocal(new Vector3f(x - label.getWidth() / 2, y, 0));
+        return label;
+    }
+
+    static Text2D createText(int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
         Font2D font = new Font2D();
         Text2D label = font.createText(text, size, flags);
         label.setLocalScale(scale);

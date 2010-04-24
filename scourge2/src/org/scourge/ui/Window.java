@@ -32,7 +32,7 @@ import java.util.Stack;
 public class Window implements NodeGenerator, MouseInputListener, KeyInputListener {
     private Node win;
     private static final String WINDOW_BACKGROUND = "./data/textures/ui/win.png";    
-    public static final ColorRGBA TEXT_COLOR = new ColorRGBA(0, 0, 0, 1);
+    public static final ColorRGBA TEXT_COLOR = new ColorRGBA(0.3f, 0.15f, 0.1f, 1);
 
     public static final int FONT_WIDTH = 10;
     public static final int FONT_HEIGHT = 8;
@@ -122,16 +122,20 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         addComponent(new ImageComponent(this, name, imagePath, x, y, w, h));
     }
 
+    public void addLabel(int x, int y, String text, WinUtil.ScourgeFont font) {
+        addLabel(ShapeUtil.newShapeName("label"), x, y, text, TEXT_COLOR, 1, font);
+    }
+
     public void addLabel(int x, int y, String text) {
         addLabel(ShapeUtil.newShapeName("label"), x, y, text);
     }
 
     public void addLabel(String name, int x, int y, String text) {
-        addLabel(name, x, y, text, LABEL_FONT_SIZE, 0, TEXT_COLOR, 1);
+        addLabel(name, x, y, text, TEXT_COLOR, 1, WinUtil.ScourgeFont.text);
     }
 
-    public void addLabel(String name, int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
-        addComponent(new Label(this, name, x, y, text, size, flags, color, scale));
+    public void addLabel(String name, int x, int y, String text, ColorRGBA color, float scale, WinUtil.ScourgeFont font) {
+        addComponent(new Label(this, name, x, y, text, color, scale, font));
     }
 
     public void addButton(String name, int x, int y, String text) {

@@ -1,6 +1,7 @@
 package org.scourge.ui;
 
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Node;
 import com.jmex.font2d.Text2D;
 
 /**
@@ -9,19 +10,17 @@ import com.jmex.font2d.Text2D;
  * Time: 11:58:57 AM
  */
 public class Label extends Component {
-    private Text2D label;
-    private float size;
-    private int flags;
+    private Node label;
     private ColorRGBA color;
     private float scale;
+    private String text;
 
-    public Label(Window window, String name, int x, int y, String text, float size, int flags, ColorRGBA color, float scale) {
+    public Label(Window window, String name, int x, int y, String text, ColorRGBA color, float scale, WinUtil.ScourgeFont scourgeFont) {
         super(window, name, x, y, text.length() * Window.FONT_WIDTH, Window.FONT_HEIGHT);
-        this.size = size;
-        this.flags = flags;
         this.color = color;
         this.scale = scale;
-        label = WinUtil.createLabel(0, 0, text, size, flags, color, scale);
+        label = WinUtil.createLabel(0, 0, text, color, scale, scourgeFont);
+        this.text = text;
         getNode().attachChild(label);
     }
 
@@ -31,13 +30,14 @@ public class Label extends Component {
         if(label != null) {
             getNode().detachChild(label);
         }
-        label = WinUtil.createLabel(0, 0, text, size, flags, color, scale);
+        label = WinUtil.createLabel(0, 0, text, color, scale, WinUtil.ScourgeFont.text);
+        this.text = text;
         getNode().attachChild(label);
         getWindow().pack();
     }
 
     @Override
     public String getText() {
-        return label.getText().toString();
+        return text;
     }    
 }
