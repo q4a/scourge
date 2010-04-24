@@ -4,10 +4,7 @@ import com.jme.system.DisplaySystem;
 import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
-import org.scourge.ui.CreatureEditor;
-import org.scourge.ui.WinUtil;
-import org.scourge.ui.Window;
-import org.scourge.ui.WindowListener;
+import org.scourge.ui.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +17,7 @@ import java.util.logging.Logger;
 public class GameState implements WindowListener {
     private Window mainMenuWindow, gameMenuWindow;
     private CreatureEditor pcEditor;
+    private GameUI gameUI;
     private Logger logger = Logger.getLogger(GameState.class.toString());
     private Session session;
 
@@ -43,6 +41,7 @@ public class GameState implements WindowListener {
         gameMenuWindow.pack();
 
         pcEditor = new CreatureEditor(this);
+        gameUI = new GameUI(this);
     }
 
     public void showMainMenu() {
@@ -68,6 +67,7 @@ public class GameState implements WindowListener {
                     gameMenuWindow.setVisible(false);
                 } else {
                     gameMenuWindow.setVisible(false);
+                    gameUI.setVisible(false);
                     showMainMenu();
                 }
             } else if(Window.getWindow() == pcEditor) {
@@ -124,6 +124,7 @@ public class GameState implements WindowListener {
         Main main = Main.getMain();
         main.setPlayer(session.getParty().get(0));
         main.getTerrain().gotoPlayer();
+        gameUI.setVisible(true);
     }
 
     private void saveGame() throws Exception {
@@ -134,11 +135,15 @@ public class GameState implements WindowListener {
     public boolean escapePressed() {
         if(Window.getWindow() == mainMenuWindow) {
             return true;
-        } else if(Window.getWindow() == null) {
+        } else if(Window.getWindow() == null || Window.getWindow().isAlwaysOpen()) {
             gameMenuWindow.setVisible(true);
-        } else {
+        } else if(!Window.getWindow().isAlwaysOpen()) {
             Window.getWindow().setVisible(false);
         }
         return false;
+    }
+
+    public Session getSession() {
+        return session;
     }
 }

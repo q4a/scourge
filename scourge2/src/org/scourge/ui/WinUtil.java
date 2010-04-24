@@ -104,13 +104,15 @@ public class WinUtil {
         normBuf.put(0).put(1).put(0);
         normBuf.put(0).put(1).put(0);
 
-        TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-        Texture texture = ShapeUtil.loadTexture(texturePath);
-        texture.setWrap(Texture.WrapMode.Repeat);
-        texture.setHasBorder(false);
-        texture.setApply(Texture.ApplyMode.Modulate);
-        ts.setTexture(texture, 0);
-        q.setRenderState(ts);
+        if(texturePath != null) {
+            TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+            Texture texture = ShapeUtil.loadTexture(texturePath);
+            texture.setWrap(Texture.WrapMode.Repeat);
+            texture.setHasBorder(false);
+            texture.setApply(Texture.ApplyMode.Modulate);
+            ts.setTexture(texture, 0);
+            q.setRenderState(ts);
+        }
 
         BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
         as.setBlendEnabled(true);

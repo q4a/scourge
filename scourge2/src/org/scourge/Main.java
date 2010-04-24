@@ -75,7 +75,7 @@ public class Main extends Game {
 
     protected void simpleInitGame() {
         MouseInput.get().setCursorVisible(true);
-        
+
         display.setTitle("Scourge II");
         cam.setLocation(new Vector3f(0,0,0));
         cam.update();

@@ -51,6 +51,8 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     private static final String MESSAGE_CONFIRM_OK = "internal_confirm_ok";
     private static final String MESSAGE_CONFIRM_CANCEL = "internal_confirm_cancel";
     private Textfield currentTextField;
+    private Rectangle rectangle;
+    private boolean alwaysOpen;
 
     public Window(int x, int y, int w, int h) {
         this(x, y, w, h, null);
@@ -63,6 +65,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         this.w = w;
         this.h = h;
         win = new Node(ShapeUtil.newShapeName("window"));
+        rectangle = new Rectangle(x - w / 2, y - h / 2, w, h);
 
         Quad q = WinUtil.createQuad("window_quad", w, h, WINDOW_BACKGROUND);
         win.attachChild(q);
@@ -151,6 +154,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     protected void addComponent(Component c) {
         components.put(c.getName(), c);
         win.attachChild(c.getNode());
+    }
+
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 
     @Override
@@ -270,8 +277,6 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
             Main.getMain().hideWindow(this);
             windows.pop();
         }
-        // drive with the mouse if no window is open
-        Main.getMain().getPlayerController().toggleMouseDrive(getWindow() == null);
     }
 
     public static Window getWindow() {
@@ -308,5 +313,13 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     public void setListener(WindowListener listener) {
         this.listener = listener;
+    }
+
+    public void setAlwaysOpen(boolean b) {
+        alwaysOpen = b;
+    }
+
+    public boolean isAlwaysOpen() {
+        return alwaysOpen;
     }
 }
