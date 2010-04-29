@@ -87,7 +87,7 @@ public abstract class Game extends BaseGame {
     /**
      * Stencil bits to use for the renderer. Any changes must be made prior to call of start().
      */
-    protected int stencilBits = 0;
+    protected int stencilBits = 4;
 
     /**
      * Number of samples to use for the multisample buffer. Any changes must be made prior to call of start().
@@ -297,6 +297,7 @@ public abstract class Game extends BaseGame {
         Renderer r = display.getRenderer();
         /** Clears the previously rendered information. */
         r.clearBuffers();
+        r.clearStencilBuffer();
 
         // Execute renderQueue item
         GameTaskQueueManager.getManager().getQueue(GameTaskQueue.RENDER).execute();

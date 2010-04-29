@@ -34,5 +34,6 @@ class RightTurnAction extends KeyInputAction {
             q.fromAngleAxis(FastMath.DEG_TO_RAD * PlayerController.PLAYER_ROTATE_STEP * event.getTime(), Vector3f.UNIT_Y);
             main.getCameraHolder().getLocalRotation().multLocal(q);
         }
+        main.getMiniMap().update(false);
     }
 }

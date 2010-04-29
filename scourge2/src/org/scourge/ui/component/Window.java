@@ -67,31 +67,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         win.attachChild(q);
         win.getLocalTranslation().addLocal(new Vector3f(x, y, 0));
 
-        makeNodeOrtho(win);
+        WinUtil.makeNodeOrtho(win);
 
         MouseInput.get().addListener(this);
         KeyInput.get().addListener(this);
-    }
-
-    private void makeNodeOrtho(Node node) {
-        ZBufferState zbs = DisplaySystem.getDisplaySystem().getRenderer().createZBufferState();
-		zbs.setFunction(ZBufferState.TestFunction.Always);
-		node.setRenderQueueMode(Renderer.QUEUE_ORTHO);
-		node.setRenderState(zbs);
-        node.setCullHint(Spatial.CullHint.Never);
-		node.updateRenderState();
-
-        CullState cullState = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
-        cullState.setCullFace(CullState.Face.None);
-        cullState.setEnabled(true);
-        node.setRenderState(cullState);
-
-        FogState fs = DisplaySystem.getDisplaySystem().getRenderer().createFogState();
-        fs.setEnabled(false);
-        node.setRenderState(fs);
-
-        node.setLightCombineMode(Spatial.LightCombineMode.Off);
-        node.setTextureCombineMode(Spatial.TextureCombineMode.Replace);
     }
 
     public void pack() {

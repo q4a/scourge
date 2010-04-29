@@ -68,9 +68,7 @@ public class GameState implements WindowListener {
                 } else if("continue".equals(name)) {
                     gameMenuWindow.setVisible(false);
                 } else {
-                    gameMenuWindow.setVisible(false);
-                    gameUI.setVisible(false);
-                    showMainMenu();
+                    endGame();
                 }
             } else if(Window.getWindow() == pcEditor) {
                 if(CreatureEditor.START.equals(name)) {
@@ -124,6 +122,14 @@ public class GameState implements WindowListener {
         main.getTerrain().gotoPlayer();
         gameUI = new GameUI(this);
         gameUI.setVisible(true);
+        main.setMiniMapVisible(true);
+    }
+
+    private void endGame() {
+        gameMenuWindow.setVisible(false);
+        Main.getMain().setMiniMapVisible(false);
+        gameUI.setVisible(false);
+        showMainMenu();
     }
 
     private void saveGame() throws Exception {

@@ -3,10 +3,12 @@ package org.scourge.ui.component;
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.Text;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.BlendState;
-import com.jme.scene.state.TextureState;
+import com.jme.scene.state.*;
 import com.jme.system.DisplaySystem;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
@@ -22,6 +24,27 @@ import java.nio.FloatBuffer;
  * Time: 11:29:00 PM
  */
 public class WinUtil {
+    public static void makeNodeOrtho(Spatial node) {
+        ZBufferState zbs = DisplaySystem.getDisplaySystem().getRenderer().createZBufferState();
+		zbs.setFunction(ZBufferState.TestFunction.Always);
+		node.setRenderQueueMode(Renderer.QUEUE_ORTHO);
+		node.setRenderState(zbs);
+        node.setCullHint(Spatial.CullHint.Never);
+		node.updateRenderState();
+
+        CullState cullState = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
+        cullState.setCullFace(CullState.Face.None);
+        cullState.setEnabled(true);
+        node.setRenderState(cullState);
+
+        FogState fs = DisplaySystem.getDisplaySystem().getRenderer().createFogState();
+        fs.setEnabled(false);
+        node.setRenderState(fs);
+
+        node.setLightCombineMode(Spatial.LightCombineMode.Off);
+        node.setTextureCombineMode(Spatial.TextureCombineMode.Replace);
+    }
+
     public enum ScourgeFont {
         regular(12, "data/fonts/DejaVuLGCSans.ttf", 2, true, 0),
         mono(12, "data/fonts/DejaVuLGCSansMono.ttf", 2, false, 0),
@@ -88,7 +111,23 @@ public class WinUtil {
         return label;
     }
 
+    public static Quad createQuad(String namePrefix, int w, int h) {
+        return createQuad(namePrefix, w, h, (Texture)null);
+    }
+
+
     public static Quad createQuad(String namePrefix, int w, int h, String texturePath) {
+        Texture texture = null;
+        if(texturePath != null) {
+            texture = ShapeUtil.loadTexture(texturePath);
+            texture.setWrap(Texture.WrapMode.Repeat);
+            texture.setHasBorder(false);
+            texture.setApply(Texture.ApplyMode.Modulate);
+        }
+        return createQuad(namePrefix, w, h, texture);
+    }
+
+    public static Quad createQuad(String namePrefix, int w, int h, Texture texture) {
         Quad q = new Quad(ShapeUtil.newShapeName(namePrefix), w, h);
 
         FloatBuffer normBuf = q.getNormalBuffer();
@@ -98,12 +137,8 @@ public class WinUtil {
         normBuf.put(0).put(1).put(0);
         normBuf.put(0).put(1).put(0);
 
-        if(texturePath != null) {
+        if(texture != null) {
             TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-            Texture texture = ShapeUtil.loadTexture(texturePath);
-            texture.setWrap(Texture.WrapMode.Repeat);
-            texture.setHasBorder(false);
-            texture.setApply(Texture.ApplyMode.Modulate);
             ts.setTexture(texture, 0);
             q.setRenderState(ts);
         }
@@ -118,5 +153,5 @@ public class WinUtil {
         q.setRenderState(as);
 
         return q;
-    }    
+    }
 }

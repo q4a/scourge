@@ -4,6 +4,7 @@ import com.jme.bounding.BoundingBox;
 import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.sun.xml.internal.ws.util.QNameMap;
 import org.scourge.Main;
 import org.scourge.io.MapIO;
 
@@ -113,6 +114,7 @@ public class Terrain implements NodeGenerator {
     // called from the input-handler thread
     public void loadRegion() {
         switchRegion();
+        boolean changed;
 
         int rx = currentRegion.getX() / Region.REGION_SIZE;
         int ry = currentRegion.getY() / Region.REGION_SIZE;
@@ -120,37 +122,40 @@ public class Terrain implements NodeGenerator {
         int px = main.getPlayer().getCreatureModel().getX() % Region.REGION_SIZE;
         int pz = main.getPlayer().getCreatureModel().getZ() % Region.REGION_SIZE;
         if(px < Region.REGION_SIZE / 2) {
-            loadRegion(rx - 1, ry);
+            changed = loadRegion(rx - 1, ry);
         } else {
-            loadRegion(rx + 1, ry);
+            changed = loadRegion(rx + 1, ry);
         }
 
         if(pz < Region.REGION_SIZE / 2) {
-            loadRegion(rx, ry - 1);
+            if(!changed && loadRegion(rx, ry - 1)) changed = true;
         } else {
-            loadRegion(rx, ry + 1);
+            if(!changed && loadRegion(rx, ry + 1)) changed = true;
         }
 
         if(px < Region.REGION_SIZE / 2 && pz < Region.REGION_SIZE / 2) {
-            loadRegion(rx - 1, ry - 1);
+            if(!changed && loadRegion(rx - 1, ry - 1)) changed = true;
         } else if(px < Region.REGION_SIZE / 2 && pz >= Region.REGION_SIZE / 2) {
-            loadRegion(rx - 1, ry + 1);
+            if(!changed && loadRegion(rx - 1, ry + 1)) changed = true;
         } else if(px >= Region.REGION_SIZE / 2 && pz < Region.REGION_SIZE / 2) {
-            loadRegion(rx + 1, ry - 1);
+            if(!changed && loadRegion(rx + 1, ry - 1)) changed = true;
         } else if(px >= Region.REGION_SIZE / 2 && pz >= Region.REGION_SIZE / 2) {
-            loadRegion(rx + 1, ry + 1);
+            if(!changed && loadRegion(rx + 1, ry + 1)) changed = true;
         }
+
+        Main.getMain().getMiniMap().update(changed);
     }
 
     // input-handler thread
-    public void loadRegion(final int rx, final int ry) {
+    public boolean loadRegion(final int rx, final int ry) {
+        boolean changed = false;
         final String key = getRegionKey(rx, ry);
 
         // non-synchronized check (this could cause synchronization problems...)
         if(!loadedRegions.containsKey(key)) {
-
             synchronized(regionThreads) {
                 if(!regionThreads.containsKey(key)) {
+                    changed = true;
                     System.err.println(">>> loading: " + rx + "," + ry);
                     RegionLoaderThread thread = new RegionLoaderThread(this, rx, ry);
                     regionThreads.put(key, thread);
@@ -169,6 +174,7 @@ public class Terrain implements NodeGenerator {
         }
 
         switchRegion();
+        return changed;
     }
 
     // called from the main thread
@@ -258,5 +264,9 @@ public class Terrain implements NodeGenerator {
 
     public void setRegionPending() {
         checkPendingRegions++;
+    }
+
+    public Map<String, Region> getLoadedRegions() {
+        return loadedRegions;
     }
 }

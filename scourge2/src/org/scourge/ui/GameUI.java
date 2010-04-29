@@ -62,9 +62,9 @@ public class GameUI extends Window implements WindowListener {
             portrait = new ImageComponent(window, "pc.portrait." + name, null, x, y, portraitSize, portraitSize);
             nameLabel = new Label(window, "pc.name." + name, x + portraitSize / 2 + 5, y + portraitSize / 2 - 10, "", Window.TEXT_COLOR, false, WinUtil.ScourgeFont.text);
             lineWidth =  w - portraitSize - 10;
-            hpQuad = WinUtil.createQuad("pc.hp." + name, lineWidth, 5, null);
+            hpQuad = WinUtil.createQuad("pc.hp." + name, lineWidth, 5);
             hpQuad.setSolidColor(hpColor);
-            mpQuad = WinUtil.createQuad("pc.mp." + name, lineWidth, 5, null);
+            mpQuad = WinUtil.createQuad("pc.mp." + name, lineWidth, 5);
             mpQuad.setSolidColor(mpColor);
             window.addComponent(portrait);
             window.addComponent(nameLabel);
