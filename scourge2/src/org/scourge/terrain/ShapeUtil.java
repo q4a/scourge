@@ -11,17 +11,18 @@ import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryImporter;
+import com.jme.util.geom.BufferUtils;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.jmex.model.animation.KeyframeController;
-import com.jmex.model.converters.FormatConverter;
-import com.jmex.model.converters.MaxToJme;
-import com.jmex.model.converters.Md2ToJme;
-import com.jmex.model.converters.ObjToJme;
+import com.jmex.model.converters.*;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.*;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,13 +35,14 @@ public class ShapeUtil {
     private static final Md2ToJme CONVERTER_MD2 = new Md2ToJme();
     private static final FormatConverter CONVERTER_3DS = new MaxToJme();
     private static final FormatConverter CONVERTER_OBJ = new ObjToJme();
+    private static final FormatConverter CONVERTER_MD3 = new Md3ToJme();
     private static int shapeCount = 0;
     public static final float WALL_WIDTH = 16.0f;
     public static final float WALL_HEIGHT = 24.0f;
     private static Logger logger = Logger.getLogger(ShapeUtil.class.toString());
     private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
-    private static final Map<String, Node> prototypes = new HashMap<String, Node>();
+    private static final Map<String, Spatial> prototypes = new HashMap<String, Spatial>();
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
@@ -98,9 +100,13 @@ public class ShapeUtil {
 	 *  the scenegraph, or null instead if unable to load geometry.
 	 */
 	public static Spatial importModel(String modelPath, String textureDir, String name_prefix) {
+        return importModel(modelPath, textureDir, name_prefix, null);
+    }
+
+    public static Spatial importModel(String modelPath, String textureDir, String name_prefix, Model model) {
         synchronized(prototypes) {
             try {
-                Node prototype = prototypes.get(modelPath);
+                Spatial prototype = prototypes.get(modelPath);
                 if(prototype == null) {
                     final File textures;
                     if(textureDir != null) { // set textureDir location
@@ -111,6 +117,8 @@ public class ShapeUtil {
                     final SimpleResourceLocator location = new SimpleResourceLocator(textures.toURI().toURL());
                     ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, location );
 
+                    CONVERTER_OBJ.setProperty("texdir", new URL("file://" + textureDir));
+
                     // read .3ds file into memory & convert it to a jME usable format.
                     final FileInputStream rawIn = new FileInputStream(modelPath);
                     final ByteArrayOutputStream outStream = new ByteArrayOutputStream(); // byte array streams don't have to be closed
@@ -118,13 +126,23 @@ public class ShapeUtil {
                         CONVERTER_3DS.convert(rawIn, outStream);
                     } else if(modelPath.endsWith(".obj")) {
                         CONVERTER_OBJ.convert(rawIn, outStream);
+                    } else if(modelPath.endsWith(".md3")) {
+                        CONVERTER_MD3.convert(rawIn, outStream);
                     } else {
                         throw new IllegalStateException("Can't convert model: " + modelPath);
                     }
                     rawIn.close(); // FileInputStream s must be explicitly closed.
                     byte[] bytes = outStream.toByteArray();
 
-                    prototype = (Node) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
+                    prototype = (Spatial) BinaryImporter.getInstance().load(new ByteArrayInputStream(bytes));
+                    if(modelPath.endsWith(".md3")) {
+                        invertNormals((Node)prototype);
+                    }
+                    if(model != null) {
+                        model.onLoad(prototype);
+                    }
+                    prototype.updateRenderState();
+                    prototype.updateGeometricState(0, true);
                     prototype.setModelBound(new BoundingBox());
                     prototype.updateModelBound();
 
@@ -136,7 +154,22 @@ public class ShapeUtil {
                 }
 
                 try {
-                    Node copy = cloneNode(prototype, name_prefix, false);
+                    Spatial copy;
+                    if(prototype instanceof Node) {
+                        copy = cloneNode((Node)prototype, name_prefix, false);
+                    } else if(prototype instanceof TriMesh) {
+                        copy = new SharedMesh(ShapeUtil.newShapeName("clone"), (TriMesh)prototype);
+                    } else {
+                        throw new RuntimeException("Don't know how to clone " + prototype.getClass());
+                    }
+
+                    if(modelPath.endsWith(".md3")) {
+                        CullState cs = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
+                        cs.setCullFace(CullState.Face.Front);
+                        cs.setEnabled(true);
+                        copy.setRenderState(cs);
+                    }
+
                     copy.updateRenderState();
                     copy.updateWorldData(0);
                     copy.updateWorldVectors();
@@ -152,6 +185,23 @@ public class ShapeUtil {
             }
         }
 	}
+
+    private static void invertNormals(Node node) {
+        for(Spatial child : node.getChildren()) {
+            if(child instanceof Geometry) {
+                flipNormals((Geometry)child);
+            }
+        }
+    }
+
+    public static void flipNormals(Geometry n) {
+        Vector3f store = new Vector3f();
+        for (int x = 0; x < n.getVertexCount(); x++) {
+            BufferUtils.populateFromBuffer(store, n.getNormalBuffer(), x);
+            store.multLocal(-1f);
+            BufferUtils.setInBuffer(store, n.getNormalBuffer(), x);
+        }
+    }
 
     private static Node cloneNode(Node prototype, String name_prefix, boolean cloneAttributes) {
         Node node = new Node(newShapeName(name_prefix == null ? "clone" : name_prefix));

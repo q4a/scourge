@@ -1,14 +1,18 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
+import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: gabor
@@ -114,14 +118,160 @@ public enum Model {
             return getAlphaSpatial(4);
         }
     },
+    oldoak("./data/md3/oak/oak1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.12f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stamm", "data/md3/oak/oakstamm.jpg");
+            textures.put("bruch", "data/md3/oak/oakstamm.jpg");
+            textures.put("blaetter", "data/md3/oak/oakblaetter.tga");
+            assignTextures(spatial, textures);
+        }
+    },
+    oldoak2("./data/md3/oak/oak1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.12f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stamm", "data/md3/oak/oakstamm2.jpg");
+            textures.put("bruch", "data/md3/oak/oakstamm2.jpg");
+            textures.put("blaetter", "data/md3/oak/oakblaetter2.tga");
+            assignTextures(spatial, textures);
+        }
+    },
+    bigfir("./data/md3/jkm_trees/nadelbaum.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.15f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stumpf", "data/md3/jkm_trees/stamm.jpg");
+            textures.put("aeste", "data/md3/jkm_trees/nadel.tga");
+            textures.put("stumpf2", "data/md3/jkm_trees/stamm.jpg");
+            assignTextures(spatial, textures);
+        }
+    },
+    normal_yellow("./data/md3/jkm_trees/tree1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.11f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stumpf", "data/md3/jkm_trees/stamm.jpg");
+            textures.put("aeste", "data/md3/jkm_trees/tree.tga");
+            textures.put("stumpf2", "data/md3/jkm_trees/stamm.jpg");
+            assignTextures(spatial, textures);
+        }
+    },
+    normal_green("./data/md3/jkm_trees/tree1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.11f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stumpf", "data/md3/jkm_trees/stamm.jpg");
+            textures.put("aeste", "data/md3/jkm_trees/tree6.tga");
+            textures.put("stumpf2", "data/md3/jkm_trees/stamm.jpg");
+            assignTextures(spatial, textures);
+        }
+    },
+    normal_red("./data/md3/jkm_trees/tree1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.11f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stumpf", "data/md3/jkm_trees/stamm.jpg");
+            textures.put("aeste", "data/md3/jkm_trees/tree3.tga");
+            textures.put("stumpf2", "data/md3/jkm_trees/stamm.jpg");
+            assignTextures(spatial, textures);
+        }
+    },
+    normal_green2("./data/md3/jkm_trees/tree1.md3") {
+        @Override
+        public Spatial createSpatial() {
+            return getAlphaSpatial(0.11f, 0, 0, 90);
+        }
+
+        @Override
+        public Vector3f getRotationVector() {
+            return Vector3f.UNIT_Y;
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            Map<String, String> textures = new HashMap<String, String>();
+            textures.put("stumpf", "data/md3/jkm_trees/stamm.jpg");
+            textures.put("aeste", "data/md3/jkm_trees/tree4.tga");
+            textures.put("stumpf2", "data/md3/jkm_trees/stamm.jpg");
+            assignTextures(spatial, textures);
+        }
+    },
+
     ladder("./data/3ds/ladder.3ds") {
         public Spatial createSpatial() {
-            return getAlphaSpatial(1, 0);
+            return getAlphaSpatial(1, 0, 0, 0);
         }
-    }
-    ;
+    };
 
     private static final Model[] BOREAL_TREES = new Model[] {
+        normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green,
+        normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2,
+        normal_yellow, normal_yellow,
+        normal_red,
+        oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak,
+        oldoak2, oldoak2, oldoak2,
         fir, fir, fir, fir, fir, fir, fir,
         birch, birch, birch, birch, birch, birch, birch, birch, birch,
         birch2, birch2, birch2, birch2,
@@ -136,20 +286,24 @@ public enum Model {
     }
 
     private static final Model[] ALPINE_TREES = new Model[] {
-        oak, oak, oak,
         fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir,
+        bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir,
         birch, birch, birch, birch,
-        birch2, birch2, birch2, birch2,
-        bush, bush, bush, bush, bush, bush, bush, bush,
-        deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,
-        cypress, cypress, cypress, cypress,
-        bushtree, bushtree, bushtree, 
+        bush, bush, bush, bush, bush,
+        deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,
+        cypress, cypress 
     };
     public static Model[] getAlpineTrees() {
         return ALPINE_TREES;
     }
 
     private static final Model[] TEMPERATE_TREES = new Model[] {
+        oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak, oldoak,
+        oldoak2, oldoak2, oldoak2,
+        normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green,
+        normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2, normal_green2,            
+        normal_yellow, normal_yellow,
+        normal_red,
         oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak, oak,
         fir, fir, fir, fir, fir, fir, fir,
         willow, willow,
@@ -192,13 +346,23 @@ public enum Model {
 
     private boolean ignoreHeightMap;
     private String modelPath;
+    private String texturePath;
 
     Model(String modelPath) {
-        this(modelPath, false);
+        this(modelPath, "./data/textures");
+    }
+
+    Model(String modelPath, String texturePath) {
+        this(modelPath, texturePath, false);
     }
 
     Model(String modelPath, boolean ignoreHeightMap) {
+        this(modelPath, "./data/textures", ignoreHeightMap);
+    }
+
+    Model(String modelPath, String texturePath, boolean ignoreHeightMap) {
         this.modelPath = modelPath;
+        this.texturePath = texturePath;
         this.ignoreHeightMap = ignoreHeightMap;
     }
 
@@ -210,24 +374,32 @@ public enum Model {
         return modelPath;
     }
 
+    public String getTexturePath() {
+        return texturePath;
+    }
+
     public abstract Spatial createSpatial();
 
     protected Spatial getNoAlphaSpatial() {
-        Spatial spatial = ShapeUtil.importModel(getModelPath(), "./data/textures", name());
+        Spatial spatial = ShapeUtil.importModel(getModelPath(), getTexturePath(), name(), this);
         spatial.setModelBound(new BoundingBox());
         spatial.updateModelBound();
         return spatial;
     }
 
     protected Spatial getAlphaSpatial(float scale) {
-        return getAlphaSpatial(scale, -90.0f);
+        return getAlphaSpatial(scale, -90.0f, 0, 0);
     }
 
-    protected Spatial getAlphaSpatial(float scale, float rotateX) {
-        Spatial spatial = ShapeUtil.importModel(getModelPath(), "./data/textures", name());
+    protected Spatial getAlphaSpatial(float scale, float rotateX, float rotateY, float rotateZ) {
+        Spatial spatial = ShapeUtil.importModel(getModelPath(), getTexturePath(), name(), this);
         if(rotateX != 0) {
-            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(rotateX * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
+            //spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(rotateX * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
+            spatial.getLocalRotation().set(new Quaternion().fromAngles(rotateX * FastMath.DEG_TO_RAD,
+                                                                       rotateY * FastMath.DEG_TO_RAD,
+                                                                       rotateZ * FastMath.DEG_TO_RAD));
         }
+
         spatial.setLocalScale(scale);
 
         BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
@@ -244,5 +416,28 @@ public enum Model {
         spatial.updateModelBound();
         return spatial;
 
+    }
+
+    public Vector3f getRotationVector() {
+        return Vector3f.UNIT_Z;
+    }
+
+    public void onLoad(Spatial spatial) {
+        // implement to do post-load processing on model
+    }
+
+    protected void assignTextures(Spatial spatial, Map<String, String> textures) {
+        Node node = (Node)spatial;
+        for(String name : textures.keySet()) {
+            TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+            ts.setEnabled(true);
+            Texture t = ShapeUtil.loadTexture(textures.get(name));
+            t.setWrap(Texture.WrapMode.Repeat);
+            t.setHasBorder(false);
+            //t.setApply(Texture.ApplyMode.Modulate);
+            ts.setTexture(t);
+            node.getChild(name).setRenderState(ts);
+        }
+        node.updateRenderState();
     }
 }

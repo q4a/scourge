@@ -338,11 +338,12 @@ public class Region implements NodeGenerator {
     }
 
     private void makeForestTile(Tile tile) {
-        tile.addModel(tile.getClimate().getRandomTree(terrain.getMain().getRandom()),
+        Model model = tile.getClimate().getRandomTree(terrain.getMain().getRandom());
+        tile.addModel(model,
                       new Vector3f(8, 0, 8),
                       (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
                       terrain.getMain().getRandom().nextFloat() * 360.0f,
-                      Vector3f.UNIT_Z);
+                      model.getRotationVector());
     }
 
     // hack... this should be in TileType.QUAD but I was lazy
