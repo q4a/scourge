@@ -1,7 +1,7 @@
 package org.scourge.model;
 
 import com.jme.math.Vector3f;
-import org.scourge.config.Pc;
+import org.scourge.config.PlayerTemplate;
 import org.scourge.terrain.Md2Model;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -63,11 +63,11 @@ public class Creature {
         skin = "./data/models/sfod8/Rieger.png";
         level = 1;
         experience = 0;
-        hp = Pc.HP_PER_LEVEL;
-        mp = Pc.MP_PER_LEVEL;
+        hp = PlayerTemplate.HP_PER_LEVEL;
+        mp = PlayerTemplate.MP_PER_LEVEL;
         coins = (int)(Math.random() * 5) + 3;
-        sex = Pc.Sex.male.ordinal();
-        portrait = Pc.PORTRAIT[sex][0];
+        sex = PlayerTemplate.Sex.male.ordinal();
+        portrait = PlayerTemplate.PORTRAIT[sex][0];
     }
 
     public void beforeSave() {
@@ -190,10 +190,10 @@ public class Creature {
     }
 
     public int getMaxHp() {
-        return getLevel() * Pc.HP_PER_LEVEL;
+        return getLevel() * PlayerTemplate.HP_PER_LEVEL;
     }
 
     public int getMaxMp() {
-        return getLevel() * Pc.MP_PER_LEVEL;
+        return getLevel() * PlayerTemplate.MP_PER_LEVEL;
     }
 }

@@ -5,7 +5,7 @@ package org.scourge.config;
  * Date: Apr 19, 2010
  * Time: 8:48:58 PM
  */
-public class Pc {
+public class PlayerTemplate {
     public enum Sex { male, female }
 
     public static final String[][] PORTRAIT = new String[][] {

@@ -2,7 +2,7 @@ package org.scourge.ui;
 
 import com.jme.system.DisplaySystem;
 import org.scourge.Main;
-import org.scourge.config.Pc;
+import org.scourge.config.PlayerTemplate;
 import org.scourge.model.Creature;
 import org.scourge.ui.component.Window;
 import org.scourge.ui.component.WindowListener;
@@ -46,7 +46,7 @@ public class CreatureEditor extends Window implements WindowListener {
         addButton(PREVIOUS_PORTRAIT, 50, -50, 50, 28, "<<");
         addButton(NEXT_PORTRAIT, 110, -50, 50, 28, ">>");
 
-        addImage("portrait", Pc.PORTRAIT[Pc.Sex.male.ordinal()][0], -150, -50, 128, 128);
+        addImage("portrait", PlayerTemplate.PORTRAIT[PlayerTemplate.Sex.male.ordinal()][0], -150, -50, 128, 128);
 
         addButton(START, -70, -150, "Start Game");
         addButton(CANCEL, 70, -150, "Cancel");
@@ -61,17 +61,17 @@ public class CreatureEditor extends Window implements WindowListener {
         setText("hp", String.valueOf(creature.getHp()));
         setText("mp", String.valueOf(creature.getMp()));
         setText("coins", String.valueOf(creature.getCoins()));
-        setText(SEX, Pc.Sex.values()[creature.getSex()].name());
+        setText(SEX, PlayerTemplate.Sex.values()[creature.getSex()].name());
         setImage("portrait", creature.getPortrait());
     }
 
     public void save() {
         creature.setName(getText("name"));
-        Pc.Sex sex = getSex();
+        PlayerTemplate.Sex sex = getSex();
         creature.setSex(sex.ordinal());
-        creature.setPortrait(Pc.PORTRAIT[sex.ordinal()][portraitIndex]);
-        creature.setModel(Pc.MODEL[sex.ordinal()]);
-        creature.setSkin(Pc.SKIN[sex.ordinal()]);
+        creature.setPortrait(PlayerTemplate.PORTRAIT[sex.ordinal()][portraitIndex]);
+        creature.setModel(PlayerTemplate.MODEL[sex.ordinal()]);
+        creature.setSkin(PlayerTemplate.SKIN[sex.ordinal()]);
     }
 
     @Override
@@ -81,27 +81,27 @@ public class CreatureEditor extends Window implements WindowListener {
         } else if(START.equals(name)) {
             Main.getMain().getGameState().buttonClicked(name);
         } else if(SEX.equals(name)) {
-            Pc.Sex sex = getSex();
-            sex = sex == Pc.Sex.male ? Pc.Sex.female : Pc.Sex.male;
+            PlayerTemplate.Sex sex = getSex();
+            sex = sex == PlayerTemplate.Sex.male ? PlayerTemplate.Sex.female : PlayerTemplate.Sex.male;
             setText(SEX, sex.name());
             portraitIndex = 0;
             updatePortrait();
         } else if(PREVIOUS_PORTRAIT.equals(name)) {
             portraitIndex--;
-            if(portraitIndex < 0) portraitIndex = Pc.PORTRAIT[getSex().ordinal()].length - 1;
+            if(portraitIndex < 0) portraitIndex = PlayerTemplate.PORTRAIT[getSex().ordinal()].length - 1;
             updatePortrait();
         } else if(NEXT_PORTRAIT.equals(name)) {
             portraitIndex++;
-            if(portraitIndex >= Pc.PORTRAIT[getSex().ordinal()].length) portraitIndex = 0;
+            if(portraitIndex >= PlayerTemplate.PORTRAIT[getSex().ordinal()].length) portraitIndex = 0;
             updatePortrait();
         }
     }
 
     private void updatePortrait() {
-        setImage("portrait", Pc.PORTRAIT[getSex().ordinal()][portraitIndex]);
+        setImage("portrait", PlayerTemplate.PORTRAIT[getSex().ordinal()][portraitIndex]);
     }
 
-    private Pc.Sex getSex() {
-        return Pc.Sex.valueOf(getText(SEX));
+    private PlayerTemplate.Sex getSex() {
+        return PlayerTemplate.Sex.valueOf(getText(SEX));
     }
 }

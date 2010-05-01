@@ -1,0 +1,6 @@
+./data/textures/stencil/corner.png
+./data/textures/stencil/tip.png
+./data/textures/stencil/narrow.png
+./data/textures/stencil/hole.png
+./data/textures/stencil/edge.png
+./data/textures/grass.png
