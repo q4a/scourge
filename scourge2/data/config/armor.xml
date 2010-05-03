@@ -1,0 +1,1142 @@
+<items>
+  <item>
+    <description translate="true">Not much warmth reaches your stiff fingers in these homemade gloves. It also appears that either this is not a single pair or the previous owner's left hand was much larger than the right.</description>
+    <display_name translate="true">Leather Work Gloves</display_name>
+    <icon>7,9</icon>
+    <inventory_location>16384</inventory_location>
+    <name>Leather Work Gloves</name>
+    <price>80</price>
+    <rareness>8</rareness>
+    <shape>GLOVES</shape>
+    <short_description translate="true">A pair of ill-made, ill-fitting leather gloves.</short_description>
+    <type>ARMOR</type>
+    <weight>2</weight>
+    <armor>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">This embroidered pair of heavy leather gloves bears the symbols of the Horghh city guards. In places it is worn very thin, yet it appears to be exceptionally sturdy.</description>
+    <display_name translate="true">Embroidered Guard Gloves</display_name>
+    <icon>8,9</icon>
+    <inventory_location>16384</inventory_location>
+    <name>Embroidered Guard Gloves</name>
+    <price>150</price>
+    <rareness>8</rareness>
+    <shape>EMBGLOVES</shape>
+    <short_description translate="true">A comfortable pair of heavy leather gloves.</short_description>
+    <type>ARMOR</type>
+    <weight>2</weight>
+    <armor>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">This chainmail mitten is full of dents and scratches. Despite the occasional rust-spots, it fits admirably and provides good protection in combat.</description>
+    <display_name translate="true">Link Gauntlet</display_name>
+    <icon>9,9</icon>
+    <inventory_location>16384</inventory_location>
+    <name>Link Gauntlet</name>
+    <price>220</price>
+    <rareness>8</rareness>
+    <shape>CHAINGLOVES</shape>
+    <short_description translate="true">A pair of sturdy chainmail mittens.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>5</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">A few minutes of cleaning reveals a rare find: a full-plait armored gauntlet still in tact rescued from the depths.</description>
+    <display_name translate="true">Plaite Gauntlet</display_name>
+    <icon>9,9</icon>
+    <inventory_location>16384</inventory_location>
+    <name>Plaite Gauntlet</name>
+    <price>450</price>
+    <rareness>8</rareness>
+    <shape>PLAITGLOVES</shape>
+    <short_description translate="true">A dirty pair of plait-mail armored gauntlets.</short_description>
+    <tags>PLATE</tags>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>2</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>14,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Your enemies may laugh at your dorky headgear, however, it does protect you from dull, bludgeoning objects</description>
+    <display_name translate="true">Horned helmet</display_name>
+    <icon>5,9</icon>
+    <inventory_location>1</inventory_location>
+    <name>Horned helmet</name>
+    <price>100</price>
+    <rareness>8</rareness>
+    <shape>HELM_HORNED</shape>
+    <short_description translate="true">A stylish helmet adorned with the horns of a slain foe</short_description>
+    <type>ARMOR</type>
+    <weight>12</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">Finally a head-gear designed to protect others from viewing the hideous wounds you have acquired over the years.</description>
+    <display_name translate="true">Full face helmet</display_name>
+    <icon>4,9</icon>
+    <inventory_location>1</inventory_location>
+    <name>Full face helmet</name>
+    <price>120</price>
+    <rareness>8</rareness>
+    <shape>HELM_FULLFACE</shape>
+    <short_description translate="true">A clunky helmet with narrow slits for the eyes and nose.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>20</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This metallic piece of medieval clothing comes equipped with a visor that you can swoosh open when striking a dramatic pose.</description>
+    <display_name translate="true">Helmet with visor</display_name>
+    <icon>3,9</icon>
+    <inventory_location>1</inventory_location>
+    <min_depth>1</min_depth>
+    <name>Helmet with visor</name>
+    <price>150</price>
+    <rareness>8</rareness>
+    <shape>HELM_VISOR</shape>
+    <short_description translate="true">A dented metal helmet with a removable visor.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>24</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This large helmet covers your entire face and parts of your neck and shoulders. It is worn mostly by knights.</description>
+    <display_name translate="true">Knight's helmet</display_name>
+    <icon>6,9</icon>
+    <inventory_location>1</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Knight's helmet</name>
+    <price>180</price>
+    <rareness>7</rareness>
+    <shape>HELM_KNIGHTS</shape>
+    <short_description translate="true">A giant metal orb of a helmet. The visor is rusted shut.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>25</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This is the typical wizard's hat. It's as if the hat is begging others to mock its wearer. (Of course, this is generally when the mocker is engulfed in flames...)</description>
+    <display_name translate="true">Pointy Hat</display_name>
+    <icon>2,9</icon>
+    <inventory_location>1</inventory_location>
+    <name>Pointy Hat</name>
+    <price>2</price>
+    <rareness>7</rareness>
+    <shape>HAT_POINTY</shape>
+    <short_description translate="true">A light blue broad rimmed hat with a weird pointy top.</short_description>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">In early autumn when the nights start to cool and that old feeling returns, to hop over the backyard fence and follow a trail wherever it may lead... this is the hat you'd reach for.</description>
+    <display_name translate="true">Adventuring Hat</display_name>
+    <icon>1,9</icon>
+    <inventory_location>1</inventory_location>
+    <name>Adventuring Hat</name>
+    <price>2</price>
+    <rareness>9</rareness>
+    <shape>HAT_ADVENTURING</shape>
+    <short_description translate="true">A brown leather hat with a feather.</short_description>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">I'm sure the couple flimsy boards held together by cat-gut will provide tons of life-saving cover in battle. On the positive side, at least it's a small, maneuverable shield.</description>
+    <display_name translate="true">Buckler</display_name>
+    <icon>12,8</icon>
+    <inventory_location>48</inventory_location>
+    <name>Buckler</name>
+    <price>15</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_BUCKLER</shape>
+    <short_description translate="true">A small home-made wooden shield.</short_description>
+    <type>ARMOR</type>
+    <weight>2</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">The shield's hard wood is dried and flame toughened. It is covered in martial colors and someone jokingly painted a bulls-eye on it.</description>
+    <display_name translate="true">Wooden Shield</display_name>
+    <icon>11,8</icon>
+    <inventory_location>48</inventory_location>
+    <name>Wooden Shield</name>
+    <price>22</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_WOODEN</shape>
+    <short_description translate="true">A well-made, sturdy wooden shield.</short_description>
+    <type>ARMOR</type>
+    <weight>5</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <dodge_penalty>1</dodge_penalty>
+      <pierce_defense>2</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">This triangular metal shield would be a boon to any adventuring knight, if not for the the countless dents and rust-spots that cover its surface.</description>
+    <display_name translate="true">Steel Shield</display_name>
+    <icon>15,8</icon>
+    <inventory_location>48</inventory_location>
+    <min_depth>1</min_depth>
+    <name>Steel Shield</name>
+    <price>60</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_STEEL</shape>
+    <short_description translate="true">A triangular metal shield.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <dodge_penalty>1</dodge_penalty>
+      <pierce_defense>2</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">A symbolic, painted dragon roars to life on this shield, as if to only remind its wearer of the absolute futility of carrying it against an actual one.</description>
+    <display_name translate="true">Ornate Dragon Shield</display_name>
+    <icon>10,8</icon>
+    <inventory_location>48</inventory_location>
+    <min_depth>1</min_depth>
+    <name>Ornate Dragon Shield</name>
+    <price>45</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_DRAGON</shape>
+    <short_description translate="true">A metal shield covered with the painting of an ornate dragon.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <dodge_penalty>1</dodge_penalty>
+      <pierce_defense>2</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">A heavy duty cavalry shield, designed to withstand an impact by the lance of a horse-mounted rider, charging at full speed. Judging by the gaping whole in its center, it failed to do so last time.</description>
+    <display_name translate="true">Cavalry Shield</display_name>
+    <icon>14,8</icon>
+    <inventory_location>48</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Cavalry Shield</name>
+    <price>60</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_CAVALRY</shape>
+    <short_description translate="true">A heavy metal shield.</short_description>
+    <tags>METAL,LARGE</tags>
+    <type>ARMOR</type>
+    <weight>10</weight>
+    <armor>
+      <crush_defense>3</crush_defense>
+      <dodge_penalty>2</dodge_penalty>
+      <pierce_defense>2</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">A shield cleverly constructed from the cured hide of a mountain troll. These were especially popular during the dwarven-troll war when each side used such handiwork to idle away the time between skirmishes.</description>
+    <display_name translate="true">Trollhide Shield</display_name>
+    <icon>13,8</icon>
+    <inventory_location>48</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Trollhide Shield</name>
+    <price>30</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_TROLLHIDE</shape>
+    <short_description translate="true">A gray shield featuring advanced troll-hide technology.</short_description>
+    <tags>LARGE</tags>
+    <type>ARMOR</type>
+    <weight>7</weight>
+    <armor>
+      <crush_defense>3</crush_defense>
+      <dodge_penalty>2</dodge_penalty>
+      <pierce_defense>2</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>3</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>4,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">If one is smitten due to a lack of protective cover, will anyone hear of the tragedy? In order for such paradox to not come to pass, the clerics of Minirmuir created these divine shields.</description>
+    <display_name translate="true">Shield of the Golden Lotus</display_name>
+    <icon>16,8</icon>
+    <inventory_location>48</inventory_location>
+    <min_depth>3</min_depth>
+    <name>Shield of the Golden Lotus</name>
+    <price>230</price>
+    <rareness>10</rareness>
+    <shape>SHIELD_GOLDENLOTUS</shape>
+    <short_description translate="true">A shield exhibiting golden harmony and unperturbable peace.</short_description>
+    <tags>METAL,LARGE</tags>
+    <type>ARMOR</type>
+    <weight>3.5</weight>
+    <armor>
+      <crush_defense>3</crush_defense>
+      <dodge_penalty>2</dodge_penalty>
+      <pierce_defense>3</pierce_defense>
+      <skill>SHIELD_DEFEND</skill>
+      <slash_defense>3</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">The lightweight cloth keeps you warm (and ready to party) but does not protect you from weapon attacks.</description>
+    <display_name translate="true">Toga</display_name>
+    <icon>12,6</icon>
+    <inventory_location>8</inventory_location>
+    <name>Toga</name>
+    <price>10</price>
+    <rareness>10</rareness>
+    <shape>TOGA</shape>
+    <short_description translate="true">A white bedsheet that's been made into robes.</short_description>
+    <tags>ROBES</tags>
+    <type>ARMOR</type>
+    <weight>2</weight>
+    <armor>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">A much worn and slept-in traveling garment which looks to also have served as an item of personal hygiene.</description>
+    <display_name translate="true">Traveling cloak</display_name>
+    <icon>17,8</icon>
+    <inventory_location>4</inventory_location>
+    <name>Traveling cloak</name>
+    <price>15</price>
+    <rareness>10</rareness>
+    <shape>CLOAK</shape>
+    <short_description translate="true">A worn brownish cloak.</short_description>
+    <type>ARMOR</type>
+    <weight>2.5</weight>
+    <armor>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">A travel cloak of quality workmanship. It looks to actually stave off the cold of the outdoors.</description>
+    <display_name translate="true">Heavy woodland cloak</display_name>
+    <icon>18,8</icon>
+    <inventory_location>4</inventory_location>
+    <name>Heavy woodland cloak</name>
+    <price>15</price>
+    <rareness>7</rareness>
+    <shape>CLOAK_FOREST</shape>
+    <short_description translate="true">A heavy-weight traveling cloak.</short_description>
+    <type>ARMOR</type>
+    <weight>2.5</weight>
+    <armor>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">The usual gamete of spellcasters lets the user perform much agitated hand waving as required by the casted spell.</description>
+    <display_name translate="true">Robes of the Sorcerer</display_name>
+    <icon>13,6</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Robes of the Sorcerer</name>
+    <price>25</price>
+    <rareness>9</rareness>
+    <shape>ROBE_SORCERS</shape>
+    <short_description translate="true">These robes have magic symbols on their sleeves and hood.</short_description>
+    <tags>ROBES</tags>
+    <type>ARMOR</type>
+    <weight>4</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">These robes are cleverly padded to protect its frail wearer a little longer in battle.</description>
+    <display_name translate="true">Padded Robes</display_name>
+    <icon>14,6</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>3</min_depth>
+    <name>Padded Robes</name>
+    <price>50</price>
+    <rareness>7</rareness>
+    <shape>ROBE_PADDED</shape>
+    <short_description translate="true">These robes seem to be padded on the inside.</short_description>
+    <tags>ROBES</tags>
+    <type>ARMOR</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>2</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">Ye olde leather armor is created from the cured and toughened skin of thy foe. On this particular model the leather pieces are clumsily held together by what appears to be the guts of thy foe.</description>
+    <display_name translate="true">Leather Armor</display_name>
+    <icon>18,6</icon>
+    <inventory_location>8</inventory_location>
+    <name>Leather Armor</name>
+    <price>250</price>
+    <rareness>9</rareness>
+    <shape>LEATHERARMOR</shape>
+    <short_description translate="true">Looks to be an old piece of leather armor</short_description>
+    <type>ARMOR</type>
+    <weight>20</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>2</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">As a small evolutionary step in leather armor technology, this model sports blunted metal studs, built more to intimidate rather than to cause actual damage. Still, there is a lot to be said for looking cool.</description>
+    <display_name translate="true">Studded Leather Armor</display_name>
+    <icon>17,6</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>1</min_depth>
+    <name>Studded Leather Armor</name>
+    <price>320</price>
+    <rareness>7</rareness>
+    <shape>STUDDEDLEATHER</shape>
+    <short_description translate="true">This leather armor piece has embedded metal studs.</short_description>
+    <type>ARMOR</type>
+    <weight>25</weight>
+    <armor>
+      <crush_defense>3</crush_defense>
+      <dodge_penalty>1</dodge_penalty>
+      <pierce_defense>3</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>3</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This indeed -is- your parents' armor. It is rusty, ill-fitting with a few links missing here and there. It's also quite heavy, makes a lot of noise and seems to be home for a very nice family of rodents.</description>
+    <display_name translate="true">Rusty Chainmail</display_name>
+    <icon>19,6</icon>
+    <inventory_location>8</inventory_location>
+    <name>Rusty Chainmail</name>
+    <price>500</price>
+    <rareness>9</rareness>
+    <shape>RUSTYCHAIN</shape>
+    <short_description translate="true">The rust is the only thing that holds this chainmail's links together</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>40</weight>
+    <armor>
+      <crush_defense>4</crush_defense>
+      <dodge_penalty>2</dodge_penalty>
+      <pierce_defense>3</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>4</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">One finds strange things in the deep places of the earth... This city guard's uniform is one such curiosity. What ill fate befell the wearer of this finely crafted chainmail?</description>
+    <display_name translate="true">Guard's Chainmail</display_name>
+    <icon>3,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Guard's Chainmail</name>
+    <price>720</price>
+    <rareness>8</rareness>
+    <shape>GUARDCHAIN</shape>
+    <short_description translate="true">It appears to be an official city guard chainmail.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>50</weight>
+    <armor>
+      <crush_defense>5</crush_defense>
+      <dodge_penalty>3</dodge_penalty>
+      <pierce_defense>4</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>5</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This is the fabled mythril mail of the elves of Alovium. The metal is lightweight, flexible, never rusts of deforms. It's light blue in color and is known to be easy to enchant.</description>
+    <display_name translate="true">Mythril Mail</display_name>
+    <icon>4,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>3</min_depth>
+    <name>Mythril Mail</name>
+    <price>1200</price>
+    <rareness>5</rareness>
+    <shape>MYTHRILCHAIN</shape>
+    <short_description translate="true">You feel that in spite of its light weight this armor is well designed to deflect damage.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>20</weight>
+    <armor>
+      <crush_defense>5</crush_defense>
+      <dodge_penalty>1</dodge_penalty>
+      <pierce_defense>6</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>6</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>14,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This type of armor is constructed by attaching strips of metal to chain or leather. This particular model was created by the dwarven smiths under the mountains of Mozmoril. Although heavy and uncomfortable it protect you from but the sharpest weapons.</description>
+    <display_name translate="true">Banded Mail</display_name>
+    <icon>7,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Banded Mail</name>
+    <price>950</price>
+    <rareness>8</rareness>
+    <shape>BANDEDMAIL</shape>
+    <short_description translate="true">Banded strips of metal compose the main sections of this armor.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>60</weight>
+    <armor>
+      <crush_defense>6</crush_defense>
+      <dodge_penalty>4</dodge_penalty>
+      <pierce_defense>6</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>6</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>13,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Congratulations. Wearing a set of heavy-gage, full plate mail officially qualifies you as a human tank. Though you're virtually untouchable by conventional weapons, you can be heard for miles.</description>
+    <display_name translate="true">Heavy field plate</display_name>
+    <icon>9,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>3</min_depth>
+    <name>Heavy field plate</name>
+    <price>1250</price>
+    <rareness>7</rareness>
+    <shape>FIELDPLAIT</shape>
+    <short_description translate="true">An incredibly heavy set of full plate mail armor.</short_description>
+    <tags>METAL,PLATE</tags>
+    <type>ARMOR</type>
+    <weight>110</weight>
+    <armor>
+      <crush_defense>8</crush_defense>
+      <dodge_penalty>5</dodge_penalty>
+      <pierce_defense>8</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>8</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Like other elven works, this platemail is a study in perfection. It is lightweight, resilient and quite comfortable to wear for long periods of time.</description>
+    <display_name translate="true">Elven platemail</display_name>
+    <icon>10,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>4</min_depth>
+    <name>Elven platemail</name>
+    <price>2000</price>
+    <rareness>4</rareness>
+    <shape>ELVENPLAIT</shape>
+    <short_description translate="true">A well-fitted set of lightweight platemail armor.</short_description>
+    <tags>METAL,PLATE</tags>
+    <type>ARMOR</type>
+    <weight>40</weight>
+    <armor>
+      <crush_defense>6</crush_defense>
+      <dodge_penalty>3</dodge_penalty>
+      <pierce_defense>8</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>8</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">The half-ogre wizard, Enarol supposedly created this white armor from the skin of flayed relative.</description>
+    <display_name translate="true">Enarol's Ogre Skin</display_name>
+    <icon>11,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>4</min_depth>
+    <name>Enarol's Ogre Skin</name>
+    <price>2300</price>
+    <rareness>3</rareness>
+    <shape>OGREPLAIT</shape>
+    <short_description translate="true">Stinky white armor that seems rough to the touch.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>80</weight>
+    <armor>
+      <crush_defense>8</crush_defense>
+      <dodge_penalty>5</dodge_penalty>
+      <pierce_defense>8</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>9</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>10,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This armor is made from the hide of a magical dragon. If that sounds hard to believe, wait until you see how well this armor protects its wearer in battle.</description>
+    <display_name translate="true">Dragonscale armor</display_name>
+    <icon>16,7</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>5</min_depth>
+    <name>Dragonscale armor</name>
+    <price>4550</price>
+    <rareness>2</rareness>
+    <shape>REDDRAGONARMOR</shape>
+    <short_description translate="true">Armor made from the scales of some beast.</short_description>
+    <tags>METAL,PLATE</tags>
+    <type>ARMOR</type>
+    <weight>85</weight>
+    <armor>
+      <crush_defense>9</crush_defense>
+      <dodge_penalty>6</dodge_penalty>
+      <pierce_defense>9</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>9</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>14,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>IQ</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>12,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This armor is made to protect mages. It's created from a transdimensional goo that protects the user while letting them cast spells.</description>
+    <display_name translate="true">Smeth's Slimy Defender</display_name>
+    <icon>2,8</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>5</min_depth>
+    <name>Smeth's Slimy Defender</name>
+    <price>8000</price>
+    <rareness>1</rareness>
+    <shape>SLIMYDEFENDER</shape>
+    <short_description translate="true">Armor made from space-goo.</short_description>
+    <tags>METAL,PLATE</tags>
+    <type>ARMOR</type>
+    <weight>40</weight>
+    <armor>
+      <crush_defense>10</crush_defense>
+      <dodge_penalty>5</dodge_penalty>
+      <pierce_defense>10</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>9</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>14,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">This gold colored armor offers the highest levels of protection. Imbued with the magic contained in its yellow strands of fleece it protects the wearer via a mystic aura of repulsion.</description>
+    <display_name translate="true">Merzul Goldenfleece</display_name>
+    <icon>6,8</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>6</min_depth>
+    <name>Merzul Goldenfleece</name>
+    <price>12200</price>
+    <rareness>1</rareness>
+    <shape>GOLDENARMOR</shape>
+    <short_description translate="true">Lightweight gold colored armor, made from some kind of wool.</short_description>
+    <tags>METAL,PLATE</tags>
+    <type>ARMOR</type>
+    <weight>50</weight>
+    <armor>
+      <crush_defense>10</crush_defense>
+      <dodge_penalty>5</dodge_penalty>
+      <pierce_defense>10</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>10</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>15,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Slightly worn workboots. They smell about as good as they look.</description>
+    <display_name translate="true">Workboots</display_name>
+    <icon>11,9</icon>
+    <inventory_location>256</inventory_location>
+    <name>Workboots</name>
+    <price>25</price>
+    <rareness>10</rareness>
+    <shape>BOOTS_WORK</shape>
+    <short_description translate="true">Comfortable looking workboots.</short_description>
+    <type>ARMOR</type>
+    <weight>1.5</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">Workboots of a more complex construction. The toebox is encased in steel making your toes at least dry and safe.</description>
+    <display_name translate="true">Steel-toed Workboots</display_name>
+    <icon>13,9</icon>
+    <inventory_location>256</inventory_location>
+    <name>Steel-toed Workboots</name>
+    <price>50</price>
+    <rareness>9</rareness>
+    <shape>BOOTS_STEELTOED</shape>
+    <short_description translate="true">Workboots with a steel reinforced toebox.</short_description>
+    <type>ARMOR</type>
+    <weight>2.5</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">These heavy duty boots are designed to last a lifetime. However long that may be...</description>
+    <display_name translate="true">Leather boots</display_name>
+    <icon>14,9</icon>
+    <inventory_location>256</inventory_location>
+    <min_depth>1</min_depth>
+    <name>Leather boots</name>
+    <price>120</price>
+    <rareness>9</rareness>
+    <shape>BOOTS_LEATHER</shape>
+    <short_description translate="true">A nice pair of leather boots</short_description>
+    <type>ARMOR</type>
+    <weight>5</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">Boots made specifically for walking all over other folks. This pair in particular seems made for battle.</description>
+    <display_name translate="true">Warboots</display_name>
+    <icon>12,9</icon>
+    <inventory_location>256</inventory_location>
+    <min_depth>2</min_depth>
+    <name>Warboots</name>
+    <price>310</price>
+    <rareness>7</rareness>
+    <shape>BOOTS_WAR</shape>
+    <short_description translate="true">Combat boots with a bad attitude.</short_description>
+    <tags>METAL</tags>
+    <type>ARMOR</type>
+    <weight>7.5</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <pierce_defense>1</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>1</slash_defense>
+    </armor>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <armor>
+        <max>18,linear,1</max>
+        <min>14,exponential,2</min>
+      </armor>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">These blue robes blend its wearer into nearby shadows, granting an invisibility-like protection.</description>
+    <display_name translate="true">Cloak of Safe Passage</display_name>
+    <icon>19,8</icon>
+    <inventory_location>4</inventory_location>
+    <min_depth>1</min_depth>
+    <min_level>7</min_level>
+    <name>Cloak of Safe Passage</name>
+    <price>12500</price>
+    <rareness>2</rareness>
+    <shape>ROBE_SAFEPASSAGE</shape>
+    <short_description translate="true">You have to look carefully to notice this blue cloak.</short_description>
+    <type>ARMOR</type>
+    <weight>2.5</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>2</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>2</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">Infused with the hateful spirit of Unamoin, this cloak assists its wearer in combat, but at a price...</description>
+    <display_name translate="true">Cloak of Hateful Vengeance</display_name>
+    <icon>20,8</icon>
+    <inventory_location>4</inventory_location>
+    <min_depth>2</min_depth>
+    <min_level>9</min_level>
+    <name>Cloak of Hateful Vengeance</name>
+    <price>22320</price>
+    <rareness>3</rareness>
+    <shape>ROBE_UNAMOIN</shape>
+    <short_description translate="true">These red robes radiate palpable dread.</short_description>
+    <type>ARMOR</type>
+    <weight>2.5</weight>
+    <armor>
+      <crush_defense>2</crush_defense>
+      <pierce_defense>2</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>3</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">This snazzy footwear positively sizzles with magic absorbtion as you tread the ground. </description>
+    <display_name translate="true">Boots of antimagic binding</display_name>
+    <icon>14,9</icon>
+    <inventory_location>256</inventory_location>
+    <name>Boots of antimagic binding</name>
+    <price>25</price>
+    <rareness>17</rareness>
+    <shape>BOOTS_ANTIMAGIC</shape>
+    <short_description translate="true">These boots were made for walking through a magic field.</short_description>
+    <type>MISSION</type>
+    <weight>1.5</weight>
+    <armor>
+      <crush_defense>5</crush_defense>
+      <pierce_defense>5</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>5</slash_defense>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">This foil wraps tightly around your head and apparently deflects all kinds of, uh, rays...</description>
+    <display_name translate="true">Antimagic foil hat</display_name>
+    <icon>12,17</icon>
+    <inventory_location>1</inventory_location>
+    <name>Antimagic foil hat</name>
+    <price>2</price>
+    <rareness>17</rareness>
+    <shape>HELM_ANTIMAGIC</shape>
+    <short_description translate="true">A piece of metal foil you can wear as a hat.</short_description>
+    <type>MISSION</type>
+    <weight>8</weight>
+    <armor>
+      <crush_defense>1</crush_defense>
+      <skill>ARMOR_DEFEND</skill>
+    </armor>
+  </item>
+  <item>
+    <description translate="true">The armor is made to conform to the contours of the wearer. You can't help but admire the mold of its last owner.</description>
+    <display_name translate="true">Antimagic chestplate</display_name>
+    <icon>2,8</icon>
+    <inventory_location>8</inventory_location>
+    <min_depth>5</min_depth>
+    <name>Antimagic chestplate</name>
+    <price>8000</price>
+    <rareness>17</rareness>
+    <shape>BREASTPLATE_ANTIMAGIC</shape>
+    <short_description translate="true">A shape-changing armor that fits creatures of all sizes.</short_description>
+    <type>MISSION</type>
+    <weight>40</weight>
+    <armor>
+      <crush_defense>12</crush_defense>
+      <pierce_defense>12</pierce_defense>
+      <skill>ARMOR_DEFEND</skill>
+      <slash_defense>12</slash_defense>
+    </armor>
+  </item>
+</items>

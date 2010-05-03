@@ -138,7 +138,7 @@ public enum Model {
             assignTextures(spatial, textures);
         }
     },
-    oldoak2("./data/md3/oak/oak1.md3") {
+    oldoak2("./data/md3/oak/oak2.md3") {
         @Override
         public Spatial createSpatial() {
             return getAlphaSpatial(0.12f, 0, 0, 90);
@@ -198,7 +198,7 @@ public enum Model {
             assignTextures(spatial, textures);
         }
     },
-    normal_green("./data/md3/jkm_trees/tree1.md3") {
+    normal_green("./data/md3/jkm_trees/tree2.md3") {
         @Override
         public Spatial createSpatial() {
             return getAlphaSpatial(0.11f, 0, 0, 90);
@@ -218,7 +218,7 @@ public enum Model {
             assignTextures(spatial, textures);
         }
     },
-    normal_red("./data/md3/jkm_trees/tree1.md3") {
+    normal_red("./data/md3/jkm_trees/tree3.md3") {
         @Override
         public Spatial createSpatial() {
             return getAlphaSpatial(0.11f, 0, 0, 90);
@@ -238,7 +238,7 @@ public enum Model {
             assignTextures(spatial, textures);
         }
     },
-    normal_green2("./data/md3/jkm_trees/tree1.md3") {
+    normal_green2("./data/md3/jkm_trees/tree4.md3") {
         @Override
         public Spatial createSpatial() {
             return getAlphaSpatial(0.11f, 0, 0, 90);

@@ -1,0 +1,817 @@
+<items>
+  <item>
+    <description translate="true">A wooden chest with metal re-inforced edges</description>
+    <display_name translate="true">Chest</display_name>
+    <icon>18,17</icon>
+    <name>Chest</name>
+    <rareness>10</rareness>
+    <shape>CHEST</shape>
+    <short_description translate="true">An ancient chest</short_description>
+    <type>CONTAINER</type>
+    <weight>60</weight>
+    <container_width>8</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/chest.png</container_texture>
+  </item>
+  <item>
+    <description translate="true"></description>
+    <display_name translate="true">Backpack</display_name>
+    <icon>18,17</icon>
+    <name>Backpack</name>
+    <rareness>10</rareness>
+    <shape>CHEST</shape>
+    <short_description translate="true"></short_description>
+    <type>CONTAINER</type>
+    <weight>60</weight>
+    <container_width>21</container_width>
+    <container_height>5</container_height>
+    <container_texture>/textures/containers/chest.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A bookshelf containing tomes of old</description>
+    <display_name translate="true">Bookshelf</display_name>
+    <icon>18,17</icon>
+    <name>Bookshelf</name>
+    <rareness>10</rareness>
+    <shape>BOOKSHELF</shape>
+    <short_description translate="true">A large bookshelf</short_description>
+    <type>CONTAINER</type>
+    <weight>120</weight>
+    <container_width>16</container_width>
+    <container_height>16</container_height>
+    <container_texture>/textures/containers/bookcase.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A wooden chest with metal re-inforced edges</description>
+    <display_name translate="true">Chest2</display_name>
+    <icon>18,17</icon>
+    <name>Chest2</name>
+    <rareness>10</rareness>
+    <shape>CHEST2</shape>
+    <short_description translate="true">An ancient chest</short_description>
+    <type>CONTAINER</type>
+    <weight>60</weight>
+    <container_width>8</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/chest.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A bookshelf containing tomes of old</description>
+    <display_name translate="true">Bookshelf2</display_name>
+    <icon>18,17</icon>
+    <name>Bookshelf2</name>
+    <rareness>10</rareness>
+    <shape>BOOKSHELF2</shape>
+    <short_description translate="true">A large books-elf</short_description>
+    <type>CONTAINER</type>
+    <weight>120</weight>
+    <container_width>16</container_width>
+    <container_height>16</container_height>
+    <container_texture>/textures/containers/bookcase.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">The decomposing corpse of one once strong and able</description>
+    <display_name translate="true">Corpse</display_name>
+    <icon>9,11</icon>
+    <name>Corpse</name>
+    <rareness>10</rareness>
+    <shape>CORPSE</shape>
+    <short_description translate="true">A decomposing corpse</short_description>
+    <type>CONTAINER</type>
+    <weight>100</weight>
+    <container_width>8</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/corpse.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A large wooden barrel, typical in these dungeons</description>
+    <display_name translate="true">Barrel</display_name>
+    <icon>18,17</icon>
+    <name>Barrel</name>
+    <rareness>10</rareness>
+    <shape>BARREL</shape>
+    <short_description translate="true">A wooden barrel</short_description>
+    <type>CONTAINER</type>
+    <weight>70</weight>
+    <container_width>4</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/barrel.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A very exciting wooden crate!</description>
+    <display_name translate="true">Crate</display_name>
+    <icon>18,17</icon>
+    <name>Crate</name>
+    <rareness>10</rareness>
+    <shape>CRATE</shape>
+    <short_description translate="true">A crate</short_description>
+    <type>CONTAINER</type>
+    <weight>70</weight>
+    <container_width>8</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/crate.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A large vase, typically used to contain other items.</description>
+    <display_name translate="true">Vase</display_name>
+    <icon>18,17</icon>
+    <name>Vase</name>
+    <rareness>10</rareness>
+    <shape>VASE</shape>
+    <short_description translate="true">A large painted vase</short_description>
+    <type>CONTAINER</type>
+    <weight>70</weight>
+    <container_width>4</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/vase.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">An ornate vase displaying the mythical dwarven army of king Khuzod-Mog.</description>
+    <display_name translate="true">Dwarven Vase</display_name>
+    <icon>18,17</icon>
+    <name>Dwarven Vase</name>
+    <rareness>10</rareness>
+    <shape>DWARVEN_VASE</shape>
+    <short_description translate="true">A vase showing a dwarven host in battle.</short_description>
+    <type>CONTAINER</type>
+    <weight>70</weight>
+    <container_width>4</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/dvase.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">This dresser has seen better days</description>
+    <display_name translate="true">Commode</display_name>
+    <icon>18,17</icon>
+    <name>Commode</name>
+    <rareness>10</rareness>
+    <shape>COMMODE</shape>
+    <short_description translate="true">A common commode</short_description>
+    <type>CONTAINER</type>
+    <weight>130</weight>
+    <container_width>16</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/commode.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A large featureless wooden table</description>
+    <display_name translate="true">Table</display_name>
+    <icon>18,17</icon>
+    <name>Table</name>
+    <rareness>10</rareness>
+    <shape>TABLE</shape>
+    <short_description translate="true">A large table</short_description>
+    <type>OTHER</type>
+    <weight>40</weight>
+    <container_width>10</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/commode.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">A simple wooden chair</description>
+    <display_name translate="true">Chair</display_name>
+    <icon>18,17</icon>
+    <name>Chair</name>
+    <rareness>10</rareness>
+    <shape>CHAIR</shape>
+    <short_description translate="true">A simple chair</short_description>
+    <type>OTHER</type>
+    <weight>15</weight>
+  </item>
+  <item>
+    <description translate="true">It seems to be a pedestal of some sort</description>
+    <display_name translate="true">Pedestal</display_name>
+    <icon>18,17</icon>
+    <name>Pedestal</name>
+    <rareness>10</rareness>
+    <shape>PEDESTAL</shape>
+    <short_description translate="true">A pedestal maybe?</short_description>
+    <type>OTHER</type>
+    <weight>20</weight>
+  </item>
+  <item>
+    <description translate="true">The large potted plant apparently needs no sunlight to thrive.</description>
+    <display_name translate="true">Large potted plant</display_name>
+    <icon>18,17</icon>
+    <name>Large potted plant</name>
+    <rareness>10</rareness>
+    <shape>PLANT</shape>
+    <short_description translate="true">A large potted plant</short_description>
+    <type>OTHER</type>
+    <weight>20</weight>
+  </item>
+  <item>
+    <description translate="true">A comfortable looking bed albeit somewhat moth-eaten.</description>
+    <display_name translate="true">Bed</display_name>
+    <icon>18,17</icon>
+    <name>Bed</name>
+    <rareness>10</rareness>
+    <shape>BED</shape>
+    <short_description translate="true">A bed for resting</short_description>
+    <type>OTHER</type>
+    <weight>40</weight>
+  </item>
+  <item>
+    <description translate="true">A small black stove radiates heat.</description>
+    <display_name translate="true">Stove</display_name>
+    <icon>18,17</icon>
+    <name>Stove</name>
+    <rareness>10</rareness>
+    <shape>STOVE</shape>
+    <short_description translate="true">A small stove</short_description>
+    <type>OTHER</type>
+    <weight>40</weight>
+  </item>
+  <item>
+    <description translate="true">A long worktable carved from splintery wood</description>
+    <display_name translate="true">Desk</display_name>
+    <icon>18,17</icon>
+    <name>Desk</name>
+    <rareness>10</rareness>
+    <shape>DESK</shape>
+    <short_description translate="true">A long worktable</short_description>
+    <type>OTHER</type>
+    <weight>40</weight>
+  </item>
+  <item>
+    <description translate="true">A bench for sitting</description>
+    <display_name translate="true">Bench</display_name>
+    <icon>18,17</icon>
+    <name>Bench</name>
+    <rareness>10</rareness>
+    <shape>BENCH</shape>
+    <short_description translate="true">A bench</short_description>
+    <type>OTHER</type>
+    <weight>40</weight>
+  </item>
+  <item>
+    <description translate="true">You think this scroll has magical symbols on it</description>
+    <display_name translate="true">Scroll</display_name>
+    <icon>10,11</icon>
+    <name>Scroll</name>
+    <price>100</price>
+    <rareness>3</rareness>
+    <shape>SCROLL</shape>
+    <short_description translate="true">A magic scroll</short_description>
+    <type>SCROLL</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">A tiny red apple</description>
+    <display_name translate="true">Apple</display_name>
+    <icon>10,10</icon>
+    <max_charges>1</max_charges>
+    <name>Apple</name>
+    <price>5</price>
+    <rareness>10</rareness>
+    <shape>FOOD_APPLE2</shape>
+    <short_description translate="true">An apple</short_description>
+    <type>FOOD</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">A large apple</description>
+    <display_name translate="true">Big Apple</display_name>
+    <icon>10,10</icon>
+    <max_charges>1</max_charges>
+    <name>Big Apple</name>
+    <price>5</price>
+    <rareness>8</rareness>
+    <shape>FOOD_APPLE</shape>
+    <short_description translate="true">A large apple</short_description>
+    <type>FOOD</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">A small loaf of vegan, raw, organic, whole-wheat, dairy/dolphin-free, protein-enriched bread</description>
+    <display_name translate="true">Bread</display_name>
+    <icon>8,10</icon>
+    <max_charges>1</max_charges>
+    <name>Bread</name>
+    <price>5</price>
+    <rareness>8</rareness>
+    <shape>FOOD_BREAD</shape>
+    <short_description translate="true">A loaf of bread</short_description>
+    <type>FOOD</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">A slab of dark chocolate</description>
+    <display_name translate="true">Chocolate</display_name>
+    <icon>12,4</icon>
+    <max_charges>1</max_charges>
+    <name>Chocolate</name>
+    <price>50</price>
+    <rareness>8</rareness>
+    <shape>FOOD_CHOCOLATE</shape>
+    <short_description translate="true">A chocolate bar</short_description>
+    <type>FOOD</type>
+    <weight>0.2</weight>
+  </item>
+  <item>
+    <description translate="true">A giant, orange mushroom with purple dots</description>
+    <display_name translate="true">Mushroom</display_name>
+    <icon>15,10</icon>
+    <max_charges>1</max_charges>
+    <name>Mushroom</name>
+    <price>25</price>
+    <rareness>8</rareness>
+    <shape>FOOD_MUSHROOM</shape>
+    <short_description translate="true">An alarming mushroom</short_description>
+    <type>FOOD</type>
+    <weight>0.4</weight>
+  </item>
+  <item>
+    <description translate="true">A tiny yellow and brown speckled egg</description>
+    <display_name translate="true">Tiny egg</display_name>
+    <icon>13,10</icon>
+    <max_charges>1</max_charges>
+    <name>Tiny egg</name>
+    <price>5</price>
+    <rareness>8</rareness>
+    <shape>FOOD_SPECKLEDEGG</shape>
+    <short_description translate="true">A small egg</short_description>
+    <type>FOOD</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">A large, hard bird's egg</description>
+    <display_name translate="true">Big egg</display_name>
+    <icon>13,10</icon>
+    <max_charges>1</max_charges>
+    <name>Big egg</name>
+    <price>50</price>
+    <rareness>8</rareness>
+    <shape>FOOD_BIGEGG</shape>
+    <short_description translate="true">A large egg</short_description>
+    <type>FOOD</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">Your basic adventurer's fare, mutton-rump-roast, slightly turned...</description>
+    <display_name translate="true">Mutton meat</display_name>
+    <icon>8,11</icon>
+    <max_charges>2</max_charges>
+    <name>Mutton meat</name>
+    <price>80</price>
+    <rareness>6</rareness>
+    <shape>FOOD_MUTTON</shape>
+    <short_description translate="true">A few slices of mutton meat</short_description>
+    <type>FOOD</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">A small potion-bottle, filled with a fresh water</description>
+    <display_name translate="true">Water potion</display_name>
+    <icon>7,17</icon>
+    <max_charges>1</max_charges>
+    <name>Water potion</name>
+    <price>5</price>
+    <rareness>10</rareness>
+    <shape>POTION_WATER</shape>
+    <short_description translate="true">A small bottle of clear liquid</short_description>
+    <type>DRINK</type>
+    <weight>0.2</weight>
+  </item>
+  <item>
+    <description translate="true">A bottle of stream water</description>
+    <display_name translate="true">Water bottle</display_name>
+    <icon>7,17</icon>
+    <max_charges>3</max_charges>
+    <name>Water bottle</name>
+    <price>30</price>
+    <rareness>10</rareness>
+    <shape>CANTEEN</shape>
+    <short_description translate="true">A bottle of odorless fluid</short_description>
+    <type>DRINK</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">A bottle of untreated milk</description>
+    <display_name translate="true">Milk</display_name>
+    <icon>2,15</icon>
+    <max_charges>3</max_charges>
+    <name>Milk</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>MILK</shape>
+    <short_description translate="true">Some milk</short_description>
+    <type>DRINK</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">A dusty bottle of wine with an upside-down label that reads 'Goats do roam'... I guess they do</description>
+    <display_name translate="true">Wine bottle</display_name>
+    <icon>7,17</icon>
+    <max_charges>3</max_charges>
+    <name>Wine bottle</name>
+    <price>75</price>
+    <rareness>10</rareness>
+    <shape>CHEAPWINE</shape>
+    <short_description translate="true">A bottle of dark fluid</short_description>
+    <type>DRINK</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">A cellar aged bottle of vintage wine with a label that reads 'Coates de Rhone'</description>
+    <display_name translate="true">Fine wine bottle</display_name>
+    <icon>7,17</icon>
+    <max_charges>5</max_charges>
+    <name>Fine wine bottle</name>
+    <price>300</price>
+    <rareness>10</rareness>
+    <shape>FINEWINE</shape>
+    <short_description translate="true">A bottle of reddish liquid</short_description>
+    <type>DRINK</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">A large barrel full of fresh water</description>
+    <display_name translate="true">Water barrel</display_name>
+    <icon>7,17</icon>
+    <max_charges>8</max_charges>
+    <name>Water barrel</name>
+    <price>200</price>
+    <rareness>10</rareness>
+    <shape>BARREL_DRINK</shape>
+    <short_description translate="true">A barrel filled with some liquid</short_description>
+    <type>DRINK</type>
+    <weight>4</weight>
+  </item>
+  <item>
+    <description translate="true">A large barrel filled with wine from Korim.</description>
+    <display_name translate="true">Wine barrel</display_name>
+    <icon>7,17</icon>
+    <max_charges>8</max_charges>
+    <name>Wine barrel</name>
+    <price>400</price>
+    <rareness>10</rareness>
+    <shape>BARREL_WINE</shape>
+    <short_description translate="true">A barrel filled with dark liquid</short_description>
+    <type>DRINK</type>
+    <weight>4</weight>
+  </item>
+  <item>
+    <description translate="true">A large barrel that contains dwarven ale with bits of bread and mutton...</description>
+    <display_name translate="true">Beer barrel</display_name>
+    <icon>7,17</icon>
+    <max_charges>8</max_charges>
+    <name>Beer barrel</name>
+    <price>300</price>
+    <rareness>8</rareness>
+    <shape>BARREL_BEER</shape>
+    <short_description translate="true">A barrel full of foamy liquid</short_description>
+    <type>DRINK</type>
+    <weight>4</weight>
+  </item>
+  <item>
+    <description translate="true">A medicine-bottle, filled with a health potion</description>
+    <display_name translate="true">Health potion</display_name>
+    <icon>17,14</icon>
+    <max_charges>1</max_charges>
+    <name>Health potion</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_HEALTH</shape>
+    <short_description translate="true">A medicine bottle</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>6</power>
+      <skill>HP</skill>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains a gray oozing liquid.</description>
+    <display_name translate="true">Liquid armor</display_name>
+    <icon>12,14</icon>
+    <max_charges>1</max_charges>
+    <name>Liquid armor</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_ARMOR</shape>
+    <short_description translate="true">A round gray bottle</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>6</power>
+      <skill>AC</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, green oil</description>
+    <display_name translate="true">Potion of Speed</display_name>
+    <icon>19,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Speed</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_SPEED</shape>
+    <short_description translate="true">A small vial of green oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>SPEED</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, red oil</description>
+    <display_name translate="true">Potion of Coordination</display_name>
+    <icon>1,15</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Coordination</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_COORDINATION</shape>
+    <short_description translate="true">A small vial of red oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>COORDINATION</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, blue oil</description>
+    <display_name translate="true">Potion of Power</display_name>
+    <icon>10,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Power</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_POWER</shape>
+    <short_description translate="true">A small vial of blue oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>POWER</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, brown oil</description>
+    <display_name translate="true">Potion of IQ</display_name>
+    <icon>20,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of IQ</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_IQ</shape>
+    <short_description translate="true">A small vial of brown oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>IQ</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, purple oil</description>
+    <display_name translate="true">Potion of Leadership</display_name>
+    <icon>14,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Leadership</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_LEADERSHIP</shape>
+    <short_description translate="true">A small vial of purple oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>LEADERSHIP</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, silver oil</description>
+    <display_name translate="true">Potion of Luck</display_name>
+    <icon>9,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Luck</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_LUCK</shape>
+    <short_description translate="true">A small vial of silver oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>LUCK</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, golden oil</description>
+    <display_name translate="true">Potion of Piety</display_name>
+    <icon>15,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Piety</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_PIETY</shape>
+    <short_description translate="true">A small vial of golden oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>PIETY</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This bottle contains some exotic, yellow oil</description>
+    <display_name translate="true">Potion of Lore</display_name>
+    <icon>18,14</icon>
+    <max_charges>1</max_charges>
+    <name>Potion of Lore</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_LORE</shape>
+    <short_description translate="true">A small vial of yellow oil</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>2</power>
+      <skill>LORE</skill>
+      <time>15</time>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">A bottle, filled with a magic potion</description>
+    <display_name translate="true">Magic potion</display_name>
+    <icon>16,14</icon>
+    <max_charges>1</max_charges>
+    <name>Magic potion</name>
+    <price>5</price>
+    <rareness>5</rareness>
+    <shape>POTION_MAGIC</shape>
+    <short_description translate="true">A bottle of blue liquid</short_description>
+    <type>POTION</type>
+    <weight>0.2</weight>
+    <potion>
+      <power>5</power>
+      <skill>MP</skill>
+    </potion>
+  </item>
+  <item>
+    <description translate="true">This is the fabled Wand of Nausiation that once brought to its knees an entire Wourghish legion.</description>
+    <display_name translate="true">Wand of Nausiation</display_name>
+    <icon>4,10</icon>
+    <name>Wand of Nausiation</name>
+    <price>5000</price>
+    <rareness>10</rareness>
+    <shape>WAND_NAUSIATION</shape>
+    <short_description translate="true">You think this stick might have magical properties</short_description>
+    <type>MISSION</type>
+    <weight>0.1</weight>
+  </item>
+  <item>
+    <description translate="true">It very much looks to be the sort of thing that while you're curious to open it, common sense tells you that it's best to leave the box closed.</description>
+    <display_name translate="true">Treasure Chest</display_name>
+    <icon>14,17</icon>
+    <name>Treasure Chest</name>
+    <price>3500</price>
+    <rareness>10</rareness>
+    <shape>TCHEST</shape>
+    <short_description translate="true">It looks to be a wizard's treasure chest</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+    <container_width>8</container_width>
+    <container_height>8</container_height>
+    <container_texture>/textures/containers/tchest.png</container_texture>
+  </item>
+  <item>
+    <description translate="true">Boots of someone named 'Mycotharsius'. Judging from the smell, the owner must have been host to a large group of parasitic micro-organisms.</description>
+    <display_name translate="true">Boots of Mycotharsius</display_name>
+    <icon>12,9</icon>
+    <name>Boots of Mycotharsius</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>BOOTS_MYCOTHARSIUS</shape>
+    <short_description translate="true">Boots inscribed with the word 'Mycotharsius'.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">It's a simple map and yet... strange suggestions arise in your mind: worship Karzuul and you'll be spared!</description>
+    <display_name translate="true">Abyssal Map</display_name>
+    <icon>10,11</icon>
+    <name>Abyssal Map</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>MAP</shape>
+    <short_description translate="true">A map that seems to radiate evil.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">It seems like this star-shaped flat piece of metal is emitting a sweet smell.</description>
+    <display_name translate="true">The myriagonal token of Unamoin</display_name>
+    <icon>6,17</icon>
+    <name>The myriagonal token of Unamoin</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>TOKEN_UNAMOIN</shape>
+    <short_description translate="true">A flat piece of metal with many sides.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">This vaguely oval-shaped piece of material makes you laugh every time you look at it.</description>
+    <display_name translate="true">The nonagonal token of Soroughoz</display_name>
+    <icon>20,17</icon>
+    <name>The nonagonal token of Soroughoz</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>TOKEN_SOROUGHOZ</shape>
+    <short_description translate="true">An oval-shaped piece of cloth that seems laughably important.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">A faint touch of electricity strokes your skin when nearing this many-sided metal piece.</description>
+    <display_name translate="true">The hendecagonal token of Garzul-Meg-Aonrod</display_name>
+    <icon>11,17</icon>
+    <name>The hendecagonal token of Garzul-Meg-Aonrod</name>
+    <price>50</price>
+    <rareness>10</rareness>
+    <shape>TOKEN_GARZUL</shape>
+    <short_description translate="true">The piece of metal displays a feel of electricity.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">Quen-go-Nul or the Cronostar is a powerful elven artifact. Crafted eons ago by the deep elves, it is thought to possess the ability to slow down time, while keeping its user safe in a temorarily created pocket dimension.</description>
+    <display_name translate="true">Cronostar</display_name>
+    <icon>6,18</icon>
+    <name>Cronostar</name>
+    <price>25000</price>
+    <rareness>1</rareness>
+    <shape>TOKEN_CRONOS</shape>
+    <short_description translate="true">A faint smell of decayed flowers hangs in the air.</short_description>
+    <type>MISSION</type>
+    <weight>1</weight>
+  </item>
+  <item>
+    <description translate="true">An heavy blacksmith anvil used to forge powerful blades.</description>
+    <display_name translate="true">Anvil</display_name>
+    <icon>18,17</icon>
+    <name>Anvil</name>
+    <rareness>10</rareness>
+    <shape>ANVIL</shape>
+    <short_description translate="true">An heavy anvil</short_description>
+    <type>OTHER</type>
+    <weight>500</weight>
+  </item>
+  <item>
+    <description translate="true">Clamps used by blacksmiths to pick up white-hot metal stocks.</description>
+    <display_name translate="true">Clamps</display_name>
+    <icon>18,17</icon>
+    <name>Clamps</name>
+    <rareness>10</rareness>
+    <shape>CLAMPS</shape>
+    <short_description translate="true">A pair of clamps</short_description>
+    <type>OTHER</type>
+    <weight>10</weight>
+  </item>
+  <item>
+    <description translate="true">Judging by the burnings on its handle, this hammer was used near a hot flame.</description>
+    <display_name translate="true">Hammer</display_name>
+    <icon>18,17</icon>
+    <name>Hammer</name>
+    <rareness>10</rareness>
+    <shape>HAMMER</shape>
+    <short_description translate="true">An heavy hammer</short_description>
+    <type>OTHER</type>
+    <weight>20</weight>
+  </item>
+  <item>
+    <description translate="true">A sharp and shiny piece of metal, with a blade and a tang. If only there would be a hilt nearby...</description>
+    <display_name translate="true">Unmounted sword blade</display_name>
+    <icon>18,17</icon>
+    <name>Swordblade</name>
+    <rareness>10</rareness>
+    <shape>SWORD_BLADE</shape>
+    <short_description translate="true">An unmounted sword blade</short_description>
+    <type>OTHER</type>
+    <weight>10</weight>
+  </item>
+  <item>
+    <description translate="true">A shiny golden chalice used by some high-ranked lord. These items are the favorite weapon of royal traitors and disappointed wives: gold and poison... the usual plot.</description>
+    <display_name translate="true">Chalice</display_name>
+    <icon>18,17</icon>
+    <name>Chalice</name>
+    <rareness>10</rareness>
+    <shape>CHALICE</shape>
+    <short_description translate="true">A golden chalice</short_description>
+    <type>OTHER</type>
+    <weight>1</weight>
+  </item>
+</items>

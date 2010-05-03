@@ -1,0 +1,669 @@
+<items>
+  <item>
+    <description translate="true">A short bluish stone casts a pale light from the end of this wand.</description>
+    <display_name translate="true">Blue opal wand</display_name>
+    <icon>5,17</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Blue opal wand</name>
+    <price>120</price>
+    <rareness>5</rareness>
+    <shape>WAND_BLUEOPAL</shape>
+    <short_description translate="true">A simple wand with a blue opal affixed to its top.</short_description>
+    <spell_level>1</spell_level>
+    <type>WAND</type>
+    <weight>0.12</weight>
+  </item>
+  <item>
+    <description translate="true">Two wooden threads lacquered in gold twine to form the handle of this wand.</description>
+    <display_name translate="true">Golden spiral wand</display_name>
+    <icon>4,17</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>12</max_charges>
+    <name>Golden spiral wand</name>
+    <price>250</price>
+    <rareness>5</rareness>
+    <shape>WAND_GOLDENSPIRAL</shape>
+    <short_description translate="true">A wand covered in gold paint</short_description>
+    <spell_level>2</spell_level>
+    <type>WAND</type>
+    <weight>0.2</weight>
+  </item>
+  <item>
+    <description translate="true">This heavy golden wand bears the symbol of an ancient dwarven kingdom. Created as much as a symbol of reign as to store potent magic.</description>
+    <display_name translate="true">Scepter of the Dwarven Kings</display_name>
+    <icon>20,16</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>1</min_depth>
+    <name>Scepter of the Dwarven Kings</name>
+    <price>610</price>
+    <rareness>4</rareness>
+    <shape>WAND_DWARVENKINGS</shape>
+    <short_description translate="true">A large wand bears a strange symbol</short_description>
+    <spell_level>3</spell_level>
+    <type>WAND</type>
+    <weight>0.3</weight>
+  </item>
+  <item>
+    <description translate="true">Rumor has it the troll mystic Urgle locked some of his essence in this strange looking wand.</description>
+    <display_name translate="true">Urgle's claw</display_name>
+    <icon>16,16</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>25</max_charges>
+    <min_depth>2</min_depth>
+    <name>Urgle's claw</name>
+    <price>610</price>
+    <rareness>3</rareness>
+    <shape>WAND_URGLESCLAW</shape>
+    <short_description translate="true">A gray wand that bears the likeness of a hook or a claw.</short_description>
+    <spell_level>4</spell_level>
+    <type>WAND</type>
+    <weight>0.3</weight>
+  </item>
+  <item>
+    <description translate="true">Romanoff the vampiric ranger assassin met his end when battling a goblin mage wielding this strange wand.</description>
+    <display_name translate="true">Romanoff's Final Rebuke</display_name>
+    <icon>18,16</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>20</max_charges>
+    <min_depth>3</min_depth>
+    <name>Romanoff's Final Rebuke</name>
+    <price>1250</price>
+    <rareness>2</rareness>
+    <shape>WAND_ROMANOFFSFINALREBUKE</shape>
+    <short_description translate="true">A reddish wand with a shrunken humanoid skull at its top.</short_description>
+    <spell_level>5</spell_level>
+    <type>WAND</type>
+    <weight>0.5</weight>
+  </item>
+  <item>
+    <description translate="true">This wand's presence strikes you like a sudden gust of cold wind. A strange voice whispers tidings of chaos in your ear.</description>
+    <display_name translate="true">The wand of the Secret Flame</display_name>
+    <icon>3,17</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>4</min_depth>
+    <name>The wand of the Secret Flame</name>
+    <price>3200</price>
+    <rareness>2</rareness>
+    <shape>WAND_THESECRETFLAME</shape>
+    <short_description translate="true">A white wand whose many branches end in hooked bloody claws.</short_description>
+    <spell_level>6</spell_level>
+    <type>WAND</type>
+    <weight>0.65</weight>
+  </item>
+  <item>
+    <description translate="true">This grayish-blue steel ring is favored by the dwarven miners of Thuzgol.</description>
+    <display_name translate="true">Dwarven steel ring</display_name>
+    <icon>12,11</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Dwarven steel ring</name>
+    <price>50</price>
+    <rareness>5</rareness>
+    <shape>RING_DWARVEN</shape>
+    <short_description translate="true">An unadorned gray steel ring</short_description>
+    <spell_level>1</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A green ring adorned by a leaf motif that runs around both its inner and outer sides.</description>
+    <display_name translate="true">Elven leaf ring</display_name>
+    <icon>16,11</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Elven leaf ring</name>
+    <price>75</price>
+    <rareness>4</rareness>
+    <shape>RING_ELVEN</shape>
+    <short_description translate="true">A green ring with leaves etched on its surface.</short_description>
+    <spell_level>2</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">This red ring has clearly seen its share of action. Its surface is marred by countless chips and dings.</description>
+    <display_name translate="true">Orc war-ring</display_name>
+    <icon>16,11</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>1</min_depth>
+    <name>Orc war-ring</name>
+    <price>170</price>
+    <rareness>3</rareness>
+    <shape>RING_ORC</shape>
+    <short_description translate="true">A red ring that looks like it was used in place of a knife.</short_description>
+    <spell_level>3</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">This gold ring with bright green stone was worn by Count Uluf the late Court Astronomer.</description>
+    <display_name translate="true">Ceremonial ring of Count Uluf</display_name>
+    <icon>9,12</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>2</min_depth>
+    <name>Ceremonial ring of Count Uluf</name>
+    <price>500</price>
+    <rareness>3</rareness>
+    <shape>RING_CEREMONIAL</shape>
+    <short_description translate="true">A small gold ring with a green gem.</short_description>
+    <spell_level>4</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A strange sygil is etched into the precious gem embedded in the mouth of a dragon on top of this ring.</description>
+    <display_name translate="true">Zarnan's Sealer</display_name>
+    <icon>10,12</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>3</min_depth>
+    <name>Zarnan's Sealer</name>
+    <price>1200</price>
+    <rareness>2</rareness>
+    <shape>RING_SEAL</shape>
+    <short_description translate="true">This ring is clearly a seal of some sort.</short_description>
+    <spell_level>5</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">This powerful ring was one of the few crafted by the elven jewelers of Arthel.</description>
+    <display_name translate="true">Ring of Arthel's Pride</display_name>
+    <icon>11,12</icon>
+    <inventory_location>7680</inventory_location>
+    <max_charges>20</max_charges>
+    <min_depth>4</min_depth>
+    <name>Ring of Arthel's Pride</name>
+    <price>2500</price>
+    <rareness>1</rareness>
+    <shape>RING_PRIDE</shape>
+    <short_description translate="true">A blue metal ring with a sparkling stone.</short_description>
+    <spell_level>6</spell_level>
+    <type>RING</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A cheap mountain quartz is framed in copper on a strip of leather.</description>
+    <display_name translate="true">Crystal amulet</display_name>
+    <icon>20,12</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Crystal amulet</name>
+    <price>50</price>
+    <rareness>5</rareness>
+    <shape>AMULET_QUARTZ</shape>
+    <short_description translate="true">A clear stone adorns this necklace.</short_description>
+    <spell_level>1</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">The full face of the red sun smiles reassuringly from its golden chain.</description>
+    <display_name translate="true">Talizman of the Sun</display_name>
+    <icon>2,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Talizman of the Sun</name>
+    <price>250</price>
+    <rareness>5</rareness>
+    <shape>AMULET_SUN</shape>
+    <short_description translate="true">A golden necklace with a carving of the sun.</short_description>
+    <spell_level>2</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">The mysterious forest spirit Dhiki is the patron entity of the Torunga people who crafted this amulet in her likeness.</description>
+    <display_name translate="true">Amulet of Dhiki the Forest Spirit</display_name>
+    <icon>3,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Amulet of Dhiki the Forest Spirit</name>
+    <price>550</price>
+    <rareness>4</rareness>
+    <shape>AMULET_LEAVES</shape>
+    <short_description translate="true">A green stone shines in this amulet.</short_description>
+    <spell_level>3</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A mysterious single eye peers embedded in purple stone, hanging from a silver chain.</description>
+    <display_name translate="true">Amulet of Watcher</display_name>
+    <icon>5,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>12</max_charges>
+    <min_depth>1</min_depth>
+    <name>Amulet of Watcher</name>
+    <price>1300</price>
+    <rareness>4</rareness>
+    <shape>AMULET_WATCHER</shape>
+    <short_description translate="true">The eye of this amulet watches you.</short_description>
+    <spell_level>4</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A healing hand faces palm out on the pendant of this hanging talisman.</description>
+    <display_name translate="true">Amulet of Guiding Hand</display_name>
+    <icon>4,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>2</min_depth>
+    <name>Amulet of Guiding Hand</name>
+    <price>2560</price>
+    <rareness>3</rareness>
+    <shape>AMULET_HAND</shape>
+    <short_description translate="true">A talisman with the etching of a hand.</short_description>
+    <spell_level>5</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">Ragnar the dwarven usurper is portrayed on this rare hanging charm.</description>
+    <display_name translate="true">Token of Ragnar</display_name>
+    <icon>11,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>3</min_depth>
+    <name>Token of Ragnar</name>
+    <price>5150</price>
+    <rareness>2</rareness>
+    <shape>AMULET_RAGNAR</shape>
+    <short_description translate="true">A picture of a dwarven warrior shows on this amulet.</short_description>
+    <spell_level>6</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">When near you feel a calming sensation emanate from the stone of this talisman.</description>
+    <display_name translate="true">Amulet of Shielding Aura</display_name>
+    <icon>9,13</icon>
+    <inventory_location>2</inventory_location>
+    <max_charges>20</max_charges>
+    <min_depth>4</min_depth>
+    <name>Amulet of Shielding Aura</name>
+    <price>7200</price>
+    <rareness>1</rareness>
+    <shape>AMULET_MOON</shape>
+    <short_description translate="true">This rare amulet has a calming feel to it.</short_description>
+    <spell_level>6</spell_level>
+    <type>AMULET</type>
+    <weight>0.05</weight>
+  </item>
+  <item>
+    <description translate="true">A simple wooden staff, yet tendrils of magic intrigue your senses.</description>
+    <display_name translate="true">Wooden Staff</display_name>
+    <icon>16,9</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Wooden Staff</name>
+    <price>50</price>
+    <rareness>5</rareness>
+    <shape>STAFF</shape>
+    <short_description translate="true">A simple wooden staff.</short_description>
+    <spell_level>1</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">The snake worshipping halfling mages of Orn crafted this steel staff.</description>
+    <display_name translate="true">Snake Staff</display_name>
+    <icon>17,9</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>10</max_charges>
+    <name>Snake Staff</name>
+    <price>250</price>
+    <rareness>4</rareness>
+    <shape>STAFF_SNAKE</shape>
+    <short_description translate="true">A metal staff with the leering head of a cobra.</short_description>
+    <spell_level>2</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">The tale of Zordok is one of caution. It's rumored, the hapless lizard mage managed to trap himself in a staff such as this one.</description>
+    <display_name translate="true">Staff of Zordok the Clumsy</display_name>
+    <icon>18,9</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>1</min_depth>
+    <name>Staff of Zordok the Clumsy</name>
+    <price>600</price>
+    <rareness>4</rareness>
+    <shape>STAFF_ZORDOK</shape>
+    <short_description translate="true">The wooden staff emits quiet whimpering noises when held.</short_description>
+    <spell_level>3</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Don't pick up this staff. Get Zoran's instead... yes, Zoran's staff is much better made.</description>
+    <display_name translate="true">Staff of Resentful Thoughts</display_name>
+    <icon>19,9</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>15</max_charges>
+    <min_depth>2</min_depth>
+    <name>Staff of Resentful Thoughts</name>
+    <price>1500</price>
+    <rareness>3</rareness>
+    <shape>STAFF_RESENTFULL</shape>
+    <short_description translate="true">A staff made of a gray wood.</short_description>
+    <spell_level>4</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Magical runes run the entire length of this staff. It is unmistakeably to be used for something magical.</description>
+    <display_name translate="true">Staff of the Magus</display_name>
+    <icon>20,9</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>20</max_charges>
+    <min_depth>3</min_depth>
+    <name>Staff of the Magus</name>
+    <price>3200</price>
+    <rareness>2</rareness>
+    <shape>STAFF_MAGUS</shape>
+    <short_description translate="true">A black staff with golden runes.</short_description>
+    <spell_level>5</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+  <item>
+    <description translate="true">Pure evil emanates from the horned skull head set atop this staff. The ornamental top appears to suggest you rid yourself of your party members.</description>
+    <display_name translate="true">Horned Staff of the Shade</display_name>
+    <icon>3,10</icon>
+    <inventory_location>48</inventory_location>
+    <max_charges>20</max_charges>
+    <min_depth>4</min_depth>
+    <name>Horned Staff of the Shade</name>
+    <price>7520</price>
+    <rareness>1</rareness>
+    <shape>STAFF_HORNED</shape>
+    <short_description translate="true">A red pole with a horned skull attached to its top.</short_description>
+    <spell_level>6</spell_level>
+    <tags>LARGE,TWO_HANDED</tags>
+    <type>STAFF</type>
+    <weight>1</weight>
+    <weapon>
+      <ap>7</ap>
+      <damage>30</damage>
+      <damage_type>P</damage_type>
+      <parry>60</parry>
+      <range>2</range>
+      <skill>LARGE_WEAPON</skill>
+      <two_handed>1</two_handed>
+    </weapon>
+    <skill_adjustment>
+      <skill>SPEED</skill>
+      <ap>
+        <max>18,linear,0.5</max>
+        <min>8,linear,0.5</min>
+      </ap>
+      <damage>
+        <max>18,linear,2</max>
+        <min>8,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>COORDINATION</skill>
+      <cth>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </cth>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>POWER</skill>
+      <damage>
+        <max>18,linear,2</max>
+        <min>4,exponential,2</min>
+      </damage>
+    </skill_adjustment>
+    <skill_adjustment>
+      <skill>LARGE_WEAPON</skill>
+      <damage>
+        <max>95,linear,1</max>
+        <min>0,exponential,0</min>
+      </damage>
+    </skill_adjustment>
+  </item>
+</items>

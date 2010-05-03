@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/model/Creature.java" afterPath="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/org/scourge/config/Pc.java" afterPath="$PROJECT_DIR$/src/org/scourge/config/PlayerTemplate.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/config" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/config/ItemTypes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/config/ItemType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/config/itemtypes.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/config/ItemTag.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="scourge2.iws" />
@@ -73,13 +66,22 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ItemType.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ItemType.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/config/ItemType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="62" selection-start="678" selection-end="678" vertical-scroll-proportion="0.36622584">
+            <state line="49" column="77" selection-start="1032" selection-end="1032" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Model.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="140" column="32" selection-start="3947" selection-end="3947" vertical-scroll-proportion="0.27259475">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -126,12 +128,12 @@
         <option value="$PROJECT_DIR$/src/org/scourge/Game.java" />
         <option value="$PROJECT_DIR$/src/com/jmex/model/converters/Md3ToJme.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/config/ItemSound.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/config/ItemType.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/config/ItemTypes.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/config/ItemTag.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
       </list>
     </option>
   </component>
@@ -349,7 +351,7 @@
       <recent name="org.scourge.model" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ItemTypes">
+  <component name="RunManager" selected="Application.scourge2">
     <configuration default="false" name="Editor" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -606,7 +608,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="712" y="22" width="1201" height="1120" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -618,7 +620,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40838206" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28265107" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28265107" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51754385" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -702,13 +704,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="39" selection-start="3106" selection-end="3106" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Game.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="434" column="0" selection-start="14502" selection-end="14502" vertical-scroll-proportion="0.0">
@@ -780,10 +775,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/config/ItemType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="62" selection-start="678" selection-end="678" vertical-scroll-proportion="0.36622584">
+        <state line="49" column="77" selection-start="1032" selection-end="1032" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="140" column="32" selection-start="3947" selection-end="3947" vertical-scroll-proportion="0.27259475">
+          <folding />
         </state>
       </provider>
     </entry>
