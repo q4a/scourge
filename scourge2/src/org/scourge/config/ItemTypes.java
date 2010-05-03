@@ -1,6 +1,5 @@
 package org.scourge.config;
 
-import org.simpleframework.xml.ElementArray;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -28,12 +27,12 @@ public class ItemTypes {
     @ElementList(name="tags")
     private List<ItemTag> tags = new ArrayList<ItemTag>();
 
-    private static ItemTypes itemTypes;
+    private static ItemTypes instance;
 
     public static void load() throws Exception {
         Serializer serializer = new Persister();
         Reader reader = new BufferedReader(new FileReader("./data/config/itemtypes.xml"));
-        ItemTypes.itemTypes = serializer.read(ItemTypes.class, reader);
+        ItemTypes.instance = serializer.read(ItemTypes.class, reader);
         reader.close();
     }
 
@@ -45,7 +44,7 @@ public class ItemTypes {
     public static void main(String[] args) {
         try {
             ItemTypes.load();
-            System.err.println(ItemTypes.itemTypes);
+            System.err.println(ItemTypes.instance);
         } catch(Exception exc) {
             exc.printStackTrace();
         }
