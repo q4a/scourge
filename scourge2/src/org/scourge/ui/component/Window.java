@@ -127,6 +127,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         addComponent(new org.scourge.ui.component.Button(this, name, x, y, w, h, text));
     }
 
+    public void addProgress(String name, int x, int y, int w, int h) {
+        addComponent(new Progress(this, name, x, y, w, h));
+    }
+
     public void addComponent(org.scourge.ui.component.Component c) {
         components.put(c.getName(), c);
         win.attachChild(c.getNode());
@@ -272,6 +276,18 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     public String getText(String name) {
         org.scourge.ui.component.Component c = components.get(name);
         return (c == null ? null : c.getText());
+    }
+
+    public void setValue(String name, float value) {
+        org.scourge.ui.component.Component c = components.get(name);
+        if(c != null) {
+            c.setValue(value);
+        }
+    }
+
+    public float getValue(String name) {
+        org.scourge.ui.component.Component c = components.get(name);
+        return (c == null ? null : c.getValue());
     }
 
     public String getImage(String name) {

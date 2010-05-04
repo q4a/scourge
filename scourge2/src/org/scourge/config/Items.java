@@ -1,6 +1,6 @@
 package org.scourge.config;
 
-import org.simpleframework.xml.ElementArray;
+import org.scourge.ui.ProgressListener;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: gabor
@@ -23,12 +25,25 @@ public class Items {
     private List<ItemTemplate> items = new ArrayList<ItemTemplate>();
 
     private static Items instance = new Items();
+    private Map<String, ItemTemplate> itemsByName = new HashMap<String, ItemTemplate>();
 
-    public static void load() throws Exception {
-        instance.items.addAll(loadItems("./data/config/weapon.xml").items);
-        instance.items.addAll(loadItems("./data/config/armor.xml").items);
-        instance.items.addAll(loadItems("./data/config/magicitem.xml").items);
-        instance.items.addAll(loadItems("./data/config/otheritem.xml").items);
+    public static void load(ProgressListener progressListener) throws Exception {
+        String[] files = {
+                "./data/config/weapon.xml",
+                "./data/config/armor.xml",
+                "./data/config/magicitem.xml",
+                "./data/config/otheritem.xml"
+        };
+        int count = 0;
+        float max = files.length + 1;
+        for(String file : files) {
+            instance.items.addAll(loadItems(file).items);
+            progressListener.progress((count++) / max);
+        }
+        for(ItemTemplate item : instance.items) {
+            instance.itemsByName.put(item.getName(), item);
+        }
+        progressListener.done();
     }
 
     private static Items loadItems(String path) throws Exception {
@@ -47,12 +62,7 @@ public class Items {
         return items;
     }
 
-    public static void main(String[] args) {
-        try {
-            Items.load();
-            System.err.println("Loaded " + getInstance().getItems().size() + " items.");
-        } catch(Exception exc) {
-            exc.printStackTrace();
-        }
+    public ItemTemplate getItem(String name) {
+        return itemsByName.get(name);
     }
 }

@@ -18,4 +18,16 @@ public class PotionTemplate {
 
     @Element
     private String skill;
+
+    public int getPower() {
+        return power;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
 }

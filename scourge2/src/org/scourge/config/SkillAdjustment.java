@@ -24,4 +24,24 @@ public class SkillAdjustment {
 
     @Element(required=false)
     private ArmorAdjustment armor;
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public ApAdjustment getAp() {
+        return ap;
+    }
+
+    public CthAdjustment getCth() {
+        return cth;
+    }
+
+    public DamageAdjustment getDamage() {
+        return damage;
+    }
+
+    public ArmorAdjustment getArmor() {
+        return armor;
+    }
 }

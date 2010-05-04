@@ -1,6 +1,8 @@
 package org.scourge;
 
 import com.jme.system.DisplaySystem;
+import com.jme.util.GameTaskQueueManager;
+import org.scourge.config.Items;
 import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
@@ -9,6 +11,7 @@ import org.scourge.ui.component.WinUtil;
 import org.scourge.ui.component.Window;
 import org.scourge.ui.component.WindowListener;
 
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,12 +20,13 @@ import java.util.logging.Logger;
  * Date: Apr 12, 2010
  * Time: 8:51:12 PM
  */
-public class GameState implements WindowListener {
+public class GameState implements WindowListener, ProgressListener {
     private Window mainMenuWindow, gameMenuWindow;
     private CreatureEditor pcEditor;
     private GameUI gameUI;
     private Logger logger = Logger.getLogger(GameState.class.toString());
     private Session session;
+    private boolean configInitialized;
 
     public GameState() {
         mainMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
@@ -32,6 +36,7 @@ public class GameState implements WindowListener {
         mainMenuWindow.addButton("new", 0, 30, "New Game");
         mainMenuWindow.addButton("load", 0, -10, "Continue Game");
         mainMenuWindow.addButton("quit", 0, -50, "Quit");
+        mainMenuWindow.addProgress("progress", 0, -100, 200, 16);
         mainMenuWindow.pack();
 
         gameMenuWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
@@ -49,6 +54,43 @@ public class GameState implements WindowListener {
     public void showMainMenu() {
         Main.getMain().getTerrain().gotoMainMenu();
         mainMenuWindow.setVisible(true);
+        if(!configInitialized) {
+            initializeConfig();
+        }
+    }
+
+    @Override
+    public void progress(final float percent) {
+        GameTaskQueueManager.getManager().update(new Callable<Object>() {
+            public Object call() throws Exception {
+                mainMenuWindow.setValue("progress", percent);
+                return null;
+            }
+        });
+        Thread.yield();
+    }
+
+    @Override
+    public void done() {
+        // effectively hide the progress bar
+        progress(0);
+    }
+
+    private void initializeConfig() {
+        new Thread() {
+            public void run() {
+                try {
+                    logger.info("Loading config...");
+                    Items.load(GameState.this);
+                    configInitialized = true;
+                    logger.info("Config initialized.");
+                } catch(Exception exc) {
+                    System.err.println("Unable to initialize game: " + exc.getMessage());
+                    exc.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }.start();
     }
 
     @Override

@@ -15,4 +15,12 @@ public class ArmorAdjustment {
 
     @Element
     private String min;
+
+    public String getMax() {
+        return max;
+    }
+
+    public String getMin() {
+        return min;
+    }
 }

@@ -31,4 +31,32 @@ public class WeaponTemplate {
 
     @Element(required=false)
     private int range;
+
+    public int getAp() {
+        return ap;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public String getDamageType() {
+        return damageType;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public int getParry() {
+        return parry;
+    }
+
+    public boolean isTwoHanded() {
+        return twoHanded;
+    }
+
+    public int getRange() {
+        return range;
+    }
 }

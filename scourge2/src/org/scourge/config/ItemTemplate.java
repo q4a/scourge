@@ -82,5 +82,96 @@ public class ItemTemplate {
 
     @ElementList(required=false, inline=true)
     private List<SkillAdjustment> skillAdjustments = new ArrayList<SkillAdjustment>();
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getShape() {
+        return shape;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public int getInventoryLocation() {
+        return inventoryLocation;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getRareness() {
+        return rareness;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public int getSpellLevel() {
+        return spellLevel;
+    }
+
+    public int getMaxCharges() {
+        return maxCharges;
+    }
+
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public int getMinDepth() {
+        return minDepth;
+    }
+
+    public int getContainerWidth() {
+        return containerWidth;
+    }
+
+    public int getContainerHeight() {
+        return containerHeight;
+    }
+
+    public String getContainerTexture() {
+        return containerTexture;
+    }
+
+    public WeaponTemplate getWeapon() {
+        return weapon;
+    }
+
+    public ArmorTemplate getArmor() {
+        return armor;
+    }
+
+    public PotionTemplate getPotion() {
+        return potion;
+    }
+
+    public List<SkillAdjustment> getSkillAdjustments() {
+        return skillAdjustments;
+    }
 }

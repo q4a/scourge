@@ -75,4 +75,11 @@ public abstract class Component {
 
     public void setImage(String imagePath) {
     }
+
+    public void setValue(float value) {
+    }
+
+    public float getValue() {
+        return 0f;
+    }
 }

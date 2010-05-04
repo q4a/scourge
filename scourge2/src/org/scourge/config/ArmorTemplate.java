@@ -24,4 +24,24 @@ public class ArmorTemplate {
 
     @Element(required=false)
     private String skill;
+
+    public int getPierceDefense() {
+        return pierceDefense;
+    }
+
+    public int getSlashDefense() {
+        return slashDefense;
+    }
+
+    public int getCrushDefense() {
+        return crushDefense;
+    }
+
+    public int getDodgePenalty() {
+        return dodgePenalty;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
 }

@@ -1,10 +1,15 @@
 package org.scourge.model;
 
 import com.jme.math.Vector3f;
+import org.scourge.config.Items;
 import org.scourge.config.PlayerTemplate;
 import org.scourge.terrain.Md2Model;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: gabor
@@ -48,6 +53,9 @@ public class Creature {
     @Element(name = "portrait")
     private String portrait;
 
+    @ElementList(inline=true, required=false)
+    private List<Item> inventory = new ArrayList<Item>();
+
 
     // not saved
     private Md2Model creatureModel;
@@ -68,6 +76,12 @@ public class Creature {
         coins = (int)(Math.random() * 5) + 3;
         sex = PlayerTemplate.Sex.male.ordinal();
         portrait = PlayerTemplate.PORTRAIT[sex][0];
+
+        // starting inventory
+        for(String s : new String[] {"Wooden club", "Adventuring Hat", "Health potion",
+                                     "Health potion", "Apple", "Bread", "Water bottle"}) {
+            inventory.add(new Item(s));
+        }
     }
 
     public void beforeSave() {
@@ -195,5 +209,13 @@ public class Creature {
 
     public int getMaxMp() {
         return getLevel() * PlayerTemplate.MP_PER_LEVEL;
+    }
+
+    public List<Item> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(List<Item> inventory) {
+        this.inventory = inventory;
     }
 }
