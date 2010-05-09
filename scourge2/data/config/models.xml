@@ -922,7 +922,6 @@
       <path>data/3ds/furniture/tchest.3ds</path>
       <icon>data/icons/furniture/tchesti.png</icon>
       <dimensions>2.226,2.124,2</dimensions>
-      <icon>data/icons/furniture/tchesti.png</icon>
     </model>
     <model>
       <name>POTION</name>
@@ -1126,13 +1125,13 @@
       <name>DISH</name>
       <path>data/3ds/tavern/dish.3ds</path>
       <dimensions>1,1,0.1</dimensions>
-      <icons>/itmes/tavern/dishi.png</icons>
+      <icon>/itmes/tavern/dishi.png</icon>
     </model>
     <model>
       <name>CHALICE</name>
       <path>data/3ds/tavern/chalice.3ds</path>
       <dimensions>0.5,0.5,1</dimensions>
-      <icons>/itmes/tavern/chalicei.png</icons>
+      <icon>/itmes/tavern/chalicei.png</icon>
     </model>
     <model>
       <name>CLOAK</name>
@@ -1180,7 +1179,7 @@
       <name>HELMET</name>
       <path>data/3ds/helmet.3ds</path>
       <dimensions>2.99393,1.2108,1.34474</dimensions>
-      <rotate>90,0,0</rotate>
+      <rotate_3d>90,0,0</rotate_3d>
     </model>
     <model>
       <name>HAT_ADVENTURING</name>

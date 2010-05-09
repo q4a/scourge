@@ -19,6 +19,7 @@ public class GameUI extends Window implements WindowListener {
     private static final int WIDTH = 200;
     private static final int BUFFER = 10;
     private final static int PORTRAIT_SIZE = 50;
+    private Inventory inventory = new Inventory();
 
     public GameUI(GameState gameState) {
         super(WIDTH / 2, (gameState.getSession().getParty().size() * (PORTRAIT_SIZE + 5) + 5) / 2,
@@ -45,6 +46,11 @@ public class GameUI extends Window implements WindowListener {
     @Override
     public void buttonClicked(String name) {
         System.err.println("Clicked: " + name);
+        if(name.startsWith("pc.")) {
+            int index = Integer.valueOf(name.substring(name.lastIndexOf(".") + 1));
+            inventory.setCreature(gameState.getSession().getParty().get(index));
+            inventory.setVisible(true);
+        }
     }
 
     private class PcStatus extends Component {

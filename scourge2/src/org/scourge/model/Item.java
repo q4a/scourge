@@ -18,21 +18,27 @@ public class Item {
     @Element
     private int charges;
 
+    @Element(required = false)
+    private int[] containerPosition;
+
     private ItemTemplate template;
 
     // explicit default constructor for simple.xml
     public Item() {
     }
 
+    // constructor to create a new item in game
     public Item(String name) {
-        setName(name);
-        this.charges = template.getMaxCharges();
+        this.name = name;
+        afterLoad();
     }
 
-    // no getter only used to resolve the template
-    public void setName(String name) {
-        this.name = name;
+    public void afterLoad() {
         this.template = Items.getInstance().getItem(name);
+        if(template == null) {
+            throw new IllegalArgumentException("Can't find item template " + name);
+        }
+        this.charges = template.getMaxCharges();
     }
 
     public ItemTemplate getTemplate() {
@@ -41,5 +47,13 @@ public class Item {
 
     public int getCharges() {
         return charges;
+    }
+
+    public int[] getContainerPosition() {
+        return containerPosition;
+    }
+
+    public void setContainerPosition(int[] containerPosition) {
+        this.containerPosition = containerPosition;
     }
 }

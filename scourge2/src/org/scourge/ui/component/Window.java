@@ -49,6 +49,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     private Textfield currentTextField;
     private Rectangle rectangle;
     private boolean alwaysOpen;
+    private boolean visible;
 
     public Window(int x, int y, int w, int h) {
         this(x, y, w, h, null);
@@ -68,9 +69,6 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         win.getLocalTranslation().addLocal(new Vector3f(x, y, 0));
 
         WinUtil.makeNodeOrtho(win);
-
-        MouseInput.get().addListener(this);
-        KeyInput.get().addListener(this);
     }
 
     public void pack() {
@@ -253,12 +251,22 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public void setVisible(boolean visible) {
+        // guard against adding the window twice to windows
+        if(this.visible == visible) {
+            return;
+        }
+        this.visible = visible;
+
         if(visible) {
+            MouseInput.get().addListener(this);
+            KeyInput.get().addListener(this);
             windows.push(this);
             Main.getMain().showWindow(this);
         } else {
-            Main.getMain().hideWindow(this);
             windows.pop();
+            Main.getMain().hideWindow(this);
+            MouseInput.get().removeListener(this);
+            KeyInput.get().removeListener(this);
         }
     }
 
@@ -287,7 +295,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     public float getValue(String name) {
         org.scourge.ui.component.Component c = components.get(name);
-        return (c == null ? null : c.getValue());
+        return (c == null ? 0f : c.getValue());
     }
 
     public String getImage(String name) {

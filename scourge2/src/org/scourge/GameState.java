@@ -142,7 +142,7 @@ public class GameState implements WindowListener, ProgressListener {
 
     private void createPc() throws Exception {
         session = new Session();
-        Creature creature = new Creature();
+        Creature creature = Creature.newPlayer();
         session.getParty().add(creature);
         SaveGame.save(session);
         pcEditor.load(creature);

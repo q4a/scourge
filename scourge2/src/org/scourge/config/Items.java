@@ -28,6 +28,7 @@ public class Items {
     private Map<String, ItemTemplate> itemsByName = new HashMap<String, ItemTemplate>();
 
     public static void load(ProgressListener progressListener) throws Exception {
+
         String[] files = {
                 "./data/config/weapon.xml",
                 "./data/config/armor.xml",
@@ -35,12 +36,17 @@ public class Items {
                 "./data/config/otheritem.xml"
         };
         int count = 0;
-        float max = files.length + 1;
+        float max = files.length + 2;
+
+        Models.load();
+        progressListener.progress((count++) / max);
+
         for(String file : files) {
             instance.items.addAll(loadItems(file).items);
             progressListener.progress((count++) / max);
         }
         for(ItemTemplate item : instance.items) {
+            item.afterLoad();
             instance.itemsByName.put(item.getName(), item);
         }
         progressListener.done();

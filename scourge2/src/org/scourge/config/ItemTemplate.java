@@ -83,6 +83,8 @@ public class ItemTemplate {
     @ElementList(required=false, inline=true)
     private List<SkillAdjustment> skillAdjustments = new ArrayList<SkillAdjustment>();
 
+    private Model model;
+
     public String getName() {
         return name;
     }
@@ -173,5 +175,13 @@ public class ItemTemplate {
 
     public List<SkillAdjustment> getSkillAdjustments() {
         return skillAdjustments;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void afterLoad() {
+        model = Models.getInstance().getModel(shape);
     }
 }

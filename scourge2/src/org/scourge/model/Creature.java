@@ -16,7 +16,7 @@ import java.util.List;
  * Date: Apr 17, 2010
  * Time: 8:12:54 PM
  */
-public class Creature {
+public class Creature implements ItemList {
     @Attribute(name = "version")
     private int version;
 
@@ -60,28 +60,30 @@ public class Creature {
     // not saved
     private Md2Model creatureModel;
 
-    public Creature() {
-        version = 1;
+    public static Creature newPlayer() {
+        Creature c = new Creature();
+        c.version = 1;
         //693, 9, 151);
         //389, 9, 349);
         //498, 9, 489);
-        position = new float[] { 651, 9, 413 };
-        name = "zorro";
-        model = "./data/models/sfod8/tris.md2";
-        skin = "./data/models/sfod8/Rieger.png";
-        level = 1;
-        experience = 0;
-        hp = PlayerTemplate.HP_PER_LEVEL;
-        mp = PlayerTemplate.MP_PER_LEVEL;
-        coins = (int)(Math.random() * 5) + 3;
-        sex = PlayerTemplate.Sex.male.ordinal();
-        portrait = PlayerTemplate.PORTRAIT[sex][0];
+        c.position = new float[] { 651, 9, 413 };
+        c.name = "zorro";
+        c.model = "./data/models/sfod8/tris.md2";
+        c.skin = "./data/models/sfod8/Rieger.png";
+        c.level = 1;
+        c.experience = 0;
+        c.hp = PlayerTemplate.HP_PER_LEVEL;
+        c.mp = PlayerTemplate.MP_PER_LEVEL;
+        c.coins = (int)(Math.random() * 5) + 3;
+        c.sex = PlayerTemplate.Sex.male.ordinal();
+        c.portrait = PlayerTemplate.PORTRAIT[c.sex][0];
 
         // starting inventory
         for(String s : new String[] {"Wooden club", "Adventuring Hat", "Health potion",
                                      "Health potion", "Apple", "Bread", "Water bottle"}) {
-            inventory.add(new Item(s));
+            c.inventory.add(new Item(s));
         }
+        return c;
     }
 
     public void beforeSave() {
@@ -97,6 +99,9 @@ public class Creature {
         creatureModel = new Md2Model(model, skin);
         creatureModel.setKeyFrame(Md2Model.Md2Key.stand);
         creatureModel.moveTo(new Vector3f(position[0], position[1], position[2]));
+        for(Item item : inventory) {
+            item.afterLoad();
+        }
     }
 
     public int getVersion() {
@@ -217,5 +222,9 @@ public class Creature {
 
     public void setInventory(List<Item> inventory) {
         this.inventory = inventory;
+    }
+
+    public List<Item> getItems() {
+        return getInventory();
     }
 }
