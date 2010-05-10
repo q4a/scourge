@@ -7,10 +7,12 @@ import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
 import org.scourge.ui.*;
+import org.scourge.ui.component.Dragable;
 import org.scourge.ui.component.WinUtil;
 import org.scourge.ui.component.Window;
 import org.scourge.ui.component.WindowListener;
 
+import java.awt.geom.Point2D;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -121,6 +123,15 @@ public class GameState implements WindowListener, ProgressListener {
             Window.showMessage("Error: " + exc.getMessage());
             logger.log(Level.SEVERE, "Error: " + exc.getMessage(), exc);
         }
+    }
+
+    @Override
+    public Dragable drag(String name, Point2D point) {
+        return null;
+    }
+
+    @Override
+    public void drop(String name, Point2D point, Dragable dragging) {
     }
 
     private void newGame() throws Exception {

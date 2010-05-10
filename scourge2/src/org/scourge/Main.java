@@ -22,11 +22,13 @@ import com.jme.util.TextureManager;
 import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
+import com.jmex.game.state.GameStateNode;
 import org.scourge.input.PlayerController;
 import org.scourge.model.Creature;
 import org.scourge.terrain.Region;
 import org.scourge.terrain.Terrain;
 import org.scourge.ui.MiniMap;
+import org.scourge.ui.component.Dragable;
 import org.scourge.ui.component.WinUtil;
 import org.scourge.ui.component.Window;
 
@@ -42,6 +44,7 @@ public class Main extends Game {
     private CameraNode camNode;
     private Skybox skybox;
     private Terrain terrain;
+    private Quad draggingIcon;
 
     private FogState fogState;
     private WaterRenderPass waterEffectRenderPass;
@@ -56,6 +59,8 @@ public class Main extends Game {
 
     private static Main main;
     private RenderPass mapPass;
+    private Dragable dragging;
+    private int dragOffsetX, dragOffsetY;
 
     public static void main(String[] args) {
         main = new Main();
@@ -137,7 +142,7 @@ public class Main extends Game {
         loadingLabel.setCullHint(Spatial.CullHint.Never);
         loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
 		rootNode.attachChild(loadingLabel);
-
+        
         miniMap = new MiniMap();
         
         gameState = new GameState();
@@ -325,6 +330,11 @@ public class Main extends Game {
         skybox.getLocalTranslation().set(cam.getLocation());
         skybox.updateGeometricState(0.0f, true);
 
+        if(draggingIcon != null) {
+            MouseInput mouseInput = MouseInput.get();
+            draggingIcon.getLocalTranslation().set(mouseInput.getXAbsolute() + dragOffsetX, mouseInput.getYAbsolute() - dragOffsetY, 0);
+        }
+
         Vector3f transVec = new Vector3f(cam.getLocation().x,
                 waterEffectRenderPass.getWaterHeight(), cam.getLocation().z);
 
@@ -506,5 +516,45 @@ public class Main extends Game {
 
     public MiniMap getMiniMap() {
         return miniMap;
+    }
+
+    /**
+     * The ui released the dragged object outside of a window.
+     * @param x the x screen coordinate
+     * @param y the y screen coordinate
+     * @param dragging the dragged object
+     */
+    public void drop(int x, int y, Object dragging) {
+        System.err.println("MAIN Drop " + dragging + " at " + x + "," + y);
+    }
+
+    public Node getRootNode() {
+        return rootNode;
+    }
+
+    public void setDragging(Dragable dragging) {
+        this.dragging = dragging;
+        if(draggingIcon != null) {
+            rootNode.detachChild(draggingIcon);
+            draggingIcon = null;
+        }
+        if(dragging != null) {
+            draggingIcon = WinUtil.createQuad("dragging", dragging.getIconWidth(), dragging.getIconHeight(), dragging.getIconTexture());
+            WinUtil.makeNodeOrtho(draggingIcon);
+            draggingIcon.setZOrder(-5000);
+            dragOffsetX = dragging.getIconWidth() / 2;
+            dragOffsetY = dragging.getIconHeight() / 2;
+            rootNode.attachChild(draggingIcon);
+        }
+        rootNode.updateRenderState();
+        rootNode.updateGeometricState(0, true);
+    }
+
+    public Dragable getDragging() {
+        return dragging;
+    }
+
+    public Quad getDraggingIcon() {
+        return draggingIcon;
     }
 }

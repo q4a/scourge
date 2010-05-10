@@ -9,4 +9,8 @@ import java.util.List;
  */
 public interface ItemList {
     public List<Item> getItems();
+
+    void removeItem(Item item);
+
+    void addItem(Item item);
 }

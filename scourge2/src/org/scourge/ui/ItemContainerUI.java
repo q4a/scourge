@@ -11,12 +11,13 @@ import com.jme.util.TextureManager;
 import org.scourge.model.Item;
 import org.scourge.model.ItemList;
 import org.scourge.terrain.ShapeUtil;
+import org.scourge.ui.component.*;
 import org.scourge.ui.component.Component;
-import org.scourge.ui.component.WinUtil;
 import org.scourge.ui.component.Window;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  * Date: May 8, 2010
  * Time: 9:08:16 AM
  */
-public class ItemContainerUI extends Component {
+public class ItemContainerUI extends LeftTopComponent {
     private static final int SLOT_SIZE = 32;
     private ItemList itemList;
     private int slotWidth, slotHeight;
@@ -53,7 +54,7 @@ public class ItemContainerUI extends Component {
                 q.setRenderState(wireState);
                 getNode().attachChild(q);
             }
-        }
+        }        
         getNode().updateRenderState();
     }
 
@@ -63,48 +64,7 @@ public class ItemContainerUI extends Component {
         }
 
         this.itemList = itemList;
-        clear();
-        if(itemList != null) {
-            for(Item item : itemList.getItems()) {
-                ImageIcon icon = ShapeUtil.loadImageIcon(item.getTemplate().getModel().getIcon());
-                if(icon == null) {
-                    logger.log(Level.SEVERE, "Can't load icon for " + item.getTemplate().getName());
-                    continue;
-                }
-                Texture texture = ShapeUtil.getTexture(item.getTemplate().getIcon());
-                if(texture == null) {
-                    texture = TextureManager.loadTexture(icon.getImage(),
-                                                         Texture.MinificationFilter.NearestNeighborNearestMipMap,
-                                                         Texture.MagnificationFilter.Bilinear,
-                                                         true);
-                    texture.setWrap(Texture.WrapMode.Repeat);
-                    texture.setHasBorder(false);
-                    texture.setApply(Texture.ApplyMode.Modulate);
-    	            ShapeUtil.storeTexture(item.getTemplate().getIcon(), texture);
-                }
-
-                int itemWidth = icon.getIconWidth() / SLOT_SIZE;
-                int itemHeight = icon.getIconHeight() / SLOT_SIZE;
-
-                if(item.getContainerPosition() == null ||
-                   item.getContainerPosition()[0] > slotWidth ||
-                   item.getContainerPosition()[1] > slotHeight) {
-                    if(!findPlace(item, itemWidth, itemHeight)) {
-                        // assume this can't happen
-                        logger.severe("Couldn't fit item into container: " + item.getTemplate().getName() +
-                                      " dimensions=" + itemWidth + "," + itemHeight);
-                    }
-                }
-
-                Quad q = WinUtil.createQuad(getName() + ".item", icon.getIconWidth(), icon.getIconHeight(), texture);
-                int[] pos = item.getContainerPosition();
-                q.getLocalTranslation().set((pos[0] + itemWidth / 2f) * SLOT_SIZE,
-                                            -(pos[1] + itemHeight / 2f) * SLOT_SIZE, 0);
-                getNode().attachChild(q);
-                getNode().updateRenderState();
-                rectangles.put(item, new Rectangle(pos[0], pos[1], itemWidth, itemHeight));
-            }
-        }
+        refresh();
     }
 
     private void clear() {
@@ -117,6 +77,36 @@ public class ItemContainerUI extends Component {
         }
         for(Spatial s : toBeRemoved) {
             getNode().detachChild(s);
+        }
+    }
+
+    public void refresh() {
+        clear();
+        if(itemList != null) {
+            for(Item item : itemList.getItems()) {
+                Texture texture = item.getIconTexture();
+
+                int itemWidth = item.getIconWidth() / SLOT_SIZE;
+                int itemHeight = item.getIconHeight() / SLOT_SIZE;
+
+                if(item.getContainerPosition() == null ||
+                   item.getContainerPosition()[0] > slotWidth ||
+                   item.getContainerPosition()[1] > slotHeight) {
+                    if(!findPlace(item, itemWidth, itemHeight)) {
+                        // assume this can't happen
+                        logger.severe("Couldn't fit item into container: " + item.getTemplate().getName() +
+                                      " dimensions=" + itemWidth + "," + itemHeight);
+                    }
+                }
+
+                Quad q = WinUtil.createQuad(getName() + ".item", item.getIconWidth(), item.getIconHeight(), texture);
+                int[] pos = item.getContainerPosition();
+                q.getLocalTranslation().set((pos[0] + itemWidth / 2f) * SLOT_SIZE,
+                                            -(pos[1] + itemHeight / 2f) * SLOT_SIZE, 0);
+                getNode().attachChild(q);
+                getNode().updateRenderState();
+                rectangles.put(item, new Rectangle(pos[0], pos[1], itemWidth, itemHeight));
+            }
         }
     }
 
@@ -146,5 +136,32 @@ public class ItemContainerUI extends Component {
             }
         }
         return false;
+    }
+
+    public Dragable drag(Point2D point) {
+        System.err.println("Drag start at  " + point + " rect=" + getRectangle());
+        point.setLocation(point.getX() / (double)SLOT_SIZE, point.getY() / (double)SLOT_SIZE);
+        System.err.println("point=" + point);
+        for(Item item : rectangles.keySet()) {
+            Rectangle rect = rectangles.get(item);
+            System.err.println("\trect=" + rect);
+            if(rect.contains(point)) {
+                System.err.println("Dragging: " + item);
+                itemList.removeItem(item);
+                refresh();
+                return item;
+            }
+        }
+        System.err.println("Dragging: null");
+        return null;
+    }
+
+    public void drop(Point2D point, Dragable dragging) {
+        System.err.println("Drop start at  " + point);
+        Item item = (Item)dragging;
+        item.setContainerPosition(new int[] {(int)(point.getX() / (double)SLOT_SIZE),
+                                             (int)(point.getY() / (double)SLOT_SIZE)});
+        itemList.addItem(item);
+        refresh();
     }
 }

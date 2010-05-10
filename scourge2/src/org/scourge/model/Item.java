@@ -1,9 +1,16 @@
 package org.scourge.model;
 
+import com.jme.image.Texture;
+import com.jme.util.TextureManager;
 import org.scourge.config.ItemTemplate;
 import org.scourge.config.Items;
+import org.scourge.terrain.ShapeUtil;
+import org.scourge.ui.component.Dragable;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
+
+import javax.swing.*;
+import java.util.logging.Logger;
 
 /**
  * User: gabor
@@ -11,7 +18,7 @@ import org.simpleframework.xml.Root;
  * Time: 8:24:55 PM
  */
 @Root(name="item")
-public class Item {
+public class Item implements Dragable {
     @Element
     private String name;
 
@@ -22,6 +29,8 @@ public class Item {
     private int[] containerPosition;
 
     private ItemTemplate template;
+    private Logger logger = Logger.getLogger(Item.class.toString());
+    private ImageIcon icon;
 
     // explicit default constructor for simple.xml
     public Item() {
@@ -55,5 +64,42 @@ public class Item {
 
     public void setContainerPosition(int[] containerPosition) {
         this.containerPosition = containerPosition;
+    }
+
+    public ImageIcon getIcon() {
+        if(icon == null) {
+            icon = ShapeUtil.loadImageIcon(getTemplate().getModel().getIcon());
+            if(icon == null) {
+                logger.severe("Can't load icon for " + getTemplate().getName());
+            }
+        }
+        return icon;
+    }
+
+    @Override
+    public Texture getIconTexture() {
+        ImageIcon icon = getIcon();
+        Texture texture = ShapeUtil.getTexture(getTemplate().getIcon());
+        if(texture == null) {
+            texture = TextureManager.loadTexture(icon.getImage(),
+                                                 Texture.MinificationFilter.NearestNeighborNearestMipMap,
+                                                 Texture.MagnificationFilter.Bilinear,
+                                                 true);
+            texture.setWrap(Texture.WrapMode.Repeat);
+            texture.setHasBorder(false);
+            texture.setApply(Texture.ApplyMode.Modulate);
+            ShapeUtil.storeTexture(getTemplate().getIcon(), texture);
+        }
+        return texture;
+    }
+
+    @Override
+    public int getIconWidth() {
+        return getIcon().getIconWidth();
+    }
+
+    @Override
+    public int getIconHeight() {
+        return getIcon().getIconHeight();
     }
 }

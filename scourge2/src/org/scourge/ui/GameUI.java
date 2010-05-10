@@ -5,8 +5,11 @@ import com.jme.scene.shape.Quad;
 import org.scourge.GameState;
 import org.scourge.model.Creature;
 import org.scourge.ui.component.*;
+import org.scourge.ui.component.Component;
+import org.scourge.ui.component.Label;
+import org.scourge.ui.component.Window;
 
-import java.util.List;
+import java.awt.geom.Point2D;
 
 /**
  * User: gabor
@@ -52,6 +55,15 @@ public class GameUI extends Window implements WindowListener {
             inventory.setVisible(true);
         }
     }
+
+    @Override
+    public Dragable drag(String name, Point2D point) {
+        return null;
+    }
+
+    @Override
+    public void drop(String name, Point2D point, Dragable dragging) {
+    }    
 
     private class PcStatus extends Component {
         private ImageComponent portrait;

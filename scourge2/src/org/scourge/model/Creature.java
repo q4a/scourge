@@ -224,7 +224,18 @@ public class Creature implements ItemList {
         this.inventory = inventory;
     }
 
+    @Override
     public List<Item> getItems() {
         return getInventory();
+    }
+
+    @Override
+    public void removeItem(Item item) {
+        inventory.remove(item);
+    }
+
+    @Override
+    public void addItem(Item item) {
+        inventory.add(item);
     }
 }

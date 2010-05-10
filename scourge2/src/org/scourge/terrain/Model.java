@@ -289,9 +289,8 @@ public enum Model {
         fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir, fir,
         bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir, bigfir,
         birch, birch, birch, birch,
-        bush, bush, bush, bush, bush,
-        deadTree,deadTree,deadTree,deadTree,deadTree,deadTree,
-        cypress, cypress 
+        bush, bush,
+        deadTree,deadTree,deadTree,
     };
     public static Model[] getAlpineTrees() {
         return ALPINE_TREES;

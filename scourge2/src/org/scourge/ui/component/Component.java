@@ -1,7 +1,12 @@
 package org.scourge.ui.component;
 
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
+import com.jme.scene.shape.Quad;
+import com.jme.scene.state.WireframeState;
+import com.jme.system.DisplaySystem;
+import org.scourge.Main;
 
 import java.awt.*;
 
@@ -26,7 +31,11 @@ public abstract class Component {
         this.w = w;
         this.h = h;
         this.name = name;
-        rectangle = new Rectangle(window.getX() + x - w / 2, window.getY() + y - h / 2, w, h);
+        rectangle = createRectangle();
+    }
+
+    protected Rectangle createRectangle() {
+        return new Rectangle(window.getX() + x - w / 2, window.getY() + y - h / 2, w, h);
     }
 
     public Node getNode() {

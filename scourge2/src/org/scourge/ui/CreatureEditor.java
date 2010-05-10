@@ -4,8 +4,11 @@ import com.jme.system.DisplaySystem;
 import org.scourge.Main;
 import org.scourge.config.PlayerTemplate;
 import org.scourge.model.Creature;
+import org.scourge.ui.component.Dragable;
 import org.scourge.ui.component.Window;
 import org.scourge.ui.component.WindowListener;
+
+import java.awt.geom.Point2D;
 
 /**
  * User: gabor
@@ -96,6 +99,15 @@ public class CreatureEditor extends Window implements WindowListener {
             updatePortrait();
         }
     }
+
+    @Override
+    public Dragable drag(String name, Point2D point) {
+        return null;
+    }
+
+    @Override
+    public void drop(String name, Point2D point, Dragable dragging) {
+    }    
 
     private void updatePortrait() {
         setImage("portrait", PlayerTemplate.PORTRAIT[getSex().ordinal()][portraitIndex]);

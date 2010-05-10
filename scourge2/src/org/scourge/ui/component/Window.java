@@ -19,6 +19,7 @@ import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -140,6 +141,36 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
     @Override
     public void onButton(int mouseButton, boolean pressed, int x, int y) {
+        Main main = Main.getMain();
+        if(!pressed && main.getDragging() != null) {
+            // drop over a window?
+            if(getRectangle().contains(x, y)) {
+                for(org.scourge.ui.component.Component c : components.values()) {
+                    if(c.getRectangle().contains(x, y)) {
+                        listener.drop(c.getName(), getComponentCoordinates(x, y, c), main.getDragging());
+                        main.setDragging(null);
+                    }
+                }
+            }
+
+            if(main.getDragging() != null) {
+                // is there any window to receive it?
+                boolean found = false;
+                for(Window window : windows) {
+                    if(window.getRectangle().contains(x, y)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                // drop over no window
+                if(!found) {
+                    main.drop(x, y, main.getDragging());
+                    main.setDragging(null);
+                }
+            }
+        }
+
         if(Window.getWindow() == this && getRectangle().contains(x, y)) {
             if(mouseButton == 0) {
                 for(org.scourge.ui.component.Component c : components.values()) {
@@ -169,13 +200,20 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                                     listener.buttonClicked(button.getName());
                                 }
                             }
-                        } else if(!pressed) {
+                        } else if(pressed) {
+                            main.setDragging(listener.drag(c.getName(), getComponentCoordinates(x, y, c)));
+                        } else {
                             listener.buttonClicked(c.getName());
                         }
                     }
                 }
             }
         }
+    }
+
+    private Point2D getComponentCoordinates(int x, int y, Component c) {
+        return new Point2D.Float(x - c.getRectangle().x,
+                                 c.getRectangle().height - (y - c.getRectangle().y));
     }
 
     @Override

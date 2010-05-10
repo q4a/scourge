@@ -1,12 +1,11 @@
 package org.scourge.ui;
 
 import com.jme.system.DisplaySystem;
-import org.scourge.config.PlayerTemplate;
 import org.scourge.model.Creature;
-import org.scourge.ui.component.Component;
-import org.scourge.ui.component.WinUtil;
+import org.scourge.ui.component.*;
 import org.scourge.ui.component.Window;
-import org.scourge.ui.component.WindowListener;
+
+import java.awt.geom.Point2D;
 
 /**
  * User: gabor
@@ -68,4 +67,17 @@ public class Inventory extends Window implements WindowListener {
             setVisible(false);
         }
     }
+
+    @Override
+    public Dragable drag(String name, Point2D point) {
+        if(name.equals("inventory.items")) {
+            return itemContainer.drag(point);
+        }
+        return null;
+    }
+
+    @Override
+    public void drop(String name, Point2D point, Dragable dragging) {
+        itemContainer.drop(point, dragging);
+    }    
 }
