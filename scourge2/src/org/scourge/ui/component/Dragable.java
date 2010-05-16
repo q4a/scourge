@@ -1,6 +1,7 @@
 package org.scourge.ui.component;
 
 import com.jme.image.Texture;
+import com.jme.scene.Spatial;
 
 /**
  * User: gabor
@@ -11,4 +12,6 @@ public interface Dragable {
     public int getIconWidth();
     public int getIconHeight();
     public Texture getIconTexture();
+    public Spatial getModel();
+    public void scaleModel();
 }

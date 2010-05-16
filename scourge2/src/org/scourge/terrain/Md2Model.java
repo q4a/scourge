@@ -65,29 +65,8 @@ public class Md2Model implements NodeGenerator {
         return player;
     }
 
-    private final static float ABOVE_PLAYER = 0; // Section.SECTION_HEIGHT * ShapeUtil.WALL_WIDTH;
     public void moveToTopOfTerrain() {
-        player.setIsCollidable(false);
-        down.getOrigin().set(player.getWorldBound().getCenter());
-        down.getOrigin().y += ABOVE_PLAYER;
-        results.clear();
-        Main.getMain().getTerrain().getNode().findPick(down, results);
-        if (results.getNumber() > 0) {
-            float dist = results.getPickData(0).getDistance();
-            if(!Float.isInfinite(dist) && !Float.isNaN(dist)) {
-                player.getLocalTranslation().y -= dist - ABOVE_PLAYER - ((BoundingBox)player.getWorldBound()).yExtent;
-            }
-        }
-        player.setIsCollidable(true);
-
-
-//        debug.getLocalTranslation().x = ((BoundingBox)player.getWorldBound()).xExtent / 2;
-//        debug.getLocalTranslation().y = 0;
-//        debug.getLocalTranslation().y -= ((BoundingBox)player.getWorldBound()).yExtent;
-//        debug.getLocalTranslation().z = ((BoundingBox)player.getWorldBound()).zExtent / 2;
-
-        player.updateModelBound();
-        player.updateWorldBound();
+        Terrain.moveOnTopOfTerrain(player);
     }
 
     public boolean canMoveForward(Vector3f proposedLocation) {
@@ -99,7 +78,6 @@ public class Md2Model implements NodeGenerator {
         if(results.getNumber() <= 0 || results.getPickData(0).getDistance() >= 6) {
             down.getOrigin().set(proposedLocation);
             down.getOrigin().addLocal(getDirection().normalizeLocal().multLocal(2.0f));
-            down.getOrigin().y += ABOVE_PLAYER;
             noDistanceResults.clear();
             Main.getMain().getTerrain().getNode().findPick(down, noDistanceResults);
             for(int i = 0; i < noDistanceResults.getNumber(); i++) {

@@ -2,11 +2,21 @@ package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.input.MouseInput;
+import com.jme.intersection.BoundingPickResults;
+import com.jme.intersection.PickResults;
+import com.jme.intersection.TrianglePickResults;
+import com.jme.math.FastMath;
+import com.jme.math.Ray;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
+import com.jme.scene.TriMesh;
+import com.jme.system.DisplaySystem;
 import com.sun.xml.internal.ws.util.QNameMap;
 import org.scourge.Main;
 import org.scourge.io.MapIO;
+import org.scourge.ui.component.Dragable;
 
 import java.io.IOException;
 import java.util.*;
@@ -268,5 +278,78 @@ public class Terrain implements NodeGenerator {
 
     public Map<String, Region> getLoadedRegions() {
         return loadedRegions;
+    }
+
+    private static TrianglePickResults results = new TrianglePickResults();
+    private static final Ray down = new Ray();
+
+    static {
+        down.getDirection().set(new Vector3f(0, -1, 0));
+        results.setCheckDistance(true);
+    }
+
+    public static void moveOnTopOfTerrain(Spatial spatial) {
+        spatial.setIsCollidable(false);
+        down.getOrigin().set(spatial.getWorldBound().getCenter());
+        results.clear();
+        Main.getMain().getTerrain().getNode().findPick(down, results);
+        if (results.getNumber() > 0) {
+            float dist = results.getPickData(0).getDistance();
+            if(!Float.isInfinite(dist) && !Float.isNaN(dist)) {
+                spatial.getLocalTranslation().y -= dist - ((BoundingBox)spatial.getWorldBound()).yExtent;
+            }
+        }
+        spatial.setIsCollidable(true);
+        spatial.updateModelBound();
+        spatial.updateWorldBound();
+    }
+
+
+    private final Ray pickRay = new Ray();
+    private PickResults pickResults = new BoundingPickResults();
+    private Vector2f screenPos = new Vector2f();
+    private Vector3f worldCoords = new Vector3f();
+    private Vector3f worldCoords2 = new Vector3f();
+    private Vector3f[] triangle = new Vector3f[3];
+
+    public Vector3f getDropLocation(Vector3f location) {
+        //System.err.println("!!! mouse=" + MouseInput.get().getXAbsolute() + "," + MouseInput.get().getYAbsolute());
+        // Get the position that the mouse is pointing to
+        screenPos.set(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
+        // Get the world location of that X,Y value
+        DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 0, worldCoords);
+        DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPos, 1, worldCoords2);
+
+        // Create a ray starting from the camera, and going in the direction
+        // of the mouse's location
+        pickRay.getOrigin().set(worldCoords);
+        pickRay.getDirection().set(worldCoords2.subtractLocal(worldCoords).normalizeLocal());
+        //pickRay.getDirection().set(cam.getDirection());
+        //System.err.println("world pos=" + worldCoords + " dir=" + worldCoords2 + " cam dir=" + cam.getDirection());
+
+        pickResults.setCheckDistance(false);
+        pickResults.clear();
+
+        getNode().findPick(pickRay, pickResults);
+        boolean triangleWasPicked = false;
+        for(int i = 0; i < pickResults.getNumber(); i++) {
+            TriMesh mesh = (TriMesh)pickResults.getPickData(i).getTargetMesh();
+            for( int j = 0; j < mesh.getTriangleCount(); j++ ){
+                mesh.getTriangle( j, triangle );
+                triangleWasPicked =
+                        ( pickRay.intersect( triangle[0].addLocal( mesh.getWorldTranslation() ),
+                                             triangle[1].addLocal( mesh.getWorldTranslation() ),
+                                             triangle[2].addLocal( mesh.getWorldTranslation() ) ) );
+                if( triangleWasPicked ){
+                    System.err.println("location:");
+                    System.err.println("\t" + triangle[0] + "\n\t" + triangle[1] + "\n\t" + triangle[2]);
+
+                    location.set(triangle[0]);
+                    location.addLocal(triangle[1]).addLocal(triangle[2]).multLocal(FastMath.ONE_THIRD);
+                    return location;
+                }
+            }
+        }
+        return null;
     }
 }

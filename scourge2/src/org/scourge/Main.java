@@ -3,17 +3,16 @@ package org.scourge;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
 import com.jme.input.MouseInput;
+import com.jme.intersection.BoundingPickResults;
+import com.jme.intersection.PickResults;
 import com.jme.light.DirectionalLight;
-import com.jme.math.FastMath;
-import com.jme.math.Plane;
-import com.jme.math.Quaternion;
-import com.jme.math.Vector3f;
+import com.jme.math.*;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.*;
-import com.jme.scene.shape.Disk;
+import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.*;
 import com.jme.system.DisplaySystem;
@@ -22,7 +21,6 @@ import com.jme.util.TextureManager;
 import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
-import com.jmex.game.state.GameStateNode;
 import org.scourge.input.PlayerController;
 import org.scourge.model.Creature;
 import org.scourge.terrain.Region;
@@ -34,7 +32,9 @@ import org.scourge.ui.component.Window;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +61,9 @@ public class Main extends Game {
     private RenderPass mapPass;
     private Dragable dragging;
     private int dragOffsetX, dragOffsetY;
+    private Vector3f dropLocation = new Vector3f(0, 0, 0);
+
+    private Set<Dragable> firsts = new HashSet<Dragable>();
 
     public static void main(String[] args) {
         main = new Main();
@@ -142,7 +145,6 @@ public class Main extends Game {
         loadingLabel.setCullHint(Spatial.CullHint.Never);
         loadingLabel.getLocalTranslation().set((display.getRenderer().getWidth() - loadingLabel.getWidth()) / 2, (display.getRenderer().getHeight() - loadingLabel.getHeight()) / 2, 0);
 		rootNode.attachChild(loadingLabel);
-        
         miniMap = new MiniMap();
         
         gameState = new GameState();
@@ -326,6 +328,12 @@ public class Main extends Game {
             }
         }
 
+        // so lame... this can't be done until the bounding box is calculated
+        for(Dragable d : firsts) {
+            d.scaleModel();
+            Terrain.moveOnTopOfTerrain(d.getModel());
+        }
+        firsts.clear();
 
         skybox.getLocalTranslation().set(cam.getLocation());
         skybox.updateGeometricState(0.0f, true);
@@ -524,12 +532,17 @@ public class Main extends Game {
      * @param y the y screen coordinate
      * @param dragging the dragged object
      */
-    public void drop(int x, int y, Object dragging) {
-        System.err.println("MAIN Drop " + dragging + " at " + x + "," + y);
-    }
-
-    public Node getRootNode() {
-        return rootNode;
+    public void drop(int x, int y, Dragable dragging) {
+        if(terrain.getDropLocation(dropLocation) != null) {
+            Spatial model = dragging.getModel();
+            model.getLocalTranslation().set(dropLocation);
+            model.getLocalTranslation().y = 9;
+            model.updateModelBound();
+            model.updateWorldBound();
+            model.updateGeometricState(0, true);
+            rootNode.attachChild(model);
+            firsts.add(dragging);
+        }
     }
 
     public void setDragging(Dragable dragging) {
