@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * Date: May 8, 2010
  * Time: 9:08:16 AM
  */
-public class ItemContainerUI extends LeftTopComponent {
+public class ItemContainerUI extends LeftTopComponent implements DragSource {
     private static final int SLOT_SIZE = 32;
     private ItemList itemList;
     private int slotWidth, slotHeight;
@@ -156,12 +156,20 @@ public class ItemContainerUI extends LeftTopComponent {
         return null;
     }
 
-    public void drop(Point2D point, Dragable dragging) {
+    public boolean drop(Point2D point, Dragable dragging) {
         System.err.println("Drop start at  " + point);
         Item item = (Item)dragging;
         item.setContainerPosition(new int[] {(int)(point.getX() / (double)SLOT_SIZE),
                                              (int)(point.getY() / (double)SLOT_SIZE)});
         itemList.addItem(item);
+        refresh();
+        return true;
+    }
+
+    @Override
+    public void returnDragable(Dragable dragable) {
+        // it still has the old container position
+        itemList.addItem((Item)dragable);
         refresh();
     }
 }

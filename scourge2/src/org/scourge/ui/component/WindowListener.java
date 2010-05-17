@@ -30,6 +30,9 @@ public interface WindowListener {
      * @param name the component's name
      * @param point coordinates relative to the top left of the component
      * @param dragging the dragged object
+     * @return true if the drop succeeded, false otherwise
      */
-    void drop(String name, Point2D point, Dragable dragging);
+    boolean drop(String name, Point2D point, Dragable dragging);
+
+    DragSource getDragSource();
 }

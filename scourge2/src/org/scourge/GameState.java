@@ -7,10 +7,7 @@ import org.scourge.io.SaveGame;
 import org.scourge.model.Creature;
 import org.scourge.model.Session;
 import org.scourge.ui.*;
-import org.scourge.ui.component.Dragable;
-import org.scourge.ui.component.WinUtil;
-import org.scourge.ui.component.Window;
-import org.scourge.ui.component.WindowListener;
+import org.scourge.ui.component.*;
 
 import java.awt.geom.Point2D;
 import java.util.concurrent.Callable;
@@ -131,7 +128,13 @@ public class GameState implements WindowListener, ProgressListener {
     }
 
     @Override
-    public void drop(String name, Point2D point, Dragable dragging) {
+    public boolean drop(String name, Point2D point, Dragable dragging) {
+        return false;
+    }
+
+    @Override
+    public DragSource getDragSource() {
+        return null;
     }
 
     private void newGame() throws Exception {

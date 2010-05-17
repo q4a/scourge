@@ -1,6 +1,7 @@
 package org.scourge.input;
 
 import com.jme.input.*;
+import com.jme.scene.Spatial;
 import org.scourge.Main;
 import org.scourge.input.MouseAction;
 import org.scourge.terrain.Md2Model;
@@ -77,8 +78,10 @@ public class PlayerController extends InputHandler {
         public void onButton(int button, boolean pressed, int x, int y) {
             if(button == 0) {
                 if(pressed) {
-                    if(!(Window.getWindow() != null && Window.getWindow().getRectangle().contains(x, y))) {
-                        mouseAction.setEnabled(true);
+                    if(!main.drag()) {
+                        if(!(Window.getWindow() != null && Window.getWindow().getRectangle().contains(x, y))) {
+                            mouseAction.setEnabled(true);
+                        }
                     }
                 } else {
                     mouseAction.setEnabled(false);

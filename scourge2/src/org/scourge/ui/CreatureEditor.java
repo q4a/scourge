@@ -4,6 +4,7 @@ import com.jme.system.DisplaySystem;
 import org.scourge.Main;
 import org.scourge.config.PlayerTemplate;
 import org.scourge.model.Creature;
+import org.scourge.ui.component.DragSource;
 import org.scourge.ui.component.Dragable;
 import org.scourge.ui.component.Window;
 import org.scourge.ui.component.WindowListener;
@@ -106,8 +107,14 @@ public class CreatureEditor extends Window implements WindowListener {
     }
 
     @Override
-    public void drop(String name, Point2D point, Dragable dragging) {
-    }    
+    public boolean drop(String name, Point2D point, Dragable dragging) {
+        return false;
+    }
+
+    @Override
+    public DragSource getDragSource() {
+        return null;
+    }
 
     private void updatePortrait() {
         setImage("portrait", PlayerTemplate.PORTRAIT[getSex().ordinal()][portraitIndex]);

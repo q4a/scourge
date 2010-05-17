@@ -147,8 +147,12 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
             if(getRectangle().contains(x, y)) {
                 for(org.scourge.ui.component.Component c : components.values()) {
                     if(c.getRectangle().contains(x, y)) {
-                        listener.drop(c.getName(), getComponentCoordinates(x, y, c), main.getDragging());
-                        main.setDragging(null);
+                        if(listener.drop(c.getName(), getComponentCoordinates(x, y, c), main.getDragging())) {
+                            main.setDragging(null, null);
+                        } else {
+                            // put it back to where it came from
+                            main.returnDragable();
+                        }
                     }
                 }
             }
@@ -165,8 +169,12 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
 
                 // drop over no window
                 if(!found) {
-                    main.drop(x, y, main.getDragging());
-                    main.setDragging(null);
+                    if(main.drop(main.getDragging())) {
+                        main.setDragging(null, null);
+                    } else {
+                        // put it back to where it came from
+                        main.returnDragable();
+                    }
                 }
             }
         }
@@ -201,7 +209,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                                 }
                             }
                         } else if(pressed) {
-                            main.setDragging(listener.drag(c.getName(), getComponentCoordinates(x, y, c)));
+                            main.setDragging(listener.drag(c.getName(), getComponentCoordinates(x, y, c)), listener.getDragSource());
                         } else {
                             listener.buttonClicked(c.getName());
                         }

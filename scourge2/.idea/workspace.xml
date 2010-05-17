@@ -5,198 +5,19 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/unamoin.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/leather.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/hornedhe.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/cronos.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/cog.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/doorEW.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/border.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor4v1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/rustmeta.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/walltop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chesttop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/dwmetrus.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/mushroom.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wall2v2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/tileroof.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor2v2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ornate01.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/beerbarr.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/woodtop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wood.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wall2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/rusty1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/visorhel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/marble.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/snowflake.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/javelin.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/snakesta.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gateup.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/strongbo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ogreskin.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bolifurb.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wallv1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/steel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/korimbar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_a.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/buttonsel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/mythril.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/fullface.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/darkflai.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sorough.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/katana.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/maragon.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor2v1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/frontv2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/embglove.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/winefine.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bookshel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/whiteclo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/staff_ho.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/map.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floorv1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor4.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gui-wood.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor6.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/unamoind.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_i.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor7.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/flame.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/spells.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/persuade.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ornate02.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/mutton.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor5v1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/shadow-tree.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/border2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/amuletwa.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ring2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_s.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/intake.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/greenclo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/pointyha.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/steelwle.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/trollski.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/brownclo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/greensca.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/brickfloor.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chestfront.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potionhe.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/safepass.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/shadow.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/iron.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/screw.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ripple.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wooddark.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bigegg.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/warmaste.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_m.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_p.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/milk.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/greywood.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bolt_orn.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/candle.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/metal.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/guardcha.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/steelwbl.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gnomishb.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chain.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/iconeffect.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/button.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/staff_ma.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/front.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/dwarvenv.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/dwgold.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/brickfloorv1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bandedma.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bullseye.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/door2NS.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/waterpot.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/cheapwin.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/note.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/corner.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/longbow.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/copper.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/crate.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/garzul.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/leaves.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/deadtree.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/redscale.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ornatebo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/paddedcl.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ornate03.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/milmoril.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/fog.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/dish.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/steeleat.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/wall2v1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/staff.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/litewood.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potionpi.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/adventur.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/hammer.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/fronttop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/apple.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor5.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sandbase.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/hands.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chalice.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/elvenste.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gwdn-in.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/barrel.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/mycothar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/speckled.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sorcersr.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/lightcro.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bronze.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bread.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potionlo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/brickv1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ironrus.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potion_l.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chestside.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/cloud.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/blackrus.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gatedown.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gargoyle.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor7v1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/GameState.java" afterPath="$PROJECT_DIR$/src/org/scourge/GameState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Selection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/component/Window.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/component/Window.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/scourge/ui/component/DragSource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/antimagi.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/glotus.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/rhdragon.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/rock.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/magicbac.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/doorNS.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/dismiss.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/club.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/canteen.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/area.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/potionle.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/unamoinr.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/goldenfl.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/ragnar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sarc1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/leavbr.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/frontv1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/gate_m.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sandston.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/tchest.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/bling.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/light.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/floor6v1.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/metalbnd.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/chomper.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/torchback.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/raindrop.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/textures/sarc2.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/model/Item.java" afterPath="$PROJECT_DIR$/src/org/scourge/model/Item.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/Inventory.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/Inventory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" afterPath="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" afterPath="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -256,19 +77,19 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ItemContainerUI.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java">
+      <file leaf-file-name="PlayerController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="18" selection-start="6296" selection-end="6296" vertical-scroll-proportion="0.0">
+            <state line="97" column="0" selection-start="3524" selection-end="3524" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="337" column="0" selection-start="12879" selection-end="12879" vertical-scroll-proportion="0.0">
+            <state line="546" column="16" selection-start="20217" selection-end="20217" vertical-scroll-proportion="0.31514084">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -276,55 +97,64 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PlayerController.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
+      <file leaf-file-name="DragSource.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/DragSource.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="94" column="0" selection-start="3421" selection-end="3421" vertical-scroll-proportion="0.89275074">
+            <state line="8" column="4" selection-start="134" selection-end="180" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <file leaf-file-name="Window.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Window.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="314" column="35" selection-start="11264" selection-end="11279" vertical-scroll-proportion="0.0">
+            <state line="175" column="34" selection-start="6114" selection-end="6114" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Md2Model.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+      <file leaf-file-name="WindowListener.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="0" selection-start="2797" selection-end="2797" vertical-scroll-proportion="0.0">
+            <state line="36" column="31" selection-start="981" selection-end="981" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Dragable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java">
+      <file leaf-file-name="Inventory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Inventory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0">
+            <state line="85" column="29" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Item.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Item.java">
+      <file leaf-file-name="CreatureEditor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="117" column="46" selection-start="3332" selection-end="3332" vertical-scroll-proportion="0.0">
+            <state line="116" column="5" selection-start="4171" selection-end="4363" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ItemTemplate.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/config/ItemTemplate.java">
+      <file leaf-file-name="GameUI.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GameUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="18" selection-start="2190" selection-end="2190" vertical-scroll-proportion="0.0">
+            <state line="71" column="5" selection-start="2423" selection-end="2423" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ItemContainerUI.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="170" column="50" selection-start="6466" selection-end="6466" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -340,22 +170,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/GameState.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/Inventory.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/model/ItemList.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/component/Window.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/model/Item.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Selection.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/model/Item.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/input/PlayerController.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/component/DragSource.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/component/Window.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/Inventory.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/ui/GameUI.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/GameState.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
       </list>
     </option>
   </component>
@@ -429,6 +259,54 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="component" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -783,25 +661,25 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="713" y="22" width="1200" height="1163" extended-state="0" />
+    <frame x="720" y="22" width="1200" height="1163" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32406604" sideWeight="0.5893358" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37231058" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31992516" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40838206" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.404116" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4078578" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.404116" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.373246" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3728261" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24978392" sideWeight="0.75404155" order="2" side_tool="false" content_ui="combo" />
@@ -845,70 +723,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/WinUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="23" selection-start="4432" selection-end="4432" vertical-scroll-proportion="0.54260087" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Window.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="167" column="25" selection-start="5715" selection-end="5715" vertical-scroll-proportion="0.3321033" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="405" column="68" selection-start="13901" selection-end="13901" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="13" selection-start="427" selection-end="427" vertical-scroll-proportion="0.14794521" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="497" column="16" selection-start="24186" selection-end="24186" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="26" selection-start="4326" selection-end="4326" vertical-scroll-proportion="0.14825174" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="164" column="18" selection-start="6296" selection-end="6296" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="0" selection-start="2797" selection-end="2797" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/config/ItemTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="18" selection-start="2190" selection-end="2190" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Item.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="46" selection-start="3332" selection-end="3332" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/MouseAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="11" selection-start="839" selection-end="839" vertical-scroll-proportion="0.37012988">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/lib/jme.jar!/com/jme/math/Triangle.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="32" column="112" selection-start="1282" selection-end="1282" vertical-scroll-proportion="0.50600344">
@@ -916,26 +730,110 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="80" column="0" selection-start="2797" selection-end="2797" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="314" column="35" selection-start="11264" selection-end="11279" vertical-scroll-proportion="0.0">
+        <state line="305" column="0" selection-start="10930" selection-end="10930" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Item.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="337" column="0" selection-start="12879" selection-end="12879" vertical-scroll-proportion="0.0">
+        <state line="127" column="126" selection-start="4178" selection-end="4178" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Dragable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="17" selection-start="177" selection-end="177" vertical-scroll-proportion="0.18524872">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Selection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="94" column="20" selection-start="3575" selection-end="3575" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/DragSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="4" selection-start="134" selection-end="180" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/ItemContainerUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="170" column="50" selection-start="6466" selection-end="6466" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/WindowListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="31" selection-start="981" selection-end="981" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/Inventory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="85" column="29" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/CreatureEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="5" selection-start="4171" selection-end="4363" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/GameUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="71" column="5" selection-start="2423" selection-end="2423" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/GameState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="129" column="4" selection-start="4527" selection-end="4527" vertical-scroll-proportion="0.21558705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/ui/component/Window.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="175" column="34" selection-start="6114" selection-end="6114" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/input/PlayerController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="0" selection-start="3421" selection-end="3421" vertical-scroll-proportion="0.89275074">
+        <state line="97" column="0" selection-start="3524" selection-end="3524" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="546" column="16" selection-start="20217" selection-end="20217" vertical-scroll-proportion="0.31514084">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

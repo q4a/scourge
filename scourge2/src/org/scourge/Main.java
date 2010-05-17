@@ -3,8 +3,6 @@ package org.scourge;
 import com.jme.image.Texture;
 import com.jme.input.InputHandler;
 import com.jme.input.MouseInput;
-import com.jme.intersection.BoundingPickResults;
-import com.jme.intersection.PickResults;
 import com.jme.light.DirectionalLight;
 import com.jme.math.*;
 import com.jme.renderer.Camera;
@@ -12,7 +10,6 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.*;
-import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.*;
 import com.jme.system.DisplaySystem;
@@ -24,17 +21,17 @@ import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
 import org.scourge.model.Creature;
 import org.scourge.terrain.Region;
+import org.scourge.terrain.Selection;
 import org.scourge.terrain.Terrain;
 import org.scourge.ui.MiniMap;
+import org.scourge.ui.component.DragSource;
 import org.scourge.ui.component.Dragable;
 import org.scourge.ui.component.WinUtil;
 import org.scourge.ui.component.Window;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,8 +59,10 @@ public class Main extends Game {
     private Dragable dragging;
     private int dragOffsetX, dragOffsetY;
     private Vector3f dropLocation = new Vector3f(0, 0, 0);
-
     private Set<Dragable> firsts = new HashSet<Dragable>();
+    private Selection dropSelection, dragSelection;
+    private Map<String, Dragable> dragables = new HashMap<String, Dragable>();
+    private DragSource dragSource;
 
     public static void main(String[] args) {
         main = new Main();
@@ -165,6 +164,9 @@ public class Main extends Game {
         reflectedNode.attachChild(skybox);
         reflectedNode.attachChild(terrain.getNode());
         rootNode.attachChild(reflectedNode);
+
+        dropSelection = new Selection(rootNode);
+        dragSelection = new Selection(rootNode); 
 
         // setup the water plane
         waterEffectRenderPass = new WaterRenderPass(cam, 4, false, false); // setting last param to false renders faster
@@ -528,25 +530,65 @@ public class Main extends Game {
 
     /**
      * The ui released the dragged object outside of a window.
-     * @param x the x screen coordinate
-     * @param y the y screen coordinate
      * @param dragging the dragged object
+     * @return true if the drop succeeded, false otherwise
      */
-    public void drop(int x, int y, Dragable dragging) {
-        if(terrain.getDropLocation(dropLocation) != null) {
+    public boolean drop(Dragable dragging) {
+        if(dropSelection.testUnderMouse()) {
             Spatial model = dragging.getModel();
-            model.getLocalTranslation().set(dropLocation);
-            model.getLocalTranslation().y = 9;
-            model.updateModelBound();
-            model.updateWorldBound();
-            model.updateGeometricState(0, true);
-            rootNode.attachChild(model);
-            firsts.add(dragging);
+            dragables.put(model.getName(), dragging);
+            Vector3f pos = dropSelection.getLocation();
+            if(pos != null) {
+                model.getLocalTranslation().set(pos);
+                model.getLocalTranslation().y = 9;
+                model.updateModelBound();
+                model.updateWorldBound();
+                model.updateGeometricState(0, true);
+                rootNode.attachChild(model);
+                firsts.add(dragging);
+                return true;
+            }
         }
+        return false;
     }
 
-    public void setDragging(Dragable dragging) {
+    /**
+     * A drag is started on the map.
+     * @return true if the drag is started, false is there is nothing to drag
+     */
+    public boolean drag() {
+        if(dragSelection.testUnderMouse()) {
+            for(Spatial spatial : dragSelection.getSpatials()) {
+                while(spatial.getParent() != null) {
+                    Dragable dragable = dragables.remove(spatial.getName());
+                    if(dragable != null) {
+                        rootNode.detachChild(spatial);
+                        setDragging(dragable, new DragSource() {
+                            @Override
+                            public void returnDragable(Dragable dragable) {
+                                // it still has the world position
+                                rootNode.attachChild(dragable.getModel());
+                            }
+                        });
+                        return true;
+                    }
+                    spatial = spatial.getParent();
+                }
+
+
+            }
+        }
+        return false;
+    }
+
+    public void returnDragable() {
+        dragSource.returnDragable(dragging);
+        setDragging(null, null);
+    }
+
+    public void setDragging(Dragable dragging, DragSource dragSource) {
         this.dragging = dragging;
+        this.dragSource = dragSource;
         if(draggingIcon != null) {
             rootNode.detachChild(draggingIcon);
             draggingIcon = null;

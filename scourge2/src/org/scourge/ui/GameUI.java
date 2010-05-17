@@ -62,8 +62,14 @@ public class GameUI extends Window implements WindowListener {
     }
 
     @Override
-    public void drop(String name, Point2D point, Dragable dragging) {
-    }    
+    public boolean drop(String name, Point2D point, Dragable dragging) {
+        return false;
+    }
+
+    @Override
+    public DragSource getDragSource() {
+        return null;
+    }
 
     private class PcStatus extends Component {
         private ImageComponent portrait;

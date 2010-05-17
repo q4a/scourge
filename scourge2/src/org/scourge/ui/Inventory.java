@@ -77,7 +77,12 @@ public class Inventory extends Window implements WindowListener {
     }
 
     @Override
-    public void drop(String name, Point2D point, Dragable dragging) {
-        itemContainer.drop(point, dragging);
-    }    
+    public boolean drop(String name, Point2D point, Dragable dragging) {
+        return itemContainer.drop(point, dragging);
+    }
+
+    @Override
+    public DragSource getDragSource() {
+        return itemContainer;
+    }
 }
