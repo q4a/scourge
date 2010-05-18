@@ -159,8 +159,16 @@ public class ItemContainerUI extends LeftTopComponent implements DragSource {
     public boolean drop(Point2D point, Dragable dragging) {
         System.err.println("Drop start at  " + point);
         Item item = (Item)dragging;
-        item.setContainerPosition(new int[] {(int)(point.getX() / (double)SLOT_SIZE),
-                                             (int)(point.getY() / (double)SLOT_SIZE)});
+        if(point == null) {
+            int itemWidth = item.getIconWidth() / SLOT_SIZE;
+            int itemHeight = item.getIconHeight() / SLOT_SIZE;
+            if(!findPlace(item, itemWidth, itemHeight)) {
+                return false;
+            }
+        } else {
+            item.setContainerPosition(new int[] {(int)(point.getX() / (double)SLOT_SIZE),
+                                                 (int)(point.getY() / (double)SLOT_SIZE)});
+        }
         itemList.addItem(item);
         refresh();
         return true;

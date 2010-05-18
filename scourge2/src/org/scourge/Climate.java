@@ -16,7 +16,15 @@ public enum Climate {
     boreal(new TileTexType[] { TileTexType.BOREAL, TileTexType.BOREAL2, TileTexType.TROPICAL2 }, Model.getBorealTrees()),
     temperate(new TileTexType[] { TileTexType.GRASS, TileTexType.LYCHEN, TileTexType.MOSS }, Model.getTemperateTrees()),
     subtropical(new TileTexType[] { TileTexType.DRY, TileTexType.SAND, TileTexType.MUD }, Model.getSubtropicalTrees()),
-    tropical(new TileTexType[] { TileTexType.TROPICAL, TileTexType.TROPICAL2, TileTexType.TROPICAL3 }, Model.getTropicalTrees());
+    tropical(new TileTexType[] { TileTexType.TROPICAL, TileTexType.TROPICAL2, TileTexType.TROPICAL3 }, Model.getTropicalTrees()),
+    dungeon(new TileTexType[] { TileTexType.DUNGEON, TileTexType.DUNGEON2, TileTexType.DUNGEON3 }, new Model[0]) {
+        @Override
+        public TileTexType getBaseTileTex() {
+            return TileTexType.DUNGEON;
+        }
+    },
+
+    ;
 
     private TileTexType[] ground;
     private Model[] trees;
@@ -41,6 +49,10 @@ public enum Climate {
     }
 
     public Model getRandomTree(Random random) {
-        return trees[(int)(random.nextFloat() * trees.length)];
+        return trees == null || trees.length == 0 ? null : trees[(int)(random.nextFloat() * trees.length)];
+    }
+
+    public TileTexType getBaseTileTex() {
+        return TileTexType.ROCK;
     }
 }

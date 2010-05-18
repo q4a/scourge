@@ -63,7 +63,7 @@ public class GameUI extends Window implements WindowListener {
 
     @Override
     public boolean drop(String name, Point2D point, Dragable dragging) {
-        return false;
+        return dragging != null && inventory.drop(name, null, dragging);
     }
 
     @Override

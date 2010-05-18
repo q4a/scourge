@@ -12,6 +12,9 @@ package org.scourge.terrain;
 public enum TileTexType {
     NONE(null),
     ROCK("./data/textures/surf1.png"),
+    DUNGEON("./data/textures/sup082.png"),
+    DUNGEON2("./data/textures/sup074.png"),
+    DUNGEON3("./data/textures/sup063.png"),
     ROAD("./data/textures/path.png"),
     COBBLES("./data/textures/cobbles.png"),
     GRASS("./data/textures/grass.png"),

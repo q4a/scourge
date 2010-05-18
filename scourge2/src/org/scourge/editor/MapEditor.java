@@ -83,6 +83,7 @@ public class MapEditor extends JPanel {
         backgrounds.put((char)Climate.temperate.ordinal(), new Color(0x00, 0x40, 0x35));
         backgrounds.put((char)Climate.subtropical.ordinal(), new Color(0x40, 0x40, 0x35));
         backgrounds.put((char)Climate.tropical.ordinal(), new Color(0x40, 0x00, 0x00));
+        backgrounds.put((char)Climate.dungeon.ordinal(), new Color(0x40, 0x40, 0x40));
 
     }
 

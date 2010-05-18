@@ -126,9 +126,9 @@ class Tile {
         return sum / (float)heights.length;
     }
 
-    public void createNode(Map<Direction, TileTexType> around, int level) {
+    public void createNode(Map<Direction, TileTexType> around, int level, Climate climate) {
         node = new Node(ShapeUtil.newShapeName("tile"));
-        ground = type.createNode(angle, heights, level);
+        ground = type.createNode(angle, heights, level, climate);
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
 

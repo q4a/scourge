@@ -1,6 +1,5 @@
 package org.scourge.terrain;
 
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
@@ -10,6 +9,7 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
+import org.scourge.Climate;
 
 import java.nio.FloatBuffer;
 
@@ -21,7 +21,7 @@ import java.nio.FloatBuffer;
 enum TileType {
     NONE {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
             return new Node("empty");
         }
 
@@ -36,8 +36,8 @@ enum TileType {
     },
     EDGE_BRIDGE {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
-            return addEdge(angle, "b", level);
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+            return addEdge(angle, "b", level, climate);
         }
 
         @Override
@@ -51,8 +51,8 @@ enum TileType {
     },
     EDGE_CORNER {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
-            return addEdge(angle, "c", level);
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+            return addEdge(angle, "c", level, climate);
         }
 
         @Override
@@ -66,8 +66,8 @@ enum TileType {
     },
     EDGE_TIP {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
-            return addEdge(angle, "t", level);
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+            return addEdge(angle, "t", level, climate);
         }
 
         @Override
@@ -81,8 +81,8 @@ enum TileType {
     },
     EDGE_SIDE {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
-            return addEdge(angle, "s", level);
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+            return addEdge(angle, "s", level, climate);
         }
 
         @Override
@@ -96,7 +96,7 @@ enum TileType {
     },
     QUAD {
         @Override
-        public Node createNode(float angle, float[] heights, int level) {
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
             Quad ground = createQuad(heights);
 
             Node groundNode = new Node(ShapeUtil.newShapeName("ground_node"));
@@ -123,10 +123,10 @@ enum TileType {
     ;
 
     public abstract boolean isTexturePreset();
-    public abstract Node createNode(float angle, float[] heights, int level);
+    public abstract Node createNode(float angle, float[] heights, int level, Climate climate);
     public abstract void updateHeights(Node node, float[] heights);
 
-    protected Node addEdge(float angle, String model, int level) {
+    protected Node addEdge(float angle, String model, int level, Climate climate) {
         Spatial edge = ShapeUtil.importModel("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
 
@@ -137,7 +137,7 @@ enum TileType {
             Quad ground = createQuad(new float[] { 0, 0, 0, 0 });
             ground.getLocalTranslation().y -= ShapeUtil.WALL_HEIGHT;
             TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-            Texture texture = ShapeUtil.loadTexture(TileTexType.ROCK.getTexturePath());
+            Texture texture = ShapeUtil.loadTexture(climate.getBaseTileTex().getTexturePath());
             texture.setWrap(Texture.WrapMode.Repeat);
             ts.setTexture(texture, 0);
             ground.setRenderState(ts);

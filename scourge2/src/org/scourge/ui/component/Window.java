@@ -153,6 +153,8 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                             // put it back to where it came from
                             main.returnDragable();
                         }
+                        // mouse release was handled
+                        return;
                     }
                 }
             }
@@ -175,6 +177,8 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                         // put it back to where it came from
                         main.returnDragable();
                     }
+                    // mouse release was handled
+                    return;
                 }
             }
         }

@@ -59,10 +59,10 @@ public class Selection {
 
         node.findPick(pickRay, pickResults);
         boolean triangleWasPicked = false;
-        System.err.println("----------------");
+//        System.err.println("----------------");
         for(int i = 0; i < pickResults.getNumber(); i++) {
             TriMesh mesh = (TriMesh)pickResults.getPickData(i).getTargetMesh();
-            System.err.println("\ttarget=" + mesh.getName());
+//            System.err.println("\ttarget=" + mesh.getName());
             spatials.add(mesh);
             for( int j = 0; j < mesh.getTriangleCount(); j++ ){
                 mesh.getTriangle( j, triangle );
@@ -93,6 +93,12 @@ public class Selection {
     }
 
     public Vector3f getLocation() {
-        return points.size() > 0 && spatials.size() > 0 ? points.get(spatials.get(0)) : null;
+        if(points.size() > 0 && spatials.size() > 0) {
+            for(Spatial spatial : spatials) {
+                Vector3f pos = points.get(spatial);
+                if(pos != null) return pos;
+            }
+        }
+        return null;
     }
 }

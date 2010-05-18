@@ -42,6 +42,7 @@ public class Item implements Dragable {
     private ImageIcon icon;
     private Spatial spatial;
     private Texture iconTexture;
+    private boolean scaled;
 
     // explicit default constructor for simple.xml
     public Item() {
@@ -125,7 +126,7 @@ public class Item implements Dragable {
 //                                                                           getTemplate().getModel().getRotate()[1] * 90 * FastMath.DEG_TO_RAD,
 //                                                                           getTemplate().getModel().getRotate()[2] * 90 * FastMath.DEG_TO_RAD));
 //            }
-//            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
+            spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(-90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
 
             BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
             as.setBlendEnabled(true);
@@ -145,16 +146,18 @@ public class Item implements Dragable {
     }
 
     public void scaleModel() {
-        BoundingBox bb = (BoundingBox)spatial.getWorldBound();
-        float[] size = getTemplate().getModel().getDimensions();
-        if(size != null) {
-            if(size[0] > 0) spatial.getLocalScale().x = size[0] / bb.xExtent;
-            if(size[1] > 0) spatial.getLocalScale().y = size[1] / bb.yExtent;
-            if(size[2] > 0) spatial.getLocalScale().z = size[2] / bb.zExtent;
+        if(!scaled) {
+            scaled = true;
+            BoundingBox bb = (BoundingBox)spatial.getWorldBound();
+            float[] size = getTemplate().getModel().getDimensions();
+            if(size != null) {
+                if(size[0] > 0) spatial.getLocalScale().x = size[0] / bb.xExtent;
+                if(size[2] > 0) spatial.getLocalScale().y = size[2] / bb.yExtent;
+                if(size[1] > 0) spatial.getLocalScale().z = size[1] / bb.zExtent;
+            }
+            spatial.updateModelBound();
+            spatial.updateWorldBound();
         }
-        spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
-        spatial.updateModelBound();
-        spatial.updateWorldBound();
 
     }
 }

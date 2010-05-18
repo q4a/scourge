@@ -5,6 +5,7 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
+import org.scourge.Climate;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class Region implements NodeGenerator {
                 around.put(Direction.SOUTH, southTile != null ? southTile.tex : null);
                 around.put(Direction.NORTH, northTile != null ? northTile.tex : null);
 
-                tile.createNode(around, tile.getLevel());
+                tile.createNode(around, tile.getLevel(), tile.getClimate());
                 Thread.yield();
             }
         }
@@ -192,38 +193,39 @@ public class Region implements NodeGenerator {
                 if(region[y][x].getC() != '~') {
 
                     int level = tiles[y][x].getLevel();
+                    Climate climate = tiles[y][x].getClimate();
 
                     if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 180);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 180);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 0);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 0);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, 90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 90);
                     } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_SIDE, -90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, -90);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 90);
                     } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, -90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, -90);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 0);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 0);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_CORNER, 180);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 180);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 0);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 0);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 180);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 180);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, -90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, -90);
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_TIP, 90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 90);
 
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 90);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_BRIDGE, 90);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(TileTexType.ROCK, TileType.EDGE_BRIDGE, 0);
+                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_BRIDGE, 0);
 
                     } else {
                         Vector2f point = new Vector2f(x, y);
@@ -339,11 +341,13 @@ public class Region implements NodeGenerator {
 
     private void makeForestTile(Tile tile) {
         Model model = tile.getClimate().getRandomTree(terrain.getMain().getRandom());
-        tile.addModel(model,
-                      new Vector3f(8, 0, 8),
-                      (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
-                      terrain.getMain().getRandom().nextFloat() * 360.0f,
-                      model.getRotationVector());
+        if(model != null) {
+            tile.addModel(model,
+                          new Vector3f(8, 0, 8),
+                          (terrain.getMain().getRandom().nextFloat() * 0.3f) + 1.0f,
+                          terrain.getMain().getRandom().nextFloat() * 360.0f,
+                          model.getRotationVector());
+        }
     }
 
     // hack... this should be in TileType.QUAD but I was lazy
@@ -392,10 +396,10 @@ public class Region implements NodeGenerator {
                 Tile southTile = y < rows + EDGE_BUFFER * 2 - 1 ? tiles[y + 1][x] : null;
                 Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
-                boolean north = northTile != null && northTile.tex == tile.tex;
-                boolean south = southTile != null && southTile.tex == tile.tex;
-                boolean east = eastTile != null && eastTile.tex == tile.tex;
-                boolean west = westTile != null && westTile.tex == tile.tex;
+                boolean north = northTile != null && northTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
+                boolean south = southTile != null && southTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
+                boolean east = eastTile != null && eastTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
+                boolean west = westTile != null && westTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
 
                 if(!north) {
                     tile.setHeight(Tile.Edge.NW, 0);
