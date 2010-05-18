@@ -94,6 +94,21 @@ enum TileType {
         public void updateHeights(Node node, float[] heights) {
         }
     },
+    EDGE_GATE {
+        @Override
+        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+            return addEdge(angle, "g", level, climate);
+        }
+
+        @Override
+        public boolean isTexturePreset() {
+            return true;
+        }
+
+        @Override
+        public void updateHeights(Node node, float[] heights) {
+        }
+    },
     QUAD {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {

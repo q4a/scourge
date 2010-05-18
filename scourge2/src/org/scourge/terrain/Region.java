@@ -196,13 +196,17 @@ public class Region implements NodeGenerator {
                     Climate climate = tiles[y][x].getClimate();
 
                     if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 180);
+                        setEdgeSide(x, y, 180, region);
+                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 180);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 0);
+                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 0);
+                        setEdgeSide(x, y, 0, region);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 90);
+                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 90);
+                        setEdgeSide(x, y, 90, region);
                     } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, -90);
+                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, -90);
+                        setEdgeSide(x, y, -90, region);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
                         tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 90);
@@ -248,6 +252,15 @@ public class Region implements NodeGenerator {
 
         addHouses(housePoints);
         addLadders(ladderPos);
+    }
+
+    private void setEdgeSide(int x, int y, int angle, MapIO.RegionPoint[][] region) {
+        if(region[y][x].getC() == 'g') {
+            tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_GATE, angle);
+        } else {
+            tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_SIDE, angle);
+        }
+
     }
 
     private boolean check(int y, int x, int level, MapIO.RegionPoint[][] region) {
