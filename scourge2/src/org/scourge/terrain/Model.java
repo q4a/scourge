@@ -263,7 +263,13 @@ public enum Model {
         public Spatial createSpatial() {
             return getAlphaSpatial(1, 0, 0, 0);
         }
-    };
+    },
+    mountain("./data/3ds/mtn.3ds") {
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    ;
 
     private static final Model[] BOREAL_TREES = new Model[] {
         normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green,

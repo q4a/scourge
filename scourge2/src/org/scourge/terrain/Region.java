@@ -197,15 +197,11 @@ public class Region implements NodeGenerator {
 
                     if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
                         setEdgeSide(x, y, 180, region);
-                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 180);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 0);
                         setEdgeSide(x, y, 0, region);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, 90);
                         setEdgeSide(x, y, 90, region);
                     } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        //tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_SIDE, -90);
                         setEdgeSide(x, y, -90, region);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
@@ -409,10 +405,10 @@ public class Region implements NodeGenerator {
                 Tile southTile = y < rows + EDGE_BUFFER * 2 - 1 ? tiles[y + 1][x] : null;
                 Tile northTile = y > 0 ? tiles[y - 1][x] : null;
 
-                boolean north = northTile != null && northTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
-                boolean south = southTile != null && southTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
-                boolean east = eastTile != null && eastTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
-                boolean west = westTile != null && westTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex();
+                boolean north = northTile != null && northTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex() && tile.tex != TileTexType.ROCK;
+                boolean south = southTile != null && southTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex() && tile.tex != TileTexType.ROCK;
+                boolean east = eastTile != null && eastTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex() && tile.tex != TileTexType.ROCK;
+                boolean west = westTile != null && westTile.tex == tile.tex && tile.tex != tile.getClimate().getBaseTileTex() && tile.tex != TileTexType.ROCK;
 
                 if(!north) {
                     tile.setHeight(Tile.Edge.NW, 0);
@@ -531,5 +527,19 @@ public class Region implements NodeGenerator {
 
     public String getRegionKey() {
         return Terrain.getRegionKey(x / REGION_SIZE, y / REGION_SIZE);
+    }
+
+    public boolean inDungeon(int x, int z) {
+        Tile tile = tiles[x + EDGE_BUFFER][z + EDGE_BUFFER];
+        return (tile.getClimate() == Climate.dungeon);
+    }
+
+    public void setRoofVisible(boolean visible) {
+        for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+            for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
+                tiles[y][x].setRoofVisible(visible);
+            }
+        }
+        region.updateRenderState();
     }
 }

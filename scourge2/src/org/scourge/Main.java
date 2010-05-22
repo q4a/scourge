@@ -63,6 +63,7 @@ public class Main extends Game {
     private Selection dropSelection, dragSelection;
     private Map<String, Dragable> dragables = new HashMap<String, Dragable>();
     private DragSource dragSource;
+    private boolean inDungeon;
 
     public static void main(String[] args) {
         main = new Main();
@@ -212,62 +213,6 @@ public class Main extends Game {
         }
     }
 
-//    private void testStencil() {
-//        rootNode.setCullHint(Spatial.CullHint.Never);
-//		rootNode.clearRenderState(RenderState.StateType.Light);
-//
-//		Node ortho = new Node("ortho"); // node holds all ORTHO/2D content
-//		ortho.setRenderQueueMode(Renderer.QUEUE_ORTHO);
-//
-//		// when drawing the disk, set 1's in the stencil buffer
-//		StencilState diskStencilState = display.getRenderer().createStencilState();
-//		diskStencilState.setEnabled(true);
-//		diskStencilState.setUseTwoSided(false);
-//		diskStencilState.setStencilFunction(StencilState.StencilFunction.Always);
-//		diskStencilState.setStencilReference(0x1);
-//		diskStencilState.setStencilMask(0x1);
-//		diskStencilState.setStencilOpFail(StencilState.StencilOperation.Replace);
-//		diskStencilState.setStencilOpZFail(StencilState.StencilOperation.Replace);
-//		diskStencilState.setStencilOpZPass(StencilState.StencilOperation.Replace);
-//
-//		// don't want the disk to appear on screen - only using it to mask
-//		ColorMaskState diskColorMaskState = display.getRenderer().createColorMaskState();
-//		diskColorMaskState.setAll(false);
-//
-//		Disk disk = new Disk("disk", 10, 40, 100);
-//		disk.setSolidColor(ColorRGBA.white);
-//		disk.setLocalTranslation(400, 200, 0f);
-//		disk.setRenderState(diskStencilState);	 // draw 1's int the stencil buffer
-//		//disk.setRenderState(diskColorMaskState); // don't draw in the color buffer
-//		disk.updateRenderState();
-//		disk.setZOrder(1);					     // this is very important! Draw disk first
-//		ortho.attachChild(disk);
-//
-//
-//		// when drawing the quad, only draw pixels where stencil buffer has 1's
-//		// and don't change the stencil buffer
-//		StencilState quadStencilState = display.getRenderer().createStencilState();
-//		quadStencilState.setEnabled(true);
-//		quadStencilState.setUseTwoSided(false);
-//		quadStencilState.setStencilFunction(StencilState.StencilFunction.EqualTo);
-//		quadStencilState.setStencilReference(0x1);
-//		quadStencilState.setStencilMask(0x1);
-//		quadStencilState.setStencilOpFail(StencilState.StencilOperation.Keep);
-//		quadStencilState.setStencilOpZFail(StencilState.StencilOperation.Keep);
-//		quadStencilState.setStencilOpZPass(StencilState.StencilOperation.Keep);
-//
-//		Quad quad = new Quad("quad", 200, 100);
-//		quad.setRandomColors();
-//		quad.setLocalTranslation(450, 210, 0f);
-//		quad.setRenderState(quadStencilState);
-//		quad.setZOrder(0);	       // very important! Draw quad after disk
-//		quad.updateRenderState();
-//		ortho.attachChild(quad);
-//
-//		rootNode.attachChild(ortho);
-//		rootNode.updateRenderState();
-//    }
-
     public void showWindow(Window win) {
         rootNode.attachChild(win.getNode());
     }
@@ -320,11 +265,17 @@ public class Main extends Game {
             if(player != null) {
                 player.getCreatureModel().moveToTopOfTerrain();
 
+                boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(player.getCreatureModel().getX() % Region.REGION_SIZE, player.getCreatureModel().getZ() % Region.REGION_SIZE);
+                if(inDungeon != this.inDungeon) {
+                    this.inDungeon = inDungeon;
+                    getTerrain().setRoofVisible(!inDungeon);
+                }
+
                 positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
                                       " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
                                       " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
                                       " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")");
+                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ") inDungeon=" + inDungeon);
                 positionLabel.updateRenderState();
                 positionLabel.updateModelBound();
             }

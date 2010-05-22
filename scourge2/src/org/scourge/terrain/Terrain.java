@@ -303,4 +303,10 @@ public class Terrain implements NodeGenerator {
         spatial.updateModelBound();
         spatial.updateWorldBound();
     }
+
+    public void setRoofVisible(boolean visible) {
+        for(Region region : loadedRegions.values()) {
+            region.setRoofVisible(visible);
+        }
+    }
 }

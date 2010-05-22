@@ -38,6 +38,7 @@ class Tile {
     private int level;
     private List<ModelOnTile> models = new ArrayList<ModelOnTile>();
     private Climate climate;
+    private Spatial roof;
 
     public void clearModels() {
         models.clear();
@@ -132,7 +133,29 @@ class Tile {
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
 
-        applyTexture(around);
+        // apply texture, except for while in dungeons always use ROCK for the top of cliffs
+        applyTexture(around, climate == Climate.dungeon && level > 0);
+
+        // add mountains on top of dungeons
+        if(climate == Climate.dungeon) {
+            roof = Model.mountain.createSpatial();
+            roof.getLocalTranslation().y = (1 - level) * ShapeUtil.WALL_HEIGHT;
+            roof.setRenderQueueMode(com.jme.renderer.Renderer.QUEUE_OPAQUE);
+            roof.updateModelBound();
+            node.attachChild(roof);
+            node.updateModelBound();
+        }
+    }
+
+    public void setRoofVisible(boolean visible) {
+        if(roof != null) {
+            if(visible && roof.getParent() != node) {
+                node.attachChild(roof);
+            } else if(!visible && roof.getParent() == node) {
+                node.detachChild(roof);
+            }
+            //roof.setRenderQueueMode(visible ? com.jme.renderer.Renderer.QUEUE_OPAQUE : com.jme.renderer.Renderer.QUEUE_SKIP);
+        }
     }
 
     public void attachModels() {
@@ -152,8 +175,15 @@ class Tile {
         }
     }
 
-    protected void applyTexture(Map<Direction, TileTexType> around) {
+    protected void applyTexture(Map<Direction, TileTexType> around, boolean useRock) {
         if(tex.getTexturePath() != null && !type.isTexturePreset()) {
+
+            if(useRock) {
+                TextureState background = createSplatTextureState(TileTexType.ROCK.getTexturePath(), null);
+                ground.setRenderState(background);
+                return;
+            }
+
             for(Direction dir : Direction.values()) {
                 if(around.get(dir) == null || around.get(dir).ordinal() >= tex.ordinal()) {
                     around.remove(dir);
