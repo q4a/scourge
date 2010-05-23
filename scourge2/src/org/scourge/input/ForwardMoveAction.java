@@ -32,6 +32,7 @@ class ForwardMoveAction extends KeyInputAction {
             main.getPlayer().getCreatureModel().getNode().getLocalTranslation().set(proposedLocation);
 
             main.getTerrain().loadRegion();
+            main.checkRoof();
         }
     }
 }

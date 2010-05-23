@@ -265,12 +265,6 @@ public class Main extends Game {
             if(player != null) {
                 player.getCreatureModel().moveToTopOfTerrain();
 
-                boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(player.getCreatureModel().getX() % Region.REGION_SIZE, player.getCreatureModel().getZ() % Region.REGION_SIZE);
-                if(inDungeon != this.inDungeon) {
-                    this.inDungeon = inDungeon;
-                    getTerrain().setRoofVisible(!inDungeon);
-                }
-
                 positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
                                       " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
                                       " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
@@ -562,5 +556,13 @@ public class Main extends Game {
 
     public Quad getDraggingIcon() {
         return draggingIcon;
+    }
+
+    public void checkRoof() {
+        boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(player.getCreatureModel().getX() % Region.REGION_SIZE, player.getCreatureModel().getZ() % Region.REGION_SIZE);
+        if(inDungeon != this.inDungeon) {
+            this.inDungeon = inDungeon;
+            getTerrain().setRoofVisible(!inDungeon);
+        }
     }
 }
