@@ -3,7 +3,7 @@ MATERIAL "ac3dmat1" rgb 1 1 1  amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  sh
 OBJECT world
 kids 2
 OBJECT poly
-name "block"
+name "wall"
 loc 0 0 12
 texture "/Users/gabor/scourge2/data/textures/darkrock.jpg"
 crease 45.000000

@@ -58,7 +58,6 @@ public class Main extends Game {
     private RenderPass mapPass;
     private Dragable dragging;
     private int dragOffsetX, dragOffsetY;
-    private Vector3f dropLocation = new Vector3f(0, 0, 0);
     private Set<Dragable> firsts = new HashSet<Dragable>();
     private Selection dropSelection, dragSelection;
     private Map<String, Dragable> dragables = new HashMap<String, Dragable>();
@@ -76,7 +75,7 @@ public class Main extends Game {
     @Override
     protected void initSystem() throws JmeException {
         super.initSystem();
-        Logger.getLogger("com.jme").setLevel(Level.WARNING);
+        Logger.getLogger("com.jme").setLevel(Level.SEVERE);
         //cameraParallel();
     }
 

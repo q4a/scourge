@@ -13,6 +13,7 @@ import com.jme.system.DisplaySystem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * User: gabor
@@ -277,6 +278,92 @@ public enum Model {
             return getNoAlphaSpatial();
         }
     },
+    edge_corner("./data/3ds/edge-c.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    edge_tip("./data/3ds/edge-t.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    edge_side("./data/3ds/edge-s.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    edge_gate("./data/3ds/edge-g.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    edge_bridge("./data/3ds/edge-b.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+
+    edge_corner_dungeon("./data/3ds/edge-c.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            assignDungeonTextures(spatial);
+        }
+    },
+    edge_tip_dungeon("./data/3ds/edge-t.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            assignDungeonTextures(spatial);
+        }
+    },
+    edge_side_dungeon("./data/3ds/edge-s.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            assignDungeonTextures(spatial);
+        }
+    },
+    edge_gate_dungeon("./data/3ds/edge-g.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            assignDungeonTextures(spatial);
+        }
+    },
+    edge_bridge_dungeon("./data/3ds/edge-b.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+
+        @Override
+        public void onLoad(Spatial spatial) {
+            assignDungeonTextures(spatial);
+        }
+    },
     ;
 
     private static final Model[] BOREAL_TREES = new Model[] {
@@ -449,8 +536,32 @@ public enum Model {
             t.setHasBorder(false);
             //t.setApply(Texture.ApplyMode.Modulate);
             ts.setTexture(t);
-            node.getChild(name).setRenderState(ts);
+            Spatial child = findChild(node, name);
+            if(child != null) child.setRenderState(ts);
+            else Logger.getLogger(getClass().toString()).severe("Can't find node child named " + name);
         }
         node.updateRenderState();
+    }
+
+    private Spatial findChild(Node node, String name) {
+        for(Spatial spatial : node.getChildren()) {
+            if(name.equals(spatial.getName())) {
+                return spatial;
+            } else if(spatial instanceof Node) {
+                Spatial s = findChild((Node)spatial, name);
+                if(s != null) return s;
+            }
+        }
+        return null;
+    }
+
+    protected void assignDungeonTextures(Spatial spatial) {
+        Map<String, String> textures = new HashMap<String, String>();
+        // top
+        //textures.put("block00000##0", "data/md3/jkm_trees/stamm.jpg");
+
+        // walls
+        textures.put("wall##0", "data/textures/mountain.png");
+        assignTextures(spatial, textures);
     }
 }

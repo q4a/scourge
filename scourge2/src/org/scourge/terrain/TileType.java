@@ -12,6 +12,7 @@ import com.jme.system.DisplaySystem;
 import org.scourge.Climate;
 
 import java.nio.FloatBuffer;
+import java.util.Map;
 
 /**
 * User: gabor
@@ -37,7 +38,7 @@ enum TileType {
     EDGE_BRIDGE {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, "b", level, climate);
+            return addEdge(angle, climate == Climate.dungeon ? Model.edge_bridge_dungeon : Model.edge_bridge, level, climate);
         }
 
         @Override
@@ -52,7 +53,7 @@ enum TileType {
     EDGE_CORNER {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, "c", level, climate);
+            return addEdge(angle, climate == Climate.dungeon ? Model.edge_corner_dungeon : Model.edge_corner, level, climate);
         }
 
         @Override
@@ -67,7 +68,7 @@ enum TileType {
     EDGE_TIP {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, "t", level, climate);
+            return addEdge(angle, climate == Climate.dungeon ? Model.edge_tip_dungeon : Model.edge_tip, level, climate);
         }
 
         @Override
@@ -82,7 +83,7 @@ enum TileType {
     EDGE_SIDE {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, "s", level, climate);
+            return addEdge(angle, climate == Climate.dungeon ? Model.edge_side_dungeon : Model.edge_side, level, climate);
         }
 
         @Override
@@ -97,7 +98,7 @@ enum TileType {
     EDGE_GATE {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, "g", level, climate);
+            return addEdge(angle, climate == Climate.dungeon ? Model.edge_gate_dungeon : Model.edge_gate, level, climate);
         }
 
         @Override
@@ -141,8 +142,8 @@ enum TileType {
     public abstract Node createNode(float angle, float[] heights, int level, Climate climate);
     public abstract void updateHeights(Node node, float[] heights);
 
-    protected Node addEdge(float angle, String model, int level, Climate climate) {
-        Spatial edge = ShapeUtil.importModel("./data/3ds/edge-" + model + ".3ds", "./data/textures", "edge");
+    protected Node addEdge(float angle, Model model, int level, Climate climate) {
+        Spatial edge = model.createSpatial();
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
 
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));

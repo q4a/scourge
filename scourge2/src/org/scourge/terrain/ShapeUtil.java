@@ -106,7 +106,7 @@ public class ShapeUtil {
     public static Spatial importModel(String modelPath, String textureDir, String name_prefix, Model model) {
         synchronized(prototypes) {
             try {
-                Spatial prototype = prototypes.get(modelPath);
+                Spatial prototype = prototypes.get(modelPath + "." + name_prefix);
                 if(prototype == null) {
                     final File textures;
                     if(textureDir != null) { // set textureDir location
@@ -150,7 +150,7 @@ public class ShapeUtil {
                     debugNode(prototype, "");
 
                     // prepare outStream for loading.
-                    prototypes.put(modelPath, prototype);
+                    prototypes.put(modelPath + "." + name_prefix, prototype);
                 }
 
                 try {
