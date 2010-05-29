@@ -66,7 +66,8 @@ public class Creature implements ItemList {
         //693, 9, 151);
         //389, 9, 349);
         //498, 9, 489);
-        c.position = new float[] { 651, 9, 413 };
+        //c.position = new float[] { 651, 9, 413 };
+        c.position = new float[] { 644, 9, 433 };
         c.name = "zorro";
         c.model = "./data/models/sfod8/tris.md2";
         c.skin = "./data/models/sfod8/Rieger.png";

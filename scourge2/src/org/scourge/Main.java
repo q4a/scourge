@@ -64,6 +64,8 @@ public class Main extends Game {
     private Map<String, Dragable> dragables = new HashMap<String, Dragable>();
     private DragSource dragSource;
     private boolean inDungeon;
+    private boolean updateRoof;
+    private boolean fogOnWater;
 
     public static void main(String[] args) {
         main = new Main();
@@ -256,6 +258,11 @@ public class Main extends Game {
 
     @Override
     protected void simpleUpdate() {
+        if(updateRoof) {
+            updateRoof = false;
+            terrain.setRoofVisible(!inDungeon);
+            updateFog();
+        }        
         terrain.update();
 
         // the world vectors aren't computed until the first update :-/
@@ -449,11 +456,22 @@ public class Main extends Game {
     }
 
     public void setFogOnWater(boolean b) {
-        waterEffectRenderPass.useFadeToFogColor(b);
-        if(b) {
-            fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
-            fogState.setEnd(cam.getFrustumFar() * 0.25f);
-            fogState.setStart(cam.getFrustumFar() * 0.175f);
+        fogOnWater = b;
+        updateFog();
+    }
+
+    public void updateFog() {
+        waterEffectRenderPass.useFadeToFogColor(fogOnWater);
+        if(fogOnWater) {
+            if(inDungeon) {
+                fogState.setColor(ColorRGBA.black);
+                fogState.setEnd(cam.getFrustumFar() * 0.16f);
+                fogState.setStart(cam.getFrustumFar() * 0.02f);
+            } else {
+                fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
+                fogState.setEnd(cam.getFrustumFar() * 0.25f);
+                fogState.setStart(cam.getFrustumFar() * 0.175f);
+            }
         } else {
             fogState.setColor(new ColorRGBA(0.65f, 0.65f, 0.75f, 1.0f));
             fogState.setEnd(cam.getFrustumFar() * 0.2f);
@@ -562,7 +580,11 @@ public class Main extends Game {
         boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(player.getCreatureModel().getX() % Region.REGION_SIZE, player.getCreatureModel().getZ() % Region.REGION_SIZE);
         if(inDungeon != this.inDungeon) {
             this.inDungeon = inDungeon;
-            getTerrain().setRoofVisible(!inDungeon);
+            updateRoof();
         }
+    }
+
+    public void updateRoof() {
+        updateRoof = true;
     }
 }

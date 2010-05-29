@@ -16,6 +16,7 @@ import com.jme.scene.state.TextureState;
 import com.jme.util.TextureManager;
 import org.scourge.Climate;
 import org.scourge.Main;
+import org.scourge.editor.MapSymbol;
 
 import javax.swing.*;
 import java.util.*;
@@ -39,9 +40,19 @@ class Tile {
     private List<ModelOnTile> models = new ArrayList<ModelOnTile>();
     private Climate climate;
     private Spatial roof;
+    private Map<Direction, Boolean> dungeonFloor;
+    private char c;
 
     public void clearModels() {
         models.clear();
+    }
+
+    public void setDungeonFloor(Map<Direction, Boolean> dungeonFloor) {
+        this.dungeonFloor = dungeonFloor;
+    }
+
+    public Map<Direction, Boolean> getDungeonFloor() {
+        return dungeonFloor;
     }
 
     private class ModelOnTile {
@@ -66,16 +77,15 @@ class Tile {
     }
 
 
-    public Tile(Main main) {
-        this(main, TileTexType.NONE, TileType.NONE, 0);
-    }
-
-    public Tile(Main main, TileTexType tex, TileType type, float angle) {
+    public Tile(Main main, char c, Climate climate, int level) {
         this.main = main;
         for(int i = 0; i < heights.length; i++) {
             heights[i] = 0;
         }
-        set(tex, type, angle);
+        set(TileTexType.NONE, TileType.NONE, 0);
+        this.c = c;
+        this.climate = climate;
+        this.level = level;
     }
 
     public void setLevel(int level) {
@@ -386,5 +396,13 @@ class Tile {
         public String toString() {
             return edge.name() + "_" + angle;
         }
+    }
+
+    public boolean isDungeonFloor() {
+        return getClimate() == Climate.dungeon && getLevel() < 1;
+    }
+
+    public boolean isDungeonDoor() {
+        return c == MapSymbol.gate.getC();
     }
 }

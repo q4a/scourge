@@ -6,6 +6,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
 import org.scourge.Climate;
+import org.scourge.Main;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class Region implements NodeGenerator {
         start = System.currentTimeMillis();
         tiles = new Tile[rows + EDGE_BUFFER * 2][cols + EDGE_BUFFER * 2];
         makeTiles(region);
+        addDungeonModels();
         logger.fine("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
 
         // create some hills
@@ -138,6 +140,8 @@ public class Region implements NodeGenerator {
 
         this.region.getLocalTranslation().addLocal(new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH));
 
+        Main.getMain().updateRoof();
+
         if(logger.isLoggable(Level.FINE)) {
             ShapeUtil.debug();
             logger.fine("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
@@ -157,9 +161,7 @@ public class Region implements NodeGenerator {
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
-                tiles[y][x] = new Tile(terrain.getMain());
-                tiles[y][x].setClimate(region[y][x].getClimate());
-                tiles[y][x].setLevel(region[y][x].getLevel());
+                tiles[y][x] = new Tile(terrain.getMain(), region[y][x].getC(), region[y][x].getClimate(), region[y][x].getLevel());
 
                 if(region[y][x].getC() == 'B') {
                     if(check(y - 1, x, region[y][x].getLevel(), region) && check(y + 1, x, region[y][x].getLevel(), region)) {
@@ -245,9 +247,59 @@ public class Region implements NodeGenerator {
             }
         }
 
+        for(int x = 1; x < cols + EDGE_BUFFER; x++) {
+            for(int y = 1; y < rows + EDGE_BUFFER; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.isDungeonFloor()) {
+                    Map<Direction, Boolean> around = new HashMap<Direction, Boolean>();
+                    around.put(Direction.NORTH, !tiles[y - 1][x].isDungeonFloor());
+                    around.put(Direction.SOUTH, !tiles[y + 1][x].isDungeonFloor());
+                    around.put(Direction.EAST, !tiles[y][x + 1].isDungeonFloor());
+                    around.put(Direction.WEST, !tiles[y][x - 1].isDungeonFloor());
+                    tile.setDungeonFloor(around);
+                }
+            }
+        }
 
         addHouses(housePoints);
         addLadders(ladderPos);
+    }
+
+    private void addDungeonModels() {
+        for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
+            for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
+                if(checkDungeonFloor(x, y) && !(checkDungeonDoor(x - 1, y) || checkDungeonDoor(x + 1, y) || checkDungeonDoor(x, y - 1) || checkDungeonDoor(x, y + 1))) {
+                    if(!checkDungeonFloor(x, y - 1) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x + 1, y - 1)) {
+                        tiles[y][x].addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, -1),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(!checkDungeonFloor(x, y + 1) && !checkDungeonFloor(x - 1, y + 1) && !checkDungeonFloor(x + 1, y + 1)) {
+                        tiles[y][x].addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(!checkDungeonFloor(x - 1, y) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x - 1, y + 1)) {
+                        tiles[y][x].addModel(Model.dungeonColumn,
+                                             new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2), 
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(!checkDungeonFloor(x + 1, y) && !checkDungeonFloor(x + 1, y - 1) && !checkDungeonFloor(x + 1, y + 1)) {
+                        tiles[y][x].addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2), 
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean checkDungeonDoor(int x, int y) {
+        return x >= 0 && y >= 0 && x < cols + EDGE_BUFFER * 2 && y < rows + EDGE_BUFFER * 2 && tiles[y][x].isDungeonDoor();
+    }
+
+    private boolean checkDungeonFloor(int x, int y) {
+        return x >= 0 && y >= 0 && x < cols + EDGE_BUFFER * 2 && y < rows + EDGE_BUFFER * 2 && tiles[y][x].isDungeonFloor();
     }
 
     private void setEdgeSide(int x, int y, int angle, MapIO.RegionPoint[][] region) {
@@ -256,7 +308,6 @@ public class Region implements NodeGenerator {
         } else {
             tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_SIDE, angle);
         }
-
     }
 
     private boolean check(int y, int x, int level, MapIO.RegionPoint[][] region) {
@@ -530,7 +581,7 @@ public class Region implements NodeGenerator {
     }
 
     public boolean inDungeon(int x, int z) {
-        Tile tile = tiles[x + EDGE_BUFFER][z + EDGE_BUFFER];
+        Tile tile = tiles[z + EDGE_BUFFER][x + EDGE_BUFFER];
         return (tile.getClimate() == Climate.dungeon);
     }
 

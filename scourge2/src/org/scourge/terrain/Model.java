@@ -260,11 +260,19 @@ public enum Model {
     },
 
     ladder("./data/3ds/ladder.3ds") {
+        @Override
         public Spatial createSpatial() {
             return getAlphaSpatial(1, 0, 0, 0);
         }
     },
     mountain("./data/3ds/mtn.3ds") {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    dungeonColumn("./data/3ds/wood_col.3ds", true) {
+        @Override
         public Spatial createSpatial() {
             return getNoAlphaSpatial();
         }
