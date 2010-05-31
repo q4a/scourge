@@ -7,6 +7,7 @@ import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
 import org.scourge.Climate;
 import org.scourge.Main;
+import org.scourge.editor.MapSymbol;
 import org.scourge.io.MapIO;
 
 import java.io.IOException;
@@ -148,10 +149,6 @@ public class Region implements NodeGenerator {
         }
     }
 
-    // the symbols for different levels on the map
-    private static final String LEVELS = "~*+-";
-    private static final String GROUND_LEVELS = LEVELS.substring(1);
-
     private void makeTiles(MapIO.RegionPoint[][] region) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
@@ -163,36 +160,38 @@ public class Region implements NodeGenerator {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 tiles[y][x] = new Tile(terrain.getMain(), region[y][x].getC(), region[y][x].getClimate(), region[y][x].getLevel());
 
-                if(region[y][x].getC() == 'B') {
+                if(region[y][x].getC() == MapSymbol.bridge.getC()) {
                     if(check(y - 1, x, region[y][x].getLevel(), region) && check(y + 1, x, region[y][x].getLevel(), region)) {
                         tiles[y][x].addModel(Model.bridge, new Vector3f(0, 0, 0), 1, 90, Vector3f.UNIT_Y);
                     } else {
                         tiles[y][x].addModel(Model.bridge);
                     }
-                    region[y][x].setC('~');
-                } else if(region[y][x].getC() == 'F') {
+                    region[y][x].setC(MapSymbol.water.getC());
+                } else if(region[y][x].getC() == MapSymbol.tree.getC()) {
                     makeForestTile(tiles[y][x]);
-                    region[y][x].setC('*');
-                } else if(region[y][x].getC() == 'H') {
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.house.getC()) {
                     storeHousePoisition(housePoints, x, y);
-                    region[y][x].setC('*');
-                } else if(region[y][x].getC() == 'x') {
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.road.getC()) {
                     roadPos.add(new Vector2f(x, y));
-                    region[y][x].setC('*');
-                } else if(region[y][x].getC() == 'X') {
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.paved_road.getC()) {
                     cobblesPos.add(new Vector2f(x, y));
-                    region[y][x].setC('*');
-                } else if(region[y][x].getC() == 'L') {
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.ramp.getC()) {
                     ladderPos.add(new Vector2f(x, y));
-                    region[y][x].setC('*');
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.sign.getC()) {
+                    tiles[y][x].addModel(Model.sign, new Vector3f(ShapeUtil.WALL_WIDTH / 2, 0, ShapeUtil.WALL_WIDTH / 2), 2, 90, Vector3f.UNIT_Z);
+                    region[y][x].setC(MapSymbol.ground.getC());
                 }
             }
         }
 
-        char c = '*';
         for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
             for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
-                if(region[y][x].getC() != '~') {
+                if(region[y][x].getC() != MapSymbol.water.getC()) {
 
                     int level = tiles[y][x].getLevel();
                     Climate climate = tiles[y][x].getClimate();
@@ -303,7 +302,7 @@ public class Region implements NodeGenerator {
     }
 
     private void setEdgeSide(int x, int y, int angle, MapIO.RegionPoint[][] region) {
-        if(region[y][x].getC() == 'g') {
+        if(region[y][x].getC() == MapSymbol.gate.getC()) {
             tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_GATE, angle);
         } else {
             tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_SIDE, angle);
@@ -312,7 +311,7 @@ public class Region implements NodeGenerator {
 
     private boolean check(int y, int x, int level, MapIO.RegionPoint[][] region) {
         return (y >= 0 && x >= 0 && y < REGION_SIZE + EDGE_BUFFER * 2 && x < REGION_SIZE + EDGE_BUFFER * 2 &&
-                region[y][x].getC() != '~' && region[y][x].getLevel() >= level);
+                region[y][x].getC() != MapSymbol.water.getC() && region[y][x].getLevel() >= level);
     }
 
     private void addLadders(Set<Vector2f> ladderPos) {
@@ -576,9 +575,9 @@ public class Region implements NodeGenerator {
         return y;
     }
 
-    public String getRegionKey() {
-        return Terrain.getRegionKey(x / REGION_SIZE, y / REGION_SIZE);
-    }
+//    public String getRegionKey() {
+//        return Terrain.getRegionKey(x / REGION_SIZE, y / REGION_SIZE);
+//    }
 
     public boolean inDungeon(int x, int z) {
         Tile tile = tiles[z + EDGE_BUFFER][x + EDGE_BUFFER];

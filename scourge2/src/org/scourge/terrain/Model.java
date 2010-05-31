@@ -303,65 +303,16 @@ public enum Model {
         }
     },
     edge_bridge("./data/3ds/edge-b.3ds", true) {
+
         @Override
         public Spatial createSpatial() {
             return getNoAlphaSpatial();
         }
     },
-
-    edge_corner_dungeon("./data/3ds/edge-c.3ds", true) {
+    sign("./data/3ds/sign.3ds", false) {
         @Override
         public Spatial createSpatial() {
-            return getNoAlphaSpatial();
-        }
-
-        @Override
-        public void onLoad(Spatial spatial) {
-            assignDungeonTextures(spatial);
-        }
-    },
-    edge_tip_dungeon("./data/3ds/edge-t.3ds", true) {
-        @Override
-        public Spatial createSpatial() {
-            return getNoAlphaSpatial();
-        }
-
-        @Override
-        public void onLoad(Spatial spatial) {
-            assignDungeonTextures(spatial);
-        }
-    },
-    edge_side_dungeon("./data/3ds/edge-s.3ds", true) {
-        @Override
-        public Spatial createSpatial() {
-            return getNoAlphaSpatial();
-        }
-
-        @Override
-        public void onLoad(Spatial spatial) {
-            assignDungeonTextures(spatial);
-        }
-    },
-    edge_gate_dungeon("./data/3ds/edge-g.3ds", true) {
-        @Override
-        public Spatial createSpatial() {
-            return getNoAlphaSpatial();
-        }
-
-        @Override
-        public void onLoad(Spatial spatial) {
-            assignDungeonTextures(spatial);
-        }
-    },
-    edge_bridge_dungeon("./data/3ds/edge-b.3ds", true) {
-        @Override
-        public Spatial createSpatial() {
-            return getNoAlphaSpatial();
-        }
-
-        @Override
-        public void onLoad(Spatial spatial) {
-            assignDungeonTextures(spatial);
+            return getAlphaSpatial(1f);
         }
     },
     ;
@@ -382,6 +333,8 @@ public enum Model {
         deadTree,
         cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress, cypress
     };
+    private String namePrefix;
+
     public static Model[] getBorealTrees() {
         return BOREAL_TREES;
     }
@@ -481,7 +434,7 @@ public enum Model {
     public abstract Spatial createSpatial();
 
     protected Spatial getNoAlphaSpatial() {
-        Spatial spatial = ShapeUtil.importModel(getModelPath(), getTexturePath(), name(), this);
+        Spatial spatial = ShapeUtil.importModel(getModelPath(), getTexturePath(), namePrefix == null ? name() : namePrefix, this);
         spatial.setModelBound(new BoundingBox());
         spatial.updateModelBound();
         return spatial;
@@ -538,14 +491,17 @@ public enum Model {
             ts.setTexture(t);
             Spatial child = findChild(node, name);
             if(child != null) child.setRenderState(ts);
-            else Logger.getLogger(getClass().toString()).severe("Can't find node child named " + name);
+            else {
+                Logger.getLogger(getClass().toString()).severe("Can't find node child named " + name + " in model " + name());
+                ShapeUtil.debugNode(node, "");
+            }
         }
         node.updateRenderState();
     }
 
     private Spatial findChild(Node node, String name) {
         for(Spatial spatial : node.getChildren()) {
-            if(name.equals(spatial.getName())) {
+            if(spatial.getName().startsWith(name)) {
                 return spatial;
             } else if(spatial instanceof Node) {
                 Spatial s = findChild((Node)spatial, name);
@@ -555,13 +511,20 @@ public enum Model {
         return null;
     }
 
-    protected void assignDungeonTextures(Spatial spatial) {
+    protected void assignDungeonTextures(Spatial spatial, String topTexturePath) {
         Map<String, String> textures = new HashMap<String, String>();
-        // top
-        //textures.put("block00000##0", "data/md3/jkm_trees/stamm.jpg");
+
+        if(topTexturePath != null) {
+            // top
+            textures.put("block##0", topTexturePath);
+        }
 
         // walls
         textures.put("wall##0", "data/textures/mountain.png");
         assignTextures(spatial, textures);
+    }
+
+    public void setNamePrefix(String namePrefix) {
+        this.namePrefix = namePrefix;
     }
 }

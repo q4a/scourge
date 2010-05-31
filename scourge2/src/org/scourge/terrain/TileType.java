@@ -36,9 +36,11 @@ enum TileType {
         }
     },
     EDGE_BRIDGE {
+        private Model model = Model.edge_bridge;
+
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, climate == Climate.dungeon ? Model.edge_bridge_dungeon : Model.edge_bridge, level, climate);
+            return addEdge(angle, model, level, climate);
         }
 
         @Override
@@ -51,9 +53,11 @@ enum TileType {
         }
     },
     EDGE_CORNER {
+        private Model model = Model.edge_corner;
+
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, climate == Climate.dungeon ? Model.edge_corner_dungeon : Model.edge_corner, level, climate);
+            return addEdge(angle, model, level, climate);
         }
 
         @Override
@@ -66,9 +70,11 @@ enum TileType {
         }
     },
     EDGE_TIP {
+        private Model model = Model.edge_tip;
+
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, climate == Climate.dungeon ? Model.edge_tip_dungeon : Model.edge_tip, level, climate);
+            return addEdge(angle, model, level, climate);
         }
 
         @Override
@@ -81,9 +87,11 @@ enum TileType {
         }
     },
     EDGE_SIDE {
+        private Model model = Model.edge_side;
+
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, climate == Climate.dungeon ? Model.edge_side_dungeon : Model.edge_side, level, climate);
+            return addEdge(angle, model, level, climate);
         }
 
         @Override
@@ -96,9 +104,11 @@ enum TileType {
         }
     },
     EDGE_GATE {
+        private Model model = Model.edge_gate;
+
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, climate == Climate.dungeon ? Model.edge_gate_dungeon : Model.edge_gate, level, climate);
+            return addEdge(angle, model, level, climate);
         }
 
         @Override
@@ -143,8 +153,15 @@ enum TileType {
     public abstract void updateHeights(Node node, float[] heights);
 
     protected Node addEdge(float angle, Model model, int level, Climate climate) {
+        // create a unique cache key for the model
+        model.setNamePrefix(model.name() + "." + climate.name() + "." + level);
+        
         Spatial edge = model.createSpatial();
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
+
+        if(climate == Climate.dungeon) {
+            model.assignDungeonTextures(edge, level == 0 ? climate.getBaseTileTex().getTexturePath() : null);
+        }
 
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
         edgeNode.attachChild(edge);

@@ -271,13 +271,13 @@ public class Main extends Game {
             if(player != null) {
                 player.getCreatureModel().moveToTopOfTerrain();
 
-                positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
-                                      " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
-                                      " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
-                                      " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ") inDungeon=" + inDungeon);
-                positionLabel.updateRenderState();
-                positionLabel.updateModelBound();
+//                positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
+//                                      " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
+//                                      " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
+//                                      " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
+//                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ") inDungeon=" + inDungeon);
+//                positionLabel.updateRenderState();
+//                positionLabel.updateModelBound();
             }
         }
 
@@ -576,7 +576,9 @@ public class Main extends Game {
     }
 
     public void checkRoof() {
-        boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(player.getCreatureModel().getX() % Region.REGION_SIZE, player.getCreatureModel().getZ() % Region.REGION_SIZE);
+        boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(
+                player.getCreatureModel().getX() % Region.REGION_SIZE,
+                player.getCreatureModel().getZ() % Region.REGION_SIZE);
         if(inDungeon != this.inDungeon) {
             this.inDungeon = inDungeon;
             updateRoof();

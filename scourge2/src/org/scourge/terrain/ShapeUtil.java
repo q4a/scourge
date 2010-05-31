@@ -158,7 +158,7 @@ public class ShapeUtil {
                     if(prototype instanceof Node) {
                         copy = cloneNode((Node)prototype, name_prefix, false);
                     } else if(prototype instanceof TriMesh) {
-                        copy = new SharedMesh(ShapeUtil.newShapeName("clone"), (TriMesh)prototype);
+                        copy = new SharedMesh(ShapeUtil.newShapeName(prototype.getName()), (TriMesh)prototype);
                     } else {
                         throw new RuntimeException("Don't know how to clone " + prototype.getClass());
                     }
@@ -204,11 +204,11 @@ public class ShapeUtil {
     }
 
     private static Node cloneNode(Node prototype, String name_prefix, boolean cloneAttributes) {
-        Node node = new Node(newShapeName(name_prefix == null ? "clone" : name_prefix));
+        Node node = new Node(newShapeName(name_prefix == null ? prototype.getName() : name_prefix));
         if(cloneAttributes) cloneAttributes(prototype, node);
         for(Spatial child : prototype.getChildren()) {
             if(child instanceof TriMesh) {
-                TriMesh mesh = new SharedMesh(ShapeUtil.newShapeName("clone"), (TriMesh)child);
+                TriMesh mesh = new SharedMesh(ShapeUtil.newShapeName(child.getName()), (TriMesh)child);
                 // bug? if I enable the line below the trees look good but on subsequent loads, parts of trees disappear...
                 //cloneAttributes(child, mesh);
                 node.attachChild(mesh);
@@ -227,7 +227,7 @@ public class ShapeUtil {
         to.setLocalScale(from.getLocalScale().clone());
     }
 
-    private static void debugNode(Spatial node, String indent) {
+    public static void debugNode(Spatial node, String indent) {
         System.err.println(indent + node.getName() + "," + node.getClass() + "," + node.toString());
         if(node instanceof Node) {
             for(Spatial child : ((Node)node).getChildren()) {

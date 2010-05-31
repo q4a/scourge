@@ -133,21 +133,36 @@ public class MapEditor extends JPanel {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
 
-        for(int x = cursorX; x < cursorX + editor.getBrush().getW(); x++) {
-            for(int y = cursorY; y < cursorY + editor.getBrush().getH(); y++) {
-                if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
-                    continue;
+        if(mouseEvent.getButton() == 0) {
+            for(int x = cursorX; x < cursorX + editor.getBrush().getW(); x++) {
+                for(int y = cursorY; y < cursorY + editor.getBrush().getH(); y++) {
+                    if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
+                        continue;
+                    }
+
+                    MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
+                    point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
+                                  ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
+                                  symbol.getC();
+
+                    miniMap.setRGB(x, y, symbol.getColor().getRGB());
                 }
+            }
+            repaint();
+        } else {
+            MapSymbol symbol = getMapSymbol(cursorX, cursorY);
+            if(symbol.getBeanClass() != null) {
+                // load the region's xml file
 
-                MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
-                point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
-                              ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
-                              symbol.getC();
+                // if null, create it
 
-                miniMap.setRGB(x, y, symbol.getColor().getRGB());
+                // find this location's bean
+
+                // if null, create it
+
+                // display its editor
             }
         }
-        repaint();
     }
 
     public void loadMap() throws IOException {
