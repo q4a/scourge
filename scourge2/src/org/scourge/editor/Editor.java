@@ -67,9 +67,10 @@ public class Editor extends JFrame implements MapEditorListener {
         sp.getVerticalScrollBar().setUnitIncrement(MapEditor.CHAR_HEIGHT);
         mapEditor.setScrollPane(sp);
 
-        JPanel south = new JPanel(new GridLayout(1, 2, 5, 5));
+        JPanel south = new JPanel(new GridLayout(1, 3, 5, 5));
         south.add(position);
         south.add(point);
+        south.add(new JLabel("Right click to edit region."));
 
         JPanel north = new JPanel(new BorderLayout());
         JButton save = new JButton("Save Map");

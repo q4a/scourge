@@ -44,7 +44,7 @@ public class SaveGame {
         writer.close();
     }
 
-    private static File getDir() {
+    public static File getDir() {
         File dir = new File(System.getProperty("user.home"), ".scourge2");
         if(!dir.exists()) {
             //noinspection ResultOfMethodCallIgnored

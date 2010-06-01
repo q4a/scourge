@@ -2,7 +2,9 @@ package org.scourge.editor;
 
 import org.apache.commons.io.FileUtils;
 import org.scourge.Climate;
+import org.scourge.io.BlockData;
 import org.scourge.io.MapIO;
+import org.scourge.io.RegionData;
 import org.scourge.terrain.Region;
 
 import javax.swing.*;
@@ -133,43 +135,63 @@ public class MapEditor extends JPanel {
         cursorX = mouseEvent.getX() / CHAR_WIDTH;
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
 
-        if(mouseEvent.getButton() == 0) {
-            for(int x = cursorX; x < cursorX + editor.getBrush().getW(); x++) {
-                for(int y = cursorY; y < cursorY + editor.getBrush().getH(); y++) {
-                    if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
-                        continue;
-                    }
+        if(mouseEvent.getButton() == 1) {
+            drawOnMap();
+        } else if(mouseEvent.getButton() == 3) {
+            editRegion();
+        }
+    }
 
-                    MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
-                    point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
-                                  ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
-                                  symbol.getC();
+    private void editRegion() {
+        try {
+            // load or create the region's xml file
+            int rx = cursorX / Region.REGION_SIZE;
+            int ry = cursorY / Region.REGION_SIZE;
+            RegionData regionData = MapIO.loadRegionData(rx, ry);
 
-                    miniMap.setRGB(x, y, symbol.getColor().getRGB());
-                }
+            // find this location's bean
+            BlockData blockData = regionData.getBlock(cursorX, cursorY);
+
+            // if null, create it
+            if(blockData == null) {
+                blockData = new BlockData(cursorX, cursorY);
+                regionData.putBlock(cursorX, cursorY, blockData);
             }
-            repaint();
-        } else {
-            MapSymbol symbol = getMapSymbol(cursorX, cursorY);
-            if(symbol.getBeanClass() != null) {
-                // load the region's xml file
 
-                // if null, create it
+            // display its editor
+            new BlockDataEditor(editor, blockData);
 
-                // find this location's bean
+            // save it
+            MapIO.saveRegionData(rx, ry, regionData);
 
-                // if null, create it
+        } catch(Exception exc) {
+            exc.printStackTrace();
+        }
+    }
 
-                // display its editor
+    private void drawOnMap() {
+        for(int x = cursorX; x < cursorX + editor.getBrush().getW(); x++) {
+            for(int y = cursorY; y < cursorY + editor.getBrush().getH(); y++) {
+                if(editor.getBrush().isRandom() && 0 < (int)(Math.random() * 4.0f)) {
+                    continue;
+                }
+
+                MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
+                point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
+                              ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
+                              symbol.getC();
+
+                miniMap.setRGB(x, y, symbol.getColor().getRGB());
             }
         }
+        repaint();
     }
 
     public void loadMap() throws IOException {
         if(!MapIO.GZIP_FILE.exists()) {
             importPng(new File("/Users/gabor/scourge/trunk/scourge_data/mapgrid/world/map.png"));
         }
-        
+
         MapIO mapIO = new MapIO();
         rows = mapIO.getRows();
         cols = mapIO.getCols();

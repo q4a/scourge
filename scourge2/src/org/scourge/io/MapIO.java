@@ -1,7 +1,11 @@
 package org.scourge.io;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.io.Util;
 import org.scourge.Climate;
+import org.scourge.model.Session;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
 import java.io.*;
 import java.util.logging.Logger;
@@ -39,6 +43,50 @@ public class MapIO {
         this.cols = mapFile.readInt();
         this.headerLength = mapFile.getFilePointer();
         logger.info("Loading map: rows=" + rows + " cols=" + cols + " headerLength=" + headerLength);
+    }
+
+    /**
+     * Load the dynamic data for a region.
+     * @param x the region's x coordinate. (region coordinates are in REGION_SIZE units)
+     * @param y the region's y coordinate
+     * @return the RegionData for this region
+     * @throws Exception exception
+     */
+    public static RegionData loadRegionData(int x, int y) throws Exception {
+        RegionData regionData;
+        File file = getRegionDataFile(x, y);
+        if(file.exists()) {
+            Serializer serializer = new Persister();
+            Reader reader = new BufferedReader(new FileReader(file));
+            regionData = serializer.read(RegionData.class, reader);
+            reader.close();
+        } else {
+            regionData = new RegionData(x, y);
+        }
+        return regionData;
+    }
+
+    /**
+     * Save the dynamic data for a region.
+     * @param x the region's x coordinate. (region coordinates are in REGION_SIZE units)
+     * @param y the region's y coordinate
+     * @param regionData the RegionData for this region
+     * @throws Exception exception
+     */
+    public static void saveRegionData(int x, int y, RegionData regionData) throws Exception {
+        File file = getRegionDataFile(x, y);
+        if(regionData.isEmpty()) {
+            FileUtils.deleteQuietly(file);
+        } else {
+            Serializer serializer = new Persister();
+            Writer writer = new BufferedWriter(new FileWriter(file));
+            serializer.write(regionData, writer);
+            writer.close();
+        }
+    }
+    
+    private static File getRegionDataFile(int x, int y) {
+        return new File("./data/maps/region_" + x + "_" + y + ".xml");
     }
 
     public RegionPoint[][] readRegion(int x, int y, int w, int h) throws IOException {

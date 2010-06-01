@@ -1,7 +1,5 @@
 package org.scourge.editor;
 
-import org.scourge.model.bean.SignBean;
-
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +19,7 @@ public enum MapSymbol {
     paved_road('X', new Color(0xff, 0xe0, 0x00)),
     ramp('L', Color.magenta),
     gate('g', Color.cyan),
-    sign('s', new Color(0xff, 0x30, 0x30)) {
-        @Override
-        public Class getBeanClass() {
-            return SignBean.class;
-        }},
+    sign('s', new Color(0xff, 0x30, 0x30)),
     ;
 
     private char c;

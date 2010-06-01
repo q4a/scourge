@@ -1,0 +1,14 @@
+<region region_x="32" region_y="20">
+   <block coordinates="651.417">
+      <block x="651" y="417">
+         <data key="label2">Ustinol</data>
+         <data key="label">Entering the town of</data>
+      </block>
+   </block>
+   <block coordinates="647.405">
+      <block x="647" y="405">
+         <data key="label2">Ustinol</data>
+         <data key="label">Entering the town of</data>
+      </block>
+   </block>
+</region>
