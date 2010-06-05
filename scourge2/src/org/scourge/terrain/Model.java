@@ -10,7 +10,11 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
+import com.jme.util.export.JMEExporter;
+import com.jme.util.export.JMEImporter;
+import com.jme.util.export.Savable;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -20,7 +24,7 @@ import java.util.logging.Logger;
  * Date: Mar 27, 2010
  * Time: 8:59:30 PM
  */
-public enum Model {
+public enum Model implements Savable {
     bridge("./data/3ds/bridge.3ds", true) {
         public Spatial createSpatial() {
             Spatial sp = getNoAlphaSpatial();
@@ -526,5 +530,18 @@ public enum Model {
 
     public void setNamePrefix(String namePrefix) {
         this.namePrefix = namePrefix;
+    }
+
+    @Override
+    public void write(JMEExporter jmeExporter) throws IOException {
+        throw new RuntimeException("not used");
+    }
+    @Override
+    public void read(JMEImporter jmeImporter) throws IOException {
+        throw new RuntimeException("not used");
+    }
+    @Override
+    public Class getClassTag() {
+        throw new RuntimeException("not used");
     }
 }

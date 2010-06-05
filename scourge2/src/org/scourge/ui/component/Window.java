@@ -279,10 +279,19 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
     }
 
     public static void showMessage(String message) {
+        showMessage(message, null);
+    }
+
+    public static void showMessage(String message, String message2) {
         Window messageWindow = new Window(DisplaySystem.getDisplaySystem().getRenderer().getWidth() / 2,
                                           (int)(DisplaySystem.getDisplaySystem().getRenderer().getHeight() * 0.5f),
                                           Math.max(300, message.length() * 10 + 40), 120, null);
         messageWindow.addLabel("internal_message", 0, 30, message);
+        if(message2 != null) {
+            messageWindow.addLabel("internal_message2", 0, 10, message2);
+        } else {
+            
+        }
         messageWindow.addButton(MESSAGE_OK, 0, -20, "OK");
         messageWindow.pack();
         messageWindow.setVisible(true);

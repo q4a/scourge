@@ -1,10 +1,14 @@
 package org.scourge.io;
 
+import com.jme.util.export.JMEExporter;
+import com.jme.util.export.JMEImporter;
+import com.jme.util.export.Savable;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +18,7 @@ import java.util.Map;
  * Time: 4:42:11 PM
  */
 @Root(name = "block")
-public class BlockData {
+public class BlockData implements Savable {
     @Attribute
     private int x;
 
@@ -58,5 +62,20 @@ public class BlockData {
 
     public boolean isEmpty() {
         return data == null || data.isEmpty();
+    }
+
+    @Override
+    public void write(JMEExporter jmeExporter) throws IOException {
+        throw new RuntimeException("not used");
+    }
+
+    @Override
+    public void read(JMEImporter jmeImporter) throws IOException {
+        throw new RuntimeException("not used");
+    }
+
+    @Override
+    public Class getClassTag() {
+        throw new RuntimeException("not used");
     }
 }

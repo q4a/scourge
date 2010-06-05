@@ -12,7 +12,6 @@ import com.jme.system.DisplaySystem;
 import org.scourge.Climate;
 
 import java.nio.FloatBuffer;
-import java.util.Map;
 
 /**
 * User: gabor
@@ -22,7 +21,7 @@ import java.util.Map;
 enum TileType {
     NONE {
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
             return new Node("empty");
         }
 
@@ -39,8 +38,8 @@ enum TileType {
         private Model model = Model.edge_bridge;
 
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, model, level, climate);
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
         }
 
         @Override
@@ -56,8 +55,8 @@ enum TileType {
         private Model model = Model.edge_corner;
 
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, model, level, climate);
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
         }
 
         @Override
@@ -73,8 +72,8 @@ enum TileType {
         private Model model = Model.edge_tip;
 
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, model, level, climate);
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
         }
 
         @Override
@@ -90,8 +89,8 @@ enum TileType {
         private Model model = Model.edge_side;
 
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, model, level, climate);
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
         }
 
         @Override
@@ -107,8 +106,8 @@ enum TileType {
         private Model model = Model.edge_gate;
 
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
-            return addEdge(angle, model, level, climate);
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
         }
 
         @Override
@@ -122,7 +121,7 @@ enum TileType {
     },
     QUAD {
         @Override
-        public Node createNode(float angle, float[] heights, int level, Climate climate) {
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
             Quad ground = createQuad(heights);
 
             Node groundNode = new Node(ShapeUtil.newShapeName("ground_node"));
@@ -149,10 +148,10 @@ enum TileType {
     ;
 
     public abstract boolean isTexturePreset();
-    public abstract Node createNode(float angle, float[] heights, int level, Climate climate);
+    public abstract Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater);
     public abstract void updateHeights(Node node, float[] heights);
 
-    protected Node addEdge(float angle, Model model, int level, Climate climate) {
+    protected Node addEdge(float angle, Model model, int level, Climate climate, boolean nextToWater) {
         // create a unique cache key for the model
         model.setNamePrefix(model.name() + "." + climate.name() + "." + level);
         
@@ -166,7 +165,7 @@ enum TileType {
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));
         edgeNode.attachChild(edge);
 
-        if(level > 0) {
+        if(level > 0 && !nextToWater) {
             Quad ground = createQuad(new float[] { 0, 0, 0, 0 });
             ground.getLocalTranslation().y -= ShapeUtil.WALL_HEIGHT;
             TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();

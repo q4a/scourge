@@ -50,4 +50,8 @@ public class MouseAction extends MouseInputAction {
         this.enabled = enabled;
         MouseInput.get().setCursorVisible(!enabled);
     }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

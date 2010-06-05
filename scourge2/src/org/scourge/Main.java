@@ -19,10 +19,9 @@ import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
 import org.scourge.input.PlayerController;
+import org.scourge.io.BlockData;
 import org.scourge.model.Creature;
-import org.scourge.terrain.Region;
-import org.scourge.terrain.Selection;
-import org.scourge.terrain.Terrain;
+import org.scourge.terrain.*;
 import org.scourge.ui.MiniMap;
 import org.scourge.ui.component.DragSource;
 import org.scourge.ui.component.Dragable;
@@ -522,6 +521,8 @@ public class Main extends Game {
         if(dragSelection.testUnderMouse()) {
             for(Spatial spatial : dragSelection.getSpatials()) {
                 while(spatial.getParent() != null) {
+
+                    // check for items
                     Dragable dragable = dragables.remove(spatial.getName());
                     if(dragable != null) {
                         rootNode.detachChild(spatial);
@@ -536,11 +537,38 @@ public class Main extends Game {
                     }
                     spatial = spatial.getParent();
                 }
+            }
+        }
 
+        return false;
+    }
 
+    public boolean mouseReleased() {
+        Spatial spatial = findInteractiveSpatialClicked();
+        if(spatial != null) {
+            Model model = (Model)spatial.getUserData(Tile.MODEL);
+            BlockData blockData = (BlockData)spatial.getUserData(Tile.BLOCK_DATA);
+            if(model == Model.sign) {
+                Window.showMessage(blockData.getData().get("label"),
+                                   blockData.getData().get("label2"));
+                return true;
             }
         }
         return false;
+    }
+
+    private Spatial findInteractiveSpatialClicked() {
+        if(dragSelection.testUnderMouse()) {
+            for(Spatial spatial : dragSelection.getSpatials()) {
+                while(spatial.getParent() != null) {
+                    if(spatial.getUserData(Tile.MODEL) != null && (BlockData)spatial.getUserData(Tile.BLOCK_DATA) != null) {
+                        return spatial;
+                    }
+                    spatial = spatial.getParent();
+                }
+            }
+        }
+        return null;
     }
 
     public void returnDragable() {

@@ -8,7 +8,9 @@ import com.jme.scene.shape.Quad;
 import org.scourge.Climate;
 import org.scourge.Main;
 import org.scourge.editor.MapSymbol;
+import org.scourge.io.BlockData;
 import org.scourge.io.MapIO;
+import org.scourge.io.RegionData;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -26,7 +28,7 @@ public class Region implements NodeGenerator {
     private Node region;
     public static final int REGION_SIZE = 20;
     private Tile[][] tiles;
-    private int x, y, rows, cols;
+    private int x, y, rows, cols, regionX, regionY;
     private List<House> houses = new ArrayList<House>();
     public static final float MIN_HEIGHT = 2;
     private static Logger logger = Logger.getLogger(Region.class.toString());
@@ -37,6 +39,8 @@ public class Region implements NodeGenerator {
         this.terrain = terrain;
         this.x = x;
         this.y = y;
+        this.regionX = x / REGION_SIZE;
+        this.regionY = y / REGION_SIZE;
         rows = cols = REGION_SIZE;
         load();
     }
@@ -51,17 +55,28 @@ public class Region implements NodeGenerator {
         logger.fine("Loading region: " + x + "," + y);
         long start = System.currentTimeMillis();
         long firstStart = start;
-        this.region = new Node("region_" + (x / REGION_SIZE) + "_" + (y / REGION_SIZE));
+        this.region = new Node("region_" + regionX + "_" + regionY);
         // this.region.clearRenderState(RenderState.StateType.Texture);
         region.setModelBound(new BoundingBox());
 
         start = System.currentTimeMillis();
         MapIO.RegionPoint[][] region = terrain.getMapIO().readRegion(x - EDGE_BUFFER, y - EDGE_BUFFER, rows + EDGE_BUFFER * 2, cols + EDGE_BUFFER * 2);
+        RegionData regionData = null;
+        try {
+            regionData = MapIO.loadRegionData(regionX, regionY);
+        } catch (Exception exc) {
+            logger.log(Level.SEVERE, "Unable to load region data for coords=" + x + "," + y +
+                                     " region=" + regionX + "," + regionY, exc);
+        } finally {
+            if(regionData == null) {
+                regionData = new RegionData(regionX, regionY);
+            }
+        }
         logger.fine("Loaded data in " + (System.currentTimeMillis() - start) + " millis.");
 
         start = System.currentTimeMillis();
         tiles = new Tile[rows + EDGE_BUFFER * 2][cols + EDGE_BUFFER * 2];
-        makeTiles(region);
+        makeTiles(region, regionData);
         addDungeonModels();
         logger.fine("makeTiles in " + (System.currentTimeMillis() - start) + " millis.");
 
@@ -149,7 +164,7 @@ public class Region implements NodeGenerator {
         }
     }
 
-    private void makeTiles(MapIO.RegionPoint[][] region) {
+    private void makeTiles(MapIO.RegionPoint[][] region, RegionData regionData) {
         List<Set<Vector2f>> housePoints = new ArrayList<Set<Vector2f>>();
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
         Set<Vector2f> cobblesPos = new HashSet<Vector2f>();
@@ -183,7 +198,7 @@ public class Region implements NodeGenerator {
                     ladderPos.add(new Vector2f(x, y));
                     region[y][x].setC(MapSymbol.ground.getC());
                 } else if(region[y][x].getC() == MapSymbol.sign.getC()) {
-                    tiles[y][x].addModel(Model.sign, new Vector3f(ShapeUtil.WALL_WIDTH / 2, 0, ShapeUtil.WALL_WIDTH / 2), 2, 90, Vector3f.UNIT_Z);
+                    addSign(x, y, region, regionData);
                     region[y][x].setC(MapSymbol.ground.getC());
                 }
             }
@@ -206,27 +221,27 @@ public class Region implements NodeGenerator {
                         setEdgeSide(x, y, -90, region);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 90);
+                        setEdge(x, y, 90, region, TileType.EDGE_CORNER);
                     } else if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, -90);
+                        setEdge(x, y, -90, region, TileType.EDGE_CORNER);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 0);
+                        setEdge(x, y, 0, region, TileType.EDGE_CORNER);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_CORNER, 180);
+                        setEdge(x, y, 180, region, TileType.EDGE_CORNER);
 
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 0);
+                        setEdge(x, y, 0, region, TileType.EDGE_TIP);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 180);
+                        setEdge(x, y, 180, region, TileType.EDGE_TIP);
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && !check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, -90);
+                        setEdge(x, y, -90, region, TileType.EDGE_TIP);
                     } else if(!check(y - 1, x, level, region) && !check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_TIP, 90);
+                        setEdge(x, y, 90, region, TileType.EDGE_TIP);
 
                     } else if(!check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_BRIDGE, 90);
+                        setEdge(x, y, 90, region, TileType.EDGE_BRIDGE);
                     } else if(check(y - 1, x, level, region) && !check(y, x - 1, level, region) && !check(y, x + 1, level, region) && check(y + 1, x, level, region)) {
-                        tiles[y][x].set(climate.getBaseTileTex(), TileType.EDGE_BRIDGE, 0);
+                        setEdge(x, y, 0, region, TileType.EDGE_BRIDGE);
 
                     } else {
                         Vector2f point = new Vector2f(x, y);
@@ -262,6 +277,12 @@ public class Region implements NodeGenerator {
 
         addHouses(housePoints);
         addLadders(ladderPos);
+    }
+
+    private void addSign(int x, int y, MapIO.RegionPoint[][] region, RegionData regionData) {
+        BlockData blockData = regionData.getBlock(regionX * REGION_SIZE + x - EDGE_BUFFER,
+                                                  regionY * REGION_SIZE + y - EDGE_BUFFER);
+        tiles[y][x].addModel(Model.sign, new Vector3f(ShapeUtil.WALL_WIDTH / 2, 0, ShapeUtil.WALL_WIDTH / 2), 2, 90, Vector3f.UNIT_Z, blockData);
     }
 
     private void addDungeonModels() {
@@ -301,12 +322,23 @@ public class Region implements NodeGenerator {
         return x >= 0 && y >= 0 && x < cols + EDGE_BUFFER * 2 && y < rows + EDGE_BUFFER * 2 && tiles[y][x].isDungeonFloor();
     }
 
+    private boolean checkForWater(int x, int y) {
+        return x >= 0 && y >= 0 && x < cols + EDGE_BUFFER * 2 && y < rows + EDGE_BUFFER * 2 && tiles[y][x].isWater();
+    }
+
     private void setEdgeSide(int x, int y, int angle, MapIO.RegionPoint[][] region) {
         if(region[y][x].getC() == MapSymbol.gate.getC()) {
-            tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_GATE, angle);
+            setEdge(x, y, angle, region, TileType.EDGE_GATE);
         } else {
-            tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), TileType.EDGE_SIDE, angle);
+            setEdge(x, y, angle, region, TileType.EDGE_SIDE);
         }
+    }
+
+    private void setEdge(int x, int y, int angle, MapIO.RegionPoint[][] region, TileType tileType) {
+        tiles[y][x].set(region[y][x].getClimate().getBaseTileTex(), tileType, angle);
+        // hack: do not draw quad at the base of walls next to the water.
+        // This works as long as the wall next to water is straight (ie. no corners/tips).
+        tiles[y][x].setNextToWater(checkForWater(x - 1, y) || checkForWater(x + 1, y) || checkForWater(x, y - 1) || checkForWater(x, y + 1));
     }
 
     private boolean check(int y, int x, int level, MapIO.RegionPoint[][] region) {

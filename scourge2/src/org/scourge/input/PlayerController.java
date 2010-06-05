@@ -72,19 +72,25 @@ public class PlayerController extends InputHandler {
         }
     }
 
+    private int startX = -1, startY = -1;
     private class DriveTogglingListener implements MouseInputListener {
 
         @Override
         public void onButton(int button, boolean pressed, int x, int y) {
             if(button == 0) {
                 if(pressed) {
-                    if(!main.drag()) {
-                        if(!(Window.getWindow() != null && Window.getWindow().getRectangle().contains(x, y))) {
-                            mouseAction.setEnabled(true);
-                        }
+                    if(!main.drag() && !(Window.getWindow() != null && Window.getWindow().getRectangle().contains(x, y))) {
+                        startX = x;
+                        startY = y;
+                        //mouseAction.setEnabled(true);
                     }
                 } else {
-                    mouseAction.setEnabled(false);
+                    startX = startY = -1;
+                    if(mouseAction.isEnabled()) {
+                        mouseAction.setEnabled(false);
+                    } else {
+                        main.mouseReleased();
+                    }
                 }
             }
         }
@@ -95,6 +101,11 @@ public class PlayerController extends InputHandler {
 
         @Override
         public void onMove(int xDelta, int yDelta, int newX, int newY) {
+            if(!mouseAction.isEnabled() && startX >= 0 && startY >= 0) {
+                if(Math.abs(startX - newX) > 5 || Math.abs(startY - newY) > 5) {
+                    mouseAction.setEnabled(true);
+                }
+            }
         }
     }
 }

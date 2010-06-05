@@ -5,8 +5,6 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.RenderQueue;
 import com.jme.scene.Node;
 import com.jme.scene.PassNode;
 import com.jme.scene.PassNodeState;
@@ -17,6 +15,7 @@ import com.jme.util.TextureManager;
 import org.scourge.Climate;
 import org.scourge.Main;
 import org.scourge.editor.MapSymbol;
+import org.scourge.io.BlockData;
 
 import javax.swing.*;
 import java.util.*;
@@ -27,7 +26,7 @@ import java.util.logging.Logger;
 * Date: Mar 13, 2010
 * Time: 8:56:01 AM
 */
-class Tile {
+public class Tile {
     public TileTexType tex;
     public TileType type;
     public float angle;
@@ -42,6 +41,9 @@ class Tile {
     private Spatial roof;
     private Map<Direction, Boolean> dungeonFloor;
     private char c;
+    private boolean nextToWater;
+    public static final String BLOCK_DATA = "blockData";
+    public static final String MODEL = "model";
 
     public void clearModels() {
         models.clear();
@@ -55,20 +57,25 @@ class Tile {
         return dungeonFloor;
     }
 
+    public void setNextToWater(boolean nextToWater) {
+        this.nextToWater = nextToWater;
+    }
+
     private class ModelOnTile {
         public Model model;
         public Vector3f translate;
         public float scale;
         public float rotate;
         public Vector3f axis;
+        public BlockData blockData;
 
-
-        public ModelOnTile(Model model, Vector3f translate, float scale, float rotate, Vector3f axis) {
+        public ModelOnTile(Model model, Vector3f translate, float scale, float rotate, Vector3f axis, BlockData blockData) {
             this.model = model;
             this.translate = translate;
             this.scale = scale;
             this.rotate = rotate;
             this.axis = axis;
+            this.blockData = blockData;
         }
     }
 
@@ -101,7 +108,11 @@ class Tile {
     }
 
     public void addModel(Model model, Vector3f translate, float scale, float rotate, Vector3f axis) {
-        models.add(new ModelOnTile(model, translate, scale, rotate, axis));
+        addModel(model, translate, scale, rotate, axis, null);
+    }
+
+    public void addModel(Model model, Vector3f translate, float scale, float rotate, Vector3f axis, BlockData blockData) {
+        models.add(new ModelOnTile(model, translate, scale, rotate, axis, blockData));
     }
 
     public boolean isEmpty() {
@@ -131,7 +142,7 @@ class Tile {
 
     public void createNode(Map<Direction, TileTexType> around, int level, Climate climate) {
         node = new Node(ShapeUtil.newShapeName("tile"));
-        ground = type.createNode(angle, heights, level, climate);
+        ground = type.createNode(angle, heights, level, climate, nextToWater);
         node.attachChild(ground);
         node.setModelBound(new BoundingBox());
 
@@ -173,6 +184,12 @@ class Tile {
             spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * model.rotate, model.axis));
             spatial.setRenderQueueMode(com.jme.renderer.Renderer.QUEUE_TRANSPARENT);
             spatial.updateModelBound();
+
+            spatial.setUserData(MODEL, model.model);
+            if(model.blockData != null) {
+                spatial.setUserData(BLOCK_DATA, model.blockData);
+            }
+
             node.attachChild(spatial);
         }
     }
@@ -396,5 +413,9 @@ class Tile {
 
     public boolean isDungeonDoor() {
         return c == MapSymbol.gate.getC();
+    }
+
+    public boolean isWater() {
+        return c == MapSymbol.water.getC();
     }
 }
