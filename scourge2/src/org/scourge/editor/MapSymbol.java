@@ -19,11 +19,12 @@ public enum MapSymbol {
     paved_road('X', new Color(0xff, 0xe0, 0x00)),
     ramp('L', Color.magenta),
     gate('g', Color.cyan),
-    sign('s', new Color(0xff, 0x30, 0x30)),
+    sign('s', new Color(0xff, 0x30, 0x30), new String[] { "label", "label2" }),
     ;
 
     private char c;
     private Color color;
+    private String[] blockDataKeys;
     private final static Map<Character, MapSymbol> chars = new HashMap<Character, MapSymbol>();
 
     static {
@@ -33,8 +34,13 @@ public enum MapSymbol {
     }
 
     MapSymbol(char c, Color color) {
+        this(c, color, new String[0]);
+    }
+
+    MapSymbol(char c, Color color, String[] blockDataKeys) {
         this.c = c;
         this.color = color;
+        this.blockDataKeys = blockDataKeys;
     }
 
     public char getC() {
@@ -49,7 +55,7 @@ public enum MapSymbol {
         return chars.get(c);
     }
 
-    public Class getBeanClass() {
-        return null;
+    public String[] getBlockDataKeys() {
+        return blockDataKeys;
     }
 }

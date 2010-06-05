@@ -1,0 +1,8 @@
+<region region_x="31" region_y="20">
+   <block coordinates="631.410">
+      <block x="631" y="410">
+         <data key="label2">lost</data>
+         <data key="label">You are</data>
+      </block>
+   </block>
+</region>

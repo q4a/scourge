@@ -158,6 +158,14 @@ public class MapEditor extends JPanel {
                 regionData.putBlock(cursorX, cursorY, blockData);
             }
 
+            // ensure it has the right elements
+            MapSymbol symbol = getMapSymbol(cursorX, cursorY);
+            for(String key : symbol.getBlockDataKeys()) {
+                if(blockData.getData().get(key) == null) {
+                    blockData.getData().put(key, "");
+                }
+            }
+
             // display its editor
             new BlockDataEditor(editor, blockData);
 

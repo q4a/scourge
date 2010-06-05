@@ -18,6 +18,7 @@ import com.jme.util.TextureManager;
 import com.jmex.effects.water.WaterRenderPass;
 import com.jmex.font2d.Font2D;
 import com.jmex.font2d.Text2D;
+import org.scourge.editor.MapSymbol;
 import org.scourge.input.PlayerController;
 import org.scourge.io.BlockData;
 import org.scourge.model.Creature;
@@ -549,8 +550,8 @@ public class Main extends Game {
             Model model = (Model)spatial.getUserData(Tile.MODEL);
             BlockData blockData = (BlockData)spatial.getUserData(Tile.BLOCK_DATA);
             if(model == Model.sign) {
-                Window.showMessage(blockData.getData().get("label"),
-                                   blockData.getData().get("label2"));
+                Window.showMessage(blockData.getData().get(MapSymbol.sign.getBlockDataKeys()[0]),
+                                   blockData.getData().get(MapSymbol.sign.getBlockDataKeys()[1]));
                 return true;
             }
         }
