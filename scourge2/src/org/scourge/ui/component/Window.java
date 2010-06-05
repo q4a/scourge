@@ -29,7 +29,7 @@ import java.util.Stack;
  * Date: Apr 11, 2010
  * Time: 1:51:00 PM
  */
-public class Window implements NodeGenerator, MouseInputListener, KeyInputListener {
+public class Window implements NodeGenerator {
     private Node win;
     private static final String WINDOW_BACKGROUND = "./data/textures/ui/win.png";    
     public static final ColorRGBA TEXT_COLOR = new ColorRGBA(0.3f, 0.15f, 0.1f, 1);
@@ -139,8 +139,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         return rectangle;
     }
 
-    @Override
-    public void onButton(int mouseButton, boolean pressed, int x, int y) {
+    public boolean onButton(int mouseButton, boolean pressed, int x, int y) {
         Main main = Main.getMain();
         if(!pressed && main.getDragging() != null) {
             // drop over a window?
@@ -154,7 +153,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                             main.returnDragable();
                         }
                         // mouse release was handled
-                        return;
+                        return true;
                     }
                 }
             }
@@ -178,7 +177,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                         main.returnDragable();
                     }
                     // mouse release was handled
-                    return;
+                    return true;
                 }
             }
         }
@@ -220,7 +219,9 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                     }
                 }
             }
+            return true;
         }
+        return false;
     }
 
     private Point2D getComponentCoordinates(int x, int y, Component c) {
@@ -228,8 +229,7 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                                  c.getRectangle().height - (y - c.getRectangle().y));
     }
 
-    @Override
-    public void onKey(char character, int keyCode, boolean pressed) {
+    public boolean onKey(char character, int keyCode, boolean pressed) {
         if(Window.getWindow() == this) {
             if(currentTextField != null) {
                 if(keyCode == KeyInput.KEY_BACK) {
@@ -237,8 +237,10 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
                 } else if (character > 0) {
                     currentTextField.addChar(character);
                 }
+                return true;
             }
         }
+        return false;
     }
 
     private void setCurrentTextField(Textfield textfield) {
@@ -250,16 +252,16 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         }
     }
 
-    @Override
-    public void onWheel(int wheelDelta, int x, int y) {
+    public boolean onWheel(int wheelDelta, int x, int y) {
+        return false;
     }
 
-    @Override
-    public void onMove(int xDelta, int yDelta, int newX, int newY) {
+    public boolean onMove(int xDelta, int yDelta, int newX, int newY) {
         if(currentButton != null && !currentButton.getRectangle().contains(newX, newY)) {
             currentButton.releaseButton();
             currentButton = null;
         }
+        return false;
     }
 
     public int getX() {
@@ -317,15 +319,15 @@ public class Window implements NodeGenerator, MouseInputListener, KeyInputListen
         this.visible = visible;
 
         if(visible) {
-            MouseInput.get().addListener(this);
-            KeyInput.get().addListener(this);
+//            MouseInput.get().addListener(this);
+//            KeyInput.get().addListener(this);
             windows.push(this);
             Main.getMain().showWindow(this);
         } else {
             windows.pop();
             Main.getMain().hideWindow(this);
-            MouseInput.get().removeListener(this);
-            KeyInput.get().removeListener(this);
+//            MouseInput.get().removeListener(this);
+//            KeyInput.get().removeListener(this);
         }
     }
 
