@@ -429,14 +429,14 @@ public abstract class Game extends BaseGame {
 //        KeyBindingManager.getKeyBindingManager().set( "step",
 //                KeyInput.KEY_ADD );
         /** Assign key T to action "toggle_wire". */
-//        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
-//                KeyInput.KEY_T );
+        KeyBindingManager.getKeyBindingManager().set( "toggle_wire",
+                KeyInput.KEY_T );
 //        /** Assign key L to action "toggle_lights". */
 //        KeyBindingManager.getKeyBindingManager().set( "toggle_lights",
 //                KeyInput.KEY_L );
 //        /** Assign key B to action "toggle_bounds". */
-//        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
-//                KeyInput.KEY_B );
+        KeyBindingManager.getKeyBindingManager().set( "toggle_bounds",
+                KeyInput.KEY_B );
 //        /** Assign key N to action "toggle_normals". */
 //        KeyBindingManager.getKeyBindingManager().set( "toggle_normals",
 //                KeyInput.KEY_N );

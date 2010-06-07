@@ -306,6 +306,18 @@ public enum Model implements Savable {
             return getNoAlphaSpatial();
         }
     },
+    edge_up("./data/3ds/edge-u.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    edge_down("./data/3ds/edge-d.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
     edge_bridge("./data/3ds/edge-b.3ds", true) {
 
         @Override

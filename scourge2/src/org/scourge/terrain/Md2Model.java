@@ -115,10 +115,10 @@ public class Md2Model implements NodeGenerator {
     }
 
     public int getX() {
-        return (int)(getNode().getLocalTranslation().x / ShapeUtil.WALL_WIDTH);
+        return Math.round(getNode().getLocalTranslation().x / ShapeUtil.WALL_WIDTH);
     }
         
     public int getZ() {
-        return (int)(getNode().getLocalTranslation().z / ShapeUtil.WALL_WIDTH);
+        return Math.round(getNode().getLocalTranslation().z / ShapeUtil.WALL_WIDTH);
     }
 }

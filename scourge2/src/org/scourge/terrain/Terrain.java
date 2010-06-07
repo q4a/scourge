@@ -62,13 +62,18 @@ public class Terrain implements NodeGenerator {
 
     public void gotoPlayer() {
         clearLoadedRegions();
+
+        teleport();
+
+        main.setFogOnWater(true);
+        main.setCameraFollowsPlayer(true);
+    }
+
+    public void teleport() {
         loadAsynchronously = false;
         loadRegion(main.getPlayer().getCreatureModel().getX() / Region.REGION_SIZE, main.getPlayer().getCreatureModel().getZ() / Region.REGION_SIZE);
         loadRegion();
         loadAsynchronously = true;
-
-        main.setFogOnWater(true);
-        main.setCameraFollowsPlayer(true);
     }
 
     private void clearLoadedRegions() {

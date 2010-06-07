@@ -32,7 +32,7 @@ public class Region implements NodeGenerator {
     private List<House> houses = new ArrayList<House>();
     public static final float MIN_HEIGHT = 2;
     private static Logger logger = Logger.getLogger(Region.class.toString());
-    private static final int EDGE_BUFFER = 2;
+    public static final int EDGE_BUFFER = 2;
     private boolean first = true;
 
     public Region(Terrain terrain, int x, int y) throws IOException {
@@ -173,7 +173,12 @@ public class Region implements NodeGenerator {
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
-                tiles[y][x] = new Tile(terrain.getMain(), region[y][x].getC(), region[y][x].getClimate(), region[y][x].getLevel());
+                tiles[y][x] = new Tile(terrain.getMain(),
+                                       region[y][x].getC(),
+                                       region[y][x].getClimate(),
+                                       region[y][x].getLevel(),
+                                       regionData.getBlock(regionX * REGION_SIZE + x - EDGE_BUFFER,
+                                                           regionY * REGION_SIZE + y - EDGE_BUFFER));
 
                 if(region[y][x].getC() == MapSymbol.bridge.getC()) {
                     if(check(y - 1, x, region[y][x].getLevel(), region) && check(y + 1, x, region[y][x].getLevel(), region)) {
@@ -209,7 +214,6 @@ public class Region implements NodeGenerator {
                 if(region[y][x].getC() != MapSymbol.water.getC()) {
 
                     int level = tiles[y][x].getLevel();
-                    Climate climate = tiles[y][x].getClimate();
 
                     if(check(y - 1, x, level, region) && check(y, x - 1, level, region) && check(y, x + 1, level, region) && !check(y + 1, x, level, region)) {
                         setEdgeSide(x, y, 180, region);
@@ -329,6 +333,10 @@ public class Region implements NodeGenerator {
     private void setEdgeSide(int x, int y, int angle, MapIO.RegionPoint[][] region) {
         if(region[y][x].getC() == MapSymbol.gate.getC()) {
             setEdge(x, y, angle, region, TileType.EDGE_GATE);
+        } else if(region[y][x].getC() == MapSymbol.up.getC()) {
+            setEdge(x, y, angle, region, TileType.EDGE_UP);
+        } else if(region[y][x].getC() == MapSymbol.down.getC()) {
+            setEdge(x, y, angle, region, TileType.EDGE_DOWN);
         } else {
             setEdge(x, y, angle, region, TileType.EDGE_SIDE);
         }
@@ -611,9 +619,8 @@ public class Region implements NodeGenerator {
 //        return Terrain.getRegionKey(x / REGION_SIZE, y / REGION_SIZE);
 //    }
 
-    public boolean inDungeon(int x, int z) {
-        Tile tile = tiles[z + EDGE_BUFFER][x + EDGE_BUFFER];
-        return (tile.getClimate() == Climate.dungeon);
+    public Tile getTile(int x, int z) {
+        return tiles[z][x];
     }
 
     public void setRoofVisible(boolean visible) {

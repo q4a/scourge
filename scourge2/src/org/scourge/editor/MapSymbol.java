@@ -20,6 +20,8 @@ public enum MapSymbol {
     ramp('L', Color.magenta),
     gate('g', Color.cyan),
     sign('s', new Color(0xff, 0x30, 0x30), new String[] { "label", "label2" }),
+    up('u', Color.PINK, new String[] { "down_location" }),
+    down('d', Color.PINK, new String[] { "up_location" }),
     ;
 
     private char c;

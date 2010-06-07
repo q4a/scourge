@@ -44,6 +44,7 @@ public class Tile {
     private boolean nextToWater;
     public static final String BLOCK_DATA = "blockData";
     public static final String MODEL = "model";
+    private BlockData blockData;
 
     public void clearModels() {
         models.clear();
@@ -84,7 +85,7 @@ public class Tile {
     }
 
 
-    public Tile(Main main, char c, Climate climate, int level) {
+    public Tile(Main main, char c, Climate climate, int level, BlockData blockData) {
         this.main = main;
         for(int i = 0; i < heights.length; i++) {
             heights[i] = 0;
@@ -93,6 +94,7 @@ public class Tile {
         this.c = c;
         this.climate = climate;
         this.level = level;
+        this.blockData = blockData;
     }
 
     public int getLevel() {
@@ -412,10 +414,18 @@ public class Tile {
     }
 
     public boolean isDungeonDoor() {
-        return c == MapSymbol.gate.getC();
+        return c == MapSymbol.gate.getC() || c == MapSymbol.up.getC() || c == MapSymbol.down.getC();
     }
 
     public boolean isWater() {
         return c == MapSymbol.water.getC();
+    }
+
+    public char getC() {
+        return c;
+    }
+
+    public BlockData getBlockData() {
+        return blockData;
     }
 }

@@ -62,7 +62,7 @@ public class Main extends Game {
     private Selection dropSelection, dragSelection;
     private Map<String, Dragable> dragables = new HashMap<String, Dragable>();
     private DragSource dragSource;
-    private boolean inDungeon;
+    private boolean inDungeon, inUpDown;
     private boolean updateRoof;
     private boolean fogOnWater;
 
@@ -271,13 +271,20 @@ public class Main extends Game {
             if(player != null) {
                 player.getCreatureModel().moveToTopOfTerrain();
 
-//                positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
-//                                      " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
-//                                      " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
-//                                      " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," +
-//                                      getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ") inDungeon=" + inDungeon);
-//                positionLabel.updateRenderState();
-//                positionLabel.updateModelBound();
+                Tile tile = getTerrain().getCurrentRegion().getTile(
+                    player.getCreatureModel().getX() % Region.REGION_SIZE,
+                    player.getCreatureModel().getZ() % Region.REGION_SIZE);
+
+                positionLabel.setText("Player: " + player.getCreatureModel().getX() + "," + player.getCreatureModel().getZ() +
+                                      " (" + (player.getCreatureModel().getX() % Region.REGION_SIZE) + "," + (player.getCreatureModel().getZ() % Region.REGION_SIZE) + ")" +
+                                      " region: " + getTerrain().getCurrentRegion().getX() + "," + getTerrain().getCurrentRegion().getY() +
+                                      " (" + getTerrain().getCurrentRegion().getX() / Region.REGION_SIZE + "," + getTerrain().getCurrentRegion().getY() / Region.REGION_SIZE + ")" +
+                                      " inDungeon=" + inDungeon +
+                                      " inUpDown=" + inUpDown +
+                                      " symbol=" + tile.getC() +
+                                      " block=" + tile.getBlockData());
+                positionLabel.updateRenderState();
+                positionLabel.updateModelBound();
             }
         }
 
@@ -605,12 +612,34 @@ public class Main extends Game {
     }
 
     public void checkRoof() {
-        boolean inDungeon = getTerrain().getCurrentRegion().inDungeon(
+        Tile tile = getTerrain().getCurrentRegion().getTile(
                 player.getCreatureModel().getX() % Region.REGION_SIZE,
                 player.getCreatureModel().getZ() % Region.REGION_SIZE);
+        boolean inDungeon = (tile.getClimate() == Climate.dungeon);
         if(inDungeon != this.inDungeon) {
             this.inDungeon = inDungeon;
             updateRoof();
+        }
+        boolean inUpDown = (tile.getC() == MapSymbol.up.getC() || tile.getC() == MapSymbol.down.getC());
+        if(inUpDown != this.inUpDown) {
+            System.err.println("teleporting...");
+            this.inUpDown = inUpDown;
+
+            // teleport to the location
+            BlockData blockData = tile.getBlockData();
+            System.err.println("\tblockData=" + blockData);
+            if(blockData != null) {
+                String location = blockData.getData().get(tile.getC() == MapSymbol.up.getC() ? MapSymbol.up.getBlockDataKeys()[0] : MapSymbol.down.getBlockDataKeys()[0]);
+                System.err.println("\tlocation=" + location);
+                try {
+                    String[] s = location.trim().split(",");
+                    getPlayer().getCreatureModel().moveTo(new Vector3f(Float.parseFloat(s[0]) + Region.EDGE_BUFFER, 1f, Float.parseFloat(s[1]) + Region.EDGE_BUFFER));
+                    getTerrain().teleport();
+                } catch(RuntimeException exc) {
+                    exc.printStackTrace();
+                }
+            }
+            System.err.println("\tdone.");
         }
     }
 

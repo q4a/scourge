@@ -119,6 +119,40 @@ enum TileType {
         public void updateHeights(Node node, float[] heights) {
         }
     },
+    EDGE_UP {
+        private Model model = Model.edge_up;
+
+        @Override
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
+        }
+
+        @Override
+        public boolean isTexturePreset() {
+            return true;
+        }
+
+        @Override
+        public void updateHeights(Node node, float[] heights) {
+        }
+    },
+    EDGE_DOWN {
+        private Model model = Model.edge_down;
+
+        @Override
+        public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
+            return addEdge(angle, model, level, climate, nextToWater);
+        }
+
+        @Override
+        public boolean isTexturePreset() {
+            return true;
+        }
+
+        @Override
+        public void updateHeights(Node node, float[] heights) {
+        }
+    },
     QUAD {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
