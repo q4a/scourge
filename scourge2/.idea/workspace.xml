@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-d.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-d.3ds" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/region_30_22.xml" afterPath="$PROJECT_DIR$/data/maps/region_30_22.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/maps/region_29_22.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/region_31_21.xml" afterPath="$PROJECT_DIR$/data/maps/region_31_21.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/3ds/edge-u.3ds" afterPath="$PROJECT_DIR$/data/3ds/edge-u.3ds" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -97,7 +99,7 @@
       <file leaf-file-name="Climate.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/Climate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="70" selection-start="1729" selection-end="1729" vertical-scroll-proportion="0.6360601">
+            <state line="56" column="69" selection-start="1865" selection-end="1865" vertical-scroll-proportion="0.8163606">
               <folding />
             </state>
           </provider>
@@ -612,7 +614,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/Climate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="70" selection-start="1729" selection-end="1729" vertical-scroll-proportion="0.6360601">
+        <state line="56" column="69" selection-start="1865" selection-end="1865" vertical-scroll-proportion="0.8163606">
           <folding />
         </state>
       </provider>

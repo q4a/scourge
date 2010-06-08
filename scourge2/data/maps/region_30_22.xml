@@ -1,4 +1,9 @@
 <region region_x="30" region_y="22">
+   <block coordinates="600.443">
+      <block x="600" y="443">
+         <data key="down_location">632,436</data>
+      </block>
+   </block>
    <block coordinates="613.442">
       <block x="613" y="442">
          <data key="up_location">627,462</data>
