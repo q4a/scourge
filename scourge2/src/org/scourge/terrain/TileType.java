@@ -192,8 +192,8 @@ enum TileType {
         Spatial edge = model.createSpatial();
         edge.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * angle, Vector3f.UNIT_Y));
 
-        if(climate == Climate.dungeon) {
-            model.assignDungeonTextures(edge, level == 0 ? climate.getBaseTileTex().getTexturePath() : null);
+        if(climate.isDungeon()) {
+            model.assignDungeonTextures(edge, level == 0 ? climate.getBaseTileTex().getTexturePath() : null, climate.getWallTexture());
         }
 
         Node edgeNode = new Node(ShapeUtil.newShapeName("edge_node"));

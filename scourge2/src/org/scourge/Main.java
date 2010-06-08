@@ -615,7 +615,7 @@ public class Main extends Game {
         Tile tile = getTerrain().getCurrentRegion().getTile(
                 player.getCreatureModel().getX() % Region.REGION_SIZE,
                 player.getCreatureModel().getZ() % Region.REGION_SIZE);
-        boolean inDungeon = (tile.getClimate() == Climate.dungeon);
+        boolean inDungeon = tile.getClimate().isDungeon();
         if(inDungeon != this.inDungeon) {
             this.inDungeon = inDungeon;
             updateRoof();

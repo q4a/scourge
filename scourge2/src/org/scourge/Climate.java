@@ -22,6 +22,32 @@ public enum Climate {
         public TileTexType getBaseTileTex() {
             return TileTexType.DUNGEON;
         }
+
+        @Override
+        public boolean isDungeon() {
+            return true;
+        }
+
+        @Override
+        public String getWallTexture() {
+            return "data/textures/mountain.png";
+        }
+    },
+    dungeon2(new TileTexType[] { TileTexType.DUNGEON4, TileTexType.DUNGEON5, TileTexType.DUNGEON6 }, new Model[0]) {
+        @Override
+        public TileTexType getBaseTileTex() {
+            return TileTexType.DUNGEON4;
+        }
+
+        @Override
+        public boolean isDungeon() {
+            return true;
+        }
+
+        @Override
+        public String getWallTexture() {
+            return "data/textures/bluecave.png";
+        }
     },
 
     ;
@@ -54,5 +80,13 @@ public enum Climate {
 
     public TileTexType getBaseTileTex() {
         return TileTexType.ROCK;
+    }
+
+    public boolean isDungeon() {
+        return false;
+    }
+
+    public String getWallTexture() {
+        throw new RuntimeException("Implement me! Climate=" + name());
     }
 }

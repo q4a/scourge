@@ -149,10 +149,10 @@ public class Tile {
         node.setModelBound(new BoundingBox());
 
         // apply texture, except for while in dungeons always use ROCK for the top of cliffs
-        applyTexture(around, climate == Climate.dungeon && level > 0);
+        applyTexture(around, climate.isDungeon() && level > 0);
 
         // add mountains on top of dungeons
-        if(climate == Climate.dungeon) {
+        if(climate.isDungeon()) {
             roof = Model.mountain.createSpatial();
             roof.getLocalTranslation().y = (1 - level) * ShapeUtil.WALL_HEIGHT;
             roof.setRenderQueueMode(com.jme.renderer.Renderer.QUEUE_OPAQUE);
@@ -410,7 +410,7 @@ public class Tile {
     }
 
     public boolean isDungeonFloor() {
-        return getClimate() == Climate.dungeon && getLevel() < 1;
+        return getClimate().isDungeon() && getLevel() < 1;
     }
 
     public boolean isDungeonDoor() {

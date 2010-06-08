@@ -527,7 +527,7 @@ public enum Model implements Savable {
         return null;
     }
 
-    protected void assignDungeonTextures(Spatial spatial, String topTexturePath) {
+    protected void assignDungeonTextures(Spatial spatial, String topTexturePath, String wallTexturePath) {
         Map<String, String> textures = new HashMap<String, String>();
 
         if(topTexturePath != null) {
@@ -536,7 +536,7 @@ public enum Model implements Savable {
         }
 
         // walls
-        textures.put("wall##0", "data/textures/mountain.png");
+        textures.put("wall##0", wallTexturePath);
         assignTextures(spatial, textures);
     }
 
