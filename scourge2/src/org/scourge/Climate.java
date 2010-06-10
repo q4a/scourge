@@ -1,7 +1,7 @@
 package org.scourge;
 
-import org.scourge.terrain.Model;
-import org.scourge.terrain.TileTexType;
+import com.jme.math.Vector3f;
+import org.scourge.terrain.*;
 
 import java.util.Random;
 
@@ -32,6 +32,30 @@ public enum Climate {
         public String getWallTexture() {
             return "data/textures/mountain.png";
         }
+
+        @Override
+        public void decorateWall(Direction dir, Region region, int x, int y) {
+            if(dir == Direction.NORTH) {
+                region.getTile(x, y).addModel(Model.dungeonColumn,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, 0),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.SOUTH) {
+                region.getTile(x, y).addModel(Model.dungeonColumn,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.WEST) {
+                region.getTile(x, y).addModel(Model.dungeonColumn,
+                                     new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                     1, 90, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.EAST) {
+                region.getTile(x, y).addModel(Model.dungeonColumn,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                     1, 90, Vector3f.UNIT_Y);
+            }
+        }
     },
     dungeon2(new TileTexType[] { TileTexType.DUNGEON4, TileTexType.DUNGEON5, TileTexType.DUNGEON6 }, new Model[0]) {
         @Override
@@ -47,6 +71,30 @@ public enum Climate {
         @Override
         public String getWallTexture() {
             return "data/textures/bluecave.png";
+        }
+
+        @Override
+        public void decorateWall(Direction dir, Region region, int x, int y) {
+            if(dir == Direction.NORTH) {
+                region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, -1),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.SOUTH) {
+                region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.WEST) {
+                region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                     new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
+            if(dir == Direction.EAST) {
+                region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                     new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                     1, 0, Vector3f.UNIT_Y);
+            }
         }
     },
 
@@ -88,5 +136,8 @@ public enum Climate {
 
     public String getWallTexture() {
         throw new RuntimeException("Implement me! Climate=" + name());
+    }
+
+    public void decorateWall(Direction dir, Region region, int x, int y) {
     }
 }

@@ -276,7 +276,13 @@ public enum Model implements Savable {
             return getNoAlphaSpatial();
         }
     },
-    dungeonColumn("./data/3ds/wood_col.3ds", true) {
+    dungeonColumn("./data/3ds/col2.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            return getNoAlphaSpatial();
+        }
+    },
+    dungeonColumn2("./data/3ds/col.3ds", true) {
         @Override
         public Spatial createSpatial() {
             return getNoAlphaSpatial();

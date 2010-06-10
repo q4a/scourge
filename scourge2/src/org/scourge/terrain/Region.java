@@ -293,26 +293,21 @@ public class Region implements NodeGenerator {
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 if(checkDungeonFloor(x, y) && !(checkDungeonDoor(x - 1, y) || checkDungeonDoor(x + 1, y) || checkDungeonDoor(x, y - 1) || checkDungeonDoor(x, y + 1))) {
+                    Direction dir = null;
                     if(!checkDungeonFloor(x, y - 1) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x + 1, y - 1)) {
-                        tiles[y][x].addModel(Model.dungeonColumn,
-                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, -1),
-                                             1, 0, Vector3f.UNIT_Y);
+                        dir = Direction.NORTH;
                     }
                     if(!checkDungeonFloor(x, y + 1) && !checkDungeonFloor(x - 1, y + 1) && !checkDungeonFloor(x + 1, y + 1)) {
-                        tiles[y][x].addModel(Model.dungeonColumn,
-                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
-                                             1, 0, Vector3f.UNIT_Y);
+                        dir = Direction.SOUTH;
                     }
                     if(!checkDungeonFloor(x - 1, y) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x - 1, y + 1)) {
-                        tiles[y][x].addModel(Model.dungeonColumn,
-                                             new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2), 
-                                             1, 0, Vector3f.UNIT_Y);
+                        dir = Direction.WEST;
                     }
                     if(!checkDungeonFloor(x + 1, y) && !checkDungeonFloor(x + 1, y - 1) && !checkDungeonFloor(x + 1, y + 1)) {
-                        tiles[y][x].addModel(Model.dungeonColumn,
-                                             new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2), 
-                                             1, 0, Vector3f.UNIT_Y);
+                        dir = Direction.EAST;
                     }
+
+                    tiles[y][x].getClimate().decorateWall(dir, this, x, y);
                 }
             }
         }
