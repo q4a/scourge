@@ -26,6 +26,7 @@ public enum MapSymbol {
     room2('O', new Color(0xff, 0x80, 0x00)),
     room3('q', new Color(0xff, 0x80, 0x00)),
     room4('Q', new Color(0xff, 0x80, 0x00)),
+    room5('z', new Color(0xff, 0x80, 0x00)),
     ;
 
     private char c;

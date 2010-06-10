@@ -28,6 +28,7 @@ public enum TileTexType {
     ROOM2("./data/textures/floor-2.png"),
     ROOM3("./data/textures/floor-8.png"),
     ROOM4("./data/textures/floor.png"),
+    ROOM5("./data/textures/passage.png"),
 
     GRASS("./data/textures/grass.png"),
     MOSS("./data/textures/moss2.png"),

@@ -173,6 +173,7 @@ public class Region implements NodeGenerator {
         Set<Vector2f> roomPos2 = new HashSet<Vector2f>();
         Set<Vector2f> roomPos3 = new HashSet<Vector2f>();
         Set<Vector2f> roomPos4 = new HashSet<Vector2f>();
+        Set<Vector2f> roomPos5 = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
@@ -211,6 +212,9 @@ public class Region implements NodeGenerator {
                     region[y][x].setC(MapSymbol.ground.getC());
                 } else if(region[y][x].getC() == MapSymbol.room4.getC()) {
                     roomPos4.add(new Vector2f(x, y));
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.room5.getC()) {
+                    roomPos5.add(new Vector2f(x, y));
                     region[y][x].setC(MapSymbol.ground.getC());
                 } else if(region[y][x].getC() == MapSymbol.paved_road.getC()) {
                     cobblesPos.add(new Vector2f(x, y));
@@ -277,6 +281,8 @@ public class Region implements NodeGenerator {
                             tiles[y][x].set(TileTexType.ROOM3, TileType.QUAD, 0);
                         } else if(roomPos4.contains(point)) {
                             tiles[y][x].set(TileTexType.ROOM4, TileType.QUAD, 0);
+                        } else if(roomPos5.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROOM5, TileType.QUAD, 0);
                         } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
                                   x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
                             // this is so edges meet on the same type
