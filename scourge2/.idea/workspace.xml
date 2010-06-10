@@ -6,10 +6,7 @@
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/maps/land.bin.gz" afterPath="$PROJECT_DIR$/data/maps/land.bin.gz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java" afterPath="$PROJECT_DIR$/src/org/scourge/editor/MapSymbol.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/TileTexType.java" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -90,7 +87,7 @@
       <file leaf-file-name="Region.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="498" column="79" selection-start="25408" selection-end="25408" vertical-scroll-proportion="0.48269895">
+            <state line="505" column="140" selection-start="25764" selection-end="25764" vertical-scroll-proportion="0.6280277">
               <folding />
             </state>
           </provider>
@@ -382,7 +379,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="724" y="22" width="1196" height="1094" extended-state="0" />
+    <frame x="721" y="22" width="1196" height="1094" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
@@ -549,7 +546,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="498" column="79" selection-start="25408" selection-end="25408" vertical-scroll-proportion="0.48269895">
+        <state line="505" column="140" selection-start="25764" selection-end="25764" vertical-scroll-proportion="0.6280277">
           <folding />
         </state>
       </provider>
