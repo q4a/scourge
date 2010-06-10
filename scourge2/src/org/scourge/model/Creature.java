@@ -1,9 +1,12 @@
 package org.scourge.model;
 
 import com.jme.math.Vector3f;
+import org.scourge.Main;
 import org.scourge.config.Items;
 import org.scourge.config.PlayerTemplate;
 import org.scourge.terrain.Md2Model;
+import org.scourge.terrain.Region;
+import org.scourge.terrain.Tile;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -238,5 +241,17 @@ public class Creature implements ItemList {
     @Override
     public void addItem(Item item) {
         inventory.add(item);
+    }
+
+    /**
+     * Get the tile under this creature.
+     * @return the tile under this creature.
+     */
+    public Tile getTile() {
+        return Main.getMain().getTerrain().getCurrentRegion() == null ?
+               null : 
+               Main.getMain().getTerrain().getCurrentRegion().getTile(
+                getCreatureModel().getX() % Region.REGION_SIZE,
+                getCreatureModel().getZ() % Region.REGION_SIZE);
     }
 }

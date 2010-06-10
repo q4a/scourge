@@ -612,34 +612,34 @@ public class Main extends Game {
     }
 
     public void checkRoof() {
-        Tile tile = getTerrain().getCurrentRegion().getTile(
-                player.getCreatureModel().getX() % Region.REGION_SIZE,
-                player.getCreatureModel().getZ() % Region.REGION_SIZE);
-        boolean inDungeon = tile.getClimate().isDungeon();
-        if(inDungeon != this.inDungeon) {
-            this.inDungeon = inDungeon;
-            updateRoof();
-        }
-        boolean inUpDown = (tile.getC() == MapSymbol.up.getC() || tile.getC() == MapSymbol.down.getC());
-        if(inUpDown != this.inUpDown) {
-            System.err.println("teleporting...");
-            this.inUpDown = inUpDown;
-
-            // teleport to the location
-            BlockData blockData = tile.getBlockData();
-            System.err.println("\tblockData=" + blockData);
-            if(blockData != null) {
-                String location = blockData.getData().get(tile.getC() == MapSymbol.up.getC() ? MapSymbol.up.getBlockDataKeys()[0] : MapSymbol.down.getBlockDataKeys()[0]);
-                System.err.println("\tlocation=" + location);
-                try {
-                    String[] s = location.trim().split(",");
-                    getPlayer().getCreatureModel().moveTo(new Vector3f(Float.parseFloat(s[0]) + Region.EDGE_BUFFER, 1f, Float.parseFloat(s[1]) + Region.EDGE_BUFFER));
-                    getTerrain().teleport();
-                } catch(RuntimeException exc) {
-                    exc.printStackTrace();
-                }
+        Tile tile = player.getTile();
+        if(tile != null) {
+            boolean inDungeon = tile.getClimate().isDungeon();
+            if(inDungeon != this.inDungeon) {
+                this.inDungeon = inDungeon;
+                updateRoof();
             }
-            System.err.println("\tdone.");
+            boolean inUpDown = (tile.getC() == MapSymbol.up.getC() || tile.getC() == MapSymbol.down.getC());
+            if(inUpDown != this.inUpDown) {
+                System.err.println("teleporting...");
+                this.inUpDown = inUpDown;
+
+                // teleport to the location
+                BlockData blockData = tile.getBlockData();
+                System.err.println("\tblockData=" + blockData);
+                if(blockData != null) {
+                    String location = blockData.getData().get(tile.getC() == MapSymbol.up.getC() ? MapSymbol.up.getBlockDataKeys()[0] : MapSymbol.down.getBlockDataKeys()[0]);
+                    System.err.println("\tlocation=" + location);
+                    try {
+                        String[] s = location.trim().split(",");
+                        getPlayer().getCreatureModel().moveTo(new Vector3f(Float.parseFloat(s[0]) + Region.EDGE_BUFFER, 1f, Float.parseFloat(s[1]) + Region.EDGE_BUFFER));
+                        getTerrain().teleport();
+                    } catch(RuntimeException exc) {
+                        exc.printStackTrace();
+                    }
+                }
+                System.err.println("\tdone.");
+            }
         }
     }
 

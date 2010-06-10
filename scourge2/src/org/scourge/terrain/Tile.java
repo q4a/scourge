@@ -157,8 +157,11 @@ public class Tile {
             roof.getLocalTranslation().y = (1 - level) * ShapeUtil.WALL_HEIGHT;
             roof.setRenderQueueMode(com.jme.renderer.Renderer.QUEUE_OPAQUE);
             roof.updateModelBound();
-            node.attachChild(roof);
-            node.updateModelBound();
+            Tile tile = main.getPlayer().getTile();
+            if(tile != null && !tile.getClimate().isDungeon()) {
+                node.attachChild(roof);
+                node.updateModelBound();
+            }
         }
     }
 

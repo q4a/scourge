@@ -64,7 +64,7 @@ public class Terrain implements NodeGenerator {
         clearLoadedRegions();
 
         teleport();
-
+        
         main.setFogOnWater(true);
         main.setCameraFollowsPlayer(true);
     }
@@ -73,6 +73,7 @@ public class Terrain implements NodeGenerator {
         loadAsynchronously = false;
         loadRegion(main.getPlayer().getCreatureModel().getX() / Region.REGION_SIZE, main.getPlayer().getCreatureModel().getZ() / Region.REGION_SIZE);
         loadRegion();
+        main.checkRoof();
         loadAsynchronously = true;
     }
 
