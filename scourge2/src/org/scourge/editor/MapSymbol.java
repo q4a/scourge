@@ -22,6 +22,10 @@ public enum MapSymbol {
     sign('s', new Color(0xff, 0x30, 0x30), new String[] { "label", "label2" }),
     up('u', Color.PINK, new String[] { "down_location" }),
     down('d', Color.PINK, new String[] { "up_location" }),
+    room('o', new Color(0xff, 0x80, 0x00)),
+    room2('O', new Color(0xff, 0x80, 0x00)),
+    room3('q', new Color(0xff, 0x80, 0x00)),
+    room4('Q', new Color(0xff, 0x80, 0x00)),
     ;
 
     private char c;

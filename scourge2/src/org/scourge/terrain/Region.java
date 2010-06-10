@@ -169,6 +169,10 @@ public class Region implements NodeGenerator {
         Set<Vector2f> roadPos = new HashSet<Vector2f>();
         Set<Vector2f> cobblesPos = new HashSet<Vector2f>();
         Set<Vector2f> ladderPos = new HashSet<Vector2f>();
+        Set<Vector2f> roomPos = new HashSet<Vector2f>();
+        Set<Vector2f> roomPos2 = new HashSet<Vector2f>();
+        Set<Vector2f> roomPos3 = new HashSet<Vector2f>();
+        Set<Vector2f> roomPos4 = new HashSet<Vector2f>();
 
         // create tiles and handle empty tiles with models
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
@@ -195,6 +199,18 @@ public class Region implements NodeGenerator {
                     region[y][x].setC(MapSymbol.ground.getC());
                 } else if(region[y][x].getC() == MapSymbol.road.getC()) {
                     roadPos.add(new Vector2f(x, y));
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.room.getC()) {
+                    roomPos.add(new Vector2f(x, y));
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.room2.getC()) {
+                    roomPos2.add(new Vector2f(x, y));
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.room3.getC()) {
+                    roomPos3.add(new Vector2f(x, y));
+                    region[y][x].setC(MapSymbol.ground.getC());
+                } else if(region[y][x].getC() == MapSymbol.room4.getC()) {
+                    roomPos4.add(new Vector2f(x, y));
                     region[y][x].setC(MapSymbol.ground.getC());
                 } else if(region[y][x].getC() == MapSymbol.paved_road.getC()) {
                     cobblesPos.add(new Vector2f(x, y));
@@ -252,7 +268,15 @@ public class Region implements NodeGenerator {
                         if(roadPos.contains(point)) {
                             tiles[y][x].set(TileTexType.ROAD, TileType.QUAD, 0);
                         } else if(cobblesPos.contains(point)) {
-                            tiles[y][x].set(TileTexType.COBBLES, TileType.QUAD, 0);                            
+                            tiles[y][x].set(TileTexType.COBBLES, TileType.QUAD, 0);
+                        } else if(roomPos.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROOM, TileType.QUAD, 0);
+                        } else if(roomPos2.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROOM2, TileType.QUAD, 0);
+                        } else if(roomPos3.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROOM3, TileType.QUAD, 0);
+                        } else if(roomPos4.contains(point)) {
+                            tiles[y][x].set(TileTexType.ROOM4, TileType.QUAD, 0);
                         } else if(x <= EDGE_BUFFER || y <= EDGE_BUFFER ||
                                   x >= cols + EDGE_BUFFER - 1 || y >= rows + EDGE_BUFFER - 1) {
                             // this is so edges meet on the same type
@@ -471,7 +495,9 @@ public class Region implements NodeGenerator {
         // set the heights
         for(int y = EDGE_BUFFER + 1; y < rows + EDGE_BUFFER - 1; y++) {
             for(int x = EDGE_BUFFER + 1; x < cols + EDGE_BUFFER - 1; x++) {
-                float h = 2.0f + terrain.getMain().getRandom().nextFloat() * 8.0f;
+                float h = tiles[y][x].getClimate().isDungeon() ?
+                          (0.5f + terrain.getMain().getRandom().nextFloat() * 2.0f) : 
+                          (2.0f + terrain.getMain().getRandom().nextFloat() * 8.0f);
                 tiles[y - 1][x - 1].setHeight(Tile.Edge.SE, h);
                 tiles[y - 1][x].setHeight(Tile.Edge.SW, h);
                 tiles[y][x - 1].setHeight(Tile.Edge.NE, h);
