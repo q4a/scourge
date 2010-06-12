@@ -5,14 +5,22 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.TextureState;
+import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
+import com.jme.util.TextureManager;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.Savable;
+import com.jme.util.resource.ResourceLocatorTool;
+import com.jmex.effects.particles.ParticleFactory;
+import com.jmex.effects.particles.ParticleSystem;
+import com.jmex.effects.particles.RampEntry;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -337,7 +345,135 @@ public enum Model implements Savable {
             return getAlphaSpatial(1f);
         }
     },
+    torch("./data/3ds/torch2.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            Node node = new Node(ShapeUtil.newShapeName("torch"));
+            Spatial spatial = getNoAlphaSpatial();
+            node.attachChild(spatial);
+            node.attachChild(addTorchFlame(new FlameTypeConfig() {
+                public void configure(ParticleSystem particles) {
+                    particles.setStartColor(new ColorRGBA(1, 1, 0.5f, 1));
+                    particles.setStartSize(5f);
+            
+                    {
+                        final RampEntry entry = new RampEntry(0.15f);
+                        entry.setColor(new ColorRGBA(1, 0.33f, 0, 0.5f));
+                        entry.setSize(10f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    {
+                        final RampEntry entry = new RampEntry(0.10f);
+                        entry.setColor(new ColorRGBA(1, 0, 0, 0.25f));
+                        entry.setSize(6f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    {
+                        final RampEntry entry = new RampEntry(0.5f);
+                        entry.setColor(new ColorRGBA(0f, 0f, 0f, 0.05f));
+                        entry.setSize(3f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    // End color
+                    particles.setEndColor(new ColorRGBA(0f, 0f, 0f, 0.05f));
+                    particles.setEndSize(2f);
+                }
+            }));
+            return node;
+        }
+    },
+    torchGreen("./data/3ds/torch2.3ds", true) {
+        @Override
+        public Spatial createSpatial() {
+            Node node = new Node(ShapeUtil.newShapeName("torch"));
+            Spatial spatial = getNoAlphaSpatial();
+            node.attachChild(spatial);
+            node.attachChild(addTorchFlame(new FlameTypeConfig() {
+
+                @Override
+                public void configure(ParticleSystem particles) {
+                    particles.setStartColor(new ColorRGBA(0.5f, 1, 1, 1));
+                    particles.setStartSize(5f);
+
+                    {
+                        final RampEntry entry = new RampEntry(0.15f);
+                        entry.setColor(new ColorRGBA(0, 1, 0.33f, 0.5f));
+                        entry.setSize(10f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    {
+                        final RampEntry entry = new RampEntry(0.10f);
+                        entry.setColor(new ColorRGBA(0, 1, 0, 0.25f));
+                        entry.setSize(6f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    {
+                        final RampEntry entry = new RampEntry(0.5f);
+                        entry.setColor(new ColorRGBA(0f, 0f, 0f, 0.05f));
+                        entry.setSize(3f);
+                        particles.getRamp().addEntry(entry);
+                    }
+
+                    // End color
+                    particles.setEndColor(new ColorRGBA(0f, 0f, 0f, 0.05f));
+                    particles.setEndSize(2f);
+                }
+            }));
+            return node;
+        }
+    },
     ;
+
+    private static Spatial addTorchFlame(FlameTypeConfig config) {
+        ParticleSystem particles = ParticleFactory.buildParticles("particles", 30);
+        particles.setEmissionDirection(new Vector3f(0, 1, 0));
+        particles.setInitialVelocity(0.05f);
+        particles.setMinimumLifeTime(1000);
+        particles.setMaximumLifeTime(1000);
+        particles.setMaximumAngle(15 * FastMath.DEG_TO_RAD);
+        particles.getParticleController().setControlFlow(true);
+        particles.getParticleController().setSpeed(0.4f);
+        particles.setParticlesInWorldCoords(true);
+        particles.setLocalTranslation(0, 5.5f, -2);
+        particles.setLocalScale(0.4f);
+
+        config.configure(particles);
+
+        particles.warmUp(60);
+
+        // set up a BlendState to enable transparency
+        Renderer renderer = DisplaySystem.getDisplaySystem().getRenderer();
+        final BlendState blend = renderer.createBlendState();
+        blend.setEnabled(true);
+        blend.setBlendEnabled(true);
+        blend.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+        blend.setDestinationFunction(BlendState.DestinationFunction.One);
+        blend.setTestEnabled(true);
+        blend.setTestFunction(BlendState.TestFunction.GreaterThan);
+        particles.setRenderState(blend);
+
+        // load the particles Texture
+        final TextureState ts = renderer.createTextureState();
+        ts.setTexture(ShapeUtil.loadTexture("data/textures/flaresmall.jpg"));
+        ts.setEnabled(true);
+        particles.setRenderState(ts);
+
+        // set up a non-writable ZBuffer
+        final ZBufferState zstate = renderer.createZBufferState();
+        zstate.setWritable(false);
+        zstate.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+        particles.setRenderState(zstate);
+
+        particles.getParticleGeometry().setModelBound(new BoundingBox());
+        particles.getParticleGeometry().updateModelBound();
+
+        return particles;
+    }
 
     private static final Model[] BOREAL_TREES = new Model[] {
         normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green, normal_green,
@@ -561,5 +697,9 @@ public enum Model implements Savable {
     @Override
     public Class getClassTag() {
         throw new RuntimeException("not used");
+    }
+
+    interface FlameTypeConfig {
+        public void configure(ParticleSystem particles);
     }
 }

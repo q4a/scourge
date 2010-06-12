@@ -323,18 +323,18 @@ public class Region implements NodeGenerator {
         for(int y = 0; y < rows + EDGE_BUFFER * 2; y++) {
             for(int x = 0; x < cols + EDGE_BUFFER * 2; x++) {
                 if(checkDungeonFloor(x, y) && !(checkDungeonDoor(x - 1, y) || checkDungeonDoor(x + 1, y) || checkDungeonDoor(x, y - 1) || checkDungeonDoor(x, y + 1))) {
-                    Direction dir = null;
+                    List<Direction> dir = new ArrayList<Direction>();
                     if(!checkDungeonFloor(x, y - 1) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x + 1, y - 1)) {
-                        dir = Direction.NORTH;
+                        dir.add(Direction.NORTH);
                     }
                     if(!checkDungeonFloor(x, y + 1) && !checkDungeonFloor(x - 1, y + 1) && !checkDungeonFloor(x + 1, y + 1)) {
-                        dir = Direction.SOUTH;
+                        dir.add(Direction.SOUTH);
                     }
                     if(!checkDungeonFloor(x - 1, y) && !checkDungeonFloor(x - 1, y - 1) && !checkDungeonFloor(x - 1, y + 1)) {
-                        dir = Direction.WEST;
+                        dir.add(Direction.WEST);
                     }
                     if(!checkDungeonFloor(x + 1, y) && !checkDungeonFloor(x + 1, y - 1) && !checkDungeonFloor(x + 1, y + 1)) {
-                        dir = Direction.EAST;
+                        dir.add(Direction.EAST);
                     }
 
                     tiles[y][x].getClimate().decorateWall(dir, this, x, y);

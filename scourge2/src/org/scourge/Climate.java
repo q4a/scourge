@@ -3,6 +3,7 @@ package org.scourge;
 import com.jme.math.Vector3f;
 import org.scourge.terrain.*;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -34,26 +35,32 @@ public enum Climate {
         }
 
         @Override
-        public void decorateWall(Direction dir, Region region, int x, int y) {
-            if(dir == Direction.NORTH) {
-                region.getTile(x, y).addModel(Model.dungeonColumn,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, 0),
-                                     1, 0, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.SOUTH) {
-                region.getTile(x, y).addModel(Model.dungeonColumn,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
-                                     1, 0, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.WEST) {
-                region.getTile(x, y).addModel(Model.dungeonColumn,
-                                     new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
-                                     1, 90, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.EAST) {
-                region.getTile(x, y).addModel(Model.dungeonColumn,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
-                                     1, 90, Vector3f.UNIT_Y);
+        public void decorateWall(List<Direction> dirList, Region region, int x, int y) {
+            for(Direction dir : dirList) {
+                if((int)(Math.random() * 5) == 0) {
+                    addTorch(Model.torch, dir, region, x, y);
+                } else {
+                    if(dir == Direction.NORTH) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, 0),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.SOUTH) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.WEST) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn,
+                                             new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                             1, 90, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.EAST) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                             1, 90, Vector3f.UNIT_Y);
+                    }
+                }
             }
         }
     },
@@ -74,31 +81,60 @@ public enum Climate {
         }
 
         @Override
-        public void decorateWall(Direction dir, Region region, int x, int y) {
-            if(dir == Direction.NORTH) {
-                region.getTile(x, y).addModel(Model.dungeonColumn2,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, -1),
-                                     1, 0, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.SOUTH) {
-                region.getTile(x, y).addModel(Model.dungeonColumn2,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
-                                     1, 0, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.WEST) {
-                region.getTile(x, y).addModel(Model.dungeonColumn2,
-                                     new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
-                                     1, 0, Vector3f.UNIT_Y);
-            }
-            if(dir == Direction.EAST) {
-                region.getTile(x, y).addModel(Model.dungeonColumn2,
-                                     new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
-                                     1, 0, Vector3f.UNIT_Y);
+        public void decorateWall(List<Direction> dirList, Region region, int x, int y) {
+            for(Direction dir : dirList) {
+                if((int)(Math.random() * 5) == 0) {
+                    addTorch(Model.torchGreen, dir, region, x, y);
+                } else {
+                    if(dir == Direction.NORTH) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, -1),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.SOUTH) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 0, ShapeUtil.WALL_WIDTH + 1),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.WEST) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                             new Vector3f(-1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                    if(dir == Direction.EAST) {
+                        region.getTile(x, y).addModel(Model.dungeonColumn2,
+                                             new Vector3f(ShapeUtil.WALL_WIDTH + 1, 0, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                             1, 0, Vector3f.UNIT_Y);
+                    }
+                }
             }
         }
     },
 
     ;
+
+    private static void addTorch(Model torch, Direction dir, Region region, int x, int y) {
+        if(dir == Direction.NORTH) {
+            region.getTile(x, y).addModel(torch,
+                                 new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 10, 0),
+                                 1, 180, Vector3f.UNIT_Y);
+        }
+        if(dir == Direction.SOUTH) {
+            region.getTile(x, y).addModel(torch,
+                                 new Vector3f(ShapeUtil.WALL_WIDTH / 2 - 2, 10, ShapeUtil.WALL_WIDTH + 1),
+                                 1, 0, Vector3f.UNIT_Y);
+        }
+        if(dir == Direction.WEST) {
+            region.getTile(x, y).addModel(torch,
+                                 new Vector3f(-1, 10, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                 1, -90, Vector3f.UNIT_Y);
+        }
+        if(dir == Direction.EAST) {
+            region.getTile(x, y).addModel(torch,
+                                 new Vector3f(ShapeUtil.WALL_WIDTH + 1, 10, ShapeUtil.WALL_WIDTH / 2 - 2),
+                                 1, 90, Vector3f.UNIT_Y);
+        }
+    }
 
     private TileTexType[] ground;
     private Model[] trees;
@@ -138,6 +174,6 @@ public enum Climate {
         throw new RuntimeException("Implement me! Climate=" + name());
     }
 
-    public void decorateWall(Direction dir, Region region, int x, int y) {
+    public void decorateWall(List<Direction> dir, Region region, int x, int y) {
     }
 }
