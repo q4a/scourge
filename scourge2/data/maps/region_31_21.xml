@@ -10,4 +10,9 @@
          <data key="label">Entering dungeon</data>
       </block>
    </block>
+   <block coordinates="634.430">
+      <block x="634" y="430">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
 </region>

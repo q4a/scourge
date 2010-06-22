@@ -5,12 +5,12 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
-import org.scourge.Climate;
 import org.scourge.Main;
 import org.scourge.editor.MapSymbol;
 import org.scourge.io.BlockData;
 import org.scourge.io.MapIO;
 import org.scourge.io.RegionData;
+import org.scourge.model.HasModel;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -34,6 +34,7 @@ public class Region implements NodeGenerator {
     private static Logger logger = Logger.getLogger(Region.class.toString());
     public static final int EDGE_BUFFER = 2;
     private boolean first = true;
+    private List<Generator> generators = new ArrayList<Generator>();
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -154,6 +155,10 @@ public class Region implements NodeGenerator {
         }
         logger.fine("attachModels in " + (System.currentTimeMillis() - start) + " millis.");
 
+
+        // start the generators
+        startGenerators();
+
         this.region.getLocalTranslation().addLocal(new Vector3f(x * ShapeUtil.WALL_WIDTH, 0, y * ShapeUtil.WALL_WIDTH));
 
         Main.getMain().updateRoof();
@@ -161,6 +166,19 @@ public class Region implements NodeGenerator {
         if(logger.isLoggable(Level.FINE)) {
             ShapeUtil.debug();
             logger.fine("loaded region in " + (System.currentTimeMillis() - firstStart) + " millis.");
+        }
+    }
+
+    private void startGenerators() {
+        for(int x = EDGE_BUFFER; x < cols + EDGE_BUFFER; x++) {
+            for(int y = EDGE_BUFFER; y < rows + EDGE_BUFFER; y++) {
+                Tile tile = tiles[y][x];
+                if(tile.getBlockData() != null) {
+                    String monster = tile.getBlockData().getData().get("generate.monster");
+                    System.err.println("Starting " + monster + " generator at " + x + "," + y + ".");
+                    generators.add(new MonsterGenerator(this, x, y, monster));
+                }
+            }
         }
     }
 
@@ -657,5 +675,42 @@ public class Region implements NodeGenerator {
             }
         }
         region.updateRenderState();
+    }
+
+    /**
+     * Find space on this region for this node
+     * @param x coordinates are within the region (0-REGION_SIZE)
+     * @param y (0-REGION_SIZE)
+     * @param model the model to move
+     * @return true if space was found, false if it could not fit
+     */
+    public boolean findSpaceAround(int x, int y, HasModel model) {
+        for(int dist = 1; dist < REGION_SIZE; dist++) {
+            for(int dx = -dist; dx < dist; dx++) {
+                for(int dy = -dist; dy < dist; dy++) {
+                    if(findSpaceOnTile(x + dx, y + dy, model)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private Vector3f translationBackup = new Vector3f();
+    private boolean findSpaceOnTile(int x, int y, HasModel model) {
+        Node node = model.getCreatureModel().getNode();
+        for(int tx = 0; tx < ShapeUtil.WALL_WIDTH; tx++) {
+            for(int ty = 0; ty < ShapeUtil.WALL_WIDTH; ty++) {
+                translationBackup.set(node.getLocalTranslation());
+                node.setLocalTranslation(x * ShapeUtil.WALL_WIDTH + tx, 0, y * ShapeUtil.WALL_WIDTH + ty);
+                if(model.getCreatureModel().checkBoundingCollisions(terrain.getNode())) {
+                    node.getLocalTranslation().set(translationBackup);
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

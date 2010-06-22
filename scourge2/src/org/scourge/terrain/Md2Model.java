@@ -1,19 +1,22 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.intersection.BoundingCollisionResults;
+import com.jme.intersection.CollisionResults;
 import com.jme.intersection.TrianglePickResults;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Vector3f;
-import com.jme.scene.Controller;
-import com.jme.scene.Node;
+import com.jme.scene.*;
+import com.jme.scene.shape.Box;
 import com.jme.system.DisplaySystem;
 import org.scourge.Main;
 import org.scourge.terrain.NodeGenerator;
 import org.scourge.terrain.ShapeUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,15 +25,16 @@ import java.util.Map;
  * Time: 9:51:05 AM
  */
 public class Md2Model implements NodeGenerator {
-    private Node player;
+    private Node node;
     private Map<Md2Key, Integer[]> keyframes = new HashMap<Md2Key, Integer[]>();
     private final Ray down = new Ray();
     private final Ray forward = new Ray();
-    private TrianglePickResults results, noDistanceResults;
+    private TrianglePickResults noDistanceResults;
     private Quaternion q = new Quaternion();
     private Quaternion p = new Quaternion();
     private Vector3f direction = new Vector3f();
-//    private Box debug;
+    private CollisionResults collisionResults;
+    private static final float MD2_SCALE = .2f;
 
     public enum Md2Key {
         crpain, death, pain, crstand, run, crdeath, jump, salute, point, stand, crattack, wave, attack, taunt, flip, crwalk, crstnd, crattak
@@ -38,18 +42,16 @@ public class Md2Model implements NodeGenerator {
 
 
     public Md2Model(String model, String skin) {
+        collisionResults = new BoundingCollisionResults();
+
         // point it down
         down.getDirection().set(new Vector3f(0, -1, 0));
-        results = new TrianglePickResults();
-        results.setCheckDistance(true);
-
         noDistanceResults = new TrianglePickResults();
         noDistanceResults.setCheckDistance(false);
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
-        player = ShapeUtil.loadMd2(model, skin, "player", DisplaySystem.getDisplaySystem(), true, frames);
-        //moveTo(pos);
-        player.setLocalScale(.2f);
+        node = ShapeUtil.loadMd2(model, skin, "player", DisplaySystem.getDisplaySystem(), true, frames);
+        node.setLocalScale(MD2_SCALE);
 
         for(String s : frames.keySet()) {
             keyframes.put(Md2Key.valueOf(s), frames.get(s));
@@ -57,26 +59,47 @@ public class Md2Model implements NodeGenerator {
     }
 
     public void moveTo(Vector3f pos) {
-        player.setLocalTranslation(new Vector3f(pos.x * ShapeUtil.WALL_WIDTH, pos.y * ShapeUtil.WALL_WIDTH, pos.z * ShapeUtil.WALL_WIDTH));
+        node.setLocalTranslation(new Vector3f(pos.x * ShapeUtil.WALL_WIDTH, pos.y * ShapeUtil.WALL_WIDTH, pos.z * ShapeUtil.WALL_WIDTH));
     }
 
     @Override
     public Node getNode() {
-        return player;
+        return node;
     }
 
     public void moveToTopOfTerrain() {
-        Terrain.moveOnTopOfTerrain(player);
+        Terrain.moveOnTopOfTerrain(node);
     }
 
-    public boolean canMoveForward(Vector3f proposedLocation) {
-        forward.setDirection(getDirection());
-        forward.setOrigin(player.getWorldBound().getCenter());
-        forward.getOrigin().y -= ((BoundingBox)player.getWorldBound()).yExtent / 2;
-        results.clear();
-        Main.getMain().getTerrain().getNode().findPick(forward, results);
-        if(results.getNumber() <= 0 || results.getPickData(0).getDistance() >= 6) {
-            down.getOrigin().set(proposedLocation);
+    private Vector3f backupLocation = new Vector3f();
+    public boolean canMoveTo(Vector3f proposedLocation) {
+
+        // collisions are sooo simple in jme...
+        backupLocation.set(node.getLocalTranslation());
+        node.getLocalTranslation().set(proposedLocation);
+        node.updateModelBound();
+        node.updateWorldBound();
+        node.updateGeometricState(0,true);
+
+        boolean collisions = checkBoundingCollisions(Main.getMain().getTerrain().getNode());
+        if(collisions) {
+            for(int i = 0; i < collisionResults.getNumber(); i++) {
+                Geometry g = collisionResults.getCollisionData(i).getTargetMesh();
+                Node parentNode = g.getParent();
+                if(parentNode != null) {
+                    collisions = hasTriangleCollision(node, parentNode);
+                    if(collisions) break;
+                }
+            }
+        }
+
+        node.getLocalTranslation().set(backupLocation);
+        node.updateModelBound();
+        node.updateWorldBound();
+        node.updateGeometricState(0,true);
+        
+        if(!collisions) {
+            down.getOrigin().set(getNode().getLocalTranslation());
             down.getOrigin().addLocal(getDirection().normalizeLocal().multLocal(2.0f));
             noDistanceResults.clear();
             Main.getMain().getTerrain().getNode().findPick(down, noDistanceResults);
@@ -89,8 +112,39 @@ public class Md2Model implements NodeGenerator {
         }
     }
 
+
+    public boolean hasTriangleCollision(Node n1,Node nodeWithSharedNodes) {
+		List<Spatial> geosN1 = n1.descendantMatches(TriMesh.class);
+		for (Spatial triN1 : geosN1) {
+			if (hasTriangleCollision((TriMesh)triN1, nodeWithSharedNodes))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean hasTriangleCollision(TriMesh sp,Node nodeWithSharedNodes) {
+		List<Spatial> geosN2 = nodeWithSharedNodes.descendantMatches(TriMesh.class);
+
+		for (Spatial triN2 : geosN2) {
+            // todo: hack so we can walk over ground tiles and tops of edge-s
+            if(!(triN2.getName().startsWith("ground") || triN2.getName().startsWith("block"))) {
+                if (((TriMesh)triN2).hasTriangleCollision(sp)) {
+//                    System.err.println("collision: " + triN2.getName());
+                    return true;
+                }
+            }
+		}
+		return false;
+	}
+
+    public boolean checkBoundingCollisions(Node world) {
+        collisionResults.clear();
+        node.findCollisions(world, collisionResults);
+        return collisionResults.getNumber() > 0;
+    }
+
     public Vector3f getDirection() {
-        q.set(player.getLocalRotation());
+        q.set(node.getLocalRotation());
         q.multLocal(p.fromAngleAxis(FastMath.DEG_TO_RAD * 90.0f, Vector3f.UNIT_Y));
         q.getRotationColumn( 2, direction );
         return direction;
@@ -111,7 +165,7 @@ public class Md2Model implements NodeGenerator {
     }
 
     private Controller getController() {
-        return player.getChild(0).getController(0);
+        return node.getChild(0).getController(0);
     }
 
     public int getX() {

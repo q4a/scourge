@@ -157,7 +157,6 @@ enum TileType {
         @Override
         public Node createNode(float angle, float[] heights, int level, Climate climate, boolean nextToWater) {
             Quad ground = createQuad(heights);
-
             Node groundNode = new Node(ShapeUtil.newShapeName("ground_node"));
             groundNode.attachChild(ground);
             return groundNode;

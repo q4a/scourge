@@ -43,6 +43,7 @@ public class ShapeUtil {
     private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
     private static final Map<String, Spatial> prototypes = new HashMap<String, Spatial>();
+    public static final int GROUND_COLLISION_BITS = 2;
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);

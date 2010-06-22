@@ -1,6 +1,8 @@
 package org.scourge.input;
 
 import com.jme.input.*;
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import org.scourge.Main;
 import org.scourge.input.MouseAction;

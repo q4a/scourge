@@ -173,6 +173,9 @@ public class MapEditor extends JPanel {
             // save it
             MapIO.saveRegionData(rx, ry, regionData);
 
+            // mark it on the map
+            setHasBlockData(cursorX, cursorY, regionData.getBlock(cursorX, cursorY) != null);
+
         } catch(Exception exc) {
             exc.printStackTrace();
         }
@@ -186,7 +189,8 @@ public class MapEditor extends JPanel {
                 }
 
                 MapSymbol symbol = editor.isSymbolLocked() ? getMapSymbol(x, y) : editor.getMapSymbol();
-                point[y][x] = ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
+                point[y][x] = ((hasBlockData(x, y) ? 1 : 0) << 24) +
+                              ((editor.isLevelLocked() ? getLevel(x, y) : editor.getLevel()) << 16) +
                               ((editor.isClimateLocked() ? getClimate(x, y) : editor.getClimate()).ordinal() << 8) +
                               symbol.getC();
 
@@ -303,6 +307,17 @@ public class MapEditor extends JPanel {
         return (point[y][x] & 0xff0000) >> 16; 
     }
 
+    public boolean hasBlockData(int x, int y) {
+        return ((point[y][x] & 0xff000000) >> 24) == 1;
+    }
+
+    public void setHasBlockData(int x, int y, boolean value) {
+        if(value) {
+            point[y][x] |= (1 << 24);
+        } else {
+            point[y][x] &= ~(1 << 24);
+        }
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -344,6 +359,12 @@ public class MapEditor extends JPanel {
                 Color color = symbol == null ? Color.gray : symbol.getColor();
                 g.setColor(color);
                 g.drawString("" + c, xp * CHAR_WIDTH, (yp + 1) * CHAR_HEIGHT);
+
+                // draw a marker if it has block data
+                if(((line[xp] & 0xff000000) >> 24) == 1) {
+                    g.setColor(Color.red);
+                    g.fillRect(xp * CHAR_WIDTH, yp * CHAR_HEIGHT, 5, 5);
+                }
             }
         }
 

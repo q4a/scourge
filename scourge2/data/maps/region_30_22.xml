@@ -1,4 +1,14 @@
 <region region_x="30" region_y="22">
+   <block coordinates="617.450">
+      <block x="617" y="450">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
+   <block coordinates="612.451">
+      <block x="612" y="451">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
    <block coordinates="600.443">
       <block x="600" y="443">
          <data key="down_location">632,436</data>

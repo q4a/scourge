@@ -72,16 +72,19 @@ public class MapIO {
      * @param y the region's y coordinate
      * @param regionData the RegionData for this region
      * @throws Exception exception
+     * @return true if the region has saved data, false otherwise
      */
-    public static void saveRegionData(int x, int y, RegionData regionData) throws Exception {
+    public static boolean saveRegionData(int x, int y, RegionData regionData) throws Exception {
         File file = getRegionDataFile(x, y);
         if(regionData.isEmpty()) {
             FileUtils.deleteQuietly(file);
+            return false;
         } else {
             Serializer serializer = new Persister();
             Writer writer = new BufferedWriter(new FileWriter(file));
             serializer.write(regionData, writer);
             writer.close();
+            return true;
         }
     }
     

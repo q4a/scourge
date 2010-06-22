@@ -657,7 +657,7 @@ public enum Model implements Savable {
         node.updateRenderState();
     }
 
-    private Spatial findChild(Node node, String name) {
+    private static Spatial findChild(Node node, String name) {
         for(Spatial spatial : node.getChildren()) {
             if(spatial.getName().startsWith(name)) {
                 return spatial;

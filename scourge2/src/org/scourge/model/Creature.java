@@ -19,7 +19,7 @@ import java.util.List;
  * Date: Apr 17, 2010
  * Time: 8:12:54 PM
  */
-public class Creature implements ItemList {
+public class Creature implements ItemList, HasModel {
     @Attribute(name = "version")
     private int version;
 

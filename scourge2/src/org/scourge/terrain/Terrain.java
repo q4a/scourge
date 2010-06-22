@@ -302,6 +302,7 @@ public class Terrain implements NodeGenerator {
         if (results.getNumber() > 0) {
             float dist = results.getPickData(0).getDistance();
             if(!Float.isInfinite(dist) && !Float.isNaN(dist)) {
+                // put it a hair above the ground so we don't get stopped by the tops of edge sections
                 spatial.getLocalTranslation().y -= dist - ((BoundingBox)spatial.getWorldBound()).yExtent;
             }
         }
