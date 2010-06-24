@@ -72,14 +72,18 @@ public class Md2Model implements NodeGenerator {
     }
 
     private Vector3f backupLocation = new Vector3f();
+    @SuppressWarnings({"FieldCanBeLocal"})
+    private float backupScaleY;
     public boolean canMoveTo(Vector3f proposedLocation) {
 
         // collisions are sooo simple in jme...
         backupLocation.set(node.getLocalTranslation());
         node.getLocalTranslation().set(proposedLocation);
-        node.updateModelBound();
-        node.updateWorldBound();
-        node.updateGeometricState(0,true);
+        backupScaleY = node.getLocalScale().y;
+        // Make the player 2 units tall. This "lifts" him off the floor so we can walk over floor irregularities, ramps, bridges, etc.
+        // Also this makes him shorter so we can fit thru the dungeon entrance. Yes this is a hack
+        node.getLocalScale().y = (2.0f / ((BoundingBox)node.getWorldBound()).yExtent) * node.getLocalScale().y;
+        node.updateGeometricState(0,true); // make geometry changes take effect now!
 
         boolean collisions = checkBoundingCollisions(Main.getMain().getTerrain().getNode());
         if(collisions) {
@@ -93,10 +97,10 @@ public class Md2Model implements NodeGenerator {
             }
         }
 
+        node.getLocalScale().y = backupScaleY;
         node.getLocalTranslation().set(backupLocation);
         node.updateModelBound();
-        node.updateWorldBound();
-        node.updateGeometricState(0,true);
+        node.updateGeometricState(0,true); // make geometry changes take effect now!
         
         if(!collisions) {
             down.getOrigin().set(getNode().getLocalTranslation());
@@ -126,12 +130,9 @@ public class Md2Model implements NodeGenerator {
 		List<Spatial> geosN2 = nodeWithSharedNodes.descendantMatches(TriMesh.class);
 
 		for (Spatial triN2 : geosN2) {
-            // todo: hack so we can walk over ground tiles and tops of edge-s
-            if(!(triN2.getName().startsWith("ground") || triN2.getName().startsWith("block"))) {
-                if (((TriMesh)triN2).hasTriangleCollision(sp)) {
+            if (((TriMesh)triN2).hasTriangleCollision(sp)) {
 //                    System.err.println("collision: " + triN2.getName());
-                    return true;
-                }
+                return true;
             }
 		}
 		return false;
