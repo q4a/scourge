@@ -33,8 +33,15 @@ public class MonsterGenerator extends Generator {
                 monsterInstance.getCreatureModel().getNode().getLocalTranslation().x -= getRegion().getX() * ShapeUtil.WALL_WIDTH;
                 monsterInstance.getCreatureModel().getNode().getLocalTranslation().z -= getRegion().getY() * ShapeUtil.WALL_WIDTH;
                 getRegion().getNode().attachChild(monsterInstance.getCreatureModel().getNode());
+                
+                monsterInstance.getCreatureModel().getNode().updateRenderState();
+                monsterInstance.getCreatureModel().getNode().updateWorldData(0);
+                monsterInstance.getCreatureModel().getNode().updateModelBound();
+                monsterInstance.getCreatureModel().getNode().updateWorldBound();
+                getRegion().getNode().updateRenderState();
+                getRegion().getNode().updateWorldData(0);
                 getRegion().getNode().updateModelBound();
-                getRegion().getNode().updateGeometricState(0, true);
+                getRegion().getNode().updateWorldBound();
                 System.err.println("\t&&& Added " + monster.name() + " on region " + getRegion() + " near " + getX() + "," + getY());
             }
         }
