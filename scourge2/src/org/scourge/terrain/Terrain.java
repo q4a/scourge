@@ -236,6 +236,10 @@ public class Terrain implements NodeGenerator {
                 removeFarRegions();
             }
         }
+
+        for(Region region : loadedRegions.values()) {
+            region.update();
+        }
     }
 
     // main thread

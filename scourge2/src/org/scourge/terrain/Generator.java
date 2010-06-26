@@ -29,4 +29,6 @@ public abstract class Generator {
     }
 
     public abstract void generate();
+
+    public abstract void update();
 }

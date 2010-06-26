@@ -100,7 +100,7 @@ public class Creature implements ItemList, HasModel {
 
     public void afterLoad() {
         // init the model
-        creatureModel = new Md2Model(model, skin);
+        creatureModel = new Md2Model(model, skin, "pc");
         creatureModel.setKeyFrame(Md2Model.Md2Key.stand);
         creatureModel.moveTo(new Vector3f(position[0], position[1], position[2]));
         for(Item item : inventory) {

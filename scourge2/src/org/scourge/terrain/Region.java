@@ -35,6 +35,9 @@ public class Region implements NodeGenerator {
     public static final int EDGE_BUFFER = 2;
     private boolean first = true;
     private List<Generator> generators = new ArrayList<Generator>();
+    private long lastGeneratorCheck;
+    private Vector3f proposedLocation = new Vector3f();
+    private Vector3f extent = new Vector3f();
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -682,13 +685,23 @@ public class Region implements NodeGenerator {
      * @param x coordinates are within the region (0-REGION_SIZE)
      * @param y (0-REGION_SIZE)
      * @param model the model to move
+     * @param location the final location if the return value is true
      * @return true if space was found, false if it could not fit
      */
-    public boolean findSpaceAround(int x, int y, HasModel model) {
-        for(int dist = 1; dist < REGION_SIZE; dist++) {
+    public boolean findSpaceAround(int x, int y, HasModel model, Vector3f location) {
+        ((BoundingBox)model.getCreatureModel().getNode().getWorldBound()).getExtent(extent);
+        for(int dist = 1; dist < 3; dist++) {
             for(int dx = -dist; dx < dist; dx++) {
                 for(int dy = -dist; dy < dist; dy++) {
-                    if(findSpaceOnTile(x + dx, y + dy, model)) {
+                    proposedLocation.set((getX() + x + dx) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.x) / 2,
+                                         4 + extent.y / 2,
+                                         (getY() + y + dy) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.z) / 2);
+                    System.err.println("Model=" + model.getCreatureModel().getNode().getName() +
+                                       " pos=" + proposedLocation + 
+                                       " model size=" + extent);
+                    if(model.getCreatureModel().canMoveTo(proposedLocation)) {
+                        System.err.println("\tSUCCESS.");
+                        location.set(proposedLocation);
                         return true;
                     }
                 }
@@ -697,20 +710,15 @@ public class Region implements NodeGenerator {
         return false;
     }
 
-    private Vector3f translationBackup = new Vector3f();
-    private boolean findSpaceOnTile(int x, int y, HasModel model) {
-        Node node = model.getCreatureModel().getNode();
-        for(int tx = 0; tx < ShapeUtil.WALL_WIDTH; tx++) {
-            for(int ty = 0; ty < ShapeUtil.WALL_WIDTH; ty++) {
-                translationBackup.set(node.getLocalTranslation());
-                node.setLocalTranslation(x * ShapeUtil.WALL_WIDTH + tx, 0, y * ShapeUtil.WALL_WIDTH + ty);
-                if(model.getCreatureModel().checkBoundingCollisions(terrain.getNode())) {
-                    node.getLocalTranslation().set(translationBackup);
-                } else {
-                    return true;
-                }
-            }
+    public void update() {
+        boolean willGenerate = false;
+        if(System.currentTimeMillis() - lastGeneratorCheck > 5000) {
+            lastGeneratorCheck = System.currentTimeMillis();
+            willGenerate = true;
         }
-        return false;
+        for(Generator generator : generators) {
+            if(willGenerate) generator.generate();
+            generator.update();
+        }
     }
 }

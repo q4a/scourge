@@ -11,18 +11,31 @@ import org.scourge.terrain.NodeGenerator;
  * Date: Jun 15, 2010
  * Time: 8:21:39 AM
  */
-public enum Monster implements HasModel {
+public enum Monster {
     shade("./data/models/phantom/tris.md2", "./data/models/phantom/m10.png");
 
-    private Md2Model model;
+    private String modelPath, skinPath;
 
-    Monster(String model, String skin) {
-        this.model = new Md2Model(model, skin);
-        this.model.setKeyFrame(Md2Model.Md2Key.stand);
+    Monster(String modelPath, String skinPath) {
+        this.modelPath = modelPath;
+        this.skinPath = skinPath;
     }
 
-    @Override
-    public Md2Model getCreatureModel() {
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    public String getSkinPath() {
+        return skinPath;
+    }
+
+    public Md2Model createModel() {
+        Md2Model model = new Md2Model(modelPath, skinPath, name());
+        model.setKeyFrame(Md2Model.Md2Key.stand);
+
+        // create world bounds, etc.
+        model.getNode().updateGeometricState(0,true);
+
         return model;
     }
 }

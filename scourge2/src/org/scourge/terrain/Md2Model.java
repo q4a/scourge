@@ -41,7 +41,7 @@ public class Md2Model implements NodeGenerator {
     }
 
 
-    public Md2Model(String model, String skin) {
+    public Md2Model(String model, String skin, String namePrefix) {
         collisionResults = new BoundingCollisionResults();
 
         // point it down
@@ -50,7 +50,7 @@ public class Md2Model implements NodeGenerator {
         noDistanceResults.setCheckDistance(false);
 
         Map<String, Integer[]> frames = new HashMap<String, Integer[]>();
-        node = ShapeUtil.loadMd2(model, skin, "player", DisplaySystem.getDisplaySystem(), true, frames);
+        node = ShapeUtil.loadMd2(model, skin, namePrefix, DisplaySystem.getDisplaySystem(), true, frames);
         node.setLocalScale(MD2_SCALE);
 
         for(String s : frames.keySet()) {
@@ -75,6 +75,7 @@ public class Md2Model implements NodeGenerator {
     @SuppressWarnings({"FieldCanBeLocal"})
     private float backupScaleY;
     public boolean canMoveTo(Vector3f proposedLocation) {
+        boolean retValue = false;
 
         // collisions are sooo simple in jme...
         backupLocation.set(node.getLocalTranslation());
@@ -85,35 +86,47 @@ public class Md2Model implements NodeGenerator {
         node.getLocalScale().y = (2.0f / ((BoundingBox)node.getWorldBound()).yExtent) * node.getLocalScale().y;
         node.updateGeometricState(0,true); // make geometry changes take effect now!
 
+//        System.err.println("proposedLocation=" + proposedLocation + " node=" + node.getName() +
+//                           " region=" + ((proposedLocation.x / ShapeUtil.WALL_WIDTH) / Region.REGION_SIZE) + "," + ((proposedLocation.z / ShapeUtil.WALL_WIDTH) / Region.REGION_SIZE) +
+//                           " offset=" + ((proposedLocation.x / ShapeUtil.WALL_WIDTH) % Region.REGION_SIZE) + "," + ((proposedLocation.z / ShapeUtil.WALL_WIDTH) % Region.REGION_SIZE));
+
+        // check where the bounding box is
         boolean collisions = checkBoundingCollisions(Main.getMain().getTerrain().getNode());
-        if(collisions) {
-            for(int i = 0; i < collisionResults.getNumber(); i++) {
-                Geometry g = collisionResults.getCollisionData(i).getTargetMesh();
-                Node parentNode = g.getParent();
-                if(parentNode != null) {
-                    collisions = hasTriangleCollision(node, parentNode);
-                    if(collisions) break;
-                }
+//        System.err.println("\tbound collisions found anything? " + collisions);
+
+        // check for triangles within the bounding box
+        for(int i = 0; i < collisionResults.getNumber(); i++) {
+            Geometry g = collisionResults.getCollisionData(i).getTargetMesh();
+            Node parentNode = g.getParent();
+            if(parentNode != null) {
+                collisions = hasTriangleCollision(node, parentNode);
+                if(collisions) break;
             }
         }
+//        System.err.println("\ttri collisions ok? " + !collisions);
 
-        node.getLocalScale().y = backupScaleY;
-        node.getLocalTranslation().set(backupLocation);
-        node.updateModelBound();
-        node.updateGeometricState(0,true); // make geometry changes take effect now!
-        
+        // check for water below
         if(!collisions) {
             down.getOrigin().set(getNode().getLocalTranslation());
             down.getOrigin().addLocal(getDirection().normalizeLocal().multLocal(2.0f));
             noDistanceResults.clear();
             Main.getMain().getTerrain().getNode().findPick(down, noDistanceResults);
             for(int i = 0; i < noDistanceResults.getNumber(); i++) {
-                if(noDistanceResults.getPickData(i).getTargetTris().size() > 0) return true;
+                if(noDistanceResults.getPickData(i).getTargetTris().size() > 0) {
+                    retValue = true;
+                    break;
+                }
             }
-            return false;
-        } else {
-            return false;
+//            System.err.println("\ton water? " + !retValue);
         }
+
+        // reset the node's shape and position
+        node.getLocalScale().y = backupScaleY;
+        node.getLocalTranslation().set(backupLocation);
+        node.updateModelBound();
+        node.updateGeometricState(0,true); // make geometry changes take effect now!
+
+        return retValue;
     }
 
 
