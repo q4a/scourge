@@ -9,7 +9,9 @@ import com.jme.scene.*;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
+import com.jme.util.CloneImportExport;
 import com.jme.util.TextureManager;
+import com.jme.util.export.JMEExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.geom.BufferUtils;
 import com.jme.util.resource.ResourceLocatorTool;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 /**
  * User: gabor
@@ -43,47 +46,64 @@ public class ShapeUtil {
     private static WeakHashMap<String, Texture> textures = new WeakHashMap<String, Texture>();
     private static WeakHashMap<String, ImageIcon> images = new WeakHashMap<String, ImageIcon>();
     private static final Map<String, Spatial> prototypes = new HashMap<String, Spatial>();
+    private static final Map<String, byte[]> md2prototypes = new HashMap<String, byte[]>();
+    private static final Map<String, Map<String, Integer[]>> prototypeFrames = new HashMap<String, Map<String, Integer[]>>();
 
     public static String newShapeName(String prefix) {
         return prefix + "_" + (shapeCount++);
     }
 
     public static Node loadMd2(String modelPath, String texturePath, String name_prefix, DisplaySystem display, boolean invertNormals, Map<String, Integer[]> frames) {
-        ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream(); //For loading the raw file
-        Node node;
-        try {
-            CONVERTER_MD2.convert(new FileInputStream(modelPath), bytearrayoutputstream, frames);
-            BinaryImporter binaryImporter = new BinaryImporter();
-            node = (Node)binaryImporter.load(new ByteArrayInputStream(bytearrayoutputstream.toByteArray()));
-            node.setName(newShapeName(name_prefix));
+        synchronized(md2prototypes) {
+            String key = modelPath + "." + texturePath;
+            try {
+                byte[] bytes = md2prototypes.get(key);
+                if(bytes == null) {
+                    ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream(); //For loading the raw file
+                    CONVERTER_MD2.convert(new FileInputStream(modelPath), bytearrayoutputstream, frames);
+                    Map<String, Integer[]> framesCopy = new HashMap<String, Integer[]>();
+                    framesCopy.putAll(frames);
+                    prototypeFrames.put(key, framesCopy);
+                    bytes = bytearrayoutputstream.toByteArray();
+                    md2prototypes.put(key, bytes);
+                }
 
-            for(int i = 0; i < node.getChild(0).getControllerCount(); i++) {
-                KeyframeController kc = (KeyframeController)node.getChild(0).getController(i);
-                if(invertNormals) {
-                    for(KeyframeController.PointInTime pit : kc.keyframes) {
-                        pit.newShape.rotateNormals(new Quaternion().fromAngleAxis(180.0f * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z));
+                BinaryImporter binaryImporter = new BinaryImporter();
+                Node prototype = (Node)binaryImporter.load(new ByteArrayInputStream(bytes));
+                prototype.setName(newShapeName(name_prefix));
+
+                for(int i = 0; i < ((Node)prototype).getChild(0).getControllerCount(); i++) {
+                    KeyframeController kc = (KeyframeController)((Node)prototype).getChild(0).getController(i);
+                    if(invertNormals) {
+                        for(KeyframeController.PointInTime pit : kc.keyframes) {
+                            pit.newShape.rotateNormals(new Quaternion().fromAngleAxis(180.0f * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z));
+                        }
                     }
                 }
+
+                TextureState ts = display.getRenderer().createTextureState();
+                ts.setEnabled(true);
+                ts.setTexture(TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false));
+                prototype.setRenderState(ts);
+
+                if(invertNormals) {
+                    CullState cs = display.getRenderer().createCullState();
+                    cs.setCullFace(CullState.Face.Front);
+                    cs.setEnabled(true);
+                    prototype.setRenderState(cs);
+                }
+
+                prototype.setModelBound(new BoundingBox());
+                prototype.updateModelBound();
+
+                // copy the frames
+                frames.putAll(prototypeFrames.get(key));
+
+                return prototype;
+            } catch(IOException exc) {
+                throw new RuntimeException(exc);
             }
-        } catch(IOException exc) {
-            throw new RuntimeException(exc);
         }
-
-        TextureState ts = display.getRenderer().createTextureState();
-        ts.setEnabled(true);
-        ts.setTexture(TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false));
-        node.setRenderState(ts);
-
-        if(invertNormals) {
-            CullState cs = display.getRenderer().createCullState();
-            cs.setCullFace(CullState.Face.Front);
-            cs.setEnabled(true);
-            node.setRenderState(cs);
-        }
-
-        node.setModelBound(new BoundingBox());
-		node.updateModelBound();
-        return node;
     }
 
     /**
@@ -153,38 +173,42 @@ public class ShapeUtil {
                     prototypes.put(modelPath + "." + name_prefix, prototype);
                 }
 
-                try {
-                    Spatial copy;
-                    if(prototype instanceof Node) {
-                        copy = cloneNode((Node)prototype, name_prefix, false);
-                    } else if(prototype instanceof TriMesh) {
-                        copy = new SharedMesh(ShapeUtil.newShapeName(prototype.getName()), (TriMesh)prototype);
-                    } else {
-                        throw new RuntimeException("Don't know how to clone " + prototype.getClass());
-                    }
-
-                    if(modelPath.endsWith(".md3")) {
-                        CullState cs = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
-                        cs.setCullFace(CullState.Face.Front);
-                        cs.setEnabled(true);
-                        copy.setRenderState(cs);
-                    }
-
-                    copy.updateRenderState();
-                    copy.updateWorldData(0);
-                    copy.updateWorldVectors();
-                    return copy;
-                } catch(Throwable exc) {
-                    logger.log(Level.SEVERE, "Unable to clone " + modelPath, exc);
-                    debugNode(prototype, "  ");
-                    throw new RuntimeException(exc);
-                }
+                return copyPrototype(prototype, name_prefix, modelPath);
             } catch (Exception exc) {
                 logger.log(Level.SEVERE, "Error loading model:" + modelPath + " error=" + exc.getMessage(), exc);
                 throw new RuntimeException(exc);
             }
         }
 	}
+
+    private static Spatial copyPrototype(Spatial prototype, String name_prefix, String modelPath) {
+        try {
+            Spatial copy;
+            if(prototype instanceof Node) {
+                copy = cloneNode((Node)prototype, name_prefix, false);
+            } else if(prototype instanceof TriMesh) {
+                copy = new SharedMesh(ShapeUtil.newShapeName(prototype.getName()), (TriMesh)prototype);
+            } else {
+                throw new RuntimeException("Don't know how to clone " + prototype.getClass());
+            }
+
+            if(modelPath.endsWith(".md3")) {
+                CullState cs = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
+                cs.setCullFace(CullState.Face.Front);
+                cs.setEnabled(true);
+                copy.setRenderState(cs);
+            }
+
+            copy.updateRenderState();
+            copy.updateWorldData(0);
+            copy.updateWorldVectors();
+            return copy;
+        } catch(Throwable exc) {
+            logger.log(Level.SEVERE, "Unable to clone " + modelPath, exc);
+            debugNode(prototype, "  ");
+            throw new RuntimeException(exc);
+        }
+    }
 
     private static void invertNormals(Node node) {
         for(Spatial child : node.getChildren()) {
