@@ -710,15 +710,21 @@ public class Region implements NodeGenerator {
         return false;
     }
 
-    public void update() {
+    public void update(float tpf) {
         boolean willGenerate = false;
-        if(System.currentTimeMillis() - lastGeneratorCheck > 5000) {
+        if(System.currentTimeMillis() - lastGeneratorCheck > 30000) {
             lastGeneratorCheck = System.currentTimeMillis();
             willGenerate = true;
         }
         for(Generator generator : generators) {
             if(willGenerate) generator.generate();
-            generator.update();
+            generator.update(tpf);
+        }
+    }
+
+    public void unloading() {
+        for(Generator generator : generators) {
+            generator.unloading();
         }
     }
 }

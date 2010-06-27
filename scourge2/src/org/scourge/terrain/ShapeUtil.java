@@ -13,6 +13,7 @@ import com.jme.util.CloneImportExport;
 import com.jme.util.TextureManager;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.binary.BinaryImporter;
+import com.jme.util.export.xml.XMLExporter;
 import com.jme.util.geom.BufferUtils;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
@@ -57,50 +58,73 @@ public class ShapeUtil {
         synchronized(md2prototypes) {
             String key = modelPath + "." + texturePath;
             try {
-                byte[] bytes = md2prototypes.get(key);
-                if(bytes == null) {
+                Spatial prototype = prototypes.get(key);
+                if(prototype == null) {
                     ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream(); //For loading the raw file
                     CONVERTER_MD2.convert(new FileInputStream(modelPath), bytearrayoutputstream, frames);
                     Map<String, Integer[]> framesCopy = new HashMap<String, Integer[]>();
                     framesCopy.putAll(frames);
                     prototypeFrames.put(key, framesCopy);
-                    bytes = bytearrayoutputstream.toByteArray();
-                    md2prototypes.put(key, bytes);
-                }
 
-                BinaryImporter binaryImporter = new BinaryImporter();
-                Node prototype = (Node)binaryImporter.load(new ByteArrayInputStream(bytes));
-                prototype.setName(newShapeName(name_prefix));
+                    BinaryImporter binaryImporter = new BinaryImporter();
+                    prototype = (Node)binaryImporter.load(new ByteArrayInputStream(bytearrayoutputstream.toByteArray()));
+                    prototype.setName(newShapeName(name_prefix));
 
-                for(int i = 0; i < ((Node)prototype).getChild(0).getControllerCount(); i++) {
-                    KeyframeController kc = (KeyframeController)((Node)prototype).getChild(0).getController(i);
-                    if(invertNormals) {
-                        for(KeyframeController.PointInTime pit : kc.keyframes) {
-                            pit.newShape.rotateNormals(new Quaternion().fromAngleAxis(180.0f * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z));
+                    for(int i = 0; i < ((Node)prototype).getChild(0).getControllerCount(); i++) {
+                        KeyframeController kc = (KeyframeController)((Node)prototype).getChild(0).getController(i);
+                        if(invertNormals) {
+                            for(KeyframeController.PointInTime pit : kc.keyframes) {
+                                pit.newShape.rotateNormals(new Quaternion().fromAngleAxis(180.0f * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z));
+                            }
                         }
                     }
+
+                    TextureState ts = display.getRenderer().createTextureState();
+                    ts.setEnabled(true);
+                    ts.setTexture(TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false));
+                    prototype.setRenderState(ts);
+
+                    if(invertNormals) {
+                        CullState cs = display.getRenderer().createCullState();
+                        cs.setCullFace(CullState.Face.Front);
+                        cs.setEnabled(true);
+                        prototype.setRenderState(cs);
+                    }
+
+                    System.err.println(modelPath);
+                    debugNode(prototype, "");
+
+                    prototype.setModelBound(new BoundingBox());
+                    prototype.updateModelBound();
+
+                    prototypes.put(key, prototype);
                 }
-
-                TextureState ts = display.getRenderer().createTextureState();
-                ts.setEnabled(true);
-                ts.setTexture(TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false));
-                prototype.setRenderState(ts);
-
-                if(invertNormals) {
-                    CullState cs = display.getRenderer().createCullState();
-                    cs.setCullFace(CullState.Face.Front);
-                    cs.setEnabled(true);
-                    prototype.setRenderState(cs);
-                }
-
-                prototype.setModelBound(new BoundingBox());
-                prototype.updateModelBound();
 
                 // copy the frames
                 frames.putAll(prototypeFrames.get(key));
 
-                return prototype;
-            } catch(IOException exc) {
+                // clone the prototype (can't use sharedmesh b/c the animation changes the mesh)
+                CloneImportExport ie = new CloneImportExport();
+                ie.saveClone(prototype);
+                Node copy = (Node) ie.loadClone();
+                copy.setModelBound(new BoundingBox());
+                copy.updateModelBound();
+                copy.updateWorldBound();
+                copy.updateGeometricState(0, true);
+
+                // Share the keyframe shapes (otherwise we run out of memory and there is no reason to have copies of these)
+                for(int i = 0; i < ((Node)prototype).getChild(0).getControllerCount(); i++) {
+                    KeyframeController kc = (KeyframeController)((Node)prototype).getChild(0).getController(i);
+                    KeyframeController copyKc = (KeyframeController)copy.getChild(0).getController(i);
+                    for(int t = 0; t < kc.keyframes.size(); t++) {
+                        KeyframeController.PointInTime pit = kc.keyframes.get(t);
+                        KeyframeController.PointInTime pitCopy = copyKc.keyframes.get(t);
+                        pitCopy.newShape = pit.newShape;
+                    }
+                }
+
+                return copy;
+            }catch(IOException exc) {
                 throw new RuntimeException(exc);
             }
         }

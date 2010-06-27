@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="964a0244-e396-4caa-856a-0f69dc4612be" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Generator.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Generator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" afterPath="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/model/Monster.java" afterPath="$PROJECT_DIR$/src/org/scourge/model/Monster.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/scourge/Main.java" afterPath="$PROJECT_DIR$/src/org/scourge/Main.java" />
     </list>
     <ignored path="scourge2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,10 +72,19 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <file leaf-file-name="MonsterGenerator.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="225" column="60" selection-start="7909" selection-end="8129" vertical-scroll-proportion="0.0">
+            <state line="40" column="0" selection-start="1450" selection-end="1450" vertical-scroll-proportion="0.25309736">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Generator.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Generator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="37" selection-start="857" selection-end="857" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -78,61 +93,25 @@
       <file leaf-file-name="Region.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="696" column="53" selection-start="34320" selection-end="34320" vertical-scroll-proportion="0.0">
+            <state line="726" column="27" selection-start="35508" selection-end="35508" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Md2Model.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+      <file leaf-file-name="Terrain.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="35" selection-start="775" selection-end="784" vertical-scroll-proportion="-4.076923">
+            <state line="261" column="24" selection-start="9282" selection-end="9282" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Creature.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="0" selection-start="2678" selection-end="2678" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Session.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Session.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="0" selection-start="749" selection-end="749" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ShapeUtil.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ShapeUtil.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="50" selection-start="3078" selection-end="3078" vertical-scroll-proportion="0.2887218">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MonsterGenerator.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="16" selection-start="1438" selection-end="1438" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Monster.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Monster.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="57" selection-start="762" selection-end="762" vertical-scroll-proportion="0.0">
+            <state line="121" column="36" selection-start="6010" selection-end="6010" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -155,15 +134,15 @@
         <option value="$PROJECT_DIR$/src/org/scourge/input/ForwardMoveAction.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/Model.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/TileType.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Generator.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/Main.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/model/Monster.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" />
-        <option value="$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java" />
         <option value="$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/model/Creature.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/model/Monster.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Region.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/Generator.java" />
+        <option value="$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java" />
       </list>
     </option>
   </component>
@@ -190,7 +169,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -202,19 +181,26 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Favorites" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
-        <subPane />
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scourge2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
-      <pane id="Favorites" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="recentsLimit" value="5" />
@@ -449,19 +435,19 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="708" y="22" width="1211" height="1129" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297609" sideWeight="0.47219604" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32932073" sideWeight="0.7265847" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32874355" sideWeight="0.5874396" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26666668" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3178808" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40586567" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30917874" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4057971" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30917874" sideWeight="0.9974249" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3710145" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -510,16 +496,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/TileType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="219" column="0" selection-start="6844" selection-end="6844" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="593" column="22" selection-start="20287" selection-end="20287" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jmex/model/converters/Md2ToJme.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="114" column="25" selection-start="4315" selection-end="4315" vertical-scroll-proportion="0.3326713" />
@@ -530,56 +506,9 @@
         <state line="62" column="28" selection-start="2134" selection-end="2134" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Generator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="34" selection-start="541" selection-end="541" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/RegionLoaderThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="11" selection-start="461" selection-end="461" vertical-scroll-proportion="0.19066535" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="347" column="25" selection-start="12816" selection-end="12822" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/ForwardMoveAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="47" selection-start="898" selection-end="898" vertical-scroll-proportion="0.39779004">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Monster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="57" selection-start="762" selection-end="762" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="696" column="53" selection-start="34320" selection-end="34320" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="225" column="60" selection-start="7909" selection-end="8129" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="16" selection-start="1438" selection-end="1438" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Session.java">
@@ -589,23 +518,86 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/ForwardMoveAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="0" selection-start="2678" selection-end="2678" vertical-scroll-proportion="0.0">
+        <state line="15" column="38" selection-start="346" selection-end="380" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/input/LeftTurnAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="35" selection-start="775" selection-end="784" vertical-scroll-proportion="-4.076923">
+        <state line="31" column="86" selection-start="804" selection-end="1001" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="647" column="5" selection-start="23618" selection-end="23618" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Monster.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="289" selection-end="289" vertical-scroll-proportion="0.12145749">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/Game.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="168" column="138" selection-start="4490" selection-end="4490" vertical-scroll-proportion="0.14919356">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/model/Creature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="45" selection-start="1682" selection-end="1682" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Region.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="726" column="27" selection-start="35508" selection-end="35508" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Generator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="37" selection-start="857" selection-end="857" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Terrain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="261" column="24" selection-start="9282" selection-end="9282" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/ShapeUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="50" selection-start="3078" selection-end="3078" vertical-scroll-proportion="0.2887218">
+        <state line="121" column="36" selection-start="6010" selection-end="6010" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/Md2Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="120" column="0" selection-start="5045" selection-end="5045" vertical-scroll-proportion="0.7842742">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/scourge/terrain/MonsterGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="0" selection-start="1450" selection-end="1450" vertical-scroll-proportion="0.25309736">
           <folding />
         </state>
       </provider>

@@ -180,7 +180,7 @@ public class Terrain implements NodeGenerator {
                     if(!loadAsynchronously) {
                         try {
                             thread.join();
-                            update();
+                            update(0);
                         } catch (InterruptedException e) {
                             // eh
                         }
@@ -194,7 +194,7 @@ public class Terrain implements NodeGenerator {
     }
 
     // called from the main thread
-    public void update() {
+    public void update(float tpf) {
         // make an unsynchronized check (a small hack: pendingRegions.isEmpty() would have to be synchronized)
         if(checkPendingRegions > 0) {
             // add/remove regions in the main thread to avoid concurrent mod. exceptions
@@ -238,7 +238,7 @@ public class Terrain implements NodeGenerator {
         }
 
         for(Region region : loadedRegions.values()) {
-            region.update();
+            region.update(tpf);
         }
     }
 
@@ -259,6 +259,7 @@ public class Terrain implements NodeGenerator {
         for(String s : far) {
             logger.fine("Unloading region: " + s);
             Region region = loadedRegions.remove(s);
+            region.unloading();
             terrain.detachChild(region.getNode());
         }
 

@@ -262,7 +262,7 @@ public class Main extends Game {
             terrain.setRoofVisible(!inDungeon);
             updateFog();
         }        
-        terrain.update();
+        terrain.update(tpf);
 
         // the world vectors aren't computed until the first update :-/
         if(terrain.getCurrentRegion() != null) {
