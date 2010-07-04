@@ -1,0 +1,22 @@
+<region region_x="31" region_y="22">
+   <block coordinates="620.451">
+      <block x="620" y="451">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
+   <block coordinates="635.449">
+      <block x="635" y="449">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
+   <block coordinates="629.456">
+      <block x="629" y="456">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
+   <block coordinates="626.443">
+      <block x="626" y="443">
+         <data key="generate.monster">shade</data>
+      </block>
+   </block>
+</region>

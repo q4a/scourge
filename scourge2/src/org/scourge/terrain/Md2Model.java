@@ -84,7 +84,7 @@ public class Md2Model implements NodeGenerator {
         // Make the player 2 units tall. This "lifts" him off the floor so we can walk over floor irregularities, ramps, bridges, etc.
         // Also this makes him shorter so we can fit thru the dungeon entrance. Yes this is a hack
         node.getLocalScale().y = (2.0f / ((BoundingBox)node.getWorldBound()).yExtent) * node.getLocalScale().y;
-        node.updateGeometricState(0,true); // make geometry changes take effect now!
+        node.updateGeometricState(0, false); // make geometry changes take effect now!
 
 //        System.err.println("proposedLocation=" + proposedLocation + " node=" + node.getName() +
 //                           " region=" + ((proposedLocation.x / ShapeUtil.WALL_WIDTH) / Region.REGION_SIZE) + "," + ((proposedLocation.z / ShapeUtil.WALL_WIDTH) / Region.REGION_SIZE) +
@@ -122,9 +122,11 @@ public class Md2Model implements NodeGenerator {
 
         // reset the node's shape and position
         node.getLocalScale().y = backupScaleY;
-        node.getLocalTranslation().set(backupLocation);
+        if(!retValue) {
+            node.getLocalTranslation().set(backupLocation);
+        }
         node.updateModelBound();
-        node.updateGeometricState(0,true); // make geometry changes take effect now!
+        node.updateGeometricState(0, false); // make geometry changes take effect now!
 
         return retValue;
     }

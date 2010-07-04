@@ -35,7 +35,6 @@ public class Region implements NodeGenerator {
     public static final int EDGE_BUFFER = 2;
     private boolean first = true;
     private List<Generator> generators = new ArrayList<Generator>();
-    private long lastGeneratorCheck;
     private Vector3f proposedLocation = new Vector3f();
     private Vector3f extent = new Vector3f();
 
@@ -652,6 +651,9 @@ public class Region implements NodeGenerator {
             for(House house : houses) {
                 flatten(house.getNode());
             }
+            for(Generator generator : generators) {
+                generator.generate();
+            }
         }
     }
 
@@ -711,13 +713,7 @@ public class Region implements NodeGenerator {
     }
 
     public void update(float tpf) {
-        boolean willGenerate = false;
-        if(System.currentTimeMillis() - lastGeneratorCheck > 30000) {
-            lastGeneratorCheck = System.currentTimeMillis();
-            willGenerate = true;
-        }
         for(Generator generator : generators) {
-            if(willGenerate) generator.generate();
             generator.update(tpf);
         }
     }

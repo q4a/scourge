@@ -1,7 +1,8 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
-import com.jme.image.Texture;
+import com.jme.image.*;
+import com.jme.image.Image;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -21,6 +22,7 @@ import com.jmex.model.animation.KeyframeController;
 import com.jmex.model.converters.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
@@ -79,11 +81,6 @@ public class ShapeUtil {
                         }
                     }
 
-                    TextureState ts = display.getRenderer().createTextureState();
-                    ts.setEnabled(true);
-                    ts.setTexture(TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false));
-                    prototype.setRenderState(ts);
-
                     if(invertNormals) {
                         CullState cs = display.getRenderer().createCullState();
                         cs.setCullFace(CullState.Face.Front);
@@ -122,6 +119,14 @@ public class ShapeUtil {
                         pitCopy.newShape = pit.newShape;
                     }
                 }
+
+                TextureState ts = display.getRenderer().createTextureState();
+                ts.setEnabled(true);
+                //Texture texture = TextureManager.loadTexture(texturePath, Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, 0.0f, false);
+                Texture texture = loadTexture(texturePath, texturePath, false);
+                ts.setTexture(texture);
+                copy.setRenderState(ts);
+                copy.updateRenderState();
 
                 return copy;
             }catch(IOException exc) {
@@ -298,11 +303,17 @@ public class ShapeUtil {
     }
 
     public static Texture loadTexture(String path, String textureKey) {
+        return loadTexture(path, textureKey, true);
+    }
+
+    public static Texture loadTexture(String path, String textureKey, boolean flip) {
         Texture t0 = textures.get(textureKey);
         if (t0 == null) {
         	t0 = TextureManager.loadTexture(path,
                                             Texture.MinificationFilter.Trilinear,
-                                            Texture.MagnificationFilter.Bilinear);
+                                            Texture.MagnificationFilter.Bilinear,
+                                            0,
+                                            flip);
 	        textures.put(textureKey, t0);
         }
         return t0;

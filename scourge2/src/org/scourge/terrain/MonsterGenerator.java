@@ -55,6 +55,8 @@ public class MonsterGenerator extends Generator {
 
     @Override
     public void update(float tpf) {
+        if(Main.getMain().isLoading()) return;
+        
         for(MonsterInstance monsterInstance : monsters) {
             monsterInstance.getCreatureModel().moveToTopOfTerrain();
 
@@ -62,7 +64,7 @@ public class MonsterGenerator extends Generator {
             proposedLocation.set(monsterInstance.getCreatureModel().getNode().getLocalTranslation());
             proposedLocation.addLocal(monsterInstance.getCreatureModel().getDirection().mult(monsterInstance.getMonster().getSpeed() * tpf, tempVa));
             if(proposedLocation.distanceSquared(getLocation()) < RADIUS_SQUARED && monsterInstance.getCreatureModel().canMoveTo(proposedLocation)) {
-                monsterInstance.getCreatureModel().getNode().getLocalTranslation().set(proposedLocation);
+                //monsterInstance.getCreatureModel().getNode().getLocalTranslation().set(proposedLocation);
             } else {
                 q.fromAngleAxis(FastMath.DEG_TO_RAD * (180f + (float)(90f * Math.random()) - 45f), Vector3f.UNIT_Y);
                 monsterInstance.getCreatureModel().getNode().getLocalRotation().multLocal(q);
@@ -76,11 +78,11 @@ public class MonsterGenerator extends Generator {
         for(MonsterInstance monsterInstance : monsters) {
             terrain.getNode().detachChild(monsterInstance.getCreatureModel().getNode());
         }
-        monsters.clear();
         terrain.getNode().updateRenderState();
         terrain.getNode().updateWorldData(0);
         terrain.getNode().updateModelBound();
         terrain.getNode().updateWorldBound();
+        monsters.clear();
     }
 
     private class MonsterInstance implements HasModel {
