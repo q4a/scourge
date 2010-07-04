@@ -9,7 +9,9 @@ import org.scourge.model.HasModel;
 import org.scourge.model.Monster;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: gabor
@@ -17,8 +19,8 @@ import java.util.List;
  * Time: 8:17:17 AM
  */
 public class MonsterGenerator extends Generator {
-    private String monsterName;
     private List<MonsterInstance> monsters = new ArrayList<MonsterInstance>();
+    private Set<MonsterInstance> placed = new HashSet<MonsterInstance>();
     private Vector3f proposedLocation = new Vector3f();
     private Vector3f tempVa = new Vector3f();
     private Quaternion q = new Quaternion();
@@ -27,28 +29,36 @@ public class MonsterGenerator extends Generator {
 
     public MonsterGenerator(Region region, int x, int y, String monsterName) {
         super(region, x, y);
-        this.monsterName = monsterName;
+        if(monsterName != null) {
+            for(int i = 0; i < 3; i++) {
+                Monster monster = Monster.valueOf(monsterName);
+                MonsterInstance monsterInstance = new MonsterInstance(monster);
+                monsters.add(monsterInstance);
+            }
+        }
     }
 
     @Override
     public void generate() {
-        while(monsters.size() < 3 && monsterName != null) {
+        while(placed.size() < monsters.size()) {
             // put a new monster on the map
-            Monster monster = Monster.valueOf(monsterName);
-            MonsterInstance monsterInstance = new MonsterInstance(monster);
-            if(getRegion().findSpaceAround(getX(), getY(), monsterInstance, monsterInstance.getCreatureModel().getNode().getLocalTranslation())) {
-                monsters.add(monsterInstance);
-                Terrain terrain = Main.getMain().getTerrain();
-                terrain.getNode().attachChild(monsterInstance.getCreatureModel().getNode());
-                monsterInstance.getCreatureModel().getNode().updateRenderState();
-                monsterInstance.getCreatureModel().getNode().updateWorldData(0);
-                monsterInstance.getCreatureModel().getNode().updateModelBound();
-                monsterInstance.getCreatureModel().getNode().updateWorldBound();
-                terrain.getNode().updateRenderState();
-                terrain.getNode().updateWorldData(0);
-                terrain.getNode().updateModelBound();
-                terrain.getNode().updateWorldBound();
-                System.err.println("\t&&& Added " + monster.name() + " on region " + getRegion() + " near " + getX() + "," + getY());
+            for(MonsterInstance monsterInstance : monsters) {
+                if(getRegion().findSpaceAround(getX(), getY(), monsterInstance, monsterInstance.getCreatureModel().getNode().getLocalTranslation())) {
+                    placed.add(monsterInstance);
+                    Terrain terrain = Main.getMain().getTerrain();
+                    terrain.getNode().attachChild(monsterInstance.getCreatureModel().getNode());
+                    monsterInstance.getCreatureModel().getNode().updateRenderState();
+                    monsterInstance.getCreatureModel().getNode().updateWorldData(0);
+                    monsterInstance.getCreatureModel().getNode().updateModelBound();
+                    monsterInstance.getCreatureModel().getNode().updateWorldBound();
+                    terrain.getNode().updateRenderState();
+                    terrain.getNode().updateWorldData(0);
+                    terrain.getNode().updateModelBound();
+                    terrain.getNode().updateWorldBound();
+                    System.err.println("\t&&& Added " + monsterInstance.getMonster().name() + " on region " + getRegion() + " near " + getX() + "," + getY());
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -57,7 +67,7 @@ public class MonsterGenerator extends Generator {
     public void update(float tpf) {
         if(Main.getMain().isLoading()) return;
         
-        for(MonsterInstance monsterInstance : monsters) {
+        for(MonsterInstance monsterInstance : placed) {
             monsterInstance.getCreatureModel().moveToTopOfTerrain();
 
             // move around
@@ -75,14 +85,15 @@ public class MonsterGenerator extends Generator {
     @Override
     public void unloading() {
         Terrain terrain = Main.getMain().getTerrain();
-        for(MonsterInstance monsterInstance : monsters) {
+        for(MonsterInstance monsterInstance : placed) {
             terrain.getNode().detachChild(monsterInstance.getCreatureModel().getNode());
         }
+        monsters.clear();
+        placed.clear();
         terrain.getNode().updateRenderState();
         terrain.getNode().updateWorldData(0);
         terrain.getNode().updateModelBound();
         terrain.getNode().updateWorldBound();
-        monsters.clear();
     }
 
     private class MonsterInstance implements HasModel {
