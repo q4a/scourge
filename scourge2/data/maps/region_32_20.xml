@@ -5,6 +5,11 @@
          <data key="label">Entering the town of</data>
       </block>
    </block>
+   <block coordinates="648.411">
+      <block x="648" y="411">
+         <data key="generate.altar">fountain</data>
+      </block>
+   </block>
    <block coordinates="647.405">
       <block x="647" y="405">
          <data key="label2">Ustinol</data>

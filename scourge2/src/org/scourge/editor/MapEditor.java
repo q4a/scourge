@@ -137,7 +137,11 @@ public class MapEditor extends JPanel {
         cursorY = mouseEvent.getY() / CHAR_HEIGHT;
 
         if(mouseEvent.getButton() == 1) {
-            drawOnMap();
+            if((mouseEvent.getModifiers() & MouseEvent.CTRL_MASK) == MouseEvent.CTRL_MASK) {
+                editRegion();
+            } else {
+                drawOnMap();
+            }
         } else if(mouseEvent.getButton() == 3) {
             editRegion();
         }

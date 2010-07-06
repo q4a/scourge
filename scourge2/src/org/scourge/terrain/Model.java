@@ -427,10 +427,31 @@ public enum Model implements Savable {
             return node;
         }
     },
+    fountain("./data/3ds/pool.3ds") {
+        @Override
+        public Spatial createSpatial() {
+            Node node = new Node(ShapeUtil.newShapeName("fountain"));
+            Spatial spatial = getAlphaSpatial(0.15f, -90, 0, 0);
+            spatial.getLocalTranslation().z -= 8;
+            node.attachChild(spatial);
+            node.attachChild(addTorchFlame(new FlameTypeConfig() {
+
+                @Override
+                public void configure(ParticleSystem particles) {
+                    particles.setStartColor(new ColorRGBA(0, 1, 1, 1));
+                    particles.setStartSize(5f);
+                    particles.setEndColor(new ColorRGBA(0.85f, 0.95f, 1f, 0.5f));
+                    particles.setEndSize(12f);
+                    particles.setMinimumLifeTime(800);
+                    particles.setMaximumLifeTime(500);
+                }
+            }));
+            return node;
+        }}
     ;
 
     private static Spatial addTorchFlame(FlameTypeConfig config) {
-        ParticleSystem particles = ParticleFactory.buildParticles("particles", 30);
+        ParticleSystem particles = ParticleFactory.buildParticles("particles", 20);
         particles.setEmissionDirection(new Vector3f(0, 1, 0));
         particles.setInitialVelocity(0.05f);
         particles.setMinimumLifeTime(1000);
@@ -604,6 +625,7 @@ public enum Model implements Savable {
 
     protected Spatial getAlphaSpatial(float scale, float rotateX, float rotateY, float rotateZ) {
         Spatial spatial = ShapeUtil.importModel(getModelPath(), getTexturePath(), name(), this);
+        // todo: why only x? Adding y,z causes trees to show up flat...
         if(rotateX != 0) {
             //spatial.getLocalRotation().multLocal(new Quaternion().fromAngleAxis(rotateX * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
             spatial.getLocalRotation().set(new Quaternion().fromAngles(rotateX * FastMath.DEG_TO_RAD,

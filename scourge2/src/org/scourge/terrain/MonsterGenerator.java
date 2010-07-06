@@ -55,7 +55,6 @@ public class MonsterGenerator extends Generator {
                     terrain.getNode().updateWorldData(0);
                     terrain.getNode().updateModelBound();
                     terrain.getNode().updateWorldBound();
-                    System.err.println("\t&&& Added " + monsterInstance.getMonster().name() + " on region " + getRegion() + " near " + getX() + "," + getY());
                 } else {
                     break;
                 }

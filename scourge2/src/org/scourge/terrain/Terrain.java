@@ -299,7 +299,8 @@ public class Terrain implements NodeGenerator {
         results.setCheckDistance(true);
     }
 
-    public static void moveOnTopOfTerrain(Spatial spatial) {
+    public static boolean moveOnTopOfTerrain(Spatial spatial) {
+        boolean ret = false;
         spatial.setIsCollidable(false);
         down.getOrigin().set(spatial.getWorldBound().getCenter());
         results.clear();
@@ -309,11 +310,13 @@ public class Terrain implements NodeGenerator {
             if(!Float.isInfinite(dist) && !Float.isNaN(dist)) {
                 // put it a hair above the ground so we don't get stopped by the tops of edge sections
                 spatial.getLocalTranslation().y -= dist - ((BoundingBox)spatial.getWorldBound()).yExtent;
+                ret = true;
             }
         }
         spatial.setIsCollidable(true);
         spatial.updateModelBound();
         spatial.updateWorldBound();
+        return ret;
     }
 
     public void setRoofVisible(boolean visible) {

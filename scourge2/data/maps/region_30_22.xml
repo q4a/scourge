@@ -4,6 +4,11 @@
          <data key="generate.monster">shade</data>
       </block>
    </block>
+   <block coordinates="619.452">
+      <block x="619" y="452">
+         <data key="generate.altar">fountain</data>
+      </block>
+   </block>
    <block coordinates="612.451">
       <block x="612" y="451">
          <data key="generate.monster">shade</data>

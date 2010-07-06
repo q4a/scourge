@@ -1,9 +1,12 @@
 package org.scourge.terrain;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.intersection.BoundingCollisionResults;
+import com.jme.intersection.CollisionResults;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
 import org.scourge.Main;
 import org.scourge.editor.MapSymbol;
@@ -37,6 +40,7 @@ public class Region implements NodeGenerator {
     private List<Generator> generators = new ArrayList<Generator>();
     private Vector3f proposedLocation = new Vector3f();
     private Vector3f extent = new Vector3f();
+    private CollisionResults collisionResults = new BoundingCollisionResults();
 
     public Region(Terrain terrain, int x, int y) throws IOException {
         this.terrain = terrain;
@@ -176,9 +180,10 @@ public class Region implements NodeGenerator {
             for(int y = EDGE_BUFFER; y < rows + EDGE_BUFFER; y++) {
                 Tile tile = tiles[y][x];
                 if(tile.getBlockData() != null) {
-                    String monster = tile.getBlockData().getData().get("generate.monster");
-                    System.err.println("Starting " + monster + " generator at " + x + "," + y + ".");
-                    generators.add(new MonsterGenerator(this, x, y, monster));
+                    Generator generator = Generator.create(tile.getBlockData(), this, x, y);
+                    if(generator != null) {
+                        generators.add(generator);
+                    }
                 }
             }
         }
@@ -698,11 +703,7 @@ public class Region implements NodeGenerator {
                     proposedLocation.set((getX() + x + dx) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.x) / 2,
                                          4 + extent.y / 2,
                                          (getY() + y + dy) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.z) / 2);
-                    System.err.println("Model=" + model.getCreatureModel().getNode().getName() +
-                                       " pos=" + proposedLocation + 
-                                       " model size=" + extent);
                     if(model.getCreatureModel().canMoveTo(proposedLocation)) {
-                        System.err.println("\tSUCCESS.");
                         location.set(proposedLocation);
                         return true;
                     }
@@ -710,6 +711,23 @@ public class Region implements NodeGenerator {
             }
         }
         return false;
+    }
+
+    public boolean findSpaceAround(int x, int y, Spatial spatial, Vector3f location) {
+        proposedLocation.set((getX() + x) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.x) / 2,
+                             4 + extent.y / 2,
+                             (getY() + y) * ShapeUtil.WALL_WIDTH + (ShapeUtil.WALL_WIDTH - extent.z) / 2);
+        if(!checkBoundingCollisions(terrain.getNode(), spatial)) {
+            location.set(proposedLocation);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkBoundingCollisions(Node world, Spatial spatial) {
+        collisionResults.clear();
+        spatial.findCollisions(world, collisionResults);
+        return collisionResults.getNumber() > 0;
     }
 
     public void update(float tpf) {
