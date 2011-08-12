@@ -144,6 +144,7 @@ void IdentifyDialog::identify() {
 	for ( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
 		Item *item = listA->getSelectedItem( i );
 		for ( int i = 0; i <= item->ID_COUNT; i++ ) {
+			item->identify(1);//complete identification
 			item->setIdentifiedBit( i, true );
 		}
 	}
@@ -159,7 +160,6 @@ void IdentifyDialog::identify() {
 bool IdentifyDialog::validateBackpack() {
 	for ( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
 		Item *item = listA->getSelectedItem( i );
-		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInBackpack( item ) << endl;
 		if ( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) return false;
 	}
 	return true;
