@@ -3813,6 +3813,22 @@ bool Scourge::enchantItem( Creature *creature, Item *item ) {
 					int level = creature->getSkill( Skill::ENCHANT_ITEM );
 					item->enchant( ( level - 20 ) / 20 );
 					showMessageDialog( _( "You succesfully enchanted an item!" ) );
+					for ( int i = 0; i <= item->ID_COUNT; i++ ) {
+                                        	item->identify(1);//complete identification
+                                        	item->setIdentifiedBit( i, true );
+                                        }
+                                        enum { MSG_SIZE = 1000 };
+                                        char message[ MSG_SIZE ];
+                                        int xp = (item->getLevel()*10);
+                                        int n = creature->addExperience( xp );
+                                        snprintf( message, MSG_SIZE, _( "%s gains %d experience points." ), creature->getName(), xp );
+                                        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
+                                        if ( n > 0 ) {
+						if ( level != creature->getLevel() ) {
+							snprintf( message, MSG_SIZE,  _( " %s gains a level! " ), creature->getName() );
+                                            		strcat( infoMessage, message );
+                                        	}
+                                        }
 					std::string tmp;
 					item->getDetailedDescription( tmp );
 					char msg[255];
