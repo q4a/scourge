@@ -91,7 +91,8 @@ else:
 # env.Append(LINKFLAGS = ['-lm'])
 # env.Append(LINKFLAGS = ['-lz'])
 # env.Append(LINKFLAGS = ['-lGL'])
-# env.Append(LINKFLAGS = ['-lGLU'])		
+# env.Append(LINKFLAGS = ['-lGLU'])
+env.Append(LINKFLAGS = ['-lz'])		
 env.Append(CXXFLAGS = ['-Isrc/squirrel'])
 env.Append(CCFLAGS = ['-Isrc/squirrel'])
 
