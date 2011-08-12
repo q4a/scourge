@@ -156,6 +156,7 @@ void PcEditor::saveUI() {
 
 void PcEditor::loadUI() {
 	if ( creature ) {
+	        nameField->clearText();//make sure the text is gone! This was a real problem, I tells yah!
 		nameField->setText( creature->getName() );
 
 		male->setSelected( creature->getSex() == Constants::SEX_MALE ? true : false );
@@ -285,10 +286,11 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		saveUI();
 		if ( creature ) creature->applySkillMods();
 		win->setVisible( false );
-		
+		//saveUI added below to handle ugly clicking-name-revert-ness
 		// call to generic event handling
 		scourge->pcApproved();
 	} else if ( widget == nameButton ) {
+	        saveUI();//save info before going on - or else it gets reset
 		cards->setActiveCard( NAME_TAB );
 		nameButton->setSelected( true );
 		profButton->setSelected( false );
@@ -296,6 +298,7 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
 	} else if ( widget == profButton ) {
+	        saveUI();//same as above
 		cards->setActiveCard( CLASS_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( true );
@@ -303,6 +306,7 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
 	} else if ( widget == statsButton ) {
+	        saveUI();//and so on.
 		cards->setActiveCard( STAT_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
@@ -310,6 +314,7 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
 	} else if ( widget == deityButton ) {
+	        saveUI();
 		cards->setActiveCard( DEITY_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
@@ -317,6 +322,7 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		deityButton->setSelected( true );
 		imageButton->setSelected( false );
 	} else if ( widget == imageButton ) {
+	        saveUI();
 		cards->setActiveCard( IMAGE_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
@@ -369,6 +375,7 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		saveUI();
 	} else if ( widget == nameChangeButton ) {
 		nameField->setText( Rpg::createName().c_str() );
+		saveUI();
 	} else {
 		int n = 0;
 		for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
