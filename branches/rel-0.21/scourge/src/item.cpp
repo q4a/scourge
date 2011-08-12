@@ -846,10 +846,21 @@ void Item::identify( int infoDetailLevel ) {
 		} else {
 			setIdentifiedBit( Item::ID_SKILL_BONUS, true );
 		}
-
-		// cursed is hard to detect
+		//cursed works now, you can fully identify a cursed item
+		//cursed is hard to detect..which actually makes it easy to detect - ugh!
+		//so I changed back to 100.0f from 200.0f
 		if ( isCursed() ) {
-			trySetIDBit( Item::ID_SKILL_BONUS, 200.0f, infoDetailLevel );
+		        //roll for cursed item, as the bit is already set for some reason??
+		        if ( infoDetailLevel > static_cast<int>( Util::roll( 0.0f, 100.0f ) ) ) {
+		                session->getGameAdapter()->writeLogMessage( _( "DANGER: Cursed item Detected!" ) );
+		                this->showCursed = true;
+		                setIdentifiedBit( Item::ID_CURSED, true );
+                        } else {
+		                setIdentifiedBit( Item::ID_CURSED, false );
+		        }
+		
+			//following line never executes
+			//trySetIDBit( Item::ID_SKILL_BONUS, 200.0f, infoDetailLevel );
 		} else {
 			setIdentifiedBit( Item::ID_CURSED, true );
 		}
@@ -864,7 +875,7 @@ void Item::identify( int infoDetailLevel ) {
 		//No need for identification - item not magical
 		identifiedBits = ( Uint32 )0xffff;
 	}
-	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
+	 //fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
 }
 
 /// Backpack x size.
