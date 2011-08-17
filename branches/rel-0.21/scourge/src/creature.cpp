@@ -422,15 +422,15 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 			if( !creature->addToBackpack( item ) ) {
 				cerr << "Warning: could not add item to backpack: " << item->getName() << endl;
 			}
+			int ItemIndex = creature->findInBackpack(item);
+			for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
+				if (info->equipped[i] == ItemIndex) {
+					creature->equipFromBackpack( info->equipped[i], i );
+				}
+			}
 		}
 	}
-  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( info->equipped[i] < MAX_BACKPACK_SIZE ) {
-			creature->equipFromBackpack( info->equipped[i], i );
-		} else {
-			creature->equipped[i] = info->equipped[i];
-		}
-	}
+  
 
 	creature->portraitTextureIndex = info->portraitTextureIndex;
 	if ( creature->portraitTextureIndex >= session->getShapePalette()->getPortraitCount( creature->getSex() ) )
