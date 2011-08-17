@@ -238,22 +238,18 @@ bool Item::findInventoryPosition( Item *item, int posX, int posY, bool useExisti
 				if ( xx + item->getBackpackWidth() <= colCount &&
 				        yy + item->getBackpackHeight() <= rowCount &&
 				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
-					if ( posX == xx && posY == yy ) {
 						selX = xx;
 						selY = yy;
 						break;
-					} else if ( selX == -1 ) {
-						selX = xx;
-						selY = yy;
-					}
 				}
+			}
+			if ( selX > -1 ) {
+				item->setBackpackLocation( selX, selY );
+				return true;
 			}
 		}
 
-		if ( selX > -1 ) {
-			item->setBackpackLocation( selX, selY );
-			return true;
-		}
+		
 	}
 	return false;
 }
